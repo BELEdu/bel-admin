@@ -30,14 +30,14 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 * 建议各位将npm升级到@5.0.0以上，这个版本有一些重要的改进（具体的改进内容可自行网上搜索查阅）
 
 * 请用jsdoc为文件做最基本的注释，示例：
-  ```js
+```js
   /**
   * Vue Ajax请求插件
   * @description 基于fetch封装
   * @author lmh
   * @version 2017-06-02 阐述修改的内容 (who)Aaron (when)170526 (what)对二维码悬浮出现做了调整，从JS鼠标事件控制，改成CSS :hover控制
   */
-  ```
+```
 * 请一贯、正确地使用两个空格进行缩进，请不要乱缩进也不要不缩进
 * 请谨慎地编写、修改全局性质的东西；若你不确定，请不要做全局性操作、请与其他人员商量
 
