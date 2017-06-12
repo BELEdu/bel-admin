@@ -1,0 +1,80 @@
+// 字体颜色
+.color-primary {
+  color: @primary-color !important;
+}
+
+.color-info {
+  color: @info-color !important;
+}
+
+.color-success {
+  color: @success-color !important;
+}
+
+.color-warning {
+  color: @warning-color !important;
+}
+
+.color-error {
+  color: @error-color !important;
+}
+
+/*背景颜色*/
+.bg-primary {
+  background-color: @primary-color !important;
+}
+
+.bg-info {
+  background-color: @info-color !important;
+}
+
+.bgsuccess {
+  background-color: @success-color !important;
+}
+
+.bg-warning {
+  background-color: @warning-color !important;
+}
+
+.bg-error {
+  background-color: @error-color !important;
+}
+
+// 行内元素剧中
+.text-center {
+  text-align: center !important;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/*文本超出部分省略号*/
+.ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*清除浮动*/
+.clearfix {
+  &::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+}
+
+/*浮动*/
+.left {
+  float: left !important;
+}
+
+.right {
+  float: right !important;
+}

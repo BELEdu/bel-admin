@@ -1,0 +1,84 @@
+// 表单页面公共样式
+// @author lmh
+// @version 2017-06-07
+
+// 表单页标题
+.app-form-header {
+  margin-bottom: 1.2em;
+  font-weight: normal;
+}
+
+// 大字号label
+.app-label-large {
+  .ivu-form-item-label {
+    font-size: 14px;
+  }
+}
+
+// 大字号表单
+.app-form-entire {
+  .app-label-large;
+
+  width: 975px;
+  // margin-left: auto;
+  // margin-right: auto;
+
+  .ivu-form-item {
+    margin-bottom: 30px;
+  }
+
+  .ivu-form-item-label {
+    padding-right: 2em;
+  }
+
+  input.ivu-input,
+  .ivu-select-selection,
+  .ivu-select-selected-value,
+  .ivu-select-item {
+    height: 38px !important;
+    font-size: 14px !important;
+  }
+
+  textarea.ivu-input {
+    font-size: 14px !important;
+  }
+
+  .ivu-input {
+    padding: 7px 10px;
+  }
+
+  .ivu-select-placeholder,
+  .ivu-select-selected-value {
+    padding-left: 10px !important;
+    line-height: 38px !important;
+  }
+
+  .ivu-select-item {
+    padding: 7px 16px 8px;
+  }
+
+  .ivu-radio-wrapper {
+    font-size: 14px !important;
+    margin-right: 20px;
+
+    .ivu-radio {
+      margin-right: 8px;
+    }
+  }
+
+  .ivu-date-picker-editor .ivu-icon {
+    height: 36px;
+    line-height: 36px;
+  }
+
+  .ivu-form-item:last-child {
+    .ivu-btn {
+      width: 90px;
+      margin-top: 30px;
+
+      &:not(:last-child) {
+        margin-right: 2em;
+      }
+    }
+  }
+}

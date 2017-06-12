@@ -1,0 +1,145 @@
+// 公共布局样式
+// @author lmh
+
+@import '~vars';
+
+@header-height: 60px;
+@footer-height: 50px;
+@main-horizontal-padding: 25px;
+
+// 应用框架
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-header {
+  height: @header-height;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+}
+
+.app-menu {
+  flex-basis: 200px;
+  height: 100%;
+  // min-height: calc(~"100vh" - @header-height); // 解决ie下flex-item的min-height:100%无效的问题
+}
+
+.app-main {
+  position: relative;
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  padding: 20px @main-horizontal-padding 0;
+  overflow: auto;
+  box-shadow: inset 1px 0 1px rgba(0, 0, 0, 0.075);
+  // min-height: calc(~"100vh" - @header-height);// 解决ie下flex-item的min-height:100%无效的问题
+}
+
+.app-content {
+  flex: auto;
+  padding-bottom: 25px;
+}
+
+// ie9下实现sticky footer
+.ie {
+  .app-content {
+    min-height: calc(~"100%" - @footer-height);
+  }
+
+  .app-footer {
+    height: @footer-height;
+  }
+}
+
+.app-footer {
+  flex: none;
+  margin-left: @main-horizontal-padding * -1;
+  margin-right: @main-horizontal-padding * -1;;
+}
+
+// 面包屑导航
+.app-creadcrumb {
+  padding-bottom: 10px;
+  border-bottom: 1px dashed @border-color-base;
+  margin-bottom: 30px;
+}
+
+// 列表页查询表单
+.app-search-form {
+  padding: 16px 10px;
+  border: 1px solid @border-color-base;
+  border-radius: 2px;
+  background-color: @bg-color;
+
+  .ivu-form-item {
+    margin-right: 24px;
+    margin-bottom: 0;
+  }
+
+  button {
+    min-width: 80px;
+  }
+}
+
+// 列表页标题
+.app-content-header {
+  margin: 28px 0 15px;
+
+  h2 {
+    font-weight: normal;
+  }
+
+  button {
+    min-width: 80px;
+
+    & + button {
+      margin-left: 10px;
+    }
+  }
+}
+
+// 列表页表格
+.app-table {
+  th .ivu-table-cell,
+  td .ivu-table-cell {
+    padding: 7px 12px;
+  }
+}
+
+// 兼容ie9
+.ie {
+  .app-menu {
+    float: left;
+    width: 200px !important;
+    height: calc(~"100vh" - @header-height);
+  }
+
+  .app-main {
+    float: right;
+    width: ~"calc(100vw - 200px)";
+    height: calc(~"100vh" - @header-height);
+  }
+
+  .app-content-header {
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    .ivu-col:first-child {
+      float: left;
+    }
+
+    .ivu-col:last-child {
+      float: right;
+    }
+  }
+}
