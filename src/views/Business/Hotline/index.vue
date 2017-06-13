@@ -33,7 +33,7 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="fcol" :data="fdata" stripe></Table>
+    <Table size="small" :columns="fcol" :data="buffer.data" stripe></Table>
     <!-- 分页插件 -->
     <!--<app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo"
         :total="buffer.total" :page-size="buffer.last_page" :per_page="buffer.per_page">
@@ -60,10 +60,10 @@
  */
 
 import { mapState } from 'vuex'
-import { createButton } from '@/utils'
 // eslint-disable-next-line
 import { GLOBAL, BIZ } from '@/store/mutationTypes'
-import fdata from './fdata'
+// import fdata from './fdata'
+import fcolConfig from './fcolConfig'
 
 
 export default {
@@ -72,36 +72,8 @@ export default {
   data() {
     return {
       // @param {type: Obect} queryBuilder 查询条件字段对象
-      fcol: [
-        { title: '来访日期', key: '1', align: 'center', width: 95, fixed: 'left' },
-        { title: '家长姓名', key: '2', align: 'center', width: 90, fixed: 'left' },
-        { title: '学员姓名', key: '3', align: 'center', width: 90, fixed: 'left' },
-        { title: '学校', key: '4', align: 'center', width: 120 },
-        { title: '年级', key: '5', align: 'center', width: 80 },
-        { title: '联系方式', key: '6', align: 'center', width: 120 },
-        { title: '邀约咨询师', key: '7', align: 'center', width: 100 },
-        { title: '签约咨询师', key: '8', align: 'center', width: 100 },
-        { title: '途径', key: '9', align: 'center', width: 80 },
-        { title: '市场专员', key: '10', align: 'center', width: 90 },
-        { title: '是否签约', key: '11', align: 'center', width: 90 },
-        { title: '签约日期', key: '12', align: 'center', width: 95 },
-        { title: '合同金额', key: '13', align: 'center', width: 90 },
-        { title: '实收金额', key: '14', align: 'center', width: 100 },
-        { title: '是否全款', key: '15', align: 'center', width: 90 },
-        { title: '二次上门日期', key: '16', align: 'center', width: 120 },
-        {
-          title: '操作',
-          key: '17',
-          align: 'center',
-          width: 110,
-          fixed: 'right',
-          render: createButton([
-            { icon: 'trash-a', type: 'error', click: this.toclick },
-            { icon: 'edit', type: 'primary', click: this.toUpdate },
-          ]),
-        },
-      ],
-      fdata,
+      fcol: fcolConfig,
+      // fdata,
     }
   },
 
@@ -113,11 +85,11 @@ export default {
 
   methods: {
     toCreate() {
-      this.$router.push('/business/hotlineedit')
+      this.$router.push('/business/hotline/edit')
     },
     // @params 根据后端api数据决定，应该是id
     toUpdate() {
-      this.$router.push('/business/hotlineedit/1234')
+      this.$router.push('/business/hotline/edit/5')
     },
     toQuery() {
       // 条件搜索操作, 将querybuilder传入store处理
@@ -127,14 +99,15 @@ export default {
     toDelete() {
       // 删除字段，取标识传入store
     },
-    pageTo(current_page) {
+    pageTo(page) {
       // buffer目前取不到，先注释
       // const per_page = this.buffer.per_page
       // this.$router.replace({ path: this.$route.path, query: { current_page, per_page } })
-      this.$router.replace({ path: this.$route.path, query: { current_page, per_page: 10 } })
+      this.$router.push({ path: this.$route.path, query: { page, per_page: 10 } })
+      // this.$router.push(`/business/hotline?page=${page}&per_page=10`)
     },
     pagesizeTo(per_page) {
-      this.$router.replace({ path: this.$route.path, query: { current_page: 1, per_page } })
+      this.$router.replace({ path: this.$route.path, query: { page: 1, per_page } })
     },
   },
 
@@ -143,16 +116,13 @@ export default {
     // 如果是/business/hotline/edit 就需要做if过滤：
     // if(to.path.split('/').length === 2)
     // 执行下面方法
-    // this.$store.dispatch(BIZ.INIT, to.query)
-    //   .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-    next()
+    this.$store.dispatch(BIZ.INIT, to)
+      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 
   created() {
-    // this.$store.dispatch(BIZ.INIT)
-    //   .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.$store.dispatch(BIZ.INIT, this.$route)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>

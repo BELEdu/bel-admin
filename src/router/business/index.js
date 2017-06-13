@@ -26,7 +26,7 @@ export default [
     },
   },
   {
-    path: '/business/hotlineedit',
+    path: '/business/hotline/edit',
     name: 'hotlineCreator',
     component: views.HotlineEditor,
     meta: {
@@ -42,7 +42,7 @@ export default [
     },
   },
   {
-    path: '/business/hotlineedit/:id',
+    path: '/business/hotline/edit/:id',
     name: 'hotlineUpdator',
     component: views.HotlineEditor,
     meta: {
