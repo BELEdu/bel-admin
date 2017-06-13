@@ -60,7 +60,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '学习知识点' },
+        { name: '学员知识点' },
       ],
     },
   },

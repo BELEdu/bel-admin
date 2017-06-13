@@ -215,7 +215,7 @@
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'app-student-info-detail',
+  name: 'app-student-info-edit',
 
   data() {
     return {

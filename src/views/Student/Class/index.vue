@@ -71,6 +71,7 @@
  * 学员管理 - 班级管理
  * @author zml
  * @version 2017-06-08
+ * @version 2017-06-13
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
@@ -94,27 +95,27 @@ export default {
       // 学生列表
       studentList: [
         {
-          value: 'beijing',
+          value: '张三',
           label: '张三',
         },
         {
-          value: 'shanghai',
+          value: '李四',
           label: '李四',
         },
         {
-          value: 'shenzhen',
+          value: '王五',
           label: '王五',
         },
         {
-          value: 'hangzhou',
+          value: '小六',
           label: '小六',
         },
         {
-          value: 'nanjing',
+          value: '小七',
           label: '小七',
         },
         {
-          value: 'chongqing',
+          value: '小八',
           label: '小八',
         },
       ],

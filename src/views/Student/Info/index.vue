@@ -108,6 +108,7 @@
  * 学员管理 - 学员信息
  * @author zml
  * @version 2017-06-08
+ * @version 2017-06-13
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
@@ -189,7 +190,7 @@ export default {
           // 剩余课时小于10的时候变红
           render: (h, params) => {
             const row = params.row
-            const className = row.time < 10 ? 'color-error' : ''
+            const className = +row.time < 10 ? 'color-error' : ''
             const text = row.time
             return h('span', {
               class: className,
