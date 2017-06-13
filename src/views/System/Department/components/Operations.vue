@@ -158,7 +158,7 @@ export default {
       this.formLoading = true
       store.dispatch(SYSTEM.DEPARTMENT.CREATE, {
         ...this.form,
-        pid: this.item.id,
+        p_id: this.item.id,
       })
         .then(() => this.successHandler('form'))
     },
@@ -170,7 +170,7 @@ export default {
         id: this.item.id,
         data: {
           ...this.form,
-          pid: this.item.pid,
+          p_id: this.item.pid,
         },
       })
         .then(() => this.successHandler('form'))
