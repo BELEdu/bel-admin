@@ -31,9 +31,9 @@ export default [
     },
   },
   {
-    path: '/student/info/detail',
-    name: 'StudentInfoDetail',
-    component: views.StudentInfoDetail,
+    path: '/student/info/edit',
+    name: 'StudentInfoEdit',
+    component: views.StudentInfoEdit,
     meta: {
       breadcrumb: [
         { name: '学员管理' },
@@ -72,6 +72,30 @@ export default [
       breadcrumb: [
         { name: '学员管理' },
         { name: '班级管理' },
+      ],
+    },
+  },
+  {
+    path: '/student/class/edit',
+    name: 'StudentClassEdit',
+    component: views.StudentClassEdit,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '班级管理' },
+        { name: '添加班级' },
+      ],
+    },
+  },
+  {
+    path: '/student/class/edit/:id',
+    name: 'StudentClassEdit',
+    component: views.StudentClassEdit,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '班级管理' },
+        { name: '编辑班级' },
       ],
     },
   },

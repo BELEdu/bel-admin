@@ -30,7 +30,7 @@
       <Col>
         <Button type="primary" @click="modal.teacher = true">分配教师</Button>
         <Button type="primary" @click="modal.manage = true">分配学管师</Button>
-        <Button type="primary" @click="$router.push('/student/info/detail')">添加学员</Button>
+        <Button type="primary" @click="$router.push('/student/info/edit')">添加学员</Button>
         <Button type="warning" @click="modal.delete = true">删除</Button>
       </Col>
     </Row>
@@ -205,7 +205,7 @@ export default {
             // 删除该学员
             { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.studentId) },
             { icon: 'clipboard', type: 'success' },
-            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/info/detail') },
+            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/info/edit') },
           ]),
         },
       ],

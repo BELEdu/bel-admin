@@ -26,7 +26,7 @@
       <h2>班级管理</h2>
       </Col>
       <Col>
-      <Button type="primary">添加班级</Button>
+      <Button type="primary" @click="$router.push('/student/class/edit')" >添加班级</Button>
       </Col>
     </Row>
 
@@ -147,7 +147,7 @@ export default {
           render: createButton([
             { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.classId) },
             { icon: 'person', type: 'primary', click: row => this.openManageModal(row.classId) },
-            { icon: 'edit', type: 'primary' },
+            { icon: 'edit', type: 'primary', click: () => this.$router.push('/student/class/edit/10086') },
           ]),
         },
       ],
