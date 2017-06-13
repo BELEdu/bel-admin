@@ -83,7 +83,6 @@ export default {
     },
     // @params 根据后端api数据决定，应该是id
     toUpdate(row) {
-      window.console.log('update')
       this.$router.push(`/business/hotline/edit/${row.id}`)
     },
     toQuery() {
@@ -92,14 +91,14 @@ export default {
     },
     toDelete(row) {
       window.console.log(row.id)
-      this.$store.dispatch(BUSINESS.DELETE, row.id)
+      this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
     },
     pageTo(page) {
       const per_page = this.buffer.per_page
-      this.$router.replace({ path: this.$route.path, query: { page, per_page } })
+      this.$router.push({ path: this.$route.path, query: { page, per_page } })
     },
     pagesizeTo(per_page) {
-      this.$router.replace({ path: this.$route.path, query: { page: 1, per_page } })
+      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
     },
   },
 

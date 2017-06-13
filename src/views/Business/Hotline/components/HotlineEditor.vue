@@ -86,10 +86,10 @@ export default {
       this.loading = true
       if (this.$route.params.id) {
         const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.UPDATE, { id, fdata })
+        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
           .then(() => { this.loading = false; this.cancel() })
       } else {
-        this.$store.dispatch(BUSINESS.CREATE, fdata)
+        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
           .then(() => { this.loading = false; this.cancel() })
       }
     },
@@ -118,7 +118,7 @@ export default {
     Http.get('/dict?keys=grade&')
       .then((res) => { this.grade = res.grade })
     // 初始化表单
-    this.$store.dispatch(BUSINESS.EDIT, this.$route.params.id)
+    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route.params.id)
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }

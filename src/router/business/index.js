@@ -15,47 +15,50 @@ export default [
     name: 'BussinessHotline',
     component: views.Hotline,
     meta: {
+      uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
         { name: '热线登记' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'hotline')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'hotline')
+    //   next()
+    // },
   },
   {
     path: '/business/hotline/edit',
     name: 'hotlineCreator',
     component: views.HotlineEditor,
     meta: {
+      uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
         { name: '热线登记' },
         { name: '添加热线' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'hotline')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'hotline')
+    //   next()
+    // },
   },
   {
     path: '/business/hotline/edit/:id',
     name: 'hotlineUpdator',
     component: views.HotlineEditor,
     meta: {
+      uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
         { name: '热线登记' },
         { name: '编辑热线' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'hotline')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'hotline')
+    //   next()
+    // },
   },
   {
     path: 'business/comm',
@@ -67,10 +70,10 @@ export default [
         { name: '沟通记录' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'comm')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'comm')
+    //   next()
+    // },
   },
   {
     path: 'business/commedit',
@@ -83,10 +86,10 @@ export default [
         { name: '添加记录' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'comm')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'comm')
+    //   next()
+    // },
   },
   {
     path: 'business/commedit/:id',
@@ -99,10 +102,10 @@ export default [
         { name: '编辑记录' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'comm')
-      next()
-    },
+    // beforeEnter(to, from, next) {
+    //   store.commit(BUSINESS.ROUTE, 'comm')
+    //   next()
+    // },
   },
   {
     path: 'business/contract',
