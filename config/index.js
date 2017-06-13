@@ -7,7 +7,7 @@ module.exports = {
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
     // assetsSubDirectory: 'static',
-    assetsSubDirectory: 'assets/1.0.0',
+    assetsSubDirectory: 'assets/1.0.0/vue',
     assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
@@ -27,7 +27,7 @@ module.exports = {
     port: 8080,
     autoOpenBrowser: true,
     // assetsSubDirectory: 'static',
-    assetsSubDirectory: 'assets/1.0.0',
+    assetsSubDirectory: 'assets/1.0.0/vue',
     assetsPublicPath: '/',
     proxyTable: {
       '/v1': {
