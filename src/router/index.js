@@ -24,9 +24,14 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
-      path: '/login',
+      path: '/auth/login',
       name: 'Login',
       component: views.Login,
+      meta: {
+        breadcrumb: [
+          { name: '登录' },
+        ],
+      },
     },
     {
       path: '/',
@@ -89,7 +94,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  // 显示数据加载动画
   store.commit(GLOBAL.LOADING.SHOW)
+
+  // 更换页面title
+  document.title = to.meta.breadcrumb
+    .reduce((title, item) => (
+      title ? `${item.name} - ${title}` : item.name
+    ), '')
+
   next()
 })
 

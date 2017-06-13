@@ -59,9 +59,9 @@ export default {
 
   created() {
     // 如果用户未登录，转跳到登陆页
-    // if (!this.token) {
-    //   this.$router.push('/login')
-    // }
+    if (!this.token) {
+      this.$router.push('/auth/login')
+    }
   },
 }
 </script>
