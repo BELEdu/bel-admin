@@ -53,7 +53,7 @@ import { GLOBAL } from '@/store/mutationTypes'
 import fdata from './fdata'
 
 export default {
-  name: 'biz-hotline',
+  name: 'business-hotline',
 
   data() {
     return {

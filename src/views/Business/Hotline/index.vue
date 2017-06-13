@@ -35,10 +35,7 @@
   
     <Table size="small" :columns="fcol" :data="buffer.data" stripe></Table>
     <!-- 分页插件 -->
-    <!--<app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo"
-        :total="buffer.total" :page-size="buffer.last_page" :per_page="buffer.per_page">
-      </app-pager>-->
-    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo"></app-pager>
+    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
   </div>
 </template>
 
@@ -56,30 +53,27 @@
  * 2. 在created完成store init，然后在computed中取回
  * 3. 完成根据分页行为更新store数据
  * 4. 删除操作 { 字段名称; 字段值; }
- * 5. 新增 & 添加 操作
+ * 5. 查询 & 新增 & 添加 操作
  */
 
 import { mapState } from 'vuex'
-// eslint-disable-next-line
-import { GLOBAL, BIZ } from '@/store/mutationTypes'
-// import fdata from './fdata'
+import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import fcolConfig from './fcolConfig'
 
 
 export default {
-  name: 'biz-hotline',
+  name: 'business-hotline',
 
   data() {
     return {
       // @param {type: Obect} queryBuilder 查询条件字段对象
-      fcol: fcolConfig,
-      // fdata,
+      fcol: fcolConfig(this),
     }
   },
 
   computed: {
     ...mapState({
-      buffer: state => state.biz.buffer,
+      buffer: state => state.business.buffer,
     }),
   },
 
@@ -88,23 +82,21 @@ export default {
       this.$router.push('/business/hotline/edit')
     },
     // @params 根据后端api数据决定，应该是id
-    toUpdate() {
-      this.$router.push('/business/hotline/edit/5')
+    toUpdate(row) {
+      window.console.log('update')
+      this.$router.push(`/business/hotline/edit/${row.id}`)
     },
     toQuery() {
       // 条件搜索操作, 将querybuilder传入store处理
       // 如果放在mixins里面querybuilder的结构可以是{ api; data(可能包括非表单，但是必须标识字段); }
     },
-    // @params 和查询需求参数相同
-    toDelete() {
-      // 删除字段，取标识传入store
+    toDelete(row) {
+      window.console.log(row.id)
+      this.$store.dispatch(BUSINESS.DELETE, row.id)
     },
     pageTo(page) {
-      // buffer目前取不到，先注释
-      // const per_page = this.buffer.per_page
-      // this.$router.replace({ path: this.$route.path, query: { current_page, per_page } })
-      this.$router.push({ path: this.$route.path, query: { page, per_page: 10 } })
-      // this.$router.push(`/business/hotline?page=${page}&per_page=10`)
+      const per_page = this.buffer.per_page
+      this.$router.replace({ path: this.$route.path, query: { page, per_page } })
     },
     pagesizeTo(per_page) {
       this.$router.replace({ path: this.$route.path, query: { page: 1, per_page } })
@@ -112,16 +104,12 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    // 看怎么定后端路由，如果是 /business/hotlineedit 可以直接使用
-    // 如果是/business/hotline/edit 就需要做if过滤：
-    // if(to.path.split('/').length === 2)
-    // 执行下面方法
-    this.$store.dispatch(BIZ.INIT, to)
+    this.$store.dispatch(BUSINESS.INIT, to)
       .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 
   created() {
-    this.$store.dispatch(BIZ.INIT, this.$route)
+    this.$store.dispatch(BUSINESS.INIT, this.$route)
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }

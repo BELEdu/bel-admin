@@ -10,7 +10,7 @@ import createPersistedState from 'vuex-persistedstate'
 
 import { Http } from '@/utils'
 import system from './system'
-import biz from './biz'
+import business from './business'
 import { GLOBAL } from './mutationTypes'
 
 Vue.use(Vuex)
@@ -28,7 +28,7 @@ const store = new Vuex.Store({
 
   modules: {
     system,
-    biz,
+    business,
   },
 
   state: {

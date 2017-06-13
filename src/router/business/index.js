@@ -6,7 +6,7 @@
  */
 
 import * as views from '@/views'
-import { BIZ } from '@/store/mutationTypes'
+import { BUSINESS } from '@/store/mutationTypes'
 import store from '@/store'
 
 export default [
@@ -21,7 +21,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'hotline')
+      store.commit(BUSINESS.ROUTE, 'hotline')
       next()
     },
   },
@@ -37,7 +37,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'hotline')
+      store.commit(BUSINESS.ROUTE, 'hotline')
       next()
     },
   },
@@ -53,7 +53,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'hotline')
+      store.commit(BUSINESS.ROUTE, 'hotline')
       next()
     },
   },
@@ -68,7 +68,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'comm')
+      store.commit(BUSINESS.ROUTE, 'comm')
       next()
     },
   },
@@ -84,7 +84,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'comm')
+      store.commit(BUSINESS.ROUTE, 'comm')
       next()
     },
   },
@@ -100,7 +100,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'comm')
+      store.commit(BUSINESS.ROUTE, 'comm')
       next()
     },
   },
@@ -115,7 +115,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'contract')
+      store.commit(BUSINESS.ROUTE, 'contract')
       next()
     },
   },
@@ -131,7 +131,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'contract')
+      store.commit(BUSINESS.ROUTE, 'contract')
       next()
     },
   },
@@ -147,7 +147,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'contract')
+      store.commit(BUSINESS.ROUTE, 'contract')
       next()
     },
   },
@@ -162,7 +162,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'product')
+      store.commit(BUSINESS.ROUTE, 'product')
       next()
     },
   },
@@ -178,7 +178,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'product')
+      store.commit(BUSINESS.ROUTE, 'product')
       next()
     },
   },
@@ -195,7 +195,7 @@ export default [
       ],
     },
     beforeEnter(to, from, next) {
-      store.commit(BIZ.ROUTE, 'product')
+      store.commit(BUSINESS.ROUTE, 'product')
       next()
     },
   },
