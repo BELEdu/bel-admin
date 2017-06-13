@@ -25,15 +25,21 @@ class Http {
     }
   }
 
-  // 每次请求时，检查token的状态
-  // 若服务端返回400，说明token已过期
-  // 已过期的情况下，若服务端返回新的token，则刷新token，否则让用户退出登陆
+  // 每次请求时，检查token
   static updateToken(res) {
-    const token = res.headers.get('token')
+    const { status, headers } = res
+    const token = headers.get('token')
+
+    // 存在token，则更新token
+    // 只有登陆时会存在token
     if (token) {
       store.commit(GLOBAL.TOKEN.UPDATE, token)
     }
-    // 这里如何判断token不可用的逻辑还不完备
+
+    // 状态400且不存在token，强制用户登出
+    if (status === 400 && token === '') {
+      store.commit(GLOBAL.LOGOUT)
+    }
 
     return res
   }
