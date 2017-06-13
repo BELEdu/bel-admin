@@ -42,14 +42,14 @@
 /**
  * 排课管理 - 教师排课 - 教师排课表
  * @author yangjun
- * @version 2017-06-08
+ * @version 2017-06-14
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
-  name: 'app-arrange-teacher-detail',
+  name: 'app-arrange-teacher-edit',
 
   data() {
     return {

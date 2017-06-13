@@ -14,7 +14,7 @@
         <h2>学员排课</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/arrange/student/detail/2')">打印</Button>
+        <Button type="primary" @click="$router.push('/arrange/student/edit/2')">打印</Button>
       </Col>
     </Row>
 

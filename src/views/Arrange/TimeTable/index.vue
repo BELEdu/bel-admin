@@ -1,32 +1,23 @@
 <template>
   <div>
-    <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
-      </Form-item>
-    </Form>
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>教师课表情况</h2>
+        <h2>排课表</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/arrange/teacher/detail/2')">周课表</Button>
+        <Button type="primary" @click="$router.push('/arrange/timetable')">打印</Button>
       </Col>
     </Row>
 
     <Table class="app-table" :columns="columns" :data="data" border></Table>
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
   </div>
 </template>
 
 <script>
 /**
- * 排课管理 - 教师排课
+ * 排课管理 - 周课表
  * @author yangjun
  * @version 2017-06-14
  */
@@ -35,12 +26,23 @@ import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
-  name: 'app-arrange-teacher',
+  name: 'app-arrange-timetable',
 
   data() {
     return {
       form: {
         keyword: '',
+      },
+
+      course: {
+        time: ['09:00 - 10:20', '10:40 - 12:00', '12:30 - 13:50'],
+        data: [],
+        color: {
+          finish: '#58a0c8',
+          right: '#d1a963',
+          wait: '#c97f86',
+          cancel: '#c22d15',
+        },
       },
 
       columns: [

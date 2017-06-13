@@ -42,7 +42,7 @@
 /**
  * 排课管理 - 学员排课 - 学员排课表
  * @author yangjun
- * @version 2017-06-09
+ * @version 2017-06-14
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
@@ -50,7 +50,7 @@ import { GLOBAL } from '@/store/mutationTypes'
 import Operations from './components/Operations'
 
 export default {
-  name: 'app-arrange-student-detail',
+  name: 'app-arrange-student-edit',
 
   data() {
     return {

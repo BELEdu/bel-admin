@@ -1,20 +1,10 @@
 <template>
   <div>
-    <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
-      </Form-item>
-    </Form>
+    <search-record></search-record>
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>教师课表情况</h2>
-      </Col>
-      <Col>
-        <Button type="primary" @click="$router.push('/arrange/teacher/detail/2')">周课表</Button>
+        <h2>上课记录</h2>
       </Col>
     </Row>
 
@@ -26,16 +16,17 @@
 
 <script>
 /**
- * 排课管理 - 教师排课
+ * 排课管理 - 上课记录非班级
  * @author yangjun
  * @version 2017-06-14
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
+import SearchRecord from '../Components/Search'
 
 export default {
-  name: 'app-arrange-teacher',
+  name: 'app-arrange-record-personal',
 
   data() {
     return {
@@ -94,6 +85,10 @@ export default {
 
       pager: undefined,
     }
+  },
+
+  components: {
+    searchRecord: SearchRecord,
   },
 
   created() {

@@ -49,16 +49,6 @@ const router = new Router({
           },
         },
         {
-          path: '/arrange',
-          name: 'Arrange',
-          component: views.Arrange,
-          meta: {
-            breadcrumb: [
-              { name: '排课管理' },
-            ],
-          },
-        },
-        {
           path: '/prepare',
           name: 'Prepare',
           component: views.Prepare,

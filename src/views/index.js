@@ -19,9 +19,12 @@ export { default as ProductEditor } from './Business/Product/components/ProductE
 
 // 排课管理
 export { default as ArrangeTeacher } from './Arrange/Teacher'
-export { default as ArrangeTeacherDetail } from './Arrange/Teacher/Detail'
+export { default as ArrangeTeacherEdit } from './Arrange/Teacher/Edit'
 export { default as ArrangeStudent } from './Arrange/Student'
-export { default as ArrangeStudentDetail } from './Arrange/Student/Detail'
+export { default as ArrangeStudentEdit } from './Arrange/Student/Edit'
+export { default as ArrangeRecordClass } from './Arrange/Record/Class'
+export { default as ArrangeRecordPersonal } from './Arrange/Record/Personal'
+export { default as ArrangeTimeTable } from './Arrange/TimeTable/'
 
 // 统计管理
 export { default as Analysis } from './Analysis'
