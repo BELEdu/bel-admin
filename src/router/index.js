@@ -98,10 +98,12 @@ router.beforeEach((to, from, next) => {
   store.commit(GLOBAL.LOADING.SHOW)
 
   // 更换页面title
-  document.title = to.meta.breadcrumb
-    .reduce((title, item) => (
-      title ? `${item.name} - ${title}` : item.name
-    ), '')
+  if (to.meta.breadcrumb) {
+    document.title = to.meta.breadcrumb
+      .reduce((title, item) => (
+        title ? `${item.name} - ${title}` : item.name
+      ), '')
+  }
 
   next()
 })
