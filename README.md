@@ -22,7 +22,6 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 ## 备忘事项
 * 静态资源版本号变更时，请对`/config/index.js`中的`assetsSubDirectory`字段做相应的修改
-* 如何知道400是token出问题还是接口本身出问题？
 
 ## 约定
 
