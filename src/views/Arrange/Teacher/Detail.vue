@@ -25,10 +25,10 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>排课表</h2>
+        <h2>教师课表情况</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/arrange/teacher/detail/2')">添加课表</Button>
+        <Button type="primary" @click="$router.push('/arrange/teacher/detail/2')">打印</Button>
       </Col>
     </Row>
 

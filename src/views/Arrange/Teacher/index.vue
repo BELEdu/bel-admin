@@ -11,7 +11,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>教师列表</h2>
+        <h2>教师课表情况</h2>
       </Col>
       <Col>
         <Button type="primary" @click="$router.push('/arrange/teacher/detail/2')">教师课表</Button>
@@ -49,12 +49,14 @@ export default {
         { title: '员工编号', key: 3, align: 'center' },
         { title: '学科组', key: 4, align: 'center' },
         { title: '岗位性质', key: 5, align: 'center' },
-        { title: '性别', key: 6, align: 'center', width: 100 },
-        { title: '授课年级', key: 7, align: 'center' },
-        { title: '授课科目', key: 8, align: 'center' },
+        { title: '授课年级', key: 6, align: 'center' },
+        { title: '授课科目', key: 7, align: 'center' },
+        { title: '学生数', key: 8, align: 'center' },
+        { title: '未上课时', key: 9, align: 'center' },
+        { title: '已完成课时', key: 10, align: 'center' },
         {
           title: '操作',
-          key: 9,
+          key: 11,
           align: 'center',
           render: createButton([
             { icon: 'trash-a', type: 'error' },
@@ -70,19 +72,23 @@ export default {
           3: '13112345678',
           4: '厦门分公司前埔校区教学管理部学科组',
           5: '兼职',
-          6: '男',
-          7: '初中三年级',
-          8: '数学',
+          6: '初中三年级',
+          7: '8',
+          8: '12',
+          9: '12',
+          10: '12',
         },
         {
           1: '2',
-          2: '阿辉',
+          2: '侯晓辉',
           3: '13112345678',
           4: '厦门分公司前埔校区教学管理部学科组',
           5: '兼职',
-          6: '男',
-          7: '初中三年级',
-          8: '语文',
+          6: '初中三年级',
+          7: '8',
+          8: '12',
+          9: '12',
+          10: '12',
         },
       ],
 
