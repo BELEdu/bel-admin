@@ -47,7 +47,9 @@ class Http {
   // 统一抛出错误
   static errorHandler(res) {
     if (res.ok) {
+      // res.json()操作若失败，返回一个空对象
       return res.json()
+        .catch(() => ({}))
     }
 
     return res.json()
