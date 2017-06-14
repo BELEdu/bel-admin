@@ -30,9 +30,9 @@ export default [
     },
   },
   {
-    path: '/system/user/detail',
-    name: 'SystemUserDetail',
-    component: views.SystemUserDetail,
+    path: '/system/user/edit',
+    name: 'SystemUserEdit',
+    component: views.SystemUserEdit,
     meta: {
       breadcrumb: [
         { name: '系统管理' },
@@ -42,9 +42,9 @@ export default [
     },
   },
   {
-    path: '/system/user/detail/:id',
-    name: 'SystemUserDetailEdit',
-    component: views.SystemUserDetail,
+    path: '/system/user/edit/:id',
+    name: 'SystemUserEdit',
+    component: views.SystemUserEdit,
     meta: {
       breadcrumb: [
         { name: '系统管理' },

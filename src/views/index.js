@@ -35,7 +35,7 @@ export { default as AnalysisRank } from './Analysis/Rank'
 // 系统管理
 export { default as SystemRole } from './System/Role'
 export { default as SystemUser } from './System/User'
-export { default as SystemUserDetail } from './System/User/Detail'
+export { default as SystemUserEdit } from './System/User/Edit'
 export { default as SystemLog } from './System/Log'
 export { default as SystemDepartment } from './System/Department'
 

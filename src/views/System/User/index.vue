@@ -14,7 +14,7 @@
         <h2>用户列表</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/system/user/detail')">添加用户</Button>
+        <Button type="primary" @click="$router.push('/system/user/edit')">添加用户</Button>
       </Col>
     </Row>
 
@@ -60,7 +60,7 @@ export default {
           align: 'center',
           render: createButton([
             { icon: 'trash-a', type: 'error' },
-            { icon: 'edit', type: 'primary', click: () => this.$router.push('/system/user/detail/2') },
+            { icon: 'edit', type: 'primary', click: () => this.$router.push('/system/user/edit/2') },
           ]),
         },
       ],
