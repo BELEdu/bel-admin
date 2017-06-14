@@ -21,10 +21,6 @@ export default [
         { name: '热线登记' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'hotline')
-    //   next()
-    // },
   },
   {
     path: '/business/hotline/edit',
@@ -38,10 +34,6 @@ export default [
         { name: '添加热线' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'hotline')
-    //   next()
-    // },
   },
   {
     path: '/business/hotline/edit/:id',
@@ -55,10 +47,6 @@ export default [
         { name: '编辑热线' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'hotline')
-    //   next()
-    // },
   },
   {
     path: 'business/comm',

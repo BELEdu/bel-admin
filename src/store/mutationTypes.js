@@ -46,8 +46,10 @@ export const SYSTEM = {
 }
 
 export const BUSINESS = {
-  INIT: 'BUSINESS.INIT',
   SETURI: 'BUSINESS.SETURI',
+  PAGE: {
+    INIT: 'BUSINESS.PAGE.INIT',
+  },
   EDIT: {
     INIT: 'BUSINESS.EDIT.INIT',
     CREATE: 'BUSINESS.EDIT.CREATE',

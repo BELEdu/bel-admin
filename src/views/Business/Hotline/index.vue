@@ -19,7 +19,7 @@
         </Select>
       </Form-item>
       <Form-item style="float: right; margin: 0;">
-        <Button type="primary" @click.stop="toQuery">查询搜索</Button>
+        <Button type="primary" @click.stop="toFiltrate">查询搜索</Button>
       </Form-item>
     </Form>
   
@@ -46,71 +46,74 @@
  * @version 2017-06-06
  */
 
-/**
- * @version 2017-06-08
- * @todo 根据后端口完成组件
- * 1. 根据api查询字段绑定字段 queryBuilder
- * 2. 在created完成store init，然后在computed中取回
- * 3. 完成根据分页行为更新store数据
- * 4. 删除操作 { 字段名称; 字段值; }
- * 5. 查询 & 新增 & 添加 操作
- */
-
 import { mapState } from 'vuex'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import fcolConfig from './fcolConfig'
-
 
 export default {
   name: 'business-hotline',
 
   data() {
     return {
-      // @param {type: Obect} queryBuilder 查询条件字段对象
+      // @param {type: Obect} searchOptions 查询条件字段对象
       fcol: fcolConfig(this),
     }
   },
 
   computed: {
+    // 分页数据，包含后端返回的完整信息
+    // 1. 绑定到Table组件 :data="buffer.data"
+    // 2. 绑定到app-pager组件 :data="buffer"
     ...mapState({
-      buffer: state => state.business.buffer,
+      buffer: state => state.server.buffer,
     }),
   },
 
   methods: {
+    // 进入新增路由，例子：/business/hotline/edit
     toCreate() {
       this.$router.push('/business/hotline/edit')
     },
-    // @params 根据后端api数据决定，应该是id
+    // 进入修改路由，例子：/business/hotline/edit/:id
+    // row为createButton方法传入的参数，写死
     toUpdate(row) {
       this.$router.push(`/business/hotline/edit/${row.id}`)
     },
-    toQuery() {
-      // 条件搜索操作, 将querybuilder传入store处理
-      // 如果放在mixins里面querybuilder的结构可以是{ api; data(可能包括非表单，但是必须标识字段); }
-    },
+    // 删除某一列表项
     toDelete(row) {
-      window.console.log(row.id)
       this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
     },
+    toFiltrate() {
+      // 封装一个公共方法formEncoded(obj)，将对象转化成键值对字符串
+      // const query = {
+      //   ...this.$route.query,
+      //   // 查询条件对象
+      //   ...this.searchOptions,
+      // }
+      // this.$router.push(`/business/hotline/edit?${formEncoded(query)}`)
+    },
+    // 绑定到app-pager组件 @on-change="pageTo"
     pageTo(page) {
       const per_page = this.buffer.per_page
       this.$router.push({ path: this.$route.path, query: { page, per_page } })
     },
+    // 绑定到app-pager组件 @on-page-size-change="pagesizeTo"
     pagesizeTo(per_page) {
       this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
     },
   },
 
+  // 根据当前路由进行初始化
+  created() {
+    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
   beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BUSINESS.INIT, to)
+    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
       .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 
-  created() {
-    this.$store.dispatch(BUSINESS.INIT, this.$route)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
 }
 </script>
 
