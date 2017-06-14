@@ -1,48 +1,48 @@
 <template>
-  <main class="hotlineeditor app-form-entire" v-if="unit">
+  <main class="hotlineeditor app-form-entire" v-if="fdata">
     <app-editor-title></app-editor-title>
-    <Form :label-width="130">
-      <Form-item label="来访时间" required>
-        <Date-picker placeholder="年 / 月 / 日" v-model="unit.visited_at" formate="yyyy-MM-dd" type="date"></Date-picker>
+    <Form :label-width="130" :rules="ruleForm" ref="form" :model="fdata">
+      <Form-item label="来访时间" required prop="visited_at">
+        <Date-picker placeholder="年 / 月 / 日" v-model="fdata.visited_at" formate="yyyy-MM-dd" type="date" :editable="false"></Date-picker>
       </Form-item>
-      <Form-item label="家长姓名" required>
-        <Input placeholder="请输入家长姓名" v-model="unit.elder_name"></Input>
+      <Form-item label="家长姓名" required prop="elder_name">
+        <Input placeholder="请输入家长姓名" v-model="fdata.elder_name"></Input>
       </Form-item>
-      <Form-item label="学员姓名">
-        <Input placeholder="请输入学员姓名" v-model="unit.student_name"></Input>
+      <Form-item label="学员姓名" required prop="student_name">
+        <Input placeholder="请输入学员姓名" v-model="fdata.student_name"></Input>
       </Form-item>
-      <Form-item label="家长手机号码" required>
-        <Input placeholder="请输入家长手机号码" v-model="unit.mobile"></Input>
+      <Form-item label="联系方式" required prop="mobile">
+        <Input placeholder="请输入联系方式" v-model="fdata.mobile"></Input>
       </Form-item>
       <Form-item label="选择地区">
         <!--地区接口还未确定 -->
         <Cascader :data="map" trigger="hover"></Cascader>
       </Form-item>
       <Form-item label="当前年级">
-        <Select placeholder="请选择......" v-model="unit.grade">
+        <Select placeholder="请选择......" v-model="fdata.grade">
           <Option v-if="grade" v-for="item in grade" :value="item.value" :key="item.key">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item label="邀约咨询师">
-        <Select placeholder="请选择......" v-model="unit.invited_teacher_id">
+        <Select placeholder="请选择......" v-model="fdata.invited_teacher_id">
           <Option value="1">甲</Option>
           <Option value="2">乙</Option>
           <Option value="3">丙</Option>
           <Option value="4">丁</Option>
         </Select>
       </Form-item>
-      <Form-item label="市场专员">
-        <Input placeholder="请输入市场专员" v-model="unit.market_staff_name"></Input>
+      <Form-item label="市场专员" prop="market_staff_name">
+        <Input placeholder="请输入市场专员" v-model="fdata.market_staff_name"></Input>
       </Form-item>
-      <Form-item label="在读学校">
-        <Input placeholder="请输入在读学校名称" v-model="unit.school_name"></Input>
+      <Form-item label="在读学校" prop="school_name">
+        <Input placeholder="请输入在读学校名称" v-model="fdata.school_name"></Input>
       </Form-item>
       <Form-item label="二次上门日期">
-        <Date-picker placeholder="年 / 月 / 日" v-model="unit.return_visited_at"></Date-picker>
+        <Date-picker placeholder="年 / 月 / 日" v-model="fdata.return_visited_at" :editable="false"></Date-picker>
       </Form-item>
       <Form-item>
         <Button @click.stop="cancel">取消</Button>
-        <Button type="primary" @click.stop="submit" :loading="loading">提交</Button>
+        <Button type="primary" @click.stop="handleSubmit('form')" :loading="loading">提交</Button>
       </Form-item>
     </Form>
   </main>
@@ -82,49 +82,97 @@ function encode(data) {
 
 export default {
   name: 'hotline-editor',
+  data() {
+    return {
+      // "取消"按钮行为的路由对象
+      backRoute: null,
+      // 最终提交给后端的数据
+      fdata: null,
+      // 提交按钮状态控制
+      loading: false,
+      // 表单预置数据
+      map,
+      // 年级信息 - 后端字典数据
+      grade: null,
+      ruleForm: {
+        visited_at: [{ type: 'date', required: true, message: '请选择日期' }],
+        elder_name: [
+          { required: true, message: '请输入家长姓名', trigger: 'blur' },
+          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间' },
+          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+        ],
+        student_name: [
+          { required: true, message: '请输入家长姓名', trigger: 'blur' },
+          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间', trigger: 'blur' },
+          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+        ],
+        mobile: [
+          { required: true, message: '请输入联系方式', trigger: 'blur' },
+          { type: 'string', pattern: /^1/, min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
+        ],
+        market_staff_name: [
+          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间' },
+          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, min: 2, max: 10, message: '请输入正确的姓名', trigger: 'blur' },
+        ],
+        school_name: [
+          { type: 'string', min: 2, max: 20, message: '长度应该在2到20之间' },
+          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+        ],
+      },
+    }
+  },
 
-  data: () => ({
-    // "取消"按钮行为的路由对象
-    backRoute: null,
-    // 最终提交给后端的数据
-    fdata: null,
-    // 提交按钮状态控制
-    loading: false,
-    // 表单预置数据
-    map,
-    // 年级信息 - 后端字典数据
-    grade: null,
-  }),
 
+  // computed: {
+  //   // 绑定到表单的对象
+  //   unit: {
+  //     get() {
+  //       // window.console.log(JSON.stringify(this.$store.state.business.unit))
+  //       return { ...this.$store.state.business.unit }
+  //       // this.fdata = this.$store.state.business.unit
+  //       // return this.fdata
+  //     },
+  //     set(value) {
+  //       window.console.log('set value')
+  //       this.fdata = value
+  //     },
+  //   },
+  // },
 
   computed: {
-    // 绑定到表单的对象
+    unit() {
+      return this.$store.state.business.unit
+    },
+  },
+
+  watch: {
     unit: {
-      get() {
-        this.fdata = this.$store.state.server.unit
-        return this.fdata
-      },
-      set(value) {
-        this.fdata = value
+      deep: true,
+      handler(nv) {
+        if (nv !== null) this.fdata = { ...nv }
       },
     },
   },
 
   methods: {
-    submit() {
-      const fdata = encode(this.fdata)
-      this.loading = true
-      if (this.$route.params.id) {
-        const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.cancel() })
-      } else {
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.cancel() })
-      }
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          const fdata = encode(this.fdata)
+          this.loading = true
+          if (this.$route.params.id) {
+            const id = this.$route.params.id
+            this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
+              .then(() => { this.loading = false; this.cancel() })
+          } else {
+            this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
+              .then(() => { this.loading = false; this.cancel() })
+          }
+        }
+      })
     },
     cancel() {
-      this.$router.push('index')
+      this.$store.commit(BUSINESS.EDIT.INIT, null)
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
         this.$router.push('/business/hotline')
       } else {

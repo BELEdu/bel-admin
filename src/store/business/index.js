@@ -30,17 +30,17 @@ export default {
     },
     // 编辑页面 初始化
     [BUSINESS.EDIT.INIT]({ state, commit }, id) {
+      commit(BUSINESS.EDIT.INIT, null)
       if (id) {
         return Http.get(`/${state.uri}/${id}`).then(res => commit(BUSINESS.EDIT.INIT, res))
       }
-      return commit(BUSINESS.EDIT.INIT)
+      return commit(BUSINESS.EDIT.INIT, editOrigin[state.uri])
     },
     // 编辑页面 提交添加信息
     [BUSINESS.EDIT.CREATE]({ state, commit }, payload) {
       // 提交成功后回到index组件
       return Http.post(`/${state.uri}`, payload)
         .then(() => commit(BUSINESS.EDIT.CREATE))
-      // .then(() => dispatch(BUSINESS.PAGE.INIT))
     },
     // 编辑页面 提交修改信息
     [BUSINESS.EDIT.UPDATE]({ state, commit }, payload) {
@@ -64,8 +64,7 @@ export default {
       state.uri = uri
     },
     [BUSINESS.EDIT.INIT](state, payload) {
-      if (payload) state.unit = payload
-      else state.unit = editOrigin[state.uri]
+      state.unit = payload
     },
     // 暂时不用commit(BUSINESS.EDIT.CREATE | BUSINESS.EDIT.UPDATE)，提交成功之后回到第一页（并重新发送第一页数据请求）
     [BUSINESS.EDIT.CREATE](state) {

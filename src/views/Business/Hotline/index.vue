@@ -65,7 +65,7 @@ export default {
     // 1. 绑定到Table组件 :data="buffer.data"
     // 2. 绑定到app-pager组件 :data="buffer"
     ...mapState({
-      buffer: state => state.server.buffer,
+      buffer: state => state.business.buffer,
     }),
   },
 
