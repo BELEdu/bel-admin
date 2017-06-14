@@ -124,11 +124,12 @@ export default {
       }
     },
     cancel() {
-      if (this.backRoute.matched.length === 0) {
-        window.console.log(this.$router.push)
+      this.$router.push('index')
+      if (this.backRoute === null || this.backRoute.matched.length === 0) {
         this.$router.push('/business/hotline')
+      } else {
+        this.$router.push(this.backRoute.fullPath)
       }
-      this.$router.push(this.backRoute.fullPath)
     },
   },
 
