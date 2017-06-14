@@ -76,6 +76,7 @@ export default {
 
 <style lang="less">
 @import '~vars';
+
 .app-menu {
   .ivu-menu-submenu-title {
     font-size: 16px;
@@ -99,6 +100,10 @@ export default {
 
   .ivu-menu-submenu-title-icon {
     display: none;
+  }
+
+  &.ivu-menu-item-active {
+    color: @primary-color;
   }
 }
 </style>
