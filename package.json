@@ -13,7 +13,6 @@
   "dependencies": {
     "core-js": "^2.4.1",
     "iview": "^2.0.0-rc.16",
-    "normalize.css": "^7.0.0",
     "socket.io-client": "^2.0.2",
     "vue": "^2.3.4",
     "vue-router": "^2.3.1",
