@@ -1,14 +1,14 @@
 <template>
-  <main class="hotline">
+  <main class="communication">
     <Form class="app-search-form">
       <Form-item label="沟通日期">
-        <Date-picker class="hotline__form-date" placeholder="开始日期"></Date-picker>
+        <Date-picker class="communication__form-date" placeholder="开始日期"></Date-picker>
       </Form-item>
       <Form-item label="至">
-        <Date-picker class="hotline__form-date" placeholder="结束日期"></Date-picker>
+        <Date-picker class="communication__form-date" placeholder="结束日期"></Date-picker>
       </Form-item>
       <Form-item label="内容查找">
-        <Input class="hotline__form-keyword" placeholder="请输入关键字"></Input>
+        <Input class="communication__form-keyword" placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item label="当前状态">
         <Select placeholder="当前状态选择">
@@ -34,9 +34,9 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="fcol" :data="fdata" stripe></Table>
+    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
   
-    <app-pager></app-pager>
+    <app-pager :data="buffer" @on-change="pageTo" @on-page-size-change="pagesizeTo"></app-pager>
   </main>
 </template>
 
@@ -46,59 +46,59 @@
  * @author hjz
  * @version 2017-06-06
  */
-import { createButton } from '@/utils'
-import { GLOBAL } from '@/store/mutationTypes'
-import fdata from './fdata'
+import { mapState } from 'vuex'
+import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import colConfig from './modules/colConfig'
+
 
 export default {
-  name: 'business-hotline',
+  name: 'business-communication',
 
   data() {
     return {
-      fcol: [
-        { title: '首次沟通时间', key: '1', align: 'center', width: 110 },
-        { title: '最新回访时间', key: '2', align: 'center', width: 110 },
-        { title: '联系方式', key: '3', align: 'center', width: 115 },
-        { title: '学员姓名', key: '4', align: 'center' },
-        { title: '性别', key: '5', align: 'center' },
-        { title: '在读学校', key: '6', align: 'center' },
-        { title: '当前年级', key: '7', align: 'center' },
-        { title: '年段排名', key: '8', align: 'center' },
-        { title: '偏科', key: '9', align: 'center', width: 60 },
-        { title: '签约状态', key: '10', align: 'center', width: 90 },
-        { title: '类型', key: '11', align: 'center' },
-        { title: '最新沟通情况', key: '12', align: 'center', width: 300 },
-        {
-          title: '操作',
-          key: '13',
-          align: 'center',
-          render: createButton([
-            { icon: 'trash-a', type: 'error' },
-            { icon: 'edit', type: 'primary', click: this.toupdate },
-          ]),
-        },
-      ],
-      fdata,
+      colConfig: colConfig(this),
     }
   },
 
   methods: {
-    tocreate() {
+    pageTo(page) {
+      const per_page = this.buffer.per_page
+      this.$router.push({ path: this.$route.path, query: { page, per_page } })
+    },
+    pagesizeTo(per_page) {
+      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
+    },
+    toCreate() {
       this.$router.push('/business/communication/edit')
     },
-    toupdate() {
-      this.$router.push('/business/communication/edit/1234')
+    toUpdate(row) {
+      this.$router.push(`/business/communication/edit/${row.id}`)
+    },
+    toDelete(row) {
+      this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
     },
   },
 
+  computed: {
+    ...mapState({
+      buffer: state => state.business.buffer,
+    }),
+  },
+  // 根据当前路由进行初始化
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
+      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 }
 </script>
 
 <style lang="less">
-.hotline {
+.communication {
 
   & .ivu-form-item {
     display: inline-block;

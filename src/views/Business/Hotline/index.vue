@@ -33,7 +33,7 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="fcol" :data="buffer.data" stripe></Table>
+    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
     <!-- 分页插件 -->
     <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
   </div>
@@ -48,7 +48,7 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import fcolConfig from './fcolConfig'
+import colConfig from './modules/colConfig'
 
 export default {
   name: 'business-hotline',
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       // @param {type: Obect} searchOptions 查询条件字段对象
-      fcol: fcolConfig(this),
+      colConfig: colConfig(this),
     }
   },
 
