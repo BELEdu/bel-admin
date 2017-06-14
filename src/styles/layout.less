@@ -4,8 +4,9 @@
 @import '~vars';
 
 @header-height: 60px;
+@menu-width: 200px;
 @footer-height: 50px;
-@main-horizontal-padding: 25px;
+@main-horizontal-padding: 20px;
 
 // 应用框架
 #app {
@@ -16,6 +17,7 @@
 
 .app-header {
   height: @header-height;
+  border-bottom: 1px solid @border-color-base;
 }
 
 .app-body {
@@ -24,9 +26,9 @@
 }
 
 .app-menu {
-  flex-basis: 200px;
+  flex: none;
+  width: @menu-width !important;
   height: 100%;
-  // min-height: calc(~"100vh" - @header-height); // 解决ie下flex-item的min-height:100%无效的问题
 }
 
 .app-main {
@@ -38,19 +40,21 @@
   height: 100%;
   padding: 20px @main-horizontal-padding 0;
   overflow: auto;
-  box-shadow: inset 1px 0 1px rgba(0, 0, 0, 0.075);
-  // min-height: calc(~"100vh" - @header-height);// 解决ie下flex-item的min-height:100%无效的问题
+  background-color: @bg-color;
 }
 
 .app-content {
   flex: auto;
-  padding-bottom: 25px;
+  padding: 20px 20px 25px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  background-color: #fff;
 }
 
 // ie9下实现sticky footer
 .ie {
   .app-content {
-    min-height: calc(~"100%" - @footer-height);
+    min-height: calc(~"100% - 20px" - @footer-height);
   }
 
   .app-footer {

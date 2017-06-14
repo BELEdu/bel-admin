@@ -38,7 +38,7 @@ export default {
       'front.index': 'ios-home',
       'front.business': 'briefcase',
       'front.student': 'ios-people',
-      'front.arrange': 'ios-grid-view',
+      'front.arrange': 'ios-calendar',
       'front.prepare': 'ios-list',
       'front.analysis': 'stats-bars',
       'front.system': 'ios-gear',
@@ -76,7 +76,11 @@ export default {
 
 <style lang="less">
 @import '~vars';
-
+.app-menu {
+  .ivu-menu-submenu-title {
+    font-size: 16px;
+  }
+}
 .app-menu__link-item {
   .ivu-menu-item {
     position: absolute;
@@ -86,6 +90,7 @@ export default {
     height: 100%;
     padding-left: 46px !important;
     border-right-width: 3px !important;
+    font-size: 16px;
 
     &:hover {
       background-color: transparent;

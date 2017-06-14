@@ -3,8 +3,11 @@
     <img class="app-logo" :src="require('@/assets/logo.png')" alt="厦门大学教学系统">
     <h1 class="app-title">某某机构教学系统</h1>
     <div class="app-user">
+      <span class="app-user__notif">
+        <Icon type="android-notifications-none"></Icon>
+      </span>
       <Dropdown class="app-user__identity" placement="bottom-end">
-        <a href="javascript:void(0)">分公司管理员</a>
+        <a href="javascript:void(0)">分公司管理员<Icon type="arrow-down-b"></Icon></a>
         <Dropdown-menu slot="list">
           <Dropdown-item>厦门分公司/分公司管理员</Dropdown-item>
           <Dropdown-item>厦门分公司/思明校区/校区管理员</Dropdown-item>
@@ -95,11 +98,11 @@ export default {
 @import '~vars';
 
 .app-header {
+  position: relative;
   display: flex;
   align-items: center;
   padding: 0 15px;
-  background-color: @title-color;
-  color: #fff;
+  background-color: #fff;
 
   &__edit-password {
     width: 350px;
@@ -124,18 +127,25 @@ export default {
   justify-content: flex-end;
   align-items: center;
 
+  &__notif {
+    & > .ivu-icon {
+      font-size: 20px;
+    }
+  }
+
   &__identity {
-    padding: 6px 10px;
-    border-radius: 3px;
-    margin-right: 1.5em;
-    background-color: @bg-color-dark;
+    padding: 0 15px;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: @border-color-base;
+    margin: 0 15px;
 
     & a {
       color: inherit;
       transition-duration: 0.5s;
 
-      &:hover {
-        color: @disable-color;
+      & > .ivu-icon {
+        margin-left: 8px;
       }
     }
   }
@@ -181,6 +191,10 @@ export default {
   .app-user,
   .app-user__menu {
     float: right;
+  }
+
+  .app-user__notif {
+    transform: translateY(3px);
   }
 
   .app-user__name {
