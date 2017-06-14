@@ -1,5 +1,5 @@
 <template>
-  <div class="hotline">
+  <main class="hotline">
     <Form class="app-search-form">
       <Form-item label="沟通日期">
         <Date-picker class="hotline__form-date" placeholder="开始日期"></Date-picker>
@@ -37,9 +37,7 @@
     <Table size="small" :columns="fcol" :data="fdata" stripe></Table>
   
     <app-pager></app-pager>
-    <!---->
-    <!--<comm-editor></comm-editor>-->
-  </div>
+  </main>
 </template>
 
 <script>
@@ -86,10 +84,10 @@ export default {
 
   methods: {
     tocreate() {
-      this.$router.push('/business/commedit')
+      this.$router.push('/business/communication/edit')
     },
     toupdate() {
-      this.$router.push('/business/commedit/1234')
+      this.$router.push('/business/communication/edit/1234')
     },
   },
 

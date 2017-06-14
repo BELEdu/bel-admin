@@ -1,8 +1,14 @@
 <template>
-  <h1 class="app-form-header">{{title}}</h1>
+  <h1 class="app-form-header">
+    {{title}}</h1>
 </template>
 
 <script>
+/**
+ * 编辑页标题显示
+ * @author hjz
+ * @version 2017-06-07
+ */
 export default {
   name: 'edit-title',
 

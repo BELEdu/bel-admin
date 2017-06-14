@@ -3,7 +3,7 @@
     <app-editor-title></app-editor-title>
     <Form :label-width="130">
       <Form-item label="来访时间" required>
-        <Date-picker placeholder="年 - 月 - 日" v-model="unit.visited_at" formate="yyyy-MM-dd" type="date"></Date-picker>
+        <Date-picker placeholder="年 / 月 / 日" v-model="unit.visited_at" formate="yyyy-MM-dd" type="date"></Date-picker>
       </Form-item>
       <Form-item label="家长姓名" required>
         <Input placeholder="请输入家长姓名" v-model="unit.elder_name"></Input>

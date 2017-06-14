@@ -17,7 +17,6 @@ import analysis from './analysis'
 import system from './system'
 import student from './student'
 
-
 Vue.use(Router)
 
 const router = new Router({

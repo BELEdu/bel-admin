@@ -8,14 +8,14 @@ export { default as AccessError } from './AccessError'
 
 // 业务管理
 export { default as Hotline } from './Business/Hotline'
-export { default as HotlineEditor } from './Business/Hotline/components/HotlineEditor'
-export { default as Comm } from './Business/Comm'
-export { default as CommEditor } from './Business/Comm/components/CommEditor'
+export { default as HotlineEdit } from './Business/Hotline/HotlineEdit'
+export { default as Communication } from './Business/Communication'
+export { default as CommunicationEdit } from './Business/Communication/CommunicationEdit'
 export { default as Contract } from './Business/Contract'
-export { default as ContractEditor } from './Business/Contract/components/ContractEditor'
-export { default as ContractFlow } from './Business/Contract/components/ContractFlow'
+export { default as ContractEdit } from './Business/Contract/ContractEdit'
+export { default as ContractFlow } from './Business/Contract/ContractFlow'
 export { default as Product } from './Business/Product'
-export { default as ProductEditor } from './Business/Product/components/ProductEditor'
+export { default as ProductEdit } from './Business/Product/ProductEdit'
 
 // 排课管理
 export { default as ArrangeTeacher } from './Arrange/Teacher'

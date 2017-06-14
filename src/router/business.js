@@ -6,8 +6,6 @@
  */
 
 import * as views from '@/views'
-import { BUSINESS } from '@/store/mutationTypes'
-import store from '@/store'
 
 export default [
   {
@@ -24,8 +22,8 @@ export default [
   },
   {
     path: '/business/hotline/edit',
-    name: 'hotlineCreator',
-    component: views.HotlineEditor,
+    name: 'BussinessHotlineEdit',
+    component: views.HotlineEdit,
     meta: {
       uri: 'hotline',
       breadcrumb: [
@@ -37,8 +35,8 @@ export default [
   },
   {
     path: '/business/hotline/edit/:id',
-    name: 'hotlineUpdator',
-    component: views.HotlineEditor,
+    name: 'BussinessHotlineEdit',
+    component: views.HotlineEdit,
     meta: {
       uri: 'hotline',
       breadcrumb: [
@@ -49,97 +47,79 @@ export default [
     },
   },
   {
-    path: 'business/comm',
-    name: 'BussinessComm',
-    component: views.Comm,
+    path: 'business/communication',
+    name: 'BussinessCommunication',
+    component: views.Communication,
     meta: {
+      uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
         { name: '沟通记录' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'comm')
-    //   next()
-    // },
   },
   {
-    path: 'business/commedit',
-    name: 'commCreator',
-    component: views.CommEditor,
+    path: 'business/communication/edit',
+    name: 'BussinenssCommunicationEdit',
+    component: views.CommunicationEdit,
     meta: {
+      uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
         { name: '沟通记录' },
         { name: '添加记录' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'comm')
-    //   next()
-    // },
   },
   {
-    path: 'business/commedit/:id',
-    name: 'commUpdator',
-    component: views.CommEditor,
+    path: 'business/communication/edit/:id',
+    name: 'BussinenssCommunicationEdit',
+    component: views.CommunicationEdit,
     meta: {
+      uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
         { name: '沟通记录' },
         { name: '编辑记录' },
       ],
     },
-    // beforeEnter(to, from, next) {
-    //   store.commit(BUSINESS.ROUTE, 'comm')
-    //   next()
-    // },
   },
   {
     path: 'business/contract',
     name: 'BussinessContract',
     component: views.Contract,
     meta: {
+      uri: 'conctract',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'contract')
-      next()
-    },
   },
   {
-    path: 'business/contractedit',
-    name: 'ContractEditor',
-    component: views.ContractEditor,
+    path: 'business/contract/edit',
+    name: 'BussinessContractEditor',
+    component: views.ContractEdit,
     meta: {
+      uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },
         { name: '添加审批' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'contract')
-      next()
-    },
   },
   {
-    path: 'business/contractedit/:id',
-    name: 'ContractFlow',
+    path: 'business/contract/edit/:id',
+    name: 'BussinessContractFlow',
     component: views.ContractFlow,
     meta: {
+      uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },
         { name: '审批详情' },
       ],
-    },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'contract')
-      next()
     },
   },
   {
@@ -147,47 +127,37 @@ export default [
     name: 'BussinessProduct',
     component: views.Product,
     meta: {
+      uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
         { name: '产品管理' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'product')
-      next()
-    },
   },
   {
-    path: 'business/ProductEdit',
-    name: 'prductCreator',
-    component: views.ProductEditor,
+    path: 'business/Product/edit',
+    name: 'BussinessProductEdit',
+    component: views.ProductEdit,
     meta: {
+      uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
         { name: '产品管理' },
         { name: '添加产品' },
       ],
     },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'product')
-      next()
-    },
   },
   {
-    path: 'business/ProductEdit/:id',
-    name: 'productUpdator',
-    component: views.ProductEditor,
+    path: 'business/Product/edit/:id',
+    name: 'BussinessProductEdit',
+    component: views.ProductEdit,
     meta: {
-      title: '编辑产品',
+      uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
         { name: '产品管理' },
         { name: '编辑产品' },
       ],
-    },
-    beforeEnter(to, from, next) {
-      store.commit(BUSINESS.ROUTE, 'product')
-      next()
     },
   },
 ]

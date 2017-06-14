@@ -75,7 +75,7 @@ export default {
 
   methods: {
     toCreate() {
-      this.$router.push('/business/productedit')
+      this.$router.push('/business/product/edit')
     },
   },
 
