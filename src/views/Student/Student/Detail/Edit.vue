@@ -284,6 +284,4 @@ export default {
 
 <style lang="less">
 
-@import '~vars';
-
 </style>

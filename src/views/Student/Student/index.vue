@@ -206,7 +206,7 @@ export default {
             // 删除该学员
             { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.studentId) },
             { icon: 'clipboard', type: 'success', click: () => this.$router.push('/student/student/detail') },
-            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/student/edit') },
+            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
           ]),
         },
       ],

@@ -98,6 +98,20 @@ export default [
         },
       },
       {
+        path: '/student/student/detail/Meeting/edit/:id',
+        name: 'StudentStudentDetailMeetingEdit',
+        component: views.StudentStudentDetailMeetingEdit,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学员信息' },
+            { name: '学员详情' },
+            { name: '交流会' },
+            { name: '编辑交流会' },
+          ],
+        },
+      },
+      {
         path: '/student/student/detail/Warning',
         name: 'StudentStudentDetailWarning',
         component: views.StudentStudentDetailWarning,
