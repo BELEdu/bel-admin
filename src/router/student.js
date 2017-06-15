@@ -2,6 +2,7 @@
  * 学员管理路由设置
  * @author zml
  * @version 2017-06-08
+ * @version 2017-06-15
  */
 
 import * as views from '@/views'
