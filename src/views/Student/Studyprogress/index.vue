@@ -50,7 +50,7 @@ import { GLOBAL } from '@/store/mutationTypes'
 import fdata from './fdata'
 
 export default {
-   name: 'app-student-schedule',
+   name: 'app-student-studyprogress',
 
    data() {
      return {

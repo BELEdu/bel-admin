@@ -41,9 +41,17 @@ export { default as SystemDepartment } from './System/Department'
 
 // 学员管理
 export { default as Student } from './Student'
-export { default as StudentInfo } from './Student/Info'
-export { default as StudentInfoEdit } from './Student/Info/Edit'
-export { default as StudentSchedule } from './Student/Schedule'
-export { default as StudentPoint } from './Student/Point'
-export { default as StudentClass } from './Student/Class'
-export { default as StudentClassEdit } from './Student/Class/Edit'
+
+export { default as StudentStudent } from './Student/Student'
+export { default as StudentStudentEdit } from './Student/Student/Edit'
+
+export { default as StudentStudentDetail } from './Student/Student/Detail'
+export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Edit'
+export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
+export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
+export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
+
+export { default as StudentStudyprogress } from './Student/Studyprogress'
+export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
+export { default as StudentClasses } from './Student/Classes'
+export { default as StudentClassesEdit } from './Student/Classes/Edit'

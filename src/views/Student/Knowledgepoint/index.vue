@@ -43,13 +43,14 @@
   * @author zml
   * @version 2017-06-08
   * @version 2017-06-13
+  * @version 2017-06-15
   */
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import fdata from './fdata'
 
 export default {
-   name: 'app-student-point',
+   name: 'app-student-knowledgepoint',
 
    data() {
      return {
@@ -119,7 +120,7 @@ export default {
            align: 'center',
            width: 140,
            render: createButton([
-            { icon: 'clipboard', type: 'primary', click: () => this.$router.push('/student/info/edit') },
+            { icon: 'clipboard', type: 'primary', click: () => this.$router.push('/student/knowledgepoint/edit') },
            ]),
          },
        ],

@@ -54,11 +54,12 @@
  * 班级管理 - 班级信息 - 编辑班级
  * @author zml
  * @version 2017-06-13
+ * @version 2017-06-15
  */
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'app-student-class-edit',
+  name: 'app-student-classes-edit',
 
   data() {
     return {

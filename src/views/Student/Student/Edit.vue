@@ -208,14 +208,14 @@
 
 <script>
 /**
- * 学员管理 - 学员信息 - 添加学员
+ * 学员管理 - 学员信息 - 编辑学员
  * @author zml
  * @version 2017-06-08
  */
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'app-student-info-edit',
+  name: 'app-student-student-edit',
 
   data() {
     return {

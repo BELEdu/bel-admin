@@ -30,7 +30,7 @@
       <Col>
         <Button type="primary" @click="modal.teacher = true">分配教师</Button>
         <Button type="primary" @click="modal.manage = true">分配学管师</Button>
-        <Button type="primary" @click="$router.push('/student/info/edit')">添加学员</Button>
+        <Button type="primary" @click="$router.push('/student/student/edit')">添加学员</Button>
         <Button type="warning" @click="modal.delete = true">删除</Button>
       </Col>
     </Row>
@@ -115,7 +115,7 @@ import { createButton } from '@/utils'
 import fdata from './fdata'
 
 export default {
-  name: 'app-student-info',
+  name: 'app-student-student',
 
   data() {
     return {
@@ -205,8 +205,8 @@ export default {
           render: createButton([
             // 删除该学员
             { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.studentId) },
-            { icon: 'clipboard', type: 'success' },
-            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/info/edit') },
+            { icon: 'clipboard', type: 'success', click: () => this.$router.push('/student/student/detail') },
+            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/student/edit') },
           ]),
         },
       ],

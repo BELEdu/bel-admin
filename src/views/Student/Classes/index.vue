@@ -26,7 +26,7 @@
       <h2>班级管理</h2>
       </Col>
       <Col>
-      <Button type="primary" @click="$router.push('/student/class/edit')" >添加班级</Button>
+      <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级</Button>
       </Col>
     </Row>
 
@@ -72,13 +72,14 @@
  * @author zml
  * @version 2017-06-08
  * @version 2017-06-13
+ * @version 2017-06-15
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import fdata from './fdata'
 
 export default {
-  name: 'app-student-class',
+  name: 'app-student-classes',
 
   data() {
     return {
@@ -148,7 +149,7 @@ export default {
           render: createButton([
             { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.classId) },
             { icon: 'person', type: 'primary', click: row => this.openManageModal(row.classId) },
-            { icon: 'edit', type: 'primary', click: () => this.$router.push('/student/class/edit/10086') },
+            { icon: 'edit', type: 'primary', click: () => this.$router.push('/student/classes/edit/10086') },
           ]),
         },
       ],
