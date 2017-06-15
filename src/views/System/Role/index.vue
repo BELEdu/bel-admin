@@ -2,10 +2,10 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
+        <Input v-model="query.like.display_name" placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -18,9 +18,15 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="data" border></Table>
+    <Table
+      class="app-table"
+      :columns="columns"
+      :data="list.data"
+      border
+      @on-sort-change="sort"
+    ></Table>
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   </div>
 </template>
 
@@ -31,71 +37,88 @@
  * @version 2017-06-06
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-role',
 
-  data: () => ({
-    form: {
-      keyword: '',
+  data() {
+    return {
+      query: {
+        order: {},
+        like: {
+          display_name: '',
+        },
+      },
+
+      columns: [
+        { title: '序号', type: 'index', align: 'center', width: 50 },
+        { title: '角色编号', key: 'role_number', align: 'center', sortable: 'custom' },
+        { title: '角色名称', key: 'display_name', align: 'center' },
+        { title: '所属部门', key: 'department_id', align: 'center' },
+        { title: '角色类型', key: 'role_type', align: 'center', sortable: 'custom' },
+        { title: '角色描述', key: 'description', align: 'center', width: 300 },
+        {
+          title: '操作',
+          align: 'center',
+          render: createButton([
+            { text: '人员', type: 'primary' },
+            {
+              text: '编辑',
+              type: 'primary',
+              click: ({ id }) => this.$router.push(`/system/role/edit/${id}`),
+            },
+          ]),
+        },
+      ],
+    }
+  },
+
+  computed: {
+    ...mapState({
+      list: state => state.system.role.list,
+    }),
+
+    qs() {
+      return this.$parse(this.query)
+    },
+  },
+
+  methods: {
+    sort({ key, order }) {
+      this.query.order[key] = order
+      this.search()
     },
 
-    columns: [
-      { title: '序号', type: 'index', align: 'center', width: 50 },
-      { title: '角色编号', key: 2, align: 'center' },
-      { title: '角色名称', key: 3, align: 'center' },
-      { title: '所属部门', key: 4, align: 'center' },
-      { title: '角色类型', key: 5, align: 'center' },
-      { title: '角色描述', key: 6, align: 'center', width: 300 },
-      {
-        title: '操作',
-        key: 7,
-        align: 'center',
-        render: createButton([
-          { icon: 'person', type: 'primary' },
-          { icon: 'edit', type: 'primary' },
-        ]),
-      },
-    ],
+    getData(qs) {
+      this.$store.dispatch(SYSTEM.ROLE.INIT, qs)
+        .then(() => {
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
 
-    data: [
-      {
-        2: 'JSBH1000001',
-        3: '公司总经理',
-        4: '总部',
-        5: '系统定制',
-        6: '角色相关描述',
-      },
-      {
-        2: 'JSBH1000001',
-        3: '公司总经理',
-        4: '总部',
-        5: '系统定制',
-        6: '角色相关描述',
-      },
-      {
-        2: 'JSBH1000001',
-        3: '公司总经理',
-        4: '总部',
-        5: '系统定制',
-        6: '角色相关描述',
-      },
-      {
-        2: 'JSBH1000001',
-        3: '公司总经理',
-        4: '总部',
-        5: '系统定制',
-        6: '角色相关描述',
-      },
-    ],
+    pageSizeChange(per_page) {
+      this.query.per_page = per_page
+      this.query.page = 1
+      this.getData(this.qs)
+    },
 
-    pager: undefined,
-  }),
+    goTo(page) {
+      this.query.page = page
+      this.getData(this.qs)
+    },
+
+    search() {
+      const { path } = this.$router.currentRoute
+      this.$router.push(`${path}${this.qs}`)
+      this.getData(this.qs)
+    },
+  },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.getData(location.search)
   },
 }
 </script>

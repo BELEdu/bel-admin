@@ -19,6 +19,30 @@ export default [
     },
   },
   {
+    path: '/system/role/edit',
+    name: 'SystemRoleEdit',
+    component: views.SystemRoleEdit,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        { name: '角色管理' },
+        { name: '添加角色' },
+      ],
+    },
+  },
+  {
+    path: '/system/role/edit/:id',
+    name: 'SystemRoleEdit',
+    component: views.SystemRoleEdit,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        { name: '角色管理' },
+        { name: '编辑角色' },
+      ],
+    },
+  },
+  {
     path: '/system/user',
     name: 'SystemUser',
     component: views.SystemUser,

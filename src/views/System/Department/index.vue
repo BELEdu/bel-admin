@@ -43,7 +43,7 @@ export default {
 
   computed: {
     ...mapState({
-      departments: state => state.system.departments,
+      departments: state => state.system.department.list,
     }),
   },
 
@@ -59,7 +59,7 @@ export default {
   },
 
   created() {
-    this.$store.dispatch(SYSTEM.DEPARTMENT.READ)
+    this.$store.dispatch(SYSTEM.DEPARTMENT.INIT)
       .then(() => {
         this.$store.commit(GLOBAL.LOADING.HIDE)
       })

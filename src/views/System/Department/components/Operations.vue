@@ -179,7 +179,7 @@ export default {
     // 删除
     remove() {
       this.formLoading = true
-      store.dispatch(SYSTEM.DEPARTMENT.REMOVE, this.item.id)
+      store.dispatch(SYSTEM.DEPARTMENT.DELETE, this.item.id)
         .then(() => this.successHandler('remove'))
     },
 
