@@ -120,12 +120,12 @@ export default {
           title: '操作',
           key: 8,
           align: 'center',
-          width: 140,
+          width: 160,
           render: createButton([
             // 取消预警
-            { icon: 'loop', type: 'warning', click: row => this.warningCancel(row.id) },
+            { text: '取消预警', type: 'primary', click: row => this.warningCancel(row.id) },
             // 已解决
-            { icon: 'checkmark', type: 'primary', click: row => this.warningOk(row.id) },
+            { text: '已解决', type: 'primary', click: row => this.warningOk(row.id) },
           ]),
         },
       ],

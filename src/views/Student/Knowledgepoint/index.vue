@@ -120,7 +120,7 @@ export default {
            align: 'center',
            width: 140,
            render: createButton([
-            { icon: 'clipboard', type: 'primary', click: () => this.$router.push('/student/knowledgepoint/edit') },
+            { text: '详情', type: 'primary', click: () => this.$router.push('/student/knowledgepoint/edit') },
            ]),
          },
        ],

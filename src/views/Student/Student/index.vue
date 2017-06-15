@@ -201,12 +201,12 @@ export default {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 140,
+          width: 150,
           render: createButton([
             // 删除该学员
-            { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.studentId) },
-            { icon: 'clipboard', type: 'success', click: () => this.$router.push('/student/student/detail') },
-            { icon: 'plus', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.studentId) },
+            { text: '编辑', type: 'primary', click: () => this.$router.push('/student/student/detail') },
+            { text: '添加', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
           ]),
         },
       ],

@@ -112,8 +112,8 @@ export default {
           width: 140,
           render: createButton([
             // 删除该学员
-            { icon: 'trash-a', type: 'warning', click: row => this.openDeleteModal(row.name) },
-            { icon: 'edit', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit/10086') },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.name) },
+            { text: '编辑', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit/10086') },
           ]),
         },
       ],
