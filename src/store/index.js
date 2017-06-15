@@ -18,7 +18,12 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   plugins: [
     // 持久化应用状态
-    createPersistedState(),
+    createPersistedState({
+      paths: [
+        'token',
+        'menus',
+      ],
+    }),
   ],
 
   modules: {
