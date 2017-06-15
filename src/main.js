@@ -16,7 +16,7 @@ import * as components from '@/components'
 // app
 import Vue from 'vue'
 import iView from 'iview'
-import { Acl, Http } from '@/utils'
+import { Acl, Http, Parse } from '@/utils'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -32,6 +32,7 @@ Vue.component('app-warn-modal', components.AppWarnModal)
 Vue.use(iView)
 Vue.use(Acl, { router, permissions: [] })
 Vue.use(Http)
+Vue.use(Parse)
 
 Vue.config.productionTip = false
 
