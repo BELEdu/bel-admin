@@ -5,7 +5,7 @@
  * @function
  * @description iview表格组件中的按钮需要手动写render函数，此方法用来简化这一步骤，减少工作量并保证一致性
  * @param {Object[]} btns - 描述按钮的对象数组
- * @param {String} btns[].icon - 按钮图标
+ * @param {String} btns[].text - 按钮文字
  * @param {String} [btns[].type] - 按钮类型，用来控制颜色
  * @param {clickCallback} [btns[].click] - 绑定按钮点击事件的方法
  * @returns {render} Vue组件的render方法
@@ -16,11 +16,10 @@ const createButton = btns => (h, params) => (
   h(
     'div',
     btns.map(btn => h('Button', {
-      class: `table-btn${btn.type ? ` color-${btn.type}` : ''}`,
+      class: `color-${btn.type}`,
       props: {
         type: 'text',
         size: 'small',
-        icon: btn.icon,
       },
       on: {
         ...(btn.click ? {
@@ -29,7 +28,7 @@ const createButton = btns => (h, params) => (
           click: () => btn.click(params.row),
         } : {}),
       },
-    })),
+    }, btn.text)),
   )
 )
 
