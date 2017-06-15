@@ -1,7 +1,7 @@
 <template>
-  <div class="app-form-entire">
+  <div>
     <app-editor-title></app-editor-title>
-    <Form :label-width="130">
+    <Form :label-width="130" class="app-form-entire">
       <Row>
         <!-- 学员基本信息 -->
         <Col span="24" >
