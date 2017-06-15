@@ -20,7 +20,7 @@
       </Form-item>
       <Form-item label="当前年级">
         <Select placeholder="请选择......" v-model="fdata.grade">
-          <Option v-if="grade" v-for="item in grade" :value="item.value" :key="item.key">{{item.display_name}}</Option>
+          <Option v-if="grade" v-for="item in grade" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item label="邀约咨询师">
@@ -148,9 +148,7 @@ export default {
   watch: {
     unit: {
       deep: true,
-      handler(nv) {
-        if (nv !== null) this.fdata = { ...nv }
-      },
+      handler(nv) { if (nv) this.fdata = { ...nv } },
     },
   },
 

@@ -30,7 +30,7 @@
       <Col>
       <Button type="primary" icon="archive">下载导入模板</Button>
       <Button type="primary">导入记录</Button>
-      <Button type="primary" @click="tocreate()">添加记录</Button>
+      <Button type="primary" @click="toCreate()">添加记录</Button>
       </Col>
     </Row>
   
