@@ -19,22 +19,21 @@ export default {
     // required|digits:11
     mobile: '',
     // 字典： gender
-    gender: undefined,
+    gender: 0,
     // min:2|max:20
     school_name: '',
     // min:2|max:10
     rank: '',
     // 字典： grade
-    grade: 1,
+    grade: 0,
     // 是否偏科， 字典： is
-    is_tend_subject: undefined,
+    is_tend_subject: -1,
     // 回访时间 ： date_format:Y-m-d
     return_visited_at: '',
-    // 字典： communication_type
     communication_type: undefined,
     // 沟通时间： date_format:Y-m-d
     communication_at: '',
-    // 沟通情况： min:2|max:400
-    content: '',
+    // 沟通情况： min:2|max:200
+    communication_logs: [],
   },
 }

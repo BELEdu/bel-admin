@@ -1,7 +1,7 @@
 <template>
   <main class="hotlineeditor app-form-entire" v-if="fdata">
     <app-editor-title></app-editor-title>
-    <Form :label-width="130" :rules="ruleForm" ref="form" :model="fdata">
+    <Form :label-width="130" :rules="formRules" ref="form" :model="fdata">
       <Form-item label="来访时间" required prop="visited_at">
         <Date-picker placeholder="年 / 月 / 日" v-model="fdata.visited_at" formate="yyyy-MM-dd" type="date" :editable="false"></Date-picker>
       </Form-item>
@@ -94,7 +94,7 @@ export default {
       map,
       // 年级信息 - 后端字典数据
       grade: null,
-      ruleForm: {
+      formRules: {
         visited_at: [{ type: 'date', required: true, message: '请选择日期' }],
         elder_name: [
           { required: true, message: '请输入家长姓名', trigger: 'blur' },
@@ -102,7 +102,7 @@ export default {
           { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
         ],
         student_name: [
-          { required: true, message: '请输入家长姓名', trigger: 'blur' },
+          { required: true, message: '请输入学生姓名', trigger: 'blur' },
           { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间', trigger: 'blur' },
           { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
         ],
@@ -154,19 +154,21 @@ export default {
 
   methods: {
     handleSubmit(name) {
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          const fdata = encode(this.fdata)
-          this.loading = true
-          if (this.$route.params.id) {
-            const id = this.$route.params.id
-            this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-              .then(() => { this.loading = false; this.cancel() })
-          } else {
-            this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-              .then(() => { this.loading = false; this.cancel() })
-          }
+      const submit = () => {
+        const fdata = encode(this.fdata)
+        this.loading = true
+        if (this.$route.params.id) {
+          const id = this.$route.params.id
+          this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
+            .then(() => { this.loading = false; this.cancel() })
+        } else {
+          this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
+            .then(() => { this.loading = false; this.cancel() })
         }
+      }
+
+      this.$refs[name].validate((valid) => {
+        if (valid) submit()
       })
     },
     cancel() {
