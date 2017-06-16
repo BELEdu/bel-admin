@@ -233,7 +233,6 @@ export default {
       if (communication_at !== '' || content !== '') {
         logValid = this.addLog('comm_log')
       }
-      window.console.log(logValid)
       // 进行表单提交
       this.$refs[name].validate((valid) => { if (valid && logValid) submit() })
     },
@@ -248,12 +247,14 @@ export default {
   },
 
   created() {
+    // 获取字典数据
     Http.get('/dict?keys=communication_type,grade')
       .then((res) => {
         this.communication_type = res.communication_type
         this.grade = res.grade
       })
 
+    // 编辑页面初始化以及loading页面关闭
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))

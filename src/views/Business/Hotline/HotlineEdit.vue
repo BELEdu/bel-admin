@@ -65,20 +65,7 @@
 import map from '@/views/Business/casdata'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
-
-
-function encode(data) {
-  // eslint-disable-next-line
-  let ectype = { ...data }
-  if (typeof ectype.visited_at === 'object') {
-    ectype.visited_at = ectype.visited_at.toJSON().slice(0, 10)
-  }
-  if (typeof ectype.return_visited_at === 'object') {
-    ectype.return_visited_at = ectype.return_visited_at.toJSON().slice(0, 10)
-  }
-  // 地址map编码
-  return ectype
-}
+import { editInit, encode } from './modules/config'
 
 export default {
   name: 'hotline-editor',
@@ -87,7 +74,7 @@ export default {
       // "取消"按钮行为的路由对象
       backRoute: null,
       // 最终提交给后端的数据
-      fdata: null,
+      fdata: editInit(),
       // 提交按钮状态控制
       loading: false,
       // 表单预置数据
@@ -95,7 +82,7 @@ export default {
       // 年级信息 - 后端字典数据
       grade: null,
       formRules: {
-        visited_at: [{ type: 'date', required: true, message: '请选择日期' }],
+        visited_at: [{ required: true, message: '请选择日期' }],
         elder_name: [
           { required: true, message: '请输入家长姓名', trigger: 'blur' },
           { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间' },
@@ -122,41 +109,11 @@ export default {
     }
   },
 
-
-  // computed: {
-  //   // 绑定到表单的对象
-  //   unit: {
-  //     get() {
-  //       // window.console.log(JSON.stringify(this.$store.state.business.unit))
-  //       return { ...this.$store.state.business.unit }
-  //       // this.fdata = this.$store.state.business.unit
-  //       // return this.fdata
-  //     },
-  //     set(value) {
-  //       window.console.log('set value')
-  //       this.fdata = value
-  //     },
-  //   },
-  // },
-
-  computed: {
-    unit() {
-      return this.$store.state.business.unit
-    },
-  },
-
-  watch: {
-    unit: {
-      deep: true,
-      handler(nv) { if (nv) this.fdata = { ...nv } },
-    },
-  },
-
   methods: {
     handleSubmit(name) {
       const submit = () => {
-        const fdata = encode(this.fdata)
         this.loading = true
+        const fdata = encode(this.fdata)
         if (this.$route.params.id) {
           const id = this.$route.params.id
           this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
@@ -167,12 +124,9 @@ export default {
         }
       }
 
-      this.$refs[name].validate((valid) => {
-        if (valid) submit()
-      })
+      this.$refs[name].validate((valid) => { if (valid) submit() })
     },
     cancel() {
-      this.$store.commit(BUSINESS.EDIT.INIT, null)
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
         this.$router.push('/business/hotline')
       } else {
@@ -182,12 +136,12 @@ export default {
   },
 
   created() {
-    // 请求表单字典数据
     Http.get('/dict?keys=grade')
       .then((res) => { this.grade = res.grade })
-    // 初始化表单
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route.params.id)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
+    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
+      .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
   beforeRouteEnter(to, from, next) {

@@ -1,6 +1,46 @@
 import { createButton } from '@/utils'
 
-export default function (that) {
+export function editInit() {
+  return {
+    visited_at: null,
+    elder_name: '',
+    student_name: '',
+    mobile: '',
+    province_id: 0,
+    city_id: 0,
+    district_id: 0,
+    grade: 0,
+    invited_teacher_id: '',
+    market_staff_name: '',
+    school_name: '',
+    return_visited_at: null,
+  }
+}
+
+// 返还给服务器的数据处理
+export function encode(data) {
+  // eslint-disable-next-line
+  let ectype = { ...data }
+  // visited_at 处理首次时间
+  if (typeof ectype.visited_at === 'object' && ectype.visited_at !== null) {
+    ectype.visited_at = ectype.visited_at.toJSON().slice(0, 10)
+  }
+  if (ectype.visited_at === '' || ectype.visited_at === '0000-00-00') {
+    ectype.visited_at = null
+  }
+  // return_visited_at 处理回访时间
+  if (typeof ectype.return_visited_at === 'object' && ectype.return_visited_at !== null) {
+    ectype.return_visited_at = ectype.return_visited_at.toJSON().slice(0, 10)
+  }
+  if (ectype.return_visited_at === '' || ectype.return_visited_at === '0000-00-00') {
+    ectype.return_visited_at = null
+  }
+  // 地址map编码
+
+  return ectype
+}
+
+export function colConfig(that) {
   return [
     {
       title: '来访日期',
