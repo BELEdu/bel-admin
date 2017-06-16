@@ -6,7 +6,7 @@
 
 import { Http } from '@/utils'
 import { BUSINESS } from '../mutationTypes'
-import editOrigin from './editOrigin'
+// import editOrigin from './editOrigin'
 
 export default {
   state: {
@@ -16,6 +16,9 @@ export default {
   },
 
   actions: {
+    [BUSINESS.SETURI]({ state, commit }, to) {
+      commit(BUSINESS.SETURI, to.meta.uri)
+    },
     // index 初始化
     [BUSINESS.PAGE.INIT]({ state, commit }, to) {
       commit(BUSINESS.SETURI, to.meta.uri)
@@ -29,12 +32,21 @@ export default {
         .then(res => commit(BUSINESS.PAGE.INIT, res))
     },
     // 编辑页面 初始化
-    [BUSINESS.EDIT.INIT]({ state, commit }, id) {
-      commit(BUSINESS.EDIT.INIT, null)
+    // [BUSINESS.EDIT.INIT]({ state, commit }, id) {
+    //   commit(BUSINESS.EDIT.INIT, null)
+    //   if (id) {
+    //     return Http.get(`/${state.uri}/${id}`).then(res => commit(BUSINESS.EDIT.INIT, res))
+    //   }
+    //   return commit(BUSINESS.EDIT.INIT, editOrigin[state.uri])
+    // },
+    [BUSINESS.EDIT.INIT]({ state, commit }, to) {
+      const id = to.params.id
+      const uri = to.meta.uri
+      commit(BUSINESS.SETURI, uri)
       if (id) {
-        return Http.get(`/${state.uri}/${id}`).then(res => commit(BUSINESS.EDIT.INIT, res))
+        return Http.get(`/${uri}/${id}`)
       }
-      return commit(BUSINESS.EDIT.INIT, editOrigin[state.uri])
+      return Promise.reject()
     },
     // 编辑页面 提交添加信息
     [BUSINESS.EDIT.CREATE]({ state, commit }, payload) {

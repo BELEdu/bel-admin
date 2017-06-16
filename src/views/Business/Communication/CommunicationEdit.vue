@@ -49,18 +49,18 @@
       </Form-item>
     </Form>
     <!-- log表单 -->
-    <Form :label-width="110" :rules="formRules" ref="comm_logs" :model="comm_logs">
+    <Form :label-width="110" :rules="formRules" ref="comm_log" :model="comm_log">
       <!-- log编辑 -->
       <Form-item label="沟通时间" prop="communication_at">
-        <Date-picker placeholder="年 / 月 / 日" :editable="false" v-model="comm_logs.communication_at"></Date-picker>
+        <Date-picker placeholder="年 / 月 / 日" :editable="false" v-model="comm_log.communication_at"></Date-picker>
       </Form-item>
       <Form-item label="沟通情况" prop="content">
-        <Input type="textarea" placeholder="请输入......" :rows="4" v-model="comm_logs.content"></Input>
+        <Input type="textarea" placeholder="请输入......" :rows="4" v-model="comm_log.content"></Input>
       </Form-item>
       <!-- log编辑 end-->
       <!-- 添加log -->
       <Form-item class="commeditor--plus-container">
-        <Button type="dashed" icon="plus" @click.stop="addLog('comm_logs')">增加沟通记录</Button>
+        <Button type="dashed" icon="plus" @click.stop="addLogClick = true; addLog('comm_log')">增加沟通记录</Button>
       </Form-item>
       <!-- 添加log end -->
       <!-- logs展示 -->
@@ -76,7 +76,7 @@
       <!-- logs展示 end -->
       <Form-item>
         <Button @click="cancel()">取消</Button>
-        <Button type="primary" :loading="loading">提交</Button>
+        <Button type="primary" :loading="loading" @click="handleSubmit('form')">提交</Button>
       </Form-item>
     </Form>
     <!-- log表单 end -->
@@ -91,19 +91,7 @@
  */
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
-
-function encode(data) {
-  // eslint-disable-next-line
-  let ectype = { ...data }
-  if (typeof ectype.visited_at === 'object') {
-    ectype.visited_at = ectype.visited_at.toJSON().slice(0, 10)
-  }
-  if (typeof ectype.return_visited_at === 'object') {
-    ectype.return_visited_at = ectype.return_visited_at.toJSON().slice(0, 10)
-  }
-  // 地址map编码
-  return ectype
-}
+import { editInit, encode } from './modules/config'
 
 export default {
   name: 'CommunicationEdit',
@@ -113,13 +101,16 @@ export default {
       // "取消"按钮行为的路由对象
       backRoute: null,
       // 最终提交给后端的数据
-      fdata: null,
-      comm_logs: {
+      fdata: editInit(),
+      // log 单独编辑表单数据
+      comm_log: {
         communication_at: '',
         content: '',
       },
-      // 提交按钮状态控制
+      // "提交"按钮状态控制
       loading: false,
+      // "增加沟通记录"按钮验证标志
+      addLogClick: false,
       // 字典数据
       communication_type: null,
       grade: null,
@@ -153,29 +144,42 @@ export default {
     }
   },
 
-  computed: {
-    unit() {
-      return this.$store.state.business.unit
-    },
-  },
-
-  watch: {
-    unit: {
-      deep: true,
-      handler(nv) {
-        if (nv) this.fdata = { ...nv }
-      },
-    },
-  },
-
   methods: {
+    // 表单项validator
     validateLogAt(rule, value, callback) {
-      if (value === '') callback('请选择日期')
-      else callback()
+      // 点击"新增沟通记录"按钮情况下，有空字段验证
+      if (this.addLogClick && value === '') {
+        callback('请选择日期')
+        // 点击"提交"按钮情况下，有空字段验证
+      } else if (this.comm_log.content.length > 0 && value === '') {
+        callback('请选择日期')
+
+        // 验证成功
+      } else {
+        callback()
+      }
+      this.addLogClick = false
     },
     validateLogContent(rule, value, callback) {
-      if (value.length < 2 || value.length > 200) callback('长度在2到200个文字之间')
-      else callback()
+      const at = this.comm_log.communication_at
+      // 点击"新增沟通记录"按钮情况下有空字段的验证
+      if (this.addLogClick && value === '') {
+        callback('请填写沟通内容')
+
+        // 点击"提交"按钮情况下有空字段的验证
+      } else if (typeof at === 'object' && value === '') {
+        callback('请填写沟通内容')
+
+        // 日志内容合法性认证
+      } else if (value.length === 1 || value.length > 200) {
+        callback('长度在2到200个文字之间')
+
+        // 验证成功
+      } else {
+        callback()
+      }
+      // 重置点击"新增沟通记录"按钮的状态
+      this.addLogClick = false
     },
     // 删除log项
     deleteLog(communication_id, id, index) {
@@ -186,24 +190,33 @@ export default {
     },
     // 新增log项
     addLog(name) {
+      let result = false
+      // log验证成功后
       this.$refs[name].validate((valid) => {
         if (valid) {
-          const communication_at = this.comm_logs.communication_at.toJSON().slice(0, 10)
-          const comm_logs = {
+          const communication_at = this.comm_log.communication_at.toJSON().slice(0, 10)
+          const comm_log = {
             communication_at,
-            content: this.comm_logs.content,
+            content: this.comm_log.content,
           }
-          if (this.$route.params.id) Http.post(`/communication/${this.$route.params.id}/log`, comm_logs)
-          this.fdata.communication_logs.push(comm_logs)
+          if (this.$route.params.id) Http.post(`/communication/${this.$route.params.id}/log`, comm_log)
+          this.fdata.communication_logs.push(comm_log)
           this.$refs[name].resetFields()
         }
+        result = valid
       })
+      // 返回log验证结果
+      return result
     },
     // 提交表单数据
     handleSubmit(name) {
+      // 定义编辑表单提交函数
       const submit = () => {
-        const fdata = encode(this.fdata)
+        // 开启按钮loadding
         this.loading = true
+        // 根据接口文档转化数据
+        const fdata = encode(this.fdata)
+        // 判断新增还是修改
         if (this.$route.params.id) {
           const id = this.$route.params.id
           this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
@@ -213,16 +226,21 @@ export default {
             .then(() => { this.loading = false; this.cancel() })
         }
       }
-
-      this.$refs[name].validate((valid) => {
-        if (valid) submit()
-      })
+      // 验证和处理没有用"增加沟通记录"的comm_log表单
+      const communication_at = this.comm_log.communication_at
+      const content = this.comm_log.content
+      let logValid = true
+      if (communication_at !== '' || content !== '') {
+        logValid = this.addLog('comm_log')
+      }
+      window.console.log(logValid)
+      // 进行表单提交
+      this.$refs[name].validate((valid) => { if (valid && logValid) submit() })
     },
     // 取消表单编辑
     cancel() {
-      this.$store.commit(BUSINESS.EDIT.INIT, null)
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
-        this.$router.push('/business/commmunication')
+        this.$router.push('/business/communication')
       } else {
         this.$router.push(this.backRoute.fullPath)
       }
@@ -235,8 +253,10 @@ export default {
         this.communication_type = res.communication_type
         this.grade = res.grade
       })
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route.params.id)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
+    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
+      .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
   beforeRouteEnter(to, from, next) {

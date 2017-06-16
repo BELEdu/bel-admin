@@ -48,7 +48,7 @@
  */
 import { mapState } from 'vuex'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import colConfig from './modules/colConfig'
+import { colConfig } from './modules/config'
 
 
 export default {
