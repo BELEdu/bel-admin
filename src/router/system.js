@@ -20,7 +20,7 @@ export default [
   },
   {
     path: '/system/role/edit',
-    name: 'SystemRoleEdit',
+    name: 'SystemRoleAdd',
     component: views.SystemRoleEdit,
     meta: {
       breadcrumb: [
@@ -55,7 +55,7 @@ export default [
   },
   {
     path: '/system/user/edit',
-    name: 'SystemUserEdit',
+    name: 'SystemUserAdd',
     component: views.SystemUserEdit,
     meta: {
       breadcrumb: [
