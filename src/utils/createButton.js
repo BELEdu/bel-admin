@@ -16,7 +16,7 @@ const createButton = btns => (h, params) => (
   h(
     'div',
     btns.map(btn => h('Button', {
-      class: `color-${btn.type}`,
+      class: `table-btn${btn.type ? ` color-${btn.type}` : ''}${btn.text || btn.key ? ' table-btn-txt' : ''}`,
       props: {
         type: 'text',
         size: 'small',
@@ -28,7 +28,7 @@ const createButton = btns => (h, params) => (
           click: () => btn.click(params.row),
         } : {}),
       },
-    }, btn.text)),
+    }, btn.text || params.row[btn.key])),
   )
 )
 

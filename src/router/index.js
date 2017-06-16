@@ -12,7 +12,7 @@ import { GLOBAL } from '@/store/mutationTypes'
 
 // 路由模块插入
 import business from './business'
-import arrange from './arrange'
+import arrange from './curriculum'
 import analysis from './analysis'
 import system from './system'
 import student from './student'

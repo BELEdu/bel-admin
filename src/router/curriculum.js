@@ -8,10 +8,10 @@ import * as views from '@/views'
 
 export default [
   {
-    path: '/arrange',
-    name: 'Arrange',
-    redirect: '/arrange/student',
-    component: views.Arrange,
+    path: '/curriculum',
+    name: 'Curriculum',
+    redirect: '/Curriculum/studentcurricula',
+    component: views.Curriculum,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -19,9 +19,9 @@ export default [
     },
   },
   {
-    path: '/arrange/teacher',
-    name: 'ArrangeTeacher',
-    component: views.ArrangeTeacher,
+    path: '/curriculum/teacher',
+    name: 'CurriculumTeacher',
+    component: views.CurriculumTeacher,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -30,9 +30,9 @@ export default [
     },
   },
   {
-    path: '/arrange/teacher/edit/:id',
-    name: 'ArrangeTeacherEdit',
-    component: views.ArrangeTeacherEdit,
+    path: '/curriculum/teacher/edit/:id',
+    name: 'CurriculumTeacherEdit',
+    component: views.CurriculumTeacherEdit,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -42,9 +42,9 @@ export default [
     },
   },
   {
-    path: '/arrange/student',
-    name: 'ArrangeStudent',
-    component: views.ArrangeStudent,
+    path: '/Curriculum/studentcurricula',
+    name: 'CurriculumStudentcurricula',
+    component: views.CurriculumStudentcurricula,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -53,9 +53,9 @@ export default [
     },
   },
   {
-    path: '/arrange/student/edit/:id',
-    name: 'ArrangeStudentEdit',
-    component: views.ArrangeStudentEdit,
+    path: '/curriculum/student/edit/:id',
+    name: 'CurriculumStudentEdit',
+    component: views.CurriculumStudentEdit,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -65,9 +65,9 @@ export default [
     },
   },
   {
-    path: '/arrange/record/class',
-    name: 'ArrangeRecordClass',
-    component: views.ArrangeRecordClass,
+    path: '/curriculum/record/class',
+    name: 'CurriculumRecordClass',
+    component: views.CurriculumRecordClass,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -76,9 +76,9 @@ export default [
     },
   },
   {
-    path: '/arrange/record/personal',
-    name: 'ArrangeRecordPersonal',
-    component: views.ArrangeRecordPersonal,
+    path: '/curriculum/record/personal',
+    name: 'CurriculumRecordPersonal',
+    component: views.CurriculumRecordPersonal,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -87,9 +87,9 @@ export default [
     },
   },
   {
-    path: '/arrange/timetable',
-    name: 'ArrangeTimeTable',
-    component: views.ArrangeTimeTable,
+    path: '/curriculum/timetable',
+    name: 'CurriculumTimeTable',
+    component: views.CurriculumTimeTable,
     meta: {
       breadcrumb: [
         { name: '课程管理' },

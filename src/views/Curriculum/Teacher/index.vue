@@ -35,7 +35,7 @@ import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
-  name: 'app-arrange-teacher',
+  name: 'app-curriculum-teacher',
 
   data() {
     return {
