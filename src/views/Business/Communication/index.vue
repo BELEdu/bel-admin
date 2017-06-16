@@ -15,7 +15,7 @@
           <Option value="1">未签约</Option>
           <Option value="2">已结课</Option>
           <Option value="3">已休学</Option>
-          <Option value="3">已签约</Option>
+          <Option value="4">已签约</Option>
         </Select>
       </Form-item>
       <Form-item style="float: right; margin: 0;">
