@@ -69,6 +69,7 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
+  padding-bottom: 80px; // 解决分页条数下拉框造成滚动条的问题
   margin-top: 30px;
 
   &__info {
