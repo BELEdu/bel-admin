@@ -62,11 +62,7 @@
                   </Radio-group>
                 </Form-item>
                 <Form-item label="初始建档人">
-                  <Select placeholder="请选择..." v-model="formStudent.create" disabled>
-                    <Option value="1">张三</Option>
-                    <Option value="2">李四</Option>
-                    <Option value="3">王五</Option>
-                  </Select>
+                  <Input v-model="formStudent.create" disabled></Input>
                 </Form-item>
               </Col>
               <Col span="11" offset="1">
@@ -135,11 +131,7 @@
                   </Select>
                 </Form-item>
                 <Form-item label="初始签约人">
-                  <Select placeholder="请选择..." v-model="formStudent.sign" disabled>
-                    <Option value="1">张三</Option>
-                    <Option value="2">李四</Option>
-                    <Option value="3">王五</Option>
-                  </Select>
+                  <Input v-model="formStudent.sign" disabled></Input>
                 </Form-item>
               </Col>
             </Row>
@@ -241,7 +233,7 @@ export default {
       dataList: [0],
       formStudent: {
         name: '小明',
-        id: '10086',
+        id: 'S10086',
         sex: 'male',
         tel: '13003987000',
         date: '1998-09-30',
@@ -261,8 +253,8 @@ export default {
         come: '网络-并行站五',
         type: '2',
         status: '2',
-        create: '3',
-        sign: '2',
+        create: '建档人1',
+        sign: '签约人1',
       },
     }
   },

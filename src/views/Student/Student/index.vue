@@ -31,7 +31,7 @@
         <Button type="primary" @click="modal.teacher = true">分配教师</Button>
         <Button type="primary" @click="modal.manage = true">分配学管师</Button>
         <Button type="primary" @click="$router.push('/student/student/edit')">添加学员</Button>
-        <Button type="warning" @click="modal.delete = true">删除</Button>
+        <Button type="warning" @click="modal.delete = true">删除（测试）</Button>
       </Col>
     </Row>
 
@@ -172,10 +172,9 @@ export default {
           width: 60,
           align: 'center',
         },
-        { title: '公司', key: 1, align: 'center' },
         { title: '校区', key: 2, align: 'center' },
-        { title: '学员编号', key: 'studentId', align: 'center' },
         { title: '学员姓名', key: 4, align: 'center' },
+        { title: '学员编号', key: 'studentId', align: 'center' },
         { title: '家长姓名', key: 5, align: 'center' },
         { title: '首签日期', key: 6, align: 'center' },
         { title: '在读学校', key: 7, align: 'center' },
@@ -201,12 +200,12 @@ export default {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 150,
+          width: 160,
           render: createButton([
             // 删除该学员
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.studentId) },
             { text: '编辑', type: 'primary', click: () => this.$router.push('/student/student/detail') },
-            { text: '添加', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
+            { text: '交流会', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
           ]),
         },
       ],

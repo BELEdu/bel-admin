@@ -6,10 +6,14 @@
         <Date-picker type="date" placeholder="请选择会议的时间"></Date-picker>
       </Form-item>
       <Form-item label="家长">
-        <Input placeholder="请输入家长姓名"></Input>
+        <Input placeholder="请输入家长姓名，多人以 “，” 分隔"></Input>
       </Form-item>
       <Form-item label="与会人员">
-        <Input placeholder="请输入与会人员"></Input>
+        <Select placeholder="请输入与会人员...">
+          <Option value="1">课前交流会</Option>
+          <Option value="2">学情分析会</Option>
+          <Option value="3">家长座谈会</Option>
+        </Select>
       </Form-item>
       <Form-item label="会议类型" required>
         <Select placeholder="请选择会议类型...">

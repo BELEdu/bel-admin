@@ -27,10 +27,8 @@
         </Select>
       </Form-item>
       <Form-item label="教师">
-        <Select placeholder="请选择...">
-          <Option value="1">张三</Option>
-          <Option value="2">李四</Option>
-          <Option value="3">王五</Option>
+        <Select v-model="formClass.teacher" placeholder="请选择老师..." filterable multiple>
+          <Option v-for="item in teacherList" :value="item.value" :key="item">{{ item.label }}</Option>
         </Select>
       </Form-item>
       <Form-item label="开办日期" >
@@ -66,6 +64,7 @@ export default {
       // 编辑班级表单
       formClass: {
         student: [],
+        teacher: [],
       },
        // 学生列表
       studentList: [
@@ -92,6 +91,33 @@ export default {
         {
           value: '小八',
           label: '小八',
+        },
+      ],
+      // 教师列表
+      teacherList: [
+        {
+          value: '张老师',
+          label: '张老师',
+        },
+        {
+          value: '王老师',
+          label: '王老师',
+        },
+        {
+          value: '刘老师',
+          label: '刘老师',
+        },
+        {
+          value: '陈老师',
+          label: '陈老师',
+        },
+        {
+          value: '赵老师',
+          label: '赵老师',
+        },
+        {
+          value: '萧老师',
+          label: '萧老师',
         },
       ],
 

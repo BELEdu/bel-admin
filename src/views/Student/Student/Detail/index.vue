@@ -56,25 +56,4 @@ export default {
 
 <style <style lang="less">
 @import '~vars';
-.app-tabs {
-  margin-bottom:20px;
-
-  &.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab {
-    // border-radius: 0;
-    background: #fff;
-  }
-  &.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active {
-    border-top: 1px solid #3399ff;
-  }
-  &.ivu-tabs.ivu-tabs-card>.ivu-tabs-bar .ivu-tabs-tab-active:before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 1px;
-    background: #3399ff;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
 </style>
