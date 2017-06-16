@@ -22,7 +22,7 @@ export default [
   },
   {
     path: '/business/hotline/edit',
-    name: 'BussinessHotlineEdit',
+    name: 'BussinessHotlineCreate',
     component: views.HotlineEdit,
     meta: {
       uri: 'hotline',
@@ -35,7 +35,7 @@ export default [
   },
   {
     path: '/business/hotline/edit/:id',
-    name: 'BussinessHotlineEdit',
+    name: 'BussinessHotlineUpdate',
     component: views.HotlineEdit,
     meta: {
       uri: 'hotline',
@@ -60,7 +60,7 @@ export default [
   },
   {
     path: 'business/communication/edit',
-    name: 'BussinenssCommunicationEdit',
+    name: 'BussinenssCommunicationCreate',
     component: views.CommunicationEdit,
     meta: {
       uri: 'communication',
@@ -73,7 +73,7 @@ export default [
   },
   {
     path: 'business/communication/edit/:id',
-    name: 'BussinenssCommunicationEdit',
+    name: 'BussinenssCommunicationUpdate',
     component: views.CommunicationEdit,
     meta: {
       uri: 'communication',
@@ -98,7 +98,7 @@ export default [
   },
   {
     path: 'business/contract/edit',
-    name: 'BussinessContractEditor',
+    name: 'BussinessContractCreate',
     component: views.ContractEdit,
     meta: {
       uri: 'contract',
@@ -136,7 +136,7 @@ export default [
   },
   {
     path: 'business/Product/edit',
-    name: 'BussinessProductEdit',
+    name: 'BussinessProductCreate',
     component: views.ProductEdit,
     meta: {
       uri: 'product',
@@ -149,7 +149,7 @@ export default [
   },
   {
     path: 'business/Product/edit/:id',
-    name: 'BussinessProductEdit',
+    name: 'BussinessProductUpdate',
     component: views.ProductEdit,
     meta: {
       uri: 'product',

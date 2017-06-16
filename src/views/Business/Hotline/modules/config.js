@@ -14,7 +14,7 @@ export function editInit() {
     province_id: 0,
     city_id: 0,
     district_id: 0,
-    grade: 0,
+    grade: null,
     invited_teacher_id: '',
     market_staff_name: '',
     school_name: '',
