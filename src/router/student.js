@@ -85,7 +85,7 @@ export default [
       },
       {
         path: '/student/student/detail/Meeting/edit',
-        name: 'StudentStudentDetailMeetingEdit',
+        name: 'StudentStudentDetailMeetingAdd',
         component: views.StudentStudentDetailMeetingEdit,
         meta: {
           breadcrumb: [
@@ -161,7 +161,7 @@ export default [
   },
   {
     path: '/student/classes/edit',
-    name: 'StudentClassesEdit',
+    name: 'StudentClassesAdd',
     component: views.StudentClassesEdit,
     meta: {
       breadcrumb: [

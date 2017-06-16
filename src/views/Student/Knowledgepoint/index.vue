@@ -110,6 +110,7 @@ export default {
              return h('Progress', {
                props: {
                  percent: point,
+                 status: 'active',
                },
              })
            },

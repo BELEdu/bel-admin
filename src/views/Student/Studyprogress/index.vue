@@ -24,7 +24,7 @@
     <!-- 操作按钮 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>学员列表</h2>
+        <h2>学习进度</h2>
       </Col>
       <Col>
         <Button type="primary">按钮</Button>
@@ -45,9 +45,12 @@
   * 学员管理 - 学习进度
   * @author zml
   * @version 2017-06-08
+  * @version 2017-06-16
   */
 import { GLOBAL } from '@/store/mutationTypes'
+import { createButton } from '@/utils'
 import fdata from './fdata'
+
 
 export default {
    name: 'app-student-studyprogress',
@@ -62,28 +65,53 @@ export default {
        },
        // 表格配置
        columns: [
+         { title: '学员姓名', key: 1, align: 'center' },
+         { title: '当前年级', key: 2, align: 'center' },
+         { title: '归属学管师', key: 3, align: 'center' },
+         { title: '签约课时', key: 4, align: 'center' },
+         { title: '剩余课时', key: 5, align: 'center' },
          {
-           type: 'selection',
-           width: 60,
+           title: '课时',
+           key: 'calss',
            align: 'center',
+           width: '200',
+           render: (h, params) => {
+             const row = params.row
+             const point = row.calss
+             return h('Progress', {
+               props: {
+                 percent: point,
+                 status: 'active',
+               },
+             })
+           },
          },
-         { title: '公司', key: 1, align: 'center' },
-         { title: '校区', key: 2, align: 'center' },
-         { title: '学员编号', key: 3, align: 'center' },
-         { title: '学员姓名', key: 4, align: 'center' },
-         { title: '家长姓名', key: 5, align: 'center' },
-         { title: '首签日期', key: 6, align: 'center' },
-         { title: '在读学校', key: 7, align: 'center' },
-         { title: '当前年级', key: 8, align: 'center' },
-         { title: '归属咨询师', key: 9, align: 'center' },
-         { title: '归属学管师', key: 10, align: 'center' },
-         { title: '签约课时', key: 11, align: 'center' },
-         { title: '剩余课时', key: 12, align: 'center' },
+         {
+           title: '学习知识点进度',
+           key: 'point',
+           align: 'center',
+           width: '200',
+           render: (h, params) => {
+             const row = params.row
+             const point = row.point
+             return h('Progress', {
+               props: {
+                 percent: point,
+                 status: 'active',
+               },
+             })
+           },
+         },
          {
            title: '操作',
-           key: 13,
+           key: 8,
            align: 'center',
-           width: 140,
+           width: 250,
+           render: createButton([
+            { text: '学习进度', type: 'primary', click: () => this.$router.push('/student/studyprogress/edit') },
+            { text: '编辑计划', type: 'primary', click: () => this.$router.push('/student/studyprogress/edit') },
+            { text: '添加计划', type: 'primary', click: () => this.$router.push('/student/studyprogress/edit') },
+           ]),
          },
        ],
        // 表格数据

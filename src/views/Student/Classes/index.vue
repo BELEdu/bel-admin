@@ -38,7 +38,7 @@
       @on-ok="manageSubmit('formManage')"
     >
       <Form ref="formManage">
-        <Form-item >
+        <Form-item>
           <Select v-model="formManage.student" placeholder="请选择学生..." filterable multiple>
             <Option v-for="item in studentList" :value="item.value" :key="item">{{ item.label }}</Option>
           </Select>

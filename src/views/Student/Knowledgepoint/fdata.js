@@ -8,7 +8,7 @@ export default [
     time: '53',
     7: '浙教版',
     8: '124',
-    point: '77',
+    point: 77,
   },
   {
     1: '张三',
@@ -19,7 +19,7 @@ export default [
     time: '5',
     7: '浙教版',
     8: '100',
-    point: '60',
+    point: 60,
   },
   {
     1: '王刚',
@@ -30,7 +30,7 @@ export default [
     time: '',
     7: '人教版',
     8: '50',
-    point: '0',
+    point: 0,
   },
   {
     1: '李磊',
@@ -41,7 +41,7 @@ export default [
     time: '',
     7: '',
     8: '',
-    point: '0',
+    point: 0,
   },
   {
     1: '韩梅梅',
@@ -52,7 +52,7 @@ export default [
     time: '',
     7: '浙教版',
     8: '120',
-    point: '100',
+    point: 100,
   },
   {
     1: '苏东坡',
@@ -63,7 +63,7 @@ export default [
     time: '',
     7: '浙教版',
     8: '150',
-    point: '70',
+    point: 70,
   },
   {
     1: '阿信',
@@ -74,7 +74,7 @@ export default [
     time: '',
     7: '浙教版',
     8: '120',
-    point: '88',
+    point: 88,
   },
 
 
