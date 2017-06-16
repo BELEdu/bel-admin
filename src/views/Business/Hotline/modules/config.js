@@ -145,11 +145,11 @@ export function colConfig(that) {
       title: '操作',
       key: '17',
       align: 'center',
-      width: 110,
+      width: 120,
       fixed: 'right',
       render: createButton([
-        { icon: 'trash-a', type: 'error', click: that.toDelete },
-        { icon: 'edit', type: 'primary', click: that.toUpdate },
+        { text: '删除', type: 'error', click: that.toDelete },
+        { text: '修改', type: 'primary', click: that.toUpdate },
       ]),
     },
   ]

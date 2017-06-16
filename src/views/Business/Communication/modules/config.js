@@ -125,12 +125,12 @@ export function colConfig(that) {
       align: 'center',
       render: createButton([
         {
-          icon: 'trash-a',
+          text: '删除',
           type: 'error',
           click: that.toDelete,
         },
         {
-          icon: 'edit',
+          text: '修改',
           type: 'primary',
           click: that.toUpdate,
         },

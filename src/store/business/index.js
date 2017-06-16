@@ -9,7 +9,7 @@ import { BUSINESS } from '../mutationTypes'
 
 export default {
   state: {
-    buffer: null,
+    buffer: {},
     uri: '',
   },
 

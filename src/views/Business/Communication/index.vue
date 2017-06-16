@@ -34,7 +34,7 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
+    <Table v-if="buffer" size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
   
     <app-pager :data="buffer" @on-change="pageTo" @on-page-size-change="pagesizeTo"></app-pager>
   </main>
