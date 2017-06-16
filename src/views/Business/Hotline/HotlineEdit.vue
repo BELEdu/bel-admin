@@ -55,13 +55,6 @@
  * @version 2017-06-06
  */
 
-/**
- * @todo 根据后端口完成组件
- * 1. 根据api字段，绑定数据data
- * 2. 获取store的值进行渲染（添加/修改）
- * 3. 将提交后的数据传入store，成功后跳回index组件
- */
-
 import map from '@/views/Business/casdata'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'

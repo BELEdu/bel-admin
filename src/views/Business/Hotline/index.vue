@@ -55,22 +55,18 @@ export default {
 
   data() {
     return {
-      // @param {type: Obect} searchOptions 查询条件字段对象
       colConfig: colConfig(this),
     }
   },
 
   computed: {
-    // 分页数据，包含后端返回的完整信息
-    // 1. 绑定到Table组件 :data="buffer.data"
-    // 2. 绑定到app-pager组件 :data="buffer"
     ...mapState({
       buffer: state => state.business.buffer,
     }),
   },
 
   methods: {
-    // 进入新增路由，例子：/business/hotline/edit
+    // 进入新增编辑路由页，例子：/business/hotline/edit
     toCreate() {
       this.$router.push('/business/hotline/edit')
     },
@@ -92,12 +88,10 @@ export default {
       // }
       // this.$router.push(`/business/hotline/edit?${formEncoded(query)}`)
     },
-    // 绑定到app-pager组件 @on-change="pageTo"
     pageTo(page) {
       const per_page = this.buffer.per_page
       this.$router.push({ path: this.$route.path, query: { page, per_page } })
     },
-    // 绑定到app-pager组件 @on-page-size-change="pagesizeTo"
     pagesizeTo(per_page) {
       this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
     },

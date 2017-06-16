@@ -1,3 +1,8 @@
+/**
+ * 沟通记录 - 编辑配置
+ * @author hjz
+ * @version 2017-06-16
+ */
 import { createButton } from '@/utils'
 
 // 编辑字段初始化
