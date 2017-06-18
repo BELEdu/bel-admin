@@ -43,8 +43,8 @@ export default [
   },
   {
     path: '/Curriculum/studentcurricula',
-    name: 'CurriculumStudentcurricula',
-    component: views.CurriculumStudentcurricula,
+    name: 'CurriculumStudentCurricula',
+    component: views.CurriculumStudentCurricula,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -61,6 +61,18 @@ export default [
         { name: '课程管理' },
         { name: '学员排课' },
         { name: '学员排课表' },
+      ],
+    },
+  },
+  {
+    path: '/curriculum/student/clbumEdit/:id',
+    name: 'CurriculumStudentClbumEdit',
+    component: views.CurriculumStudentClbumEdit,
+    meta: {
+      breadcrumb: [
+        { name: '课程管理' },
+        { name: '学员排课' },
+        { name: '班级排课表' },
       ],
     },
   },

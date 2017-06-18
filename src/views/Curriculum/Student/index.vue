@@ -15,13 +15,13 @@
         <!--列表工具模块-->
         <Row class="app-content-header" type="flex" justify="end">
           <Col>
-          <Button type="primary" @click="$router.push('/arrange/student/timetable/2')">打印</Button>
+          <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
           </Col>
         </Row>
 
         <!--列表数据模块-->
         <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
-        <app-pager :data="studentData" @on-change="getPageInfo" @on-page-size-change="getPerPageinfo"></app-pager>
+        <app-pager :data="studentData" @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></app-pager>
       </Tab-pane>
 
       <!--班级模块-->
@@ -39,26 +39,26 @@
         <!--列表工具模块-->
         <Row class="app-content-header" type="flex" justify="end">
           <Col>
-          <Button type="primary" @click="$router.push('/arrange/student/timetable/2')">打印</Button>
+          <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
           </Col>
         </Row>
 
         <!--列表数据模块-->
         <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" border></Table>
-        <app-pager :data="clbumData" @on-change="getPageInfo" @on-page-size-change="getPerPageinfo"></app-pager>
+        <app-pager :data="clbumData" @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></app-pager>
       </Tab-pane>
     </Tabs>
 
     <!--查看班级人员信息弹窗-->
     <Modal v-model="clbumModal" width="800">
       <p slot="header" class="modal-header">
-        <span>班级：{{currentClbum.clbum_name}}</span>
+        <span>班级：{{currentClbum.class_name}}</span>
         <span>学员个数：{{currentClbum.student_count}}</span>
         <span>班主任：{{currentClbum.head_teacher}}</span>
         <span>学管师：{{currentClbum.customer_teacher}}</span>
       </p>
       <Table class="app-table" :columns="showColumns" :data="clbumInfoData.data" border></Table>
-      <app-pager :data="clbumInfoData" @on-change="getPageInfo" @on-page-size-change="getPerPageinfo"></app-pager>
+      <app-pager :data="clbumInfoData" @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></app-pager>
       <div slot="footer"></div>
     </Modal>
   </div>
@@ -106,7 +106,7 @@ export default {
               icon: 'edit',
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/student/edit/${params.a}`)
+                this.$router.push(`/curriculum/student/edit/${params.id}`)
               },
               text: '排课管理',
             },
@@ -126,7 +126,7 @@ export default {
                 // 查看班级人员信息
                 this.classShow(params)
               },
-              key: 'clbum_name',
+              key: 'class_name',
             },
           ]) },
         { title: '学员人数（个）', key: 'student_count', align: 'center' },
@@ -138,14 +138,13 @@ export default {
         { title: '剩余课时', key: 'surplus_period', align: 'center' },
         {
           title: '操作',
-          key: 10,
           align: 'center',
           render: createButton([
             {
               icon: 'edit',
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/arrange/student/edit/${params.a}`)
+                this.$router.push(`/curriculum/student/clbumEdit/${params.id}`)
               },
               text: '排课管理',
             },
@@ -161,7 +160,6 @@ export default {
         { title: '学员名称', key: 'student_name', align: 'center' },
         { title: '学员编号', key: 'student_number', align: 'center' },
         { title: '当前年级', key: 'current_grade', align: 'center' },
-        { title: '学管师', key: 'customer_teacher', align: 'center' },
         { title: '产品子类型', key: 'product_subtype', align: 'center' },
         { title: '剩余课时', key: 'surplus_period', align: 'center' },
         { title: '上课年级', key: 'coach_grade', align: 'center' },
@@ -212,7 +210,7 @@ export default {
     // 获取班级学员信息
     getClubumInfo(id, pageData = this.pager.defaultPage) {
       this.pager.clbumInfo = pageData
-      this.$http.get(`/arrange/student/clbumInfo.json?id=${id}&page=${pageData.page}&per_page=${pageData.per_page}`)
+      this.$http.get(`/curriculum/student/clbumInfo.json?id=${id}&page=${pageData.page}&per_page=${pageData.per_page}`)
         .then((data) => {
           this.clbumInfoData = data
           this.clbumModal = true
@@ -221,7 +219,7 @@ export default {
     // 获取学员数据
     getStudentData(pageData = this.pager.defaultPage) {
       this.pager.student = pageData
-      this.$http.get(`/arrange/student/studentData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
+      this.$http.get(`/curriculum/student/studentData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
         .then((data) => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
@@ -230,7 +228,7 @@ export default {
     // 获取班级数据
     getClbumData(pageData = this.pager.defaultPage) {
       this.pager.student = pageData
-      this.$http.get(`/arrange/student/clbumData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
+      this.$http.get(`/curriculum/student/clbumData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
         .then((data) => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.clbumData = data
@@ -257,7 +255,7 @@ export default {
       this.getPageData(pageInfo)
     },
     // 根据每页条数获取数据
-    getPerPageinfo(perPageId = 10) {
+    getPerPageInfo(perPageId = 10) {
       const pageInfo = Object.assign({}, this.pager.defaultPage, { per_page: perPageId })
       this.getPageData(pageInfo)
     },
