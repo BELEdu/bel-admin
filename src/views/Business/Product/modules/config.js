@@ -15,7 +15,7 @@ export function editInit() {
     // 课程时长
     course_duration: null,
     // 课程总数: "numeric",
-    course_total: null,
+    // course_total: null,
     // "numeric",
     price: null,
     // 销售状态: "字典表: sale_status",
