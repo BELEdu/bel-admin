@@ -1,7 +1,17 @@
 import { createButton } from '@/utils'
 
-export function encode() {
-  //
+export function encode(data) {
+  return data
+}
+
+export function unit_decode(res) {
+  const data = res
+
+  if (data.product_areas.length) {
+    data.product_areas = data.product_areas.map(item => item.area_id)
+  }
+
+  return data
 }
 
 export function editInit() {
@@ -26,7 +36,7 @@ export function editInit() {
 }
 
 // 调整后端数据为需求格式
-export function decode(buffer) {
+export function list_decode(buffer) {
   const ectype = { ...buffer }
   // 处理数据
   if (Array.isArray(buffer.data)) {

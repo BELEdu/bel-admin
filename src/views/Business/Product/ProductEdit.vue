@@ -1,16 +1,16 @@
 <template>
-  <main class="app-form-entire">
+  <main class="app-form-entire product-edit">
     <app-editor-title></app-editor-title>
-    <Form :label-width="110">
+    <Form :label-width="110" ref="form" :rules="formRules" :model="fdata">
       <Form-item label="产品名称" required>
         <Input placeholder="请输入流程名称" v-model="fdata.display_name"></Input>
       </Form-item>
-      <Form-item label="产品类型" required v-if="product_type.length">
+      <Form-item label="产品类型" v-if="product_type.length" required>
         <Select placeholder="请选择......" v-model="fdata.product_type_id">
           <Option v-for="item in product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="产品子类型" required >
+      <Form-item label="产品子类型">
         <Select placeholder="请选择......" v-model="fdata.product_subtype_id">
           <Option v-for="item in sub_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
@@ -22,17 +22,40 @@
       <Form-item label="产品单价" required>
         <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
       </Form-item>
-      <Form-item label="销售状态" required>
+      <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
           <Radio v-for="item in sale_status" :label="item.value" :key="item.display_name">
             <span>{{item.display_name}}</span>
           </Radio>
         </Radio-group>
-      </Form-item label="销售校区">
-        <Table :columns="tcol" :data="data" border></Table>
+      </Form-item>
+      <Form-item label="销售校区">
+        <div class="product-edit__areas">
+          <div class="product-edit__areas-left">
+            <dl>
+              <dt></dt>
+              <dd>
+                <Checkbox v-model="allareas">
+                  <span>全选</span>
+                </Checkbox>
+              </dd>
+            </dl>
+          </div>
+          <Checkbox-group v-model="fdata.product_areas" class="product-edit__areas-right">
+            <dl>
+              <dt>全选</dt>
+              <dd v-for="item in product_areas" :key="item.display_name">
+                <Checkbox :label="item.id">
+                  <span>{{item.display_name}}</span>
+                </Checkbox>
+              </dd>
+            </dl>
+          </Checkbox-group>
+        </div>
+      </Form-item>
       <Form-item>
-        <Button>取消</Button>
-        <Button type="primary">提交</Button>
+        <Button @click="cancel()">取消</Button>
+        <Button type="primary" @click="handleSubmit('form')">提交</Button>
       </Form-item>
     </Form>
   </main>
@@ -46,50 +69,37 @@
  */
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
-import { editInit, encode } from './modules/config'
-
-const cbdata = new Array(16).fill({ title: '厦门莲坂' }, 1, 4).fill({ title: '厦门集美区集美学区' }, 5, 11).fill({ title: '海沧校区' }, 12)
-
-const createCheckbox = (data, h) =>
-  h(
-    'Form-item',
-    { style: 'display: inline-block; margin: 3px 12px;' },
-    [h('Checkbox'), h('span', data.title)],
-  )
-
-const createCheckboxes = list => h =>
-  h(
-    'Form',
-    { style: 'text-align: left;' },
-    list.map(item => createCheckbox(item, h)),
-  )
+import { editInit, encode, unit_decode } from './modules/config'
 
 export default {
 
-  data: () => ({
-    // "取消"按钮行为的路由对象
-    backRoute: null,
-    // 最终提交给后端的数据
-    fdata: editInit(),
-    // 提交按钮状态控制
-    loading: false,
-    // 字典数据
-    product_type: [],
-    product_areas: [],
-    sale_status: [],
-    // 表单验证
-    // 其他
-    sale: undefined,
-    tcol: [
-      { title: ' ', key: '1', align: 'center', width: 112, render: createCheckboxes([{ title: '全部' }]) },
-      { title: '选择校区', key: '2', align: 'center', render: createCheckboxes(cbdata) },
-    ],
-    data: [
-      { 1: 'a', 2: 'b' },
-    ],
-  }),
+  data() {
+    return {
+      // "取消"按钮行为的路由对象
+      backRoute: null,
+      // 最终提交给后端的数据
+      fdata: editInit(),
+      // 提交按钮状态控制
+      loading: false,
+      // 字典数据
+      product_type: [],
+      // product_areas: [],
+      product_areas: [
+        { display_name: '岛内校区', id: 1 },
+        { display_name: '集美校区', id: 2 },
+        { display_name: '海沧校区', id: 3 },
+        { display_name: '翔安校区', id: 4 },
+      ],
+      sale_status: [],
+      // 表单验证
+      formRules: {},
+      // 校区全选
+      allareas: false,
+    }
+  },
 
   computed: {
+    // 产品子类列表
     sub_type() {
       const id = this.fdata.product_type_id
       const arr = this.product_type
@@ -98,6 +108,25 @@ export default {
         if (product) return product.children
       }
       return []
+    },
+    // 选中校区列表
+    areasChosed() {
+      return this.fdata.product_areas
+    },
+  },
+
+  watch: {
+    allareas(nv) {
+      if (nv) {
+        const list = this.product_areas.map(item => item.id)
+        this.fdata.product_areas = list
+      } else if (this.fdata.product_areas.length === this.product_areas.length) {
+        this.fdata.product_areas = []
+      }
+    },
+    areasChosed(nv) {
+      if (nv.length === this.product_areas.length) this.allareas = true
+      else this.allareas = false
     },
   },
 
@@ -120,15 +149,15 @@ export default {
     // Form click提交表单事件handler @click.stop="submit"
     handleSubmit(name) {
       // 其他处理...
-
+      window.console.log(name)
       // 进行表单提交
-      this.$refs[name].validate((valid) => { if (valid) this.submit() })
+      // this.$refs[name].validate((valid) => { if (valid) this.submit() })
+      this.submit()
     },
     cancel() {
-      this.$store.commit(BUSINESS.EDIT.INIT, null)
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
         // 根据上次路由提交
-        this.$router.push('/business/hotline')
+        this.$router.push('/business/product')
       } else {
         this.$router.push(this.backRoute.fullPath)
       }
@@ -139,12 +168,15 @@ export default {
     Http.get('/dict?keys=product_type,product_areas,sale_status')
       .then((res) => {
         this.product_type = res.product_type
-        this.product_areas = res.product_areas
+        // this.product_areas = res.product_areas
         this.sale_status = res.sale_status
       })
 
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+      .then((res) => {
+        this.fdata = unit_decode(res)
+        this.$store.commit(GLOBAL.LOADING.HIDE)
+      })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
@@ -155,6 +187,44 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+@import "~vars";
 
+.product-edit__areas {
+  display: flex;
+  border: 1px solid @border-color-base;
+
+  &-left {
+    flex-basis: 100px;
+    flex-shrink: 0;
+    border-right: 1px solid @border-color-base;
+
+    & dt {
+      height: 32px;
+      border-bottom: 1px solid @border-color-base;
+    }
+
+    & dd {
+      text-align: center;
+
+      & .ivu-checkbox-wrapper {
+        margin: 0;
+      }
+    }
+  }
+
+  &-right {
+    padding-left: 20px;
+    flex-grow: 1;
+
+    & dt {
+      border-bottom: 1px solid @border-color-base;
+      text-align: center;
+    }
+
+    & dd {
+      display: inline-block;
+    }
+  }
+}
 </style>

@@ -43,7 +43,7 @@
  * @version 2017-06-06
  */
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, decode } from './modules/config'
+import { colConfig, list_decode } from './modules/config'
 
 export default {
   name: 'business-hotline',
@@ -56,7 +56,7 @@ export default {
 
   computed: {
     buffer() {
-      return decode(this.$store.state.business.buffer)
+      return list_decode(this.$store.state.business.buffer)
     },
   },
 
