@@ -89,7 +89,7 @@ export default [
     name: 'BussinessContract',
     component: views.Contract,
     meta: {
-      uri: 'conctract',
+      uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },

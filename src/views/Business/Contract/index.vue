@@ -1,14 +1,14 @@
 <template>
-  <div class="hotline">
+  <div class="contract">
     <Form class="app-search-form">
       <Form-item label="来访日期">
-        <Date-picker class="hotline__form-date" placeholder="开始日期"></Date-picker>
+        <Date-picker class="contract__form-date" placeholder="开始日期"></Date-picker>
       </Form-item>
       <Form-item label="至">
-        <Date-picker class="hotline__form-date" placeholder="结束日期"></Date-picker>
+        <Date-picker class="contract__form-date" placeholder="结束日期"></Date-picker>
       </Form-item>
       <Form-item label="内容查找">
-        <Input class="hotline__form-keyword" placeholder="请输入关键字"></Input>
+        <Input class="contract__form-keyword" placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item label="仅显示审批" class="ivu-switch-fix">
         <i-switch size="large">
@@ -26,13 +26,13 @@
       <h2 icon="">合同审批</h2>
       </Col>
       <Col>
-      <Button type="primary" @click="toCreate()">添加审批</Button>
+      <Button type="primary">添加审批</Button>
       </Col>
     </Row>
   
-    <Table size="small" :columns="fcol" :data="fdata" stripe></Table>
+    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
   
-    <app-pager></app-pager>
+    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
   </div>
 </template>
 
@@ -42,43 +42,50 @@
  * @author hjz
  * @version 2017-06-06
  */
-import { GLOBAL } from '@/store/mutationTypes'
-import fdata from './fdata'
+import { mapState } from 'vuex'
+import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import { colConfig } from './modules/config'
 
 export default {
-  name: 'business-hotline',
+  name: 'business-contract',
 
-  data: () => ({
-    fcol: [
-      { title: '审批批号', key: '1', align: 'center' },
-      { title: '合同名称', key: '2', align: 'center', width: 200 },
-      { title: '合同类型', key: '3', align: 'center', width: 250 },
-      { title: '产品名称', key: '4', align: 'center' },
-      { title: '合同总金额', key: '5', align: 'center' },
-      { title: '学员', key: '6', align: 'center' },
-      { title: '申请人', key: '7', align: 'center' },
-      { title: '申请时间', key: '8', align: 'center' },
-      { title: '最后审批时间', key: '9', align: 'center' },
-      { title: '审批进度', key: '10', align: 'center' },
-      { title: '操作', key: '11', align: 'center' },
-    ],
-    fdata,
-  }),
+  data() {
+    return {
+      colConfig: colConfig(this),
+    }
+  },
+
+  computed: {
+    ...mapState({
+      buffer: state => state.business.buffer,
+    }),
+  },
 
   methods: {
-    toCreate() {
-      this.$router.push('/business/contract/edit')
+    pageTo(page) {
+      const per_page = this.buffer.per_page
+      this.$router.push({ path: this.$route.path, query: { page, per_page } })
+    },
+    pagesizeTo(per_page) {
+      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
     },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
+
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
+      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
+  },
+
 }
 </script>
 
 <style lang="less">
-.hotline {
+.contract {
 
   & .ivu-form-item {
     display: inline-block;

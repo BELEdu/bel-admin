@@ -1,3 +1,9 @@
+/**
+ * 产品管理 - 编辑配置
+ * @author hjz
+ * @version 2017-06-19
+ */
+
 import { createButton } from '@/utils'
 
 export function unit_encode(data) {
