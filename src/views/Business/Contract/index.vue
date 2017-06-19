@@ -26,7 +26,7 @@
       <h2 icon="">合同审批</h2>
       </Col>
       <Col>
-      <Button type="primary">添加审批</Button>
+      <Button type="primary" @click="toCreate()">添加审批</Button>
       </Col>
     </Row>
   
@@ -68,6 +68,14 @@ export default {
     },
     pagesizeTo(per_page) {
       this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
+    },
+    // 创建合同跳转
+    toCreate() {
+      this.$router.push('/business/contract/edit')
+    },
+    // 合同进度跳转
+    toCheck(row) {
+      this.$router.push(`/business/contract/edit/${row.id}`)
     },
   },
 
