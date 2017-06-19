@@ -165,16 +165,13 @@ export default {
       // 点击"新增沟通记录"按钮情况下有空字段的验证
       if (this.addLogClick && value === '') {
         callback('请填写沟通内容')
-
-        // 点击"提交"按钮情况下有空字段的验证
+      // 点击"提交"按钮情况下有空字段的验证
       } else if (typeof at === 'object' && value === '') {
         callback('请填写沟通内容')
-
-        // 日志内容合法性认证
+      // 日志内容合法性认证
       } else if (value.length === 1 || value.length > 200) {
         callback('长度在2到200个文字之间')
-
-        // 验证成功
+      // 验证成功
       } else {
         callback()
       }
@@ -208,24 +205,24 @@ export default {
       // 返回log验证结果
       return result
     },
-    // 提交表单数据
-    handleSubmit(name) {
-      // 定义编辑表单提交函数
-      const submit = () => {
-        // 开启按钮loadding
-        this.loading = true
-        // 根据接口文档转化数据
-        const fdata = encode(this.fdata)
-        // 判断新增还是修改
-        if (this.$route.params.id) {
-          const id = this.$route.params.id
-          this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-            .then(() => { this.loading = false; this.cancel() })
-        } else {
-          this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-            .then(() => { this.loading = false; this.cancel() })
-        }
+    // 编辑提交表单数据
+    submit() {
+      // 开启按钮loadding
+      this.loading = true
+      // 根据接口文档转化数据
+      const fdata = encode(this.fdata)
+      // 判断新增还是修改
+      if (this.$route.params.id) {
+        const id = this.$route.params.id
+        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
+          .then(() => { this.loading = false; this.cancel() })
+      } else {
+        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
+          .then(() => { this.loading = false; this.cancel() })
       }
+    },
+    // Form click提交表单事件handler
+    handleSubmit(name) {
       // 验证和处理没有用"增加沟通记录"的comm_log表单
       const communication_at = this.comm_log.communication_at
       const content = this.comm_log.content
@@ -234,7 +231,7 @@ export default {
         logValid = this.addLog('comm_log')
       }
       // 进行表单提交
-      this.$refs[name].validate((valid) => { if (valid && logValid) submit() })
+      this.$refs[name].validate((valid) => { if (valid && logValid) this.submit() })
     },
     // 取消表单编辑
     cancel() {
