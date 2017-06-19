@@ -6,26 +6,22 @@ export function encode() {
 
 export function editInit() {
   return {
-    // 产品名称
+    // 产品名称: "required|min:2|max:20"
     display_name: '',
+    // 产品分类 "required|numeric",
+    product_type_id: null,
+    // 产品子分类
+    product_subtype_id: null,
     // 课程时长
-    course_duration: 40,
-    // 课程总数
-    // course_total: 5,
-    // 产品价格
-    price: '500.00',
-    sale_status: 1,
-    user_id: 22,
-    company_id: 1,
-    status: 1,
-    // 创建时间
-    created_at: '2017-06-17 06:33:43',
-    username: 'admin',
-    sale_status_name: '在售',
-    // 产品类型
-    product_type_name: '一对一',
-    // 产品子类型
-    product_subtype_name: null,
+    course_duration: null,
+    // 课程总数: "numeric",
+    course_total: null,
+    // "numeric",
+    price: null,
+    // 销售状态: "字典表: sale_status",
+    sale_status: null,
+    // 销售校区: "numeric",
+    product_areas: [],
   }
 }
 
