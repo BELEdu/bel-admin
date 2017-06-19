@@ -1,7 +1,17 @@
 import { createButton } from '@/utils'
 
-export function encode(data) {
-  return data
+export function unit_encode(data) {
+  const ectype = { ...data }
+
+  if (parseInt(ectype.course_duration, 10)) {
+    ectype.course_duration = parseInt(ectype.course_duration, 10)
+  }
+
+  if (parseInt(ectype.price, 10)) {
+    ectype.price = parseInt(ectype.price, 10)
+  }
+
+  return ectype
 }
 
 export function unit_decode(res) {

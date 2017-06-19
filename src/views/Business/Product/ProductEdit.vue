@@ -2,10 +2,10 @@
   <main class="app-form-entire product-edit">
     <app-editor-title></app-editor-title>
     <Form :label-width="110" ref="form" :rules="formRules" :model="fdata">
-      <Form-item label="产品名称" required>
+      <Form-item label="产品名称" prop="display_name">
         <Input placeholder="请输入流程名称" v-model="fdata.display_name"></Input>
       </Form-item>
-      <Form-item label="产品类型" v-if="product_type.length" required>
+      <Form-item label="产品类型" v-if="product_type.length" prop="product_type_id">
         <Select placeholder="请选择......" v-model="fdata.product_type_id">
           <Option v-for="item in product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
@@ -16,10 +16,10 @@
         </Select>
         </Select>
       </Form-item>
-      <Form-item label="课程时长" required>
+      <Form-item label="课程时长" prop="course_duration">
         <Input placeholder="请输入课程时长" v-model="fdata.course_duration"></Input>
       </Form-item>
-      <Form-item label="产品单价" required>
+      <Form-item label="产品单价" prop="price">
         <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
       </Form-item>
       <Form-item label="销售状态">
@@ -69,7 +69,7 @@
  */
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
-import { editInit, encode, unit_decode } from './modules/config'
+import { editInit, unit_encode, unit_decode } from './modules/config'
 
 export default {
 
@@ -92,7 +92,24 @@ export default {
       ],
       sale_status: [],
       // 表单验证
-      formRules: {},
+      formRules: {
+        display_name: [
+          { required: true, message: '请填写产品名称', trigger: 'blur' },
+          { type: 'string', min: 2, max: 20, message: '长度应该在2到20之间' },
+          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+        ],
+        product_type_id: [
+          { required: true, message: '请选择产品类型' },
+        ],
+        course_duration: [
+          { required: true, message: '请填写课程时长', trigger: 'blur' },
+          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入正确的数字', trigger: 'blur' },
+        ],
+        price: [
+          { required: true, message: '请填写产品单价', trigger: 'blur' },
+          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入正确的数字', trigger: 'blur' },
+        ],
+      },
       // 校区全选
       allareas: false,
     }
@@ -136,7 +153,7 @@ export default {
       // 开启按钮loadding
       this.loading = true
       // 根据接口文档转化数据
-      const fdata = encode(this.fdata)
+      const fdata = unit_encode(this.fdata)
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
@@ -149,10 +166,9 @@ export default {
     // Form click提交表单事件handler @click.stop="submit"
     handleSubmit(name) {
       // 其他处理...
-      window.console.log(name)
+
       // 进行表单提交
-      // this.$refs[name].validate((valid) => { if (valid) this.submit() })
-      this.submit()
+      this.$refs[name].validate((valid) => { if (valid) this.submit() })
     },
     cancel() {
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
