@@ -28,9 +28,11 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="fcol" :data="fdata" stripe></Table>
+    <!-- 列表展示 -->
+    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
   
-    <app-pager></app-pager>
+    <!-- 分页插件 -->
+    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
   </div>
 </template>
 
@@ -40,47 +42,51 @@
  * @author hjz
  * @version 2017-06-06
  */
-import { createButton } from '@/utils'
-import { GLOBAL } from '@/store/mutationTypes'
-import fdata from './fdata'
+import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import { colConfig, decode } from './modules/config'
 
 export default {
   name: 'business-hotline',
 
   data() {
     return {
-      fcol: [
-        { title: '产品编号', key: '1', align: 'center' },
-        { title: '产品名称', key: '2', align: 'center', width: 200 },
-        { title: '产品类型', key: '3', align: 'center', width: 250 },
-        { title: '产品子分类', key: '4', align: 'center' },
-        { title: '课程时长（分中）', key: '5', align: 'center' },
-        { title: '产品单价（元）', key: '6', align: 'center' },
-        { title: '创建人', key: '7', align: 'center' },
-        { title: '创建时间', key: '8', align: 'center' },
-        { title: '销售状态', key: '9', align: 'center' },
-        {
-          title: '操作',
-          key: '10',
-          align: 'center',
-          render: createButton([
-            { icon: 'trash-a', type: 'error' },
-            { icon: 'edit', type: 'primary', click: this.toupdate },
-          ]),
-        },
-      ],
-      fdata,
+      colConfig: colConfig(this),
     }
   },
 
+  computed: {
+    buffer() {
+      return decode(this.$store.state.business.buffer)
+    },
+  },
+
   methods: {
+    pageTo(page) {
+      const per_page = this.buffer.per_page
+      this.$router.push({ path: this.$route.path, query: { page, per_page } })
+    },
+    pagesizeTo(per_page) {
+      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
+    },
     toCreate() {
       this.$router.push('/business/product/edit')
+    },
+    toUpdate(row) {
+      this.$router.push(`/business/product/edit/${row.id}`)
+    },
+    toDelete(row) {
+      this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
     },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
+      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 }
 </script>
