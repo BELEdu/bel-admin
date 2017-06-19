@@ -150,7 +150,7 @@ export function colConfig(that) {
       title: '操作',
       key: '17',
       align: 'center',
-      width: 120,
+      width: 130,
       fixed: 'right',
       render: createButton([
         { text: '删除', type: 'error', click: that.toDelete },
