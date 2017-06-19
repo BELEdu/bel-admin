@@ -127,6 +127,7 @@ export function colConfig(that) {
     {
       title: '操作',
       key: '13',
+      width: 130,
       align: 'center',
       render: createButton([
         {
