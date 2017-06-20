@@ -7,7 +7,7 @@
       <Input type="textarea" placeholder="角色相关描述" v-model="form.description"></Input>
     </Form-item>
     <Form-item label="所属部门" prop="department_id">
-      <Cascader :data="data" placeholder="请选择所属部门" v-model="form.department_id"></Cascader>
+      <Cascader :data="cascaderDepartments" placeholder="请选择所属部门" v-model="form.department_id"></Cascader>
     </Form-item>
     <Form-item label="角色特性">
       <Checkbox v-model="form.is_student_admin">学员管理</Checkbox>
@@ -67,7 +67,7 @@
     </Form-item>
 
     <Form-item>
-      <Button type="ghost" size="large">取消</Button>
+      <Button type="ghost" size="large" @click="goBack">取消</Button>
       <Button type="primary" size="large" @click="submit">提交</Button>
     </Form-item>
   </Form>
@@ -81,7 +81,7 @@
  * @version 2017-06-15
  */
 
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 
 export default {
@@ -111,28 +111,9 @@ export default {
           { max: 100, message: '描述必须在100个字符之内', trigger: 'blur' },
         ],
         department_id: [
-          { required: true, message: '所属部门必填', trigger: 'blur' },
+          { type: 'array', required: true, message: '所属部门必填', trigger: 'blur' },
         ],
       },
-
-      data: [{
-        value: 'beijing',
-        label: '北京',
-        children: [
-          {
-            value: 'gugong',
-            label: '故宫',
-          },
-          {
-            value: 'tiantan',
-            label: '天坛',
-          },
-          {
-            value: 'wangfujing',
-            label: '王府井',
-          },
-        ],
-      }],
     }
   },
 
@@ -140,6 +121,7 @@ export default {
     ...mapState({
       permis: state => state.system.role.permis,
     }),
+    ...mapGetters(['cascaderDepartments']),
   },
 
   methods: {
@@ -214,8 +196,12 @@ export default {
         .then((res) => {
           this.form = {
             ...res,
+            department_id: [res.department_id], // 这里有问题
             is_student_admin: !!res.is_student_admin,
             is_student_teac: !!res.is_student_teac,
+            menus: res.menus.map(item => item.id),
+            data_auths: res.data_auths.map(item => item.id),
+            permissions: res.permissions.map(item => item.id),
           }
         })
     },
@@ -223,24 +209,38 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
+          const data = {
+            ...this.form,
+            is_student_admin: +this.form.is_student_admin,
+            is_student_teac: +this.form.is_student_teac,
+            department_id: this.form.department_id[this.form.department_id.length - 1],
+          }
           const request = this.id ?
-            this.$http.patch(`/role/${this.id}`, this.form) :
-            this.$http.post('/role', this.form)
+            this.$http.patch(`/role/${this.id}`, data) :
+            this.$http.post('/role', data)
 
           request
+            .then(() => this.goBack())
             // eslint-disable-next-line
             .catch(console.log)
         }
       })
+    },
+
+    goBack() {
+      this.$router.go(-1)
     },
   },
 
   created() {
     this.id = this.$router.currentRoute.params.id
 
-    this.$store.dispatch(SYSTEM.ROLE.PERMIS.INIT)
+    this.$store.dispatch(SYSTEM.DEPARTMENT.INIT)
+      .then(() => this.$store.dispatch(SYSTEM.ROLE.PERMIS.INIT))
       .then(() => {
-        if (this.id) return this.getDetail(this.id)
+        if (this.id) {
+          return this.getDetail(this.id)
+        }
         return Promise.resolve()
       })
       .then(() => {
@@ -267,7 +267,7 @@ export default {
   text-align: center;
 
   & > dl {
-    flex: calc(100% / 8);
+    flex: 100% / 8;
 
     &:not(:last-child) {
       border-right: 1px solid @border-color-base;
@@ -330,7 +330,7 @@ export default {
 
     & > dt {
       align-self: center;
-      padding: 0 15px;
+      padding: 5px 15px;
     }
 
     & > div {
@@ -339,7 +339,8 @@ export default {
       border-left: 1px solid @border-color-base;
 
       & > dd {
-        flex-basis: 25%;
+        flex: none;
+        width: 25%;
         padding: 5px 10px;
       }
     }
@@ -347,5 +348,34 @@ export default {
 }
 
 // 兼容ie
+.ie {
+  .view-permi {
+    height: 195px;
+    overflow: hidden;
 
+    & > dl {
+      float: left;
+      width: 100% / 8;
+      height: 100%;
+    }
+  }
+
+  .operation-permi {
+    dl {
+      overflow: hidden;
+
+      & > dt {
+        float: left;
+      }
+
+      & > div {
+        float: left;
+
+        & > dd {
+          float: left;
+        }
+      }
+    }
+  }
+}
 </style>
