@@ -10,11 +10,11 @@ export function unit_encode(data) {
   const ectype = { ...data }
 
   if (parseInt(ectype.course_duration, 10)) {
-    ectype.course_duration = parseInt(ectype.course_duration, 10)
+    ectype.course_duration = parseFloat(ectype.course_duration, 10)
   }
 
-  if (parseInt(ectype.price, 10)) {
-    ectype.price = parseInt(ectype.price, 10)
+  if (parseFloat(ectype.price)) {
+    ectype.price = parseFloat(ectype.price)
   }
 
   return ectype
@@ -26,6 +26,8 @@ export function unit_decode(res) {
   if (data.product_areas.length) {
     data.product_areas = data.product_areas.map(item => item.area_id)
   }
+
+  data.course_duration = data.course_duration.toString()
 
   return data
 }

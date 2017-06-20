@@ -107,7 +107,7 @@ export default {
         ],
         price: [
           { required: true, message: '请填写产品单价', trigger: 'blur' },
-          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入正确的数字', trigger: 'blur' },
+          { type: 'string', pattern: /^[1-9]\d*(\.\d+)?$/, message: '请输入正确的数字', trigger: 'blur' },
         ],
       },
       // 校区全选
