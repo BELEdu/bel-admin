@@ -75,7 +75,7 @@ export default {
     },
     // 合同进度跳转
     toCheck(row) {
-      this.$router.push(`/business/contract/edit/${row.id}`)
+      this.$router.push(`/business/contract/audit/${row.id}`)
     },
   },
 

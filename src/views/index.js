@@ -13,7 +13,7 @@ export { default as Communication } from './Business/Communication'
 export { default as CommunicationEdit } from './Business/Communication/CommunicationEdit'
 export { default as Contract } from './Business/Contract'
 export { default as ContractEdit } from './Business/Contract/ContractEdit'
-export { default as ContractFlow } from './Business/Contract/ContractFlow'
+export { default as ContractAudit } from './Business/Contract/ContractAudit'
 export { default as Product } from './Business/Product'
 export { default as ProductEdit } from './Business/Product/ProductEdit'
 

@@ -109,12 +109,27 @@ export default [
       ],
     },
   },
+  // // 修改表单
+  // {
+  //   path: 'business/contract/edit/:id',
+  //   name: 'BussinessContractUpdate',
+  //   component: views.ContractUpdate,
+  //   meta: {
+  //     uri: 'contract',
+  //     breadcrumb: [
+  //       { name: '业务管理' },
+  //       { name: '合同审批' },
+  //       { name: '审批详情' },
+  //     ],
+  //   },
+  // },
+  // 审批合同
   {
-    path: 'business/contract/edit/:id',
-    name: 'BussinessContractFlow',
-    component: views.ContractFlow,
+    path: 'business/contract/audit/:id',
+    name: 'BussinessContractAudit',
+    component: views.ContractAudit,
     meta: {
-      uri: 'contract',
+      uri: 'contract/audit',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },
