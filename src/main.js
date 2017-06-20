@@ -10,13 +10,11 @@ import 'core-js/modules/es6.set'
 // 全局样式
 import '@/styles/global.less'
 
-// 组件注册
-import * as components from '@/components'
-
 // app
 import Vue from 'vue'
 import iView from 'iview'
 import { Acl, Http, Parse } from '@/utils'
+import * as components from '@/components'
 import App from './App'
 import router from './router'
 import store from './store'
