@@ -1,9 +1,16 @@
 <template>
-  <Modal :value="value" :title="title" :width="width"  @input="cancle">
+  <Modal v-model="visible" :title="title" :width="width" :closable="closable"  @input="cancle">
     <slot></slot>
     <div slot="footer">
-      <Button type="text" size="large" @click="cancle">取消</Button>
-      <Button type="primary" size="large" :loading="loading" @click="ok">确定</Button>
+      <div class="default-btn">
+        <Button type="ghost" size="large" @click="cancle">{{cancelValue}}</Button>
+        <Button type="primary" size="large" :loading="loading" @click="ok">{{okValue}}</Button>
+      </div>
+      <div class="assist-btn" v-if="assistValue">
+        <Tooltip :content="assistTip" placement="left" :disabled="!assistTip">
+          <Button type="text" size="large" @click="assist">{{assistValue}}</Button>
+        </Tooltip>
+      </div>
     </div>
   </Modal>
 </template>
@@ -19,6 +26,10 @@
  * @param {Boolean} loading - 操作按钮loading状态
  * @param {okCallback} on-ok 确认操作回调函数
  * @param {cancleCallback} on-cancle 取消操作回调函数
+ * @param {assistCallback} on-assist 辅助操作回调函数
+ * @param {String} okValue - 确认按钮文字
+ * @param {String} cancelValue - 取消按钮文字
+ * @param {String} assistValue - 辅助按钮文字
  * @version 2017-06-08
  */
 
@@ -40,8 +51,32 @@ export default {
       type: Boolean,
       required: true,
     },
+    closable: {
+      type: Boolean,
+      default: true,
+    },
+    okValue: {
+      type: String,
+      default: '确认',
+    },
+    cancelValue: {
+      type: String,
+      default: '取消',
+    },
+    assistValue: {
+      type: String,
+      default: '',
+    },
+    assistTip: {
+      type: String,
+      default: '',
+    },
   },
-
+  data() {
+    return {
+      visible: this.value,
+    }
+  },
   methods: {
     ok() {
       this.$emit('on-ok')
@@ -51,6 +86,36 @@ export default {
       this.$emit('input', false)
       this.$emit('on-cancle')
     },
+
+    assist() {
+      this.$emit('on-assist')
+    },
+  },
+  watch: {
+    value(val) {
+      this.visible = val
+    },
+    visible(val) {
+      if (val === false) {
+        this.$emit('input', false)
+      }
+    },
   },
 }
 </script>
+
+<style lang="less" scoped>
+  .default-btn {
+    &, + .assist-btn {
+      text-align: center;
+    }
+    > button {
+      + button {
+        margin-left: 16%;
+      }
+    }
+  }
+  .assist-btn {
+    padding-top: 10px;
+  }
+</style>
