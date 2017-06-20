@@ -16,7 +16,7 @@
  * @version 2017-06-05
  */
 
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import Operations from './components/Operations'
 
@@ -42,8 +42,8 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      departments: state => state.system.department.list,
+    ...mapGetters({
+      departments: 'flatDepartments',
     }),
   },
 
