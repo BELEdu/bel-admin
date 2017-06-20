@@ -58,10 +58,10 @@
     </app-warn-modal>
 
     <!--班级管理表格-->
-    <Table class="app-table" :columns="columns" :data="fdata" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
     <!--分页-->
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
   </div>
 </template>
@@ -73,10 +73,12 @@
  * @version 2017-06-08
  * @version 2017-06-13
  * @version 2017-06-15
+ * @version 2017-06-20
  */
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import fdata from './fdata'
+// import fdata from './fdata'
 
 export default {
   name: 'app-student-classes',
@@ -132,50 +134,83 @@ export default {
       },
       // 表格配置
       columns: [
-        { title: '班级名称', key: 1, align: 'center', width: 150 },
-        { title: '班级编号', key: 'classId', align: 'center' },
-        { title: '年级', key: 3, align: 'center' },
-        { title: '班主任', key: 4, align: 'center', width: 100 },
-        { title: '教师', key: 5, align: 'center', width: 180 },
-        { title: '学员人数', key: 6, align: 'center', width: 80 },
-        { title: '开办日期', key: 7, align: 'center' },
-        { title: '创建日期', key: 8, align: 'center' },
-        { title: '状态', key: 9, align: 'center' },
+        { title: '班级名称', key: 'display_name', align: 'center', width: 130 },
+        { title: '班级编号', key: 'id', align: 'center', width: 100 },
+        { title: '年级', key: 'current_grade', align: 'center', width: 120 },
+        { title: '班主任', key: 'classes_director', align: 'center', width: 100 },
+        {
+          title: '教师',
+          key: 'teacher_item',
+          align: 'center',
+          render: (h, params) => {
+            // 解构，const { xx } = obj 相当于 const xx in row { xx } = params.row
+            const { teacher_item } = params.row
+            // 相当于cosnt { teacher_id } = item
+            // const text = teacher_item
+            //   .map(({ teacher_id }) => `${teacher_id}`)
+            //   .join('，')
+            const text = teacher_item
+              .reduce((result, item) => `${result} ${item.teacher_id}，`, '')
+              .slice(0, -1)
+
+            return h('span', text)
+          },
+        },
+        { title: '学员人数', key: 'student_total', align: 'center', width: 80 },
+        { title: '开办日期', key: 'start_at', align: 'center' },
+        { title: '创建日期', key: 'created_at', align: 'center' },
+        { title: '状态', key: 'status', align: 'center' },
         {
           title: '操作',
           key: 10,
           align: 'center',
-          width: 150,
+          width: 160,
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.classId) },
-            { text: '管理', type: 'primary', click: row => this.openManageModal(row.classId) },
-            { text: '编辑', type: 'primary', click: () => this.$router.push('/student/classes/edit/10086') },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
+            { text: '管理', type: 'primary', click: row => this.openManageModal(row.id) },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/classes/edit/${row.id}`) },
           ]),
         },
       ],
       //  班级编号（临时）
       classId: '',
       // 表格数据
-      fdata,
+      // fdata,
       // 分页配置
       pager: undefined,
+
+      query: {},
     }
   },
 
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.classes.list,
+    }),
+
+    // 处理location.search
+    qs() {
+      return this.$parse(this.query)
+    },
+  },
+
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    // this.$store.commit(GLOBAL.LOADING.HIDE)
+    // 初始化第一次渲染列表
+    this.getData(location.search)
   },
 
   methods: {
     // 打开班级学员管理模态框
-    openManageModal(classId) {
+    openManageModal(id) {
       this.modal.manage = true
-      this.classId = classId
+      this.classId = id
     },
     // 打开删除班级模态框
-    openDeleteModal(classId) {
+    openDeleteModal(id) {
       this.modal.delete = true
-      this.classId = classId
+      this.classId = id
     },
     // 班级学员管理表单提交
     manageSubmit() {
@@ -187,16 +222,53 @@ export default {
       }, 1500)
     },
     // 删除班级
-    deleteSubmit(classId) {
+    deleteSubmit(id) {
       // 这个classid用来请求删除接口
-      window.console.log(classId)
-
+      this.classId = id
+      window.console.log(id)
       this.loading.delete = true
-      setTimeout(() => {
+
+      this.$store.dispatch(STUDENT.CLASSES.DELETE, id)
+      .then(() => {
         this.loading.delete = false
         this.modal.delete = false
         this.$Message.warning('删除成功！')
-      }, 1500)
+      })
+
+
+      // setTimeout(() => {
+      //   this.loading.delete = false
+      //   this.modal.delete = false
+      //   this.$Message.warning('删除成功！')
+      // }, 1500)
+    },
+
+    // 根据接口和loaction.search（query）获取数据
+    getData(qs) {
+      this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
+        .then(() => {
+          this.$router.push(`/student/classes${qs}`)
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
+
+    // 通过loaction.search（query）的分页相关字段获取列表信息
+    pageSizeChange(per_page) {
+      this.query = { ...this.query, per_page, page: 1 }
+      this.getData(this.qs)
+    },
+
+    // 分页组件点击操作
+    goTo(page) {
+      this.query = { ...this.query, page }
+      this.getData(this.qs)
+    },
+
+    // 列表筛选，（排序）（字段筛选）
+    search() {
+      const { path } = this.$router.currentRoute
+      this.$router.push(`${path}${this.qs}`)
+      this.getData(this.qs)
     },
   },
 }

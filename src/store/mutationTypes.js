@@ -66,3 +66,18 @@ export const BUSINESS = {
     DELETE: 'BUSINESS.EDIT.DELETE',
   },
 }
+
+// 学员管理
+export const STUDENT = {
+  // 班级管理
+  CLASSES: {
+    INIT: 'STUDENT.CLASSES.INIT',
+    CREATE: 'STUDENT.CLASSES.CREATE',
+    UPDATE: 'STUDENT.CLASSES.UPDATE',
+    DELETE: 'STUDENT.CLASSES.DELETE',
+  },
+  // 学员信息
+  STUDENT: {
+    INIT: 'STUDENT.STUDENT.INIT',
+  },
+}
