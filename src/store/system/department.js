@@ -6,6 +6,39 @@ export default {
     list: [],
   },
 
+  getters: {
+    flatDepartments(state) {
+      // 这里代码有点丑，待优化
+      const flat = (items, array, level) => {
+        // eslint-disable-next-line
+        level++
+        items.forEach((item) => {
+          if (item.children) {
+            array.push({ ...item, level, children: true })
+            flat(item.children, array, level)
+          } else {
+            array.push({ ...item, level })
+          }
+        })
+        return array
+      }
+
+      return flat(state.list, [], 0)
+    },
+
+    cascaderDepartments(state) {
+      function map(items) {
+        return items.map(item => ({
+          label: item.display_name,
+          value: item.id,
+          children: item.children ? map(item.children) : [],
+        }))
+      }
+
+      return map(state.list)
+    },
+  },
+
   mutations: {
     // 读取部门
     [SYSTEM.DEPARTMENT.INIT](state, list) {
@@ -35,24 +68,7 @@ export default {
     [SYSTEM.DEPARTMENT.INIT]({ commit }) {
       return Http.get('/department')
         .then((res) => {
-          // 这里代码有点丑，待优化
-          const flat = (items, array, level) => {
-            // eslint-disable-next-line
-            level++
-            items.forEach((item) => {
-              if (item.children) {
-                array.push({ ...item, level, children: true })
-                flat(item.children, array, level)
-              } else {
-                array.push({ ...item, level })
-              }
-            })
-            return array
-          }
-
-          const departments = flat(res, [], 0)
-
-          commit(SYSTEM.DEPARTMENT.INIT, departments)
+          commit(SYSTEM.DEPARTMENT.INIT, res)
         })
     },
 
