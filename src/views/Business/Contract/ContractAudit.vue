@@ -32,14 +32,14 @@
   
     <Card class="contract-detail__opinion" :bordered="false" dis-hover>
       <h4 slot="title">审批意见</h4>
-      <Form>
-        <Form-item>
-          <Input type="textarea" :rows="5"></Input>
+      <Form :model="comment" ref="comment" :rules="commentRule">
+        <Form-item prop="text">
+          <Input type="textarea" :rows="5" v-model="comment.text"></Input>
         </Form-item>
         <Form-item>
-          <Button type="primary">同意</Button>
+          <Button type="primary" @click="submit('comment',1)" :loading="loading[1]">同意</Button>
           <Button type="success">保存</Button>
-          <Button type="error">驳回</Button>
+          <Button type="error" @click="submit('comment',3)" :loading="loading[3]">驳回</Button>
         </Form-item>
       </Form>
     </Card>
@@ -57,9 +57,9 @@
  * @author hjz
  * @version 2017-06-08
  */
+import { Http } from '@/utils'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { colConfig, list_decode } from './modules/auditConfig'
-// import { Http } from '@/utils'
 
 export default {
   name: 'ContractAudit',
@@ -72,11 +72,30 @@ export default {
     // 合同详情页数据
     detail: null,
     // 提交按钮状态控制
-    loading: false,
+    loading: [true, false, true, false],
     // 单独请求的数据...
+    // 表单验证
+    commentRule: {
+      text: [
+        { required: true, message: '请填写审批意见', trigger: 'blur' },
+      ],
+    },
+    // 评论数据
+    comment: { text: '' },
   }),
 
   methods: {
+    submit(name, apply_status) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$set(this.loading, apply_status, true)
+          const id = this.$route.params.id
+          const comment = this.comment.text
+          Http.post(`/contract/approval/${id}`, { comment, apply_status })
+            .then(() => this.$set(this.loading, apply_status, false))
+        }
+      })
+    },
     cancel() {
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
         // 根据上级路由路径
