@@ -5,7 +5,7 @@
         <Input v-model="query.like.display_name" placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="filter">搜索</Button>
       </Form-item>
     </Form>
 
@@ -14,7 +14,7 @@
         <h2>角色管理</h2>
       </Col>
       <Col>
-        <Button type="primary">添加角色</Button>
+        <Button type="primary" @click="$router.push('/system/role/edit')">添加角色</Button>
       </Col>
     </Row>
 
@@ -38,16 +38,18 @@
  */
 
 import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-role',
 
+  mixins: [list],
+
   data() {
     return {
       query: {
-        order: {},
         like: {
           display_name: '',
         },
@@ -57,8 +59,13 @@ export default {
         { title: '序号', type: 'index', align: 'center', width: 50 },
         { title: '角色编号', key: 'role_number', align: 'center', sortable: 'custom' },
         { title: '角色名称', key: 'display_name', align: 'center' },
-        { title: '所属部门', key: 'department_id', align: 'center' },
-        { title: '角色类型', key: 'role_type', align: 'center', sortable: 'custom' },
+        { title: '所属部门', key: 'department_id', align: 'center', sortable: 'custom' },
+        {
+          title: '角色类型',
+          key: 'role_type',
+          align: 'center',
+          render: (h, { row }) => h('span', row.role_type === 1 ? '系统定制' : '自定义'),
+        },
         { title: '角色描述', key: 'description', align: 'center', width: 300 },
         {
           title: '操作',
@@ -80,45 +87,17 @@ export default {
     ...mapState({
       list: state => state.system.role.list,
     }),
-
-    qs() {
-      return this.$parse(this.query)
-    },
   },
 
   methods: {
-    sort({ key, order }) {
-      this.query.order[key] = order
-      this.search()
-    },
-
     getData(qs) {
+      this.$router.push(`/system/role${qs}`)
+
       this.$store.dispatch(SYSTEM.ROLE.INIT, qs)
         .then(() => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
-
-    pageSizeChange(per_page) {
-      this.query.per_page = per_page
-      this.query.page = 1
-      this.getData(this.qs)
-    },
-
-    goTo(page) {
-      this.query.page = page
-      this.getData(this.qs)
-    },
-
-    search() {
-      const { path } = this.$router.currentRoute
-      this.$router.push(`${path}${this.qs}`)
-      this.getData(this.qs)
-    },
-  },
-
-  created() {
-    this.getData(location.search)
   },
 }
 </script>
