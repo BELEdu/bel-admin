@@ -1,0 +1,133 @@
+<template>
+  <main class="app-form-entire contract-detail">
+    <app-editor-title></app-editor-title>
+  
+    <Card :bordered="false" dis-hover>
+      <h4 slot="title">审批进度</h4>
+      <Steps class="steps-fix" :current="0">
+        <Step title="" content="咨询师张飞"></Step>
+        <Step title="" content="咨询主任关羽"></Step>
+        <Step title="" content="校长刘备"></Step>
+        <Step title="" content="结束"></Step>
+      </Steps>
+    </Card>
+  
+    <Card class="contract-detail__info" :bordered="false" dis-hover>
+      <h4 slot="title">审批内容</h4>
+      <Row type="flex" justify="space-between">
+        <Col class="contract-detail__info-student">
+        <span>校区：厦门思明校区</span>
+        <span>学员：李四</span>
+        <span>学员编号：1025422545</span>
+        <span>预览合同</span>
+        </Col>
+        <Col>
+        <Button type="primary" size="small">下载合同</Button>
+        <Button type="primary" size="small">预览合同</Button>
+        </Col>
+      </Row>
+      <Table :columns="contractCol" :data="[detail]"></Table>
+      <Table :columns="productCol" :data="detail.product_detail"></Table>
+    </Card>
+  
+    <Card class="contract-detail__opinion" :bordered="false" dis-hover>
+      <h4 slot="title">审批意见</h4>
+      <Form>
+        <Form-item>
+          <Input type="textarea" :rows="5"></Input>
+        </Form-item>
+        <Form-item>
+          <Button type="primary">同意</Button>
+          <Button type="success">保存</Button>
+          <Button type="error">驳回</Button>
+        </Form-item>
+      </Form>
+    </Card>
+  
+    <Card :bordered="false" dis-hover>
+      <h4 slot="title">审批历史</h4>
+      <Table :columns="hisCol" :data="detail.approval"></Table>
+    </Card>
+  </main>
+</template>
+
+<script>
+/**
+ * 合同审批 - 审批流程
+ * @author hjz
+ * @version 2017-06-08
+ */
+import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import { colConfig, list_decode } from './modules/auditConfig'
+// import { Http } from '@/utils'
+
+export default {
+  name: 'ContractAudit',
+
+  data: () => ({
+    // "取消"按钮行为的路由对象
+    backRoute: null,
+    // 列表配置
+    ...colConfig,
+    // 合同详情页数据
+    detail: null,
+    // 提交按钮状态控制
+    loading: false,
+    // 单独请求的数据...
+  }),
+
+  methods: {
+    cancel() {
+      if (this.backRoute === null || this.backRoute.matched.length === 0) {
+        // 根据上级路由路径
+        this.$router.push('/business/hotline')
+      } else {
+        this.$router.push(this.backRoute.fullPath)
+      }
+    },
+  },
+
+  created() {
+    // Http.get('/dict?keys=gender')
+    //   .then((res) => {
+    //     this.gender = res.gender
+    //   })
+
+    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
+      .then((res) => { this.detail = list_decode(res); this.$store.commit(GLOBAL.LOADING.HIDE) })
+      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
+  beforeRouteEnter(to, from, next) {
+    // eslint-disable-next-line
+    next((vm) => { vm.backRoute = from })
+  },
+}
+</script>
+
+<style lang="less">
+.contract-detail {
+
+  &__info {
+    margin-top: 20px !important;
+
+    &-student {
+      & span {
+        margin-right: 10px;
+      }
+    }
+
+    & .ivu-table-wrapper {
+      margin-top: 20px !important;
+    }
+  }
+
+  &__opinion {
+    margin-top: 20px !important;
+
+    & button {
+      margin-top: 0 !important;
+    }
+  }
+}
+</style>
