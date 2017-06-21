@@ -89,6 +89,7 @@ export default {
         { display_name: '集美校区', id: 2 },
         { display_name: '海沧校区', id: 3 },
         { display_name: '翔安校区', id: 4 },
+        { display_name: '同安校区', id: 5 },
       ],
       sale_status: [],
       // 表单验证
@@ -216,7 +217,7 @@ export default {
     border-right: 1px solid @border-color-base;
 
     & dt {
-      height: 32px;
+      height: 33px;
       border-bottom: 1px solid @border-color-base;
     }
 
@@ -234,6 +235,7 @@ export default {
     flex-grow: 1;
 
     & dt {
+      margin-left: -20px;      
       border-bottom: 1px solid @border-color-base;
       text-align: center;
     }
