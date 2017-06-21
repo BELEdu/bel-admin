@@ -46,56 +46,59 @@
         <app-pager :data="dailyData" @on-change="getPageData" @on-page-size-change="getPerPageData"></app-pager>
       </Tab-pane>
       <Tab-pane label="周课表" name="2">
-        周课表
+        <Weekly-table :data="weeklyData"></Weekly-table>
       </Tab-pane>
     </Tabs>
 
     <!--添加课表弹窗-->
-    <Modal v-model="courseModal"
-           title="学员排课"
-           :closable="false"
-           width="600">
-      <Form :model="formItem" :label-width="80">
-        <Form-item label="教师名称：">
-          <Select v-model="formItem.teacher_name" placeholder="请选择">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="上课科目：">
-          <Select v-model="formItem.subjects_class" placeholder="请选择">
-            <Option value="1">语文</Option>
+    <app-form-modal v-model="courseModal"
+                    title="学员排课"
+                    :closable="false"
+                    :loading="false"
+                    :width="500">
+      <div class="student-modal-content">
+        <Form :model="formItem" :label-width="80">
+          <Form-item label="教师名称：">
+            <Select v-model="formItem.teacher_name" placeholder="请选择">
+              <Option value="1">张三</Option>
+              <Option value="2">李四</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="上课科目：">
+            <Select v-model="formItem.subjects_class" placeholder="请选择">
+              <Option value="1">语文</Option>
 
-            <Option value="2">数学</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="上课年级：">
-          <Select v-model="formItem.grade_class" placeholder="请选择">
-            <Option value="1">七年级</Option>
-            <Option value="2">八年级</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="产品名称：">
-          <Select v-model="formItem.product_name" placeholder="请选择">
-            <Option value="1">奥数提高</Option>
-            <Option value="2">冲刺</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="选择课时：">
-          <Select v-model="formItem.plan_class" placeholder="请选择">
-            <Option value="1">第1节</Option>
-            <Option value="2">第2节</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="上课日期：">
-          <Date-picker type="date" placeholder="选择日期" v-model="formItem.class_date"></Date-picker>
-        </Form-item>
-        <Form-item label="上课时段：">
-          <Time-picker confirm type="timerange" placement="bottom-end" placeholder="选择时间" style="width: 168px" v-model="formItem.class_time"></Time-picker>
-        </Form-item>
-        <Form-item label="学馆师：">{{formItem.customer_teacher}}</Form-item>
-      </Form>
-    </Modal>
+              <Option value="2">数学</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="上课年级：">
+            <Select v-model="formItem.grade_class" placeholder="请选择">
+              <Option value="1">七年级</Option>
+              <Option value="2">八年级</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="产品名称：">
+            <Select v-model="formItem.product_name" placeholder="请选择">
+              <Option value="1">奥数提高</Option>
+              <Option value="2">冲刺</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="选择课时：">
+            <Select v-model="formItem.plan_class" placeholder="请选择">
+              <Option value="1">第1节</Option>
+              <Option value="2">第2节</Option>
+            </Select>
+          </Form-item>
+          <Form-item label="上课日期：">
+            <Date-picker type="date" placeholder="选择日期" v-model="formItem.class_date"></Date-picker>
+          </Form-item>
+          <Form-item label="上课时段：">
+            <Time-picker confirm type="timerange" placement="bottom-end" placeholder="选择时间" style="width: 168px" v-model="formItem.class_time"></Time-picker>
+          </Form-item>
+          <Form-item label="学馆师：">{{formItem.customer_teacher}}</Form-item>
+        </Form>
+      </div>
+    </app-form-modal>
   </div>
 </template>
 
@@ -107,12 +110,12 @@
    */
 
   import { GLOBAL } from '@/store/mutationTypes'
+  import AppFormModal from '@/components/AppFormModal'
+  import WeeklyTable from '../../Components/WeeklyTable'
 
   export default{
     name: 'app-student-course-manage',
-    mounted() {
-      this.tabSwitch()
-    },
+    components: { AppFormModal, WeeklyTable },
     data() {
       return {
         // 课表弹窗-初始化
@@ -144,11 +147,40 @@
           { title: '上课年级', key: 'grade_class', align: 'center' },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '知识点', key: 'language_points', align: 'center' },
-          { title: '课时状态', key: 'status_class', align: 'center', width: 80 },
+          { title: '课时状态',
+            key: 'status_class',
+            align: 'center',
+            width: 80,
+            render: (h, params) => {
+              let name
+              let styleName
+              switch (params.row.status_class) {
+                case '1':
+                  name = '已上课'
+                  styleName = '66bae5'
+                  break
+                case '2':
+                  name = '已排定'
+                  styleName = 'e5bb79'
+                  break
+                case '3':
+                  name = '待确认'
+                  styleName = 'e47fa9'
+                  break
+                default :
+                  name = '已取消'
+                  styleName = 'cccccc'
+                  break
+              }
+              return h('span', {
+                style: `color:#${styleName}`,
+              }, name)
+            },
+          },
           {
             title: '操作',
             align: 'center',
-            width: 50,
+            width: 110,
             render: (h, params) => {
               const self = this
               if (params.row) {
@@ -156,7 +188,6 @@
                   h('Button', {
                     class: 'color-primary',
                     props: {
-                      icon: 'edit',
                       type: 'text',
                       size: 'small',
                     },
@@ -167,7 +198,20 @@
                         self.courseModal = true
                       },
                     },
-                  }),
+                  }, '编辑'),
+                  h('Button', {
+                    class: 'color-cancel',
+                    props: {
+                      type: 'text',
+                      size: 'small',
+                    },
+                    on: {
+                      click() {
+                        // 取消
+                        self.cancelCurriculum()
+                      },
+                    },
+                  }, '取消'),
                 ])
               }
               return h('div', [
@@ -181,7 +225,7 @@
                   on: {
                     click() {
                       // 回调
-                      console.log(params)
+                      window.console.log(params)
                     },
                   },
                 }),
@@ -208,6 +252,9 @@
           weekly: {},
         },
       }
+    },
+    mounted() {
+      this.tabSwitch()
     },
     methods: {
       /**
@@ -240,7 +287,7 @@
        * @param pageData  分页信息
        */
       getWeeklyData(pageData = this.pager.defaultPage) {
-        this.$http.get(`/curriculum/student/clbumWeeklyProgramData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
+        this.$http.get(`/curriculum/student/weeklyProgramData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
           .then((data) => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
             this.weeklyData = data
@@ -267,6 +314,26 @@
         this.formItem = {}
         this.courseModal = true
       },
+      // 取消排课
+      cancelCurriculum() {
+        this.$Modal.confirm({
+          title: '提示',
+          content: '是否确认取消该排课？',
+          onOk: () => {
+            this.$Message.info('点击了确定')
+          },
+          onCancel: () => {
+            this.$Message.info('点击了取消')
+          },
+        })
+      },
     },
   }
 </script>
+
+<style lang="less" scoped>
+  .student-modal-content {
+    width: 300px;
+    margin: 0 auto;
+  }
+</style>

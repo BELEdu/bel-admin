@@ -92,12 +92,12 @@ export default {
       // 学员字段
       studentColumns: [
         { title: '学员姓名', key: 'student_name', align: 'center' },
-        { title: '学员编号', key: 'student_number', align: 'center' },
+        { title: '学员编号', key: 'number', align: 'center' },
         { title: '当前年级', key: 'current_grade', align: 'center' },
-        { title: '班主任', key: 'head_teacher', align: 'center' },
-        { title: '学管师', key: 'customer_teacher', align: 'center' },
-        { title: '产品名称', key: 'product_subtype', align: 'center' },
-        { title: '上课课时', key: 'period', align: 'center' },
+        { title: '班主任', key: 'belong_customer_relationships', align: 'center' },
+        { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '产品名称', key: 'schedule_product_name', align: 'center' },
+        { title: '上课课时', key: 'course_total', align: 'center' },
         {
           title: '操作',
           align: 'center',
@@ -219,7 +219,7 @@ export default {
     // 获取学员数据
     getStudentData(pageData = this.pager.defaultPage) {
       this.pager.student = pageData
-      this.$http.get(`/curriculum/student/studentData.json?page=${pageData.page}&per_page=${pageData.per_page}`)
+      this.$http.get(`/studentcurricula?page=${pageData.page}&per_page=${pageData.per_page}`)
         .then((data) => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
