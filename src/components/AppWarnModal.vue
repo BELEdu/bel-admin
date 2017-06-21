@@ -10,7 +10,7 @@
       <!--无法删除-->
       <Button v-if="prevent" type="primary" size="large" long @click="cancle">确认</Button>
       <!--确认删除-->
-      <Button v-else type="warning" size="large" long :loading="loading" @click="ok">删除</Button>
+      <Button v-else type="warning" size="large" long :loading="loading" @click="ok">{{ action }}</Button>
     </div>
   </Modal>
 </template>
@@ -28,7 +28,7 @@
  * @param {String} action - 操作按钮文本
  * @param {okCallback} on-ok 确认操作回调函数
  * @param {cancleCallback} on-cancle 取消操作回调函数
- * @version 2017-06-08
+ * @version 2017-06-21 修正action参数相关错误
  */
 
 export default {
@@ -55,7 +55,7 @@ export default {
     },
     action: {
       type: String,
-      required: true,
+      default: '删除',
     },
   },
 
