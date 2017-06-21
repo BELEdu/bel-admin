@@ -21,7 +21,10 @@ const store = new Vuex.Store({
     createPersistedState({
       paths: [
         'token',
+        'user',
         'menus',
+        'roles',
+        'permissions',
       ],
     }),
   ],
@@ -35,7 +38,19 @@ const store = new Vuex.Store({
     token: '',
     user: {},
     menus: [],
+    roles: [],
+    permissions: [],
     loading: false,
+  },
+
+  getters: {
+    currentRole(state) {
+      return state.roles.find(role => +role.id === +state.user.role_id)
+    },
+
+    otherRoles(state) {
+      return state.roles.filter(role => +role.id !== +state.user.role_id)
+    },
   },
 
   mutations: {
@@ -54,10 +69,22 @@ const store = new Vuex.Store({
       state.menus = menus
     },
 
+    // 更新用户角色列表
+    [GLOBAL.ROLES.UPDATE](state, roles) {
+      state.roles = roles
+    },
+
+    // 更新用户权限
+    [GLOBAL.PERMISSIONS.UPDATE](state, permissions) {
+      state.permissions = permissions
+    },
+
     // 登录
-    [GLOBAL.LOGIN](state, { user, menus }) {
+    [GLOBAL.LOGIN](state, { user, menus, roles, permissions }) {
       state.user = user
       state.menus = menus
+      state.roles = roles
+      state.permissions = permissions
     },
 
     // 登出
@@ -65,6 +92,8 @@ const store = new Vuex.Store({
       state.token = ''
       state.user = {}
       state.menus = []
+      state.roles = []
+      state.permissions = []
     },
 
     // 显示加载动画
@@ -82,17 +111,18 @@ const store = new Vuex.Store({
     // 登录
     [GLOBAL.LOGIN]({ commit }, data) {
       return Http.post('/auth/login', data)
-        .then(({ user, menus }) => {
-          commit(GLOBAL.LOGIN, { user, menus })
-        })
+        .then(res => commit(GLOBAL.LOGIN, res))
+    },
+
+    [GLOBAL.SWITCH]({ commit }, id) {
+      return Http.get(`/switch_role/${id}`)
+        .then(res => commit(GLOBAL.LOGIN, res))
     },
 
     // 登出
     [GLOBAL.LOGOUT]({ commit }) {
       return Http.get('/auth/logout')
-        .then(() => {
-          commit(GLOBAL.LOGOUT)
-        })
+        .then(() => commit(GLOBAL.LOGOUT))
     },
   },
 })

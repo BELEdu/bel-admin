@@ -6,12 +6,12 @@
       <span class="app-user__notif">
         <Icon type="android-notifications-none"></Icon>
       </span>
-      <Dropdown class="app-user__identity" placement="bottom-end">
-        <a href="javascript:void(0)">分公司管理员<Icon type="arrow-down-b"></Icon></a>
+      <Dropdown class="app-user__identity" placement="bottom-end" @on-click="switchRole">
+        <a href="javascript:void(0)">{{ currentRole.display_name }}<Icon type="arrow-down-b"></Icon></a>
         <Dropdown-menu slot="list">
-          <Dropdown-item>厦门分公司/分公司管理员</Dropdown-item>
-          <Dropdown-item>厦门分公司/思明校区/校区管理员</Dropdown-item>
-          <Dropdown-item>厦门分公司/杏林校区/校区管理员</Dropdown-item>
+          <Dropdown-item v-for="role in otherRoles" :name="role.id">
+            {{ role.display_name }}
+          </Dropdown-item>
         </Dropdown-menu>
       </Dropdown>
       <span class="app-user__name">李小平</span>
@@ -55,6 +55,7 @@
  * @version 2017-06-09 增加修改密码弹出框
  */
 
+import { mapGetters } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
@@ -70,7 +71,22 @@ export default {
     formLoading: false,
   }),
 
+  computed: {
+    ...mapGetters(['currentRole', 'otherRoles']),
+  },
+
   methods: {
+    // 切换角色
+    switchRole(id) {
+      this.$store.dispatch(GLOBAL.SWITCH, id)
+        .then(() => {
+          this.$router.push('/index')
+          this.$Message.success({
+            content: '角色已切换',
+          })
+        })
+    },
+
     // 处理用户头像下拉菜单项的点击事件
     handleUserDropDown(name) {
       if (this[name]) {
