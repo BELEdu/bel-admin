@@ -70,7 +70,7 @@ export default {
     // 列表配置
     ...colConfig,
     // 合同详情页数据
-    detail: null,
+    detail: {},
     // 提交按钮状态控制
     loading: [true, false, true, false],
     // 单独请求的数据...
