@@ -37,6 +37,11 @@
     <Table v-if="buffer" size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
   
     <app-pager :data="buffer" @on-change="pageTo" @on-page-size-change="pagesizeTo"></app-pager>
+  
+    <!--删除提醒框-->
+    <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
+      <p>删除该条记录后将无法再恢复，是否继续删除？</p>
+    </app-warn-modal>
   </main>
 </template>
 
@@ -56,8 +61,21 @@ export default {
 
   data() {
     return {
+      // 删除对话框数据
+      warn: {
+        show: false,
+        title: '确认删除',
+        row: null,
+        loading: false,
+      },
       colConfig: colConfig(this),
     }
+  },
+
+  computed: {
+    ...mapState({
+      buffer: state => state.business.buffer.communication,
+    }),
   },
 
   methods: {
@@ -74,16 +92,22 @@ export default {
     toUpdate(row) {
       this.$router.push(`/business/communication/edit/${row.id}`)
     },
+    // 提醒：预备删除某一列
     toDelete(row) {
-      this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
+      this.warn.show = true
+      this.warn.row = row
+    },
+    // 确认删除
+    doDelete() {
+      this.warn.loading = true
+      this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
+        .then(() => {
+          this.warn.loading = false
+          this.warn.show = false
+        })
     },
   },
 
-  computed: {
-    ...mapState({
-      buffer: state => state.business.buffer.communication,
-    }),
-  },
   // 根据当前路由进行初始化
   created() {
     this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)

@@ -125,7 +125,7 @@ export function colConfig(that) {
       key: '10',
       align: 'center',
       render: createButton([
-        { text: '删除', type: 'error', click: that.toCreate },
+        { text: '删除', type: 'error', click: that.toDelete },
         { text: '编辑', type: 'primary', click: that.toUpdate },
       ]),
     },

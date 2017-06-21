@@ -36,6 +36,11 @@
     <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
     <!-- 分页插件 -->
     <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
+  
+    <!--删除提醒框-->
+    <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
+      <p>删除该条记录后将无法再恢复，是否继续删除？</p>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -55,6 +60,12 @@ export default {
 
   data() {
     return {
+      warn: {
+        show: false,
+        title: '确认删除',
+        row: null,
+        loading: false,
+      },
       colConfig: colConfig(this),
     }
   },
@@ -77,7 +88,17 @@ export default {
     },
     // 删除某一列表项
     toDelete(row) {
-      this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
+      // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
+      this.warn.show = true
+      this.warn.row = row
+    },
+    doDelete() {
+      this.warn.loading = true
+      this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
+        .then(() => {
+          this.warn.loading = false
+          this.warn.show = false
+        })
     },
     toFiltrate() {
       // 封装一个公共方法formEncoded(obj)，将对象转化成键值对字符串
