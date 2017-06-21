@@ -49,9 +49,9 @@ export default {
       return Http.post(`/${state.uri}`, payload)
     },
     // 编辑页面 提交修改信息
-    [BUSINESS.EDIT.UPDATE]({ state, commit }, payload) {
+    [BUSINESS.EDIT.UPDATE]({ state, commit }, { id, fdata }) {
       // 提交成功后回到index组件
-      return Http.patch(`/${state.uri}/${payload.id}`, payload.fdata)
+      return Http.patch(`/${state.uri}/${id}`, fdata)
     },
     // index页面 删除信息
     [BUSINESS.EDIT.DELETE]({ state, commit }, id) {

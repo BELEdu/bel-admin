@@ -103,21 +103,20 @@ export default {
   },
 
   methods: {
-    handleSubmit(name) {
-      const submit = () => {
-        this.loading = true
-        const fdata = encode(this.fdata)
-        if (this.$route.params.id) {
-          const id = this.$route.params.id
-          this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-            .then(() => { this.loading = false; this.cancel() })
-        } else {
-          this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-            .then(() => { this.loading = false; this.cancel() })
-        }
+    submit() {
+      this.loading = true
+      const fdata = encode(this.fdata)
+      if (this.$route.params.id) {
+        const id = this.$route.params.id
+        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
+          .then(() => { this.loading = false; this.cancel() })
+      } else {
+        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
+          .then(() => { this.loading = false; this.cancel() })
       }
-
-      this.$refs[name].validate((valid) => { if (valid) submit() })
+    },
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => { if (valid) this.submit() })
     },
     cancel() {
       if (this.backRoute === null || this.backRoute.matched.length === 0) {
