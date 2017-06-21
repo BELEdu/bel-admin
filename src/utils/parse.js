@@ -4,7 +4,7 @@
  * @name Parse
  * @class
  * @description 用来把一个query对象解析成合法的、符合后端接口要求的url参数字符串
- * @version 2017-06-14
+ * @version 2017-06-21
  */
 
 export default class Parse {
@@ -20,15 +20,18 @@ export default class Parse {
         like: {
           display_name: 'abc',
         },
+        between: {
+          created_at: [2017-03-02, 2017-03-04],
+        },
       },
     */
 
     /**
      * query解析方法
      * @param {Object} query - 参数对象
-     * @param {Object} query.order - 排序参数对象
-     * @param {Object} query.like - 模糊搜索参数对象
-     * @description 由于产品在某些交互细节上还未确定，目前此方法只考虑order和like这两种排序
+     * @param {Object} query.order - 排序参数
+     * @param {Object} query.like - 模糊搜索参数
+     * @param {Array} query.between - 时间段搜索参数
      */
     Vue.prototype.$parse = (query) => {
       const queries = Object.entries(query)
@@ -39,10 +42,16 @@ export default class Parse {
         }
 
         const subQueries = Object.entries(subQuery)
-        const parsedSubQueries = subQueries.reduce((subResult, [key, value]) => (
-          value ? `${subResult}${prop}[${key}]=${value}&` : subResult
-        ), '')
-        return `${result}${parsedSubQueries}&`
+        const parsedSubQueries = subQueries.reduce((subResult, [key, value]) => {
+          // 处理between情况
+          if (Array.isArray(value)) {
+            return `${subResult}${prop}[${key}][]=${value[0]}&${prop}[${key}][]=${value[0]}&`
+          }
+          // 处理其它一般情况
+          return value ? `${subResult}${prop}[${key}]=${value}&` : subResult
+        }, '')
+
+        return `${result}${parsedSubQueries}`
       }, '')
 
       const result = parsedQueries.replace(/&+$/, '')
