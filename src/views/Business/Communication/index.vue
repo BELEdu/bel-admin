@@ -81,7 +81,7 @@ export default {
 
   computed: {
     ...mapState({
-      buffer: state => state.business.buffer,
+      buffer: state => state.business.buffer.communication,
     }),
   },
   // 根据当前路由进行初始化

@@ -56,7 +56,7 @@ export default {
 
   computed: {
     buffer() {
-      return list_decode(this.$store.state.business.buffer)
+      return list_decode(this.$store.state.business.buffer.product)
     },
   },
 

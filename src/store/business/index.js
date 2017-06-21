@@ -9,7 +9,12 @@ import { BUSINESS } from '../mutationTypes'
 
 export default {
   state: {
-    buffer: {},
+    buffer: {
+      hotline: {},
+      communication: {},
+      contract: {},
+      product: {},
+    },
     uri: '',
   },
 
@@ -23,11 +28,11 @@ export default {
       const index = to.fullPath.indexOf('?')
       if (index === -1) {
         return Http.get(`/${state.uri}`)
-          .then(res => commit(BUSINESS.PAGE.INIT, res))
+          .then(res => commit(BUSINESS.PAGE.INIT, { res, uri: to.meta.uri }))
       }
       const query = to.fullPath.substr(index)
       return Http.get(`/${state.uri}${query}`)
-        .then(res => commit(BUSINESS.PAGE.INIT, res))
+        .then(res => commit(BUSINESS.PAGE.INIT, { res, uri: to.meta.uri }))
     },
     [BUSINESS.EDIT.INIT]({ state, commit }, to) {
       const id = to.params.id
@@ -55,16 +60,16 @@ export default {
   },
 
   mutations: {
-    [BUSINESS.PAGE.INIT](state, res) {
+    [BUSINESS.PAGE.INIT](state, { res, uri }) {
       // res是否要做处理
-      state.buffer = res
+      state.buffer[uri] = res
     },
     // 在router的钩子中使用
     [BUSINESS.SETURI](state, uri) {
       state.uri = uri
     },
     [BUSINESS.EDIT.DELETE](state, id) {
-      const data = state.buffer.data
+      const data = state.buffer[state.uri].data
       const index = data.findIndex(item => item.id === id)
       if (index !== -1) data.splice(index, 1)
     },

@@ -61,7 +61,7 @@ export default {
 
   computed: {
     ...mapState({
-      buffer: state => state.business.buffer,
+      buffer: state => state.business.buffer.hotline,
     }),
   },
 
