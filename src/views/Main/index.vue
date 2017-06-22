@@ -7,7 +7,7 @@
       <!--左侧导航-->
       <app-menu></app-menu>
       <!--右侧主内容区-->
-      <div class="app-main">
+      <div class="app-main" ref="appMain">
         <!--面包屑导航-->
         <div class="app-content">
           <Breadcrumb class="app-creadcrumb">
@@ -15,7 +15,7 @@
               {{ item.name }}
             </Breadcrumb-item>
           </Breadcrumb>
-          <router-view></router-view>
+          <router-view @scrollToTop="scrollToTop"></router-view>
         </div>
 
         <!--站点底部-->
@@ -48,6 +48,12 @@ export default {
 
     breadcrumb() {
       return this.$route.meta.breadcrumb
+    },
+  },
+
+  methods: {
+    scrollToTop() {
+      this.$refs.appMain.scrollTop = 0
     },
   },
 
