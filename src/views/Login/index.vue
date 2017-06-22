@@ -127,7 +127,7 @@ export default {
   box-shadow: 0 0 5px @shadow-color;
 
   &__header {
-    background-color: @success-color ;
+    background-color: @primary-color ;
     color: #fff;
     text-align: center;
 
