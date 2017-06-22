@@ -4,7 +4,12 @@
  * @version 2017-06-22
  * @description
  */
-import { SmartAnalyse, SmartExam, WrongQuestion } from '@/views'
+import {
+  SmartAnalyse,
+  SmartExam,
+  StudentExam,
+  WrongQuestion,
+} from '@/views'
 
 export default [
   {
@@ -14,6 +19,10 @@ export default [
   {
     path: '/examination/smartexam',
     component: SmartExam,
+  },
+  {
+    path: '/examination/smartexam/:id',
+    component: StudentExam,
   },
   {
     path: '/examination/wrongquestion',

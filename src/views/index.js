@@ -59,4 +59,5 @@ export { default as StudentClassesEdit } from './Student/Classes/Edit'
 // 测试管理
 export { default as SmartAnalyse } from './examination/SmartAnalyse'
 export { default as SmartExam } from './examination/SmartExam'
+export { default as StudentExam } from './examination/SmartExam/StudentExam'
 export { default as WrongQuestion } from './examination/WrongQuestion'

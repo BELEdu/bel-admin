@@ -59,7 +59,7 @@ export default {
      * @description 跳转页面应该是：/examination/smartexam/${id}
      */
     checkStu() {
-      //
+      this.$router.push('/examination/smartexam/1')
     },
     /**
      * @param { object } row 学员信息
