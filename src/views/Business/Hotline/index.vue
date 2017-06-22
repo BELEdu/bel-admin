@@ -18,7 +18,7 @@
           <Option value="4">已签约</Option>
         </Select>
       </Form-item>
-      <Form-item style="float: right; margin: 0;">
+      <Form-item>
         <Button type="primary" @click.stop="toFiltrate">查询搜索</Button>
       </Form-item>
     </Form>
@@ -158,6 +158,17 @@ export default {
 
   &__form-date {
     width: 150px;
+  }
+}
+
+.app-search-form {
+
+  &>.ivu-form-item {
+
+    &:last-child {
+      float: right;
+      margin-right: 0;
+    }
   }
 }
 </style>

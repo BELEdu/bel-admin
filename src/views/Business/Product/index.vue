@@ -14,7 +14,7 @@
         <Checkbox></Checkbox>
         <span style="font-size: 14px;">不显示停售</span>
       </Form-item>
-      <Form-item style="float: right; margin: 0;">
+      <Form-item>
         <Button type="primary">查询搜索</Button>
       </Form-item>
     </Form>
@@ -138,6 +138,17 @@ export default {
 
   &__form-date {
     width: 150px;
+  }
+}
+
+.app-search-form {
+
+  &>.ivu-form-item {
+
+    &:last-child {
+      float: right;
+      margin-right: 0;
+    }
   }
 }
 </style>
