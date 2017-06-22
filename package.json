@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "core-js": "^2.4.1",
+    "date-fns": "^2.0.0-alpha.1",
     "iview": "^2.0.0-rc.17",
     "socket.io-client": "^2.0.3",
     "vue": "^2.3.4",
