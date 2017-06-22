@@ -110,7 +110,7 @@ export default {
         ],
       },
 
-      formErrors: [],
+      formErrors: {}, // 表单提交错误信息
 
       classes_type: [], // 班级分类数据源（字典）
       grade: [], // 年级数据源（字典）
@@ -119,9 +119,8 @@ export default {
       student_data: [], // 班级学生数据源
       // studentList: [], // 班级学生数据源（测试）
 
-      // 提交表单的loading
       loading: {
-        submit: false,
+        submit: false, // 提交表单的loading
       },
     }
   },
