@@ -54,7 +54,7 @@ export default {
 
   methods: {
     /**
-     * @param { object } row 学员信息
+     * @param { number } row 学员信息
      * @description 获取student_id，跳转学员详情页
      * @description 跳转页面应该是：/examination/smartexam/${id}
      */
@@ -62,7 +62,7 @@ export default {
       this.$router.push('/examination/smartexam/1')
     },
     /**
-     * @param { object } row 学员信息
+     * @param { number } row.student_id | $route.params.id 学员id
      * @description 获取student_id用于<添加试卷>的提交
      * @description 显示<添加试卷>组件
      */

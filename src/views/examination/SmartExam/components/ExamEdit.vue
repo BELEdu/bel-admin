@@ -51,7 +51,8 @@
  * @version 2017-06-22
  * @description 该组件有两个入口 列表页&学员独立页
  * @description 列表页可以从row拿，独立页面呢？
- * @description 独立页也是从全员列表进入，或者路由如果是path/${id}从路由对象拿
+ * @description 独立页也是从全员列表进入，改变路由，然后从路由path/${id}拿
+ * @description 最好是在组件中父组件中维护id字段，触发examStudent(id)是改变id字段
  */
 export default {
   props: {
@@ -59,6 +60,11 @@ export default {
       type: Boolean,
       required: true,
       default: false,
+    },
+    // 后期考虑是否有必要放到store中
+    id: {
+      type: Number,
+      // required: true,
     },
   },
 
