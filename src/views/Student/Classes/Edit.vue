@@ -1,12 +1,18 @@
 <template>
   <div>
     <app-editor-title></app-editor-title>
-    {{isUpdate}}，{{form.classes_type}}，{{form.current_grade}}，{{form.classes_director}}，{{form.teachers}}，{{form.start_at}}，{{form.students}}
+    <!--{{isUpdate}}，{{form.classes_type}}，{{form.current_grade}}，{{form.classes_director}}，{{form.teachers}}，{{form.start_at}}，{{form.students}}-->
+    <Alert type="error" show-icon v-if="errorsInfo.length!=0">
+      错误提示文案
+      <span slot="desc">
+          <div v-for="item in errorsInfo">{{item}}</div>
+      </span>
+    </Alert>
     <Form :label-width="130" class="app-form-entire" :model="form" :rules="rules" ref="form" >
       <Form-item label="班级名称" required prop="display_name">
         <Input placeholder="请输入班级名称" v-model="form.display_name"></Input>
       </Form-item>
-      <Form-item label="班级分类" required >
+      <Form-item label="班级分类" required prop="classes_type">
         <Select placeholder="请选择..." v-model="form.classes_type">
           <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
@@ -130,13 +136,16 @@ export default {
           { min: 2, max: 32, message: '字符长度应在2到32之间', trigger: 'blur' },
         ],
         classes_type: [
-          { required: true, message: '班级分类必填', trigger: 'change' },
+          { type: 'number', required: true, message: '班级分类必填', trigger: 'change' },
         ],
       },
       // 提交表单的loading
       loading: {
         submit: false,
       },
+      // 后端返回的错误信息
+      // errorsInfo: ['a的错误1', 'a的错误2', 'b的错误1'],
+      errorsInfo: [],
     }
   },
 
@@ -169,36 +178,46 @@ export default {
           // 等同于
           // this.form.start_at = this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : ''
 
-          // this.loading.submit = true
+          this.loading.submit = true
 
           // 提交时如果是修改操作
           if (this.isUpdate) {
             this.form.id = this.$router.currentRoute.params.id
             this.$http.patch(`/classes/${this.form.id}`, this.form)
             .then(() => {
-              // this.loading.submit = false
+              this.loading.submit = false
               this.$Message.info('修改成功')
+              // 返回上一页
               // this.goBack()
             })
-            // eslint-disable-next-line
-            .catch(console.log)
+             .catch(({ errors }) => {
+              // this.$Message.error(errors)
+               this.loading.submit = false
+               this.errorInfo(errors)
+             })
           }
           // 提交时如果是添加操作
           if (this.isUpdate === false) {
             this.$http.post('/classes', this.form)
             .then(() => {
-              // this.loading.submit = false
+              this.loading.submit = false
               this.$Message.info('添加成功')
-              // this.goBack()
+              // 返回上一页
+              this.goBack()
             })
-            // eslint-disable-next-line
-            .catch(console.log)
-            // .catch((errors)=>{
-            //   this.$Message.error(errors)
-            // })
+            .catch(({ errors }) => {
+              // this.$Message.error(errors)
+              this.loading.submit = false
+              this.errorInfo(errors)
+            })
           }
         }
       })
+    },
+
+    // 处理后端返回的错误数据
+    errorInfo(errors) {
+      this.errorsInfo = Object.values(errors).reduce((result, item) => result.concat(item), [])
     },
 
     // 取消（返回上一页）
