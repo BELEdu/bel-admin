@@ -3,11 +3,10 @@
  * @author hjz
  * @version 2017-06-22
  */
-/* eslint-disable */
 import { createButton } from '@/utils'
 
 // 当前状态 - 根据状态调整原点颜色
-const suitColor = status => {
+const suitColor = (status) => {
   let className = ''
   switch (status) {
     // 未签约
@@ -28,7 +27,7 @@ const suitColor = status => {
       break
     // 休学
     case 5:
-      className = 'bg-cancel'
+      className = 'bg-error'
       break
     // 默认
     default:
@@ -58,7 +57,7 @@ const currentColor = (h, params) => h(
         },
       },
     ),
-    `${params.row[2].text}`
+    `${params.row[2].text}`,
   ],
 )
 
@@ -95,9 +94,9 @@ export function colConfig(that) {
       key: 6,
       align: 'center',
       render: createButton([
-        { text: '查看', type: 'primary' },
-        { text: '立即测试', type: 'primary' },
-      ])
+        { text: '查看', type: 'primary', click: that.checkStu },
+        { text: '立即测试', type: 'primary', click: that.examineStu },
+      ]),
     },
   ]
 }
