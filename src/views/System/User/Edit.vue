@@ -136,9 +136,23 @@ export default {
 
   computed: {
     ...mapGetters(['cascaderDepartments']),
+
+    id() {
+      return this.$router.currentRoute.params.id
+    },
   },
 
   methods: {
+    getUser() {
+      this.$http.get(`/user/${this.id}`)
+        .then((res) => {
+          this.form = {
+            ...res,
+            status: !!res.status,
+          }
+        })
+    },
+
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -150,6 +164,9 @@ export default {
 
   created() {
     this.$store.dispatch(SYSTEM.DEPARTMENT.INIT)
+      .then(() => {
+        if (this.id) this.getUser()
+      })
       .then(() => {
         this.$store.commit(GLOBAL.LOADING.HIDE)
       })

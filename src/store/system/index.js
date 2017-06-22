@@ -6,10 +6,12 @@
 
 import role from './role'
 import department from './department'
+import user from './user'
 
 export default {
   modules: {
     role,
     department,
+    user,
   },
 }

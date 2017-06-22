@@ -1,8 +1,8 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
+      <Form-item>
+        <Input placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search">搜索</Button>
@@ -18,9 +18,9 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo"></app-pager>
   </div>
 </template>
 
@@ -28,76 +28,61 @@
 /**
  * 系统管理 - 用户管理
  * @author lmh
- * @version 2017-06-07
+ * @version 2017-06-22 初步动态化
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-user',
 
+  mixins: [list],
+
   data() {
     return {
-      form: {
-        keyword: '',
-      },
+      query: {},
 
       columns: [
-        { title: '员工编号', key: 1, align: 'center' },
-        { title: '用户名', key: 2, align: 'center' },
-        { title: '姓名', key: 3, align: 'center' },
-        { title: '手机号', key: 4, align: 'center' },
-        { title: '邮箱', key: 5, align: 'center' },
-        { title: '性别', key: 6, align: 'center' },
-        { title: '部门角色', key: 7, align: 'center', width: 300 },
-        { title: '岗位性质', key: 8, align: 'center' },
-        { title: '最近登录时间', key: 9, align: 'center', width: 125 },
-        { title: '状态', key: 10, align: 'center' },
+        { title: '员工编号', key: 'user_number', align: 'center' },
+        { title: '用户名', key: 'username', align: 'center' },
+        { title: '姓名', key: 'realname', align: 'center' },
+        { title: '手机号', key: 'mobile', align: 'center' },
+        { title: '邮箱', key: 'email', align: 'center' },
+        { title: '性别', key: 'gender', align: 'center' },
+        { title: '部门角色', key: 'users_job_type', align: 'center' },
+        { title: '岗位性质', key: 'users_job_type', align: 'center' },
+        { title: '最近登录时间', key: 'updated_at', align: 'center' },
+        { title: '状态', key: 'status', align: 'center' },
         {
           title: '操作',
           key: 11,
           align: 'center',
+          width: 110,
           render: createButton([
-            { icon: 'trash-a', type: 'error' },
-            { icon: 'edit', type: 'primary', click: () => this.$router.push('/system/user/edit/2') },
+            { text: '删除', type: 'error' },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/user/edit/${row.id}`) },
           ]),
         },
       ],
-
-      data: [
-        {
-          1: 'sz101002',
-          2: 'JSB00001',
-          3: '侯晓辉辉',
-          4: '13112345678',
-          5: 'yang@qq.com',
-          6: '男',
-          7: '厦门分公司/教学部-教师',
-          8: '全职',
-          9: '2017-04-05 18:22',
-          10: '启用',
-        },
-        {
-          1: 'sz101002',
-          2: 'JSB00001',
-          3: '侯晓辉',
-          4: '13112345678',
-          5: 'yang@qq.com',
-          6: '男',
-          7: '厦门分公司/教学部-教师',
-          8: '全职',
-          9: '2017-04-05 18:22',
-          10: '启用',
-        },
-      ],
-
-      pager: undefined,
     }
   },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+  computed: {
+    ...mapState({
+      list: state => state.system.user.list,
+    }),
+  },
+
+  methods: {
+    getData(qs) {
+      this.$router.push(`/system/user${qs}`)
+
+      this.$store.dispatch(SYSTEM.USER.INIT, qs)
+        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    },
   },
 }
 </script>
