@@ -7,18 +7,22 @@
         <Icon type="android-notifications-none"></Icon>
       </span>
       <Dropdown class="app-user__identity" placement="bottom-end" @on-click="switchRole">
-        <a href="javascript:void(0)">{{ currentRole.display_name }}<Icon type="arrow-down-b"></Icon></a>
-        <Dropdown-menu slot="list">
+        <a href="javascript:void(0)">
+          <!--目前接口未完善，用户角色列表可能未返回，回导致这里出错，因此这里先作一个临时判断-->
+          {{ currentRole ? currentRole.display_name : '接口未返回角色（调试用）' }}
+          <Icon type="arrow-down-b" v-if="otherRoles.length"></Icon>
+        </a>
+        <Dropdown-menu slot="list" v-if="otherRoles.length">
           <Dropdown-item v-for="role in otherRoles" :name="role.id">
             {{ role.display_name }}
           </Dropdown-item>
         </Dropdown-menu>
       </Dropdown>
-      <span class="app-user__name">李小平</span>
+      <span class="app-user__name">{{ user.username }}</span>
       <div class="app-user__menu">
         <Dropdown trigger="click" placement="bottom-end" @on-click="handleUserDropDown">
           <a href="javascript:void(0)">
-            <img class="app-user__avatar" :src="require('@/assets/default-avatar.png')" alt="李小平">
+            <img class="app-user__avatar" :src="user.avatar || require('@/assets/default-avatar.png')" :alt="user.username">
           </a>
           <Dropdown-menu slot="list">
             <Dropdown-item name="editPassword">修改密码</Dropdown-item>
@@ -32,7 +36,7 @@
     <app-form-modal v-model="modal" title="修改密码" :loading="formLoading">
       <Form class="app-header__edit-password" :model="form" :label-width="80">
         <Form-item label="用户名">
-          <span>李小平</span>
+          <span>{{ user.username }}</span>
         </Form-item>
         <Form-item label="原密码">
           <Input type="password" v-model="form.p1"></Input>
@@ -52,10 +56,10 @@
 /**
  * 应用头部
  * @author lmh
- * @version 2017-06-09 增加修改密码弹出框
+ * @version 2017-06-21 动态化数据，增加切换角色功能
  */
 
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
@@ -72,6 +76,7 @@ export default {
   }),
 
   computed: {
+    ...mapState(['user']),
     ...mapGetters(['currentRole', 'otherRoles']),
   },
 
