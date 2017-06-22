@@ -16,6 +16,7 @@ import arrange from './curriculum'
 import analysis from './analysis'
 import system from './system'
 import student from './student'
+import examination from './examination'
 
 Vue.use(Router)
 
@@ -77,6 +78,7 @@ const router = new Router({
         ...analysis,
         ...system,
         ...student,
+        ...examination,
       ],
     },
   ],
