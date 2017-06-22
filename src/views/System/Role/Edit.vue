@@ -9,11 +9,18 @@
     <Form-item label="所属部门" prop="department_id">
       <Cascader :data="cascaderDepartments" placeholder="请选择所属部门" v-model="form.department_id"></Cascader>
     </Form-item>
-    <Form-item label="角色特性">
-      <Checkbox v-model="form.is_student_admin">学员管理</Checkbox>
-      <Checkbox v-model="form.is_student_teac">学员授课</Checkbox>
+    <Form-item label="学员管理">
+      <i-switch size="large" v-model="form.is_student_admin">
+        <span slot="open">开启</span>
+        <span slot="close">关闭</span>
+      </i-switch>
     </Form-item>
-
+    <Form-item label="学员授课">
+      <i-switch size="large" v-model="form.is_student_teac">
+        <span slot="open">开启</span>
+        <span slot="close">关闭</span>
+      </i-switch>
+    </Form-item>
     <Form-item label="视图权限">
       <Checkbox-group class="permi-group view-permi" v-model="form.menus">
         <dl v-for="menu in permis.menus" :key="menu.id">
@@ -190,16 +197,21 @@ export default {
       }
     },
 
+    getDepartmentPath(id) {
+      return this.departmentPaths
+        .find(path => path[path.length - 1] === id)
+    },
+
     // 获取当前编辑项的数据
     getDetail(id) {
       return this.$http.get(`/role/${id}`)
         .then((res) => {
           this.form = {
             ...res,
-            department_id: this.departmentPaths
-              .find(path => path[path.length - 1] === res.department_id),
+            department_id: this.getDepartmentPath(res.department_id),
             is_student_admin: !!res.is_student_admin,
             is_student_teac: !!res.is_student_teac,
+            // 以下字段应该让后台直接返回id
             menus: res.menus.map(item => item.id),
             data_auths: res.data_auths.map(item => item.id),
             permissions: res.permissions.map(item => item.id),
