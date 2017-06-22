@@ -22,7 +22,10 @@
     <!-- 下部 列表展示 end -->
     <!-- 底部 分页 -->
     <app-pager></app-pager>
-    <!-- 底部 分页 -->
+    <!-- 底部 分页 end -->
+    <!-- 测试弹窗组件 -->
+    <local-exam-edit v-model="switcher"></local-exam-edit>
+    <!-- 测试弹窗组件 end -->
   </div>
 </template>
 
@@ -34,13 +37,18 @@
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { colConfig, buffer } from './modules/config'
+import ExamEdit from './components/ExamEdit'
 
 export default {
 
   data() {
     return {
+      // 全员列表数据
       buffer,
+      // 全员列表配置
       colConfig: colConfig(this),
+      // 立即测试开关
+      switcher: false,
     }
   },
 
@@ -59,8 +67,12 @@ export default {
      * @description 显示<添加试卷>组件
      */
     examineStu() {
-      //
+      this.switcher = true
     },
+  },
+
+  components: {
+    localExamEdit: ExamEdit,
   },
 
   created() {
