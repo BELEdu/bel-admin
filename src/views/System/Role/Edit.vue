@@ -78,7 +78,7 @@
  * 系统管理 - 角色管理 - 创建/编辑角色
  * @author lmh
  * @description 后台返回的数据与前台所需数据格式不符，需要协商解决
- * @version 2017-06-15
+ * @version 2017-06-22
  */
 
 import { mapState, mapGetters } from 'vuex'
@@ -121,7 +121,7 @@ export default {
     ...mapState({
       permis: state => state.system.role.permis,
     }),
-    ...mapGetters(['cascaderDepartments']),
+    ...mapGetters(['cascaderDepartments', 'departmentPaths']),
   },
 
   methods: {
@@ -196,7 +196,8 @@ export default {
         .then((res) => {
           this.form = {
             ...res,
-            department_id: [res.department_id], // 这里有问题
+            department_id: this.departmentPaths
+              .find(path => path[path.length - 1] === res.department_id),
             is_student_admin: !!res.is_student_admin,
             is_student_teac: !!res.is_student_teac,
             menus: res.menus.map(item => item.id),

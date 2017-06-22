@@ -26,6 +26,25 @@ export default {
       return flat(state.list, [], 0)
     },
 
+    departmentPaths(state) {
+      const result = []
+
+      const loop = (items, path) => {
+        items.forEach((item) => {
+          const updatedPath = [...path, item.id]
+          if (item.children) {
+            loop(item.children, updatedPath)
+          } else {
+            result.push(updatedPath)
+          }
+        })
+      }
+
+      loop(state.list, [])
+
+      return result
+    },
+
     cascaderDepartments(state) {
       function map(items) {
         return items.map(item => ({
