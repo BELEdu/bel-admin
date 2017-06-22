@@ -34,7 +34,7 @@
 /**
  * 系统管理 - 角色管理
  * @author lmh
- * @version 2017-06-06
+ * @version 2017-06-22
  */
 
 import { mapState } from 'vuex'
@@ -71,12 +71,9 @@ export default {
           title: '操作',
           align: 'center',
           render: createButton([
-            { text: '人员', type: 'primary' },
-            {
-              text: '编辑',
-              type: 'primary',
-              click: ({ id }) => this.$router.push(`/system/role/edit/${id}`),
-            },
+            { text: '删除', type: 'error', isShow: ({ row }) => row.role_type === 2 },
+            { text: '筛选', type: 'primary', click: this.filterByDisplayName },
+            { text: '编辑', type: 'primary', click: this.goToEdit },
           ]),
         },
       ],
@@ -90,6 +87,18 @@ export default {
   },
 
   methods: {
+    // 按角色名称筛选列表
+    filterByDisplayName({ display_name }) {
+      this.query.equal = { display_name }
+      this.filter()
+    },
+
+    // 转跳到编辑页
+    goToEdit({ id }) {
+      this.$router.push(`/system/role/edit/${id}`)
+    },
+
+    // 获取列表数据
     getData(qs) {
       this.$router.push(`/system/role${qs}`)
 
