@@ -23,14 +23,12 @@
       </Form-item>
       <Form-item label="性别" prop="gender">
         <Radio-group v-model="form.gender">
-          <Radio :label="1">男</Radio>
-          <Radio :label="2">女</Radio>
+          <Radio v-for="gender in genders" :key="gender.value" :label="gender.value">{{ gender.display_name }}</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="岗位性质" prop="users_job_type">
         <Radio-group v-model="form.users_job_type">
-          <Radio>全职</Radio>
-          <Radio>兼职</Radio>
+          <Radio v-for="jobType in jobTypes" :key="jobType.value" :label="jobType.value">{{ jobType.display_name }}</Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="部门角色">
@@ -75,7 +73,7 @@
  * @version 2017-06-19
  */
 
-import { mapGetters } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 
 export default {
@@ -135,6 +133,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      genders: state => state.dicts.gender,
+      jobTypes: state => state.dicts.users_job_type,
+    }),
     ...mapGetters(['cascaderDepartments']),
 
     id() {
