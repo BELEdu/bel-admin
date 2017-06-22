@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "core-js": "^2.4.1",
-    "iview": "^2.0.0-rc.16",
-    "socket.io-client": "^2.0.2",
+    "iview": "^2.0.0-rc.17",
+    "socket.io-client": "^2.0.3",
     "vue": "^2.3.4",
-    "vue-router": "^2.3.1",
+    "vue-router": "^2.6.0",
     "vuex": "^2.3.1",
     "vuex-persistedstate": "^1.4.1",
     "whatwg-fetch": "^2.0.3"
