@@ -13,7 +13,7 @@
           <Icon type="arrow-down-b" v-if="otherRoles.length"></Icon>
         </a>
         <Dropdown-menu slot="list" v-if="otherRoles.length">
-          <Dropdown-item v-for="role in otherRoles" :name="role.id">
+          <Dropdown-item v-for="role in otherRoles" :key="role.id" :name="role.id">
             {{ role.display_name }}
           </Dropdown-item>
         </Dropdown-menu>
