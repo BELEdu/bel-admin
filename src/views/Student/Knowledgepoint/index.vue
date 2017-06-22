@@ -108,6 +108,7 @@ export default {
              const row = params.row
              const point = row.point
              return h('Progress', {
+               class: 'text-left',
                props: {
                  percent: point,
                  status: 'active',
