@@ -43,6 +43,7 @@ const store = new Vuex.Store({
     roles: [],
     permissions: [],
     loading: false,
+    dicts: {},
   },
 
   getters: {
@@ -81,6 +82,11 @@ const store = new Vuex.Store({
       state.permissions = permissions
     },
 
+    // 获取字典
+    [GLOBAL.DICTS.INIT](state, dicts) {
+      state.dicts = dicts
+    },
+
     // 登录
     [GLOBAL.LOGIN](state, { user, menus, roles, permissions }) {
       state.user = user
@@ -110,12 +116,19 @@ const store = new Vuex.Store({
   },
 
   actions: {
+    // 获取字典
+    [GLOBAL.DICTS.INIT]({ commit }) {
+      Http.get('/dict')
+        .then(res => commit(GLOBAL.DICTS.INIT, res))
+    },
+
     // 登录
     [GLOBAL.LOGIN]({ commit }, data) {
       return Http.post('/auth/login', data)
         .then(res => commit(GLOBAL.LOGIN, res))
     },
 
+    // 切换角色
     [GLOBAL.SWITCH]({ commit }, id) {
       return Http.get(`/switch_role/${id}`)
         .then(res => commit(GLOBAL.LOGIN, res))

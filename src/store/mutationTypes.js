@@ -21,8 +21,12 @@ export const GLOBAL = {
   },
 
   LOADING: {
-    SHOW: 'GLOBAL.IS_LOADING.SHOW',
-    HIDE: 'GLOBAL.IS_LOADING.HIDE',
+    SHOW: 'GLOBAL.LOADING.SHOW',
+    HIDE: 'GLOBAL.LOADING.HIDE',
+  },
+
+  DICTS: {
+    INIT: 'GLOBAL.DICTS.INIT',
   },
 
   LOGIN: 'GLOBAL.LOGIN',
@@ -51,6 +55,10 @@ export const SYSTEM = {
     PERMIS: {
       INIT: 'SYSTEM.ROLE.PERMIS.INIT',
     },
+  },
+
+  USER: {
+    INIT: 'SYSTEM.USER.INIT',
   },
 }
 

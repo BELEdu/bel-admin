@@ -32,13 +32,14 @@
 /**
  * 主应用内容
  * @author lmh
- * @version 2017-06-06
+ * @version 2017-06-22
  */
 
 import { mapState } from 'vuex'
 import AppHeader from '@/components/AppHeader'
 import AppMenu from '@/components/AppMenu'
 import AppFooter from '@/components/AppFooter'
+import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
   name: 'app',
@@ -52,6 +53,7 @@ export default {
   },
 
   methods: {
+    // 表单提交出错后，会emit这个事件，这时候应该把app-main滚动回最顶上以方便用户查看错误信息
     scrollToTop() {
       this.$refs.appMain.scrollTop = 0
     },
@@ -67,6 +69,8 @@ export default {
     // 如果用户未登录，转跳到登陆页
     if (!this.token) {
       this.$router.push('/auth/login')
+    } else {
+      this.$store.dispatch(GLOBAL.DICTS.INIT)
     }
   },
 }
