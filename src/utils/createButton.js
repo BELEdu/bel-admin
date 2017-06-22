@@ -15,20 +15,22 @@
 const createButton = btns => (h, params) => (
   h(
     'div',
-    btns.map(btn => h('Button', {
-      class: `table-btn${btn.type ? ` color-${btn.type}` : ''}${btn.text || btn.key ? ' table-btn-txt' : ''}`,
-      props: {
-        type: 'text',
-        size: 'small',
-      },
-      on: {
-        ...(btn.click ? {
-          // 传递进来的click回调在执行时会自动获得当前行的数据
-          // 这个数据是在这里传递的
-          click: () => btn.click(params.row),
-        } : {}),
-      },
-    }, btn.text || params.row[btn.key])),
+    btns
+      .filter(btn => !btn.isShow || btn.isShow(params))
+      .map(btn => h('Button', {
+        class: `table-btn${btn.type ? ` color-${btn.type}` : ''}${btn.text || btn.key ? ' table-btn-txt' : ''}`,
+        props: {
+          type: 'text',
+          size: 'small',
+        },
+        on: {
+          ...(btn.click ? {
+            // 传递进来的click回调在执行时会自动获得当前行的数据
+            // 这个数据是在这里传递的
+            click: () => btn.click(params.row),
+          } : {}),
+        },
+      }, btn.text || params.row[btn.key])),
   )
 )
 
