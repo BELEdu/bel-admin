@@ -23,6 +23,7 @@ Vue.component('app-editor-title', components.EditorTitle)
 Vue.component('app-pager', components.AppPager)
 Vue.component('app-form-modal', components.AppFormModal)
 Vue.component('app-warn-modal', components.AppWarnModal)
+Vue.component('app-form-alert', components.AppFormAlert)
 
 // const { permissions } = store.state.user
 // 尚不清楚后台返回的权限字段是什么数据格式，这里先写一个空数组代替
