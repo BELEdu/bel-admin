@@ -39,7 +39,7 @@ export function colConfig(that) {
     },
     {
       title: '操作',
-      key: 6,
+      key: 7,
       align: 'center',
       render: createButton([
         { text: '查看', type: 'primary', click: that.checkStu },

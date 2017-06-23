@@ -13,7 +13,7 @@
     <!-- 中部 列表title栏 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2 icon="">智能测试</h2>
+      <h2 icon="">智能分析</h2>
       </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
