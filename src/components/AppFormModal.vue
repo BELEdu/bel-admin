@@ -1,10 +1,10 @@
 <template>
-  <Modal v-model="visible" :title="title" :width="width" :closable="closable"  @input="cancle">
+  <Modal v-model="visible" :title="title" :width="width" :closable="closable" @input="cancle">
     <slot></slot>
     <div slot="footer">
       <div class="default-btn">
-        <Button type="ghost" size="large" @click="cancle">{{cancelValue}}</Button>
-        <Button type="primary" size="large" :loading="loading" @click="ok">{{okValue}}</Button>
+        <Button type="ghost" size="large" @click="cancle" v-if="cancelBtn">{{cancelValue}}</Button>
+        <Button type="primary" size="large" :loading="loading" @click="ok" v-if="okBtn">{{okValue}}</Button>
       </div>
       <div class="assist-btn" v-if="assistValue">
         <Tooltip :content="assistTip" placement="left" :disabled="!assistTip">
@@ -27,7 +27,9 @@
  * @param {okCallback} on-ok 确认操作回调函数
  * @param {cancleCallback} on-cancle 取消操作回调函数
  * @param {assistCallback} on-assist 辅助操作回调函数
+ * @param {Boolean} okBtn - 按钮显示状态
  * @param {String} okValue - 确认按钮文字
+ * @param {Boolean} cancelBtn - 按钮显示状态
  * @param {String} cancelValue - 取消按钮文字
  * @param {String} assistValue - 辅助按钮文字
  * @version 2017-06-08
@@ -55,9 +57,17 @@ export default {
       type: Boolean,
       default: true,
     },
+    okBtn: {
+      type: Boolean,
+      default: true,
+    },
     okValue: {
       type: String,
       default: '确认',
+    },
+    cancelBtn: {
+      type: Boolean,
+      default: true,
     },
     cancelValue: {
       type: String,
