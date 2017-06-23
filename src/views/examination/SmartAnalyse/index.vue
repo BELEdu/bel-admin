@@ -1,5 +1,29 @@
 <template>
-  <div>SmartAnalyse</div>
+  <div class="smartanalyse">
+    <!-- 上部 搜索栏 -->
+    <Form class="app-search-form">
+      <form-item>
+        <Input placeholder="请输入关键字"></Input>
+      </form-item>
+      <form-item>
+        <Button type="primary">查询搜索</Button>
+      </form-item>
+    </Form>
+    <!-- 上部 搜索栏 end -->
+    <!-- 中部 列表title栏 -->
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2 icon="">智能测试</h2>
+      </Col>
+    </Row>
+    <!-- 中部 列表title栏 end -->
+    <!-- 下部 列表展示-->
+    <Table :data="buffer" :columns="colConfig"></Table>
+    <!-- 下部 列表展示 end -->
+    <!-- 底部 分页 -->
+    <app-pager></app-pager>
+    <!-- 底部 分页 end -->
+  </div>
 </template>
 
 <script>
@@ -10,8 +34,17 @@
  * @description
  */
 import { GLOBAL } from '@/store/mutationTypes'
+import { colConfig, buffer } from './modules/config'
 
 export default {
+  data() {
+    return {
+      // 全员列表数据
+      buffer,
+      // 全员列表配置
+      colConfig: colConfig(this),
+    }
+  },
 
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
@@ -19,6 +52,16 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
+.smartanalyse {
 
+  & .ivu-form-item {
+    display: inline-block;
+
+    &:last-child {
+      float: right;
+      margin: 0;
+    }
+  }
+}
 </style>
