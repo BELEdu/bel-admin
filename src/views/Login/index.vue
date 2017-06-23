@@ -10,7 +10,7 @@
           {{ formError }}
         </Alert>
 
-        <div class="login-box__body__content clearfix">
+        <div class="login-box__body__content clearfix" @keyup.enter="handleSubmit">
           <img class="login-box__logo" :src="require('@/assets/logo.png')" alt="">
           <Form class="login-box__form" :model="form" :rules="rules" :label-width="60" ref="form">
             <Form-item label="用户名" prop="username">
