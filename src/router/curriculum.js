@@ -77,24 +77,37 @@ export default [
     },
   },
   {
-    path: '/curriculum/record/class',
-    name: 'CurriculumRecordClass',
-    component: views.CurriculumRecordClass,
+    path: '/curriculum/curricularecord',
+    name: 'CurriculumRecord',
+    component: views.CurriculumRecord,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
-        { name: '班级排课' },
+        { name: '上课记录' },
       ],
     },
   },
   {
-    path: '/curriculum/record/personal',
-    name: 'CurriculumRecordPersonal',
-    component: views.CurriculumRecordPersonal,
+    path: '/curriculum/record/show/:id',
+    name: 'CurriculumRecordShow',
+    component: views.CurriculumRecordShow,
     meta: {
       breadcrumb: [
         { name: '课程管理' },
-        { name: '非班级排课' },
+        { name: '上课记录' },
+        { name: '学员' },
+      ],
+    },
+  },
+  {
+    path: '/curriculum/record/classShow/:id',
+    name: 'CurriculumRecordClassShow',
+    component: views.CurriculumRecordClassShow,
+    meta: {
+      breadcrumb: [
+        { name: '课程管理' },
+        { name: '上课记录' },
+        { name: '班级' },
       ],
     },
   },
