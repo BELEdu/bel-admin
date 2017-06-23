@@ -1,15 +1,10 @@
 <template>
-  <app-form-modal 
-  class="examedit"
-  :title="'添加试卷'" 
-  :loading="false" 
-  :value="value" 
-  :width="450"
-  :assistClass="'color-error'"
-  @input="toggle"
-  >
+  <app-form-modal class="examedit" :title="'添加试卷'" :loading="false" :value="value" :width="450" :assistClass="'color-error'" @input="toggle">
     <Form :label-width="90" class="examedit__info">
-      <Form-item label="测试类型：" >
+      <Form-item label="评测发起人：">
+        <span>{{usrname}}</span>
+      </Form-item>
+      <Form-item label="测试类型：">
         <Select placeholder="请选择类型">
           <Option value="1">单元测试</Option>
           <Option value="1">单元测试</Option>
@@ -36,9 +31,6 @@
           <Option value="1">厦门附中期末模拟考</Option>
         </Select>
         <Button type="ghost">个性化组卷</Button>
-      </Form-item>
-      <Form-item label="评测发起人：">
-        <span>{{usrname}}</span>
       </Form-item>
     </Form>
   </app-form-modal>
