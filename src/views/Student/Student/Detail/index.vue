@@ -47,7 +47,7 @@ export default {
   methods: {
     // 标签栏切换
     tabSelect(name) {
-      this.$router.push(`/student/student/detail/${name}`)
+      this.$router.push(`${name}`)
     },
   },
 

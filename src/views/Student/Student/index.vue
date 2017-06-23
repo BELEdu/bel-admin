@@ -95,10 +95,10 @@
     </app-form-modal>
 
     <!-- 学员信息表格 -->
-    <Table class="app-table" :columns="columns" :data="fdata" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
     <!-- 分页 -->
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
   </div>
 </template>
@@ -110,12 +110,16 @@
  * @version 2017-06-08
  * @version 2017-06-13
  */
-import { GLOBAL } from '@/store/mutationTypes'
+
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import fdata from './fdata'
 
 export default {
   name: 'app-student-student',
+
+  mixins: [list],
 
   data() {
     return {
@@ -172,19 +176,19 @@ export default {
           width: 60,
           align: 'center',
         },
-        { title: '校区', key: 2, align: 'center' },
-        { title: '学员姓名', key: 4, align: 'center' },
-        { title: '学员编号', key: 'studentId', align: 'center' },
-        { title: '家长姓名', key: 5, align: 'center' },
-        { title: '首签日期', key: 6, align: 'center' },
-        { title: '在读学校', key: 7, align: 'center' },
-        { title: '当前年级', key: 8, align: 'center' },
-        { title: '归属咨询师', key: 9, align: 'center' },
-        { title: '归属学管师', key: 10, align: 'center' },
-        { title: '签约课时', key: 11, align: 'center' },
+        { title: '校区', key: 'school_zone', align: 'center' },
+        { title: '学员姓名', key: 'display_name', align: 'center' },
+        { title: '学员编号', key: 'id', align: 'center' },
+        { title: '家长姓名', key: 'parent_name', align: 'center' },
+        { title: '首签日期', key: 'created_at', align: 'center' },
+        { title: '在读学校', key: 'school_name', align: 'center' },
+        { title: '当前年级', key: 'current_grade', align: 'center' },
+        { title: '归属咨询师', key: 'belong_counselor', align: 'center' },
+        { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '签约课时', key: 'course_remain', align: 'center' },
         {
           title: '剩余课时',
-          key: 'time',
+          key: 'course_total',
           align: 'center',
           // 剩余课时小于10的时候变红
           render: (h, params) => {
@@ -200,29 +204,46 @@ export default {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 160,
+          width: 180,
           render: createButton([
             // 删除该学员
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.studentId) },
-            { text: '编辑', type: 'primary', click: () => this.$router.push('/student/student/detail') },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
             { text: '交流会', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit') },
           ]),
         },
       ],
-      // 表格数据
-      fdata,
       // 学员编号
       studentId: '',
       // 分页配置
       pager: undefined,
+
+      query: {},
     }
   },
 
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.student.list,
+    }),
+  },
+
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    // this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 
   methods: {
+
+    // 根据接口和loaction.search（query）获取数据
+    getData(qs) {
+      this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
+        .then(() => {
+          this.$router.push(`/student/student${qs}`)
+          // 关闭loading动画
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
 
     // 分配教师表单提交
     teacherSubmit(name) {
@@ -274,16 +295,16 @@ export default {
     },
 
     // 删除未签约学员
-    studentDelete(studentId) {
-      this.studentId = studentId
+    studentDelete(id) {
+      this.studentId = id
       // 禁止连续点击
       this.loading.delete = true
-      // 用延时模拟请求成功
-      setTimeout(() => {
+      this.$store.dispatch(STUDENT.STUDENT.DELETE, id)
+      .then(() => {
         this.loading.delete = false
         this.modal.delete = false
         this.$Message.warning('删除成功！')
-      }, 1500)
+      })
     },
   },
 }

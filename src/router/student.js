@@ -33,8 +33,8 @@ export default [
   },
   {
     path: '/student/student/edit',
-    name: 'StudentStudentEdit',
-    component: views.StudentStudentEdit,
+    name: 'StudentStudentAdd',
+    component: views.StudentStudentDetailEdit,
     meta: {
       breadcrumb: [
         { name: '学员管理' },
@@ -44,7 +44,7 @@ export default [
     },
   },
   {
-    path: '/student/student/detail',
+    path: '/student/student/:studentId',
     name: 'StudentStudentDetail',
     redirect: '/student/student/detail/edit',
     component: views.StudentStudentDetail,
@@ -57,7 +57,7 @@ export default [
     },
     children: [
       {
-        path: '/student/student/detail/edit',
+        path: '/student/student/:studentId/edit',
         name: 'StudentStudentDetailEdit',
         component: views.StudentStudentDetailEdit,
         meta: {
@@ -71,7 +71,7 @@ export default [
       },
       // 交流会
       {
-        path: '/student/student/detail/Meeting',
+        path: '/student/student/:studentId/Meeting',
         name: 'StudentStudentDetailMeeting',
         component: views.StudentStudentDetailMeeting,
         meta: {
@@ -84,7 +84,7 @@ export default [
         },
       },
       {
-        path: '/student/student/detail/Meeting/edit',
+        path: '/student/student/:studentId/Meeting/edit',
         name: 'StudentStudentDetailMeetingAdd',
         component: views.StudentStudentDetailMeetingEdit,
         meta: {
@@ -98,7 +98,7 @@ export default [
         },
       },
       {
-        path: '/student/student/detail/Meeting/edit/:id',
+        path: '/student/student/:studentId/Meeting/edit/:id',
         name: 'StudentStudentDetailMeetingEdit',
         component: views.StudentStudentDetailMeetingEdit,
         meta: {
@@ -112,7 +112,7 @@ export default [
         },
       },
       {
-        path: '/student/student/detail/Warning',
+        path: '/student/student/:studentId/Warning',
         name: 'StudentStudentDetailWarning',
         component: views.StudentStudentDetailWarning,
         meta: {
