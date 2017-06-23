@@ -111,14 +111,14 @@ export default {
 
       rules: {
         display_name: [
-          { required: true, message: '角色名称必填', trigger: 'blur' },
-          { min: 2, max: 12, message: '字符长度应在2到12之间', trigger: 'blur' },
+          this.$rules.required('角色名称'),
+          this.$rules.length(2, 12),
         ],
         description: [
-          { max: 100, message: '描述必须在100个字符之内', trigger: 'blur' },
+          this.$rules.max(100),
         ],
         department_id: [
-          { type: 'array', required: true, message: '所属部门必填', trigger: 'blur' },
+          this.$rules.required('所属部门', 'array'),
         ],
       },
     }

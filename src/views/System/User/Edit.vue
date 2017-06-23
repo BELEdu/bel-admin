@@ -98,25 +98,25 @@ export default {
 
       rules: {
         username: [
-          { required: true, message: '用户名必填', trigger: 'blur' },
-          { min: 5, max: 32, message: '字符长度应在5到32之间', trigger: 'blur' },
+          this.$rules.required('用户名'),
+          this.$rules.length(5, 32),
         ],
         realname: [
-          { required: true, message: '姓名必填', trigger: 'blur' },
-          { min: 2, max: 24, message: '字符长度应在2到24之间', trigger: 'blur' },
+          this.$rules.required('姓名'),
+          this.$rules.length(2, 24),
         ],
         email: [
-          { type: 'email', message: '邮箱格式不正确', trigger: 'blur' },
+          this.$rules.email,
         ],
         mobile: [
-          { pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|17[0135678]|18[0-9])\d{8}$/, message: '手机格式不正确', trigger: 'blur' },
+          this.$rules.mobile,
         ],
         password: [
-          { required: true, message: '密码必填', trigger: 'blur' },
-          { min: 6, max: 32, message: '字符长度应在6到32之间', trigger: 'blur' },
+          this.$rules.required('密码'),
+          this.$rules.length(6, 32),
         ],
         repassword: [
-          { required: true, message: '密码必填', trigger: 'blur' },
+          this.$rules.required('密码'),
           {
             validator: (rule, value, callback) => {
               if (value === this.form.password) {

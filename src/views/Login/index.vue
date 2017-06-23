@@ -55,10 +55,10 @@ export default {
     // 表单验证规则
     rules: {
       username: [
-        { required: true, message: '用户名不能为空', trigger: 'blur' },
+        this.$rules.required('用户名'),
       ],
       password: [
-        { required: true, message: '密码不能为空', trigger: 'blur' },
+        this.$rules.required('密码'),
       ],
     },
 
