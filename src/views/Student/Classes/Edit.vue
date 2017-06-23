@@ -112,8 +112,6 @@ export default {
 
       formErrors: {}, // 表单提交错误信息
 
-      classes_type: [], // 班级分类数据源（字典）
-      grade: [], // 年级数据源（字典）
       classes_director_data: [], // 班主数据源
       classes_teacher_data: [], // 任课教师数据源
       student_data: [], // 班级学生数据源
@@ -126,10 +124,12 @@ export default {
   },
 
   computed: {
-    // 使用mapState获取list
     ...mapState({
-      list: state => state.student.classes.list,
+      // 将班级类型和年级类型数据字典放在data中
+      grade: state => state.dicts.grade,
+      classes_type: state => state.dicts.classes_type,
     }),
+
     // 判断是编辑还是新增
     isUpdate() {
       return !!this.$router.currentRoute.params.id
@@ -196,18 +196,9 @@ export default {
       this.$router.go(-1)
     },
 
-    getDicts() {
-      return this.$http.get('/dict?keys=grade,classes_type')
-        .then((res) => {
-          // 将班级类型和年级类型数据字典放在data中
-          this.grade = res.grade
-          this.classes_type = res.classes_type
-        })
-    },
-
     // 获取各个下拉菜单的数据
     getListData() {
-      this.$http.get('/classes/create')
+      return this.$http.get('/classes/create')
        .then((res) => {
         //  获取班主任、任课教师、班级学员的数据源
          this.classes_director_data = res.classes_director_data
@@ -220,7 +211,7 @@ export default {
     getClassData() {
       // 从url获取编辑的id
       const editId = this.$router.currentRoute.params.id
-      this.$http.get(`/classes/${editId}`)
+      return this.$http.get(`/classes/${editId}`)
         .then((res) => {
           // 将班主任、任课教师、班级学员的数据源解构出来，需要提交的数据放在this.form中
           const {
@@ -242,15 +233,8 @@ export default {
     // 通过接口获取我的学生(测试)
     // this.studentList = myStudents
 
-    // 不论是新增还是修改，都先获取班级类型和年级类型数据字典
-    this.getDicts()
-      .then(() => {
-        // 判断是否是修改操作
-        if (this.isUpdate) {
-          return this.getClassData()
-        }
-        return this.getListData()
-      })
+    // 判断是编辑还是新建，以此调用不同的接口
+    (this.isUpdate ? this.getClassData : this.getListData)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
