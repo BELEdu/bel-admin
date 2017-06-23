@@ -5,9 +5,10 @@
  * @description
  */
 import {
-  SmartAnalyse,
   SmartExam,
   StudentExam,
+  SmartAnalyse,
+  StudentAnalyse,
   WrongQuestion,
 } from '@/views'
 
@@ -15,6 +16,10 @@ export default [
   {
     path: '/examination/smartanalyse',
     component: SmartAnalyse,
+  },
+  {
+    path: '/examination/smartanalyse/:id',
+    component: StudentAnalyse,
   },
   {
     path: '/examination/smartexam',
