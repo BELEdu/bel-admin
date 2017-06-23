@@ -1,28 +1,63 @@
 <template>
   <div class="smartexam">
-    <!-- 顶部 搜索栏 -->
-    <Form class="app-search-form">
-      <form-item>
-        <Input placeholder="请输入关键字"></Input>
-      </form-item>
-      <form-item>
-        <Button type="primary">查询搜索</Button>
-      </form-item>
-    </Form>
-    <!-- 顶部 搜索栏 end -->
-    <!-- 中部 列表title栏 -->
-    <Row class="app-content-header" type="flex" justify="space-between">
-      <Col>
-      <h2 icon="">智能测试</h2>
-      </Col>
-    </Row>
-    <!-- 中部 列表title栏 end -->
-    <!-- 下部 列表展示-->
-    <Table :data="buffer" :columns="colConfig"></Table>
-    <!-- 下部 列表展示 end -->
-    <!-- 底部 分页 -->
-    <app-pager></app-pager>
-    <!-- 底部 分页 end -->
+    <!-- tabs -->
+    <Tabs class="app-tabs smartexam" value="name1" type="card" :animated="false">
+      <!-- 学员tab -->
+      <Tab-pane label="学员" name="name1">
+        <!-- 上部 搜索栏 -->
+        <Form class="app-search-form">
+          <form-item>
+            <Input placeholder="请输入关键字"></Input>
+          </form-item>
+          <form-item>
+            <Button type="primary">查询搜索</Button>
+          </form-item>
+        </Form>
+        <!-- 上部 搜索栏 end -->
+        <!-- 中部 列表title栏 -->
+        <Row class="app-content-header" type="flex" justify="space-between">
+          <Col>
+          <h2 icon="">智能测试</h2>
+          </Col>
+        </Row>
+        <!-- 中部 列表title栏 end -->
+        <!-- 下部 列表展示-->
+        <Table :data="buffer.student_list" :columns="colConfig"></Table>
+        <!-- 下部 列表展示 end -->
+        <!-- 底部 分页 -->
+        <app-pager></app-pager>
+        <!-- 底部 分页 end -->
+      </Tab-pane>
+      <!-- 学员tab end -->
+      <!-- 班级tab -->
+      <Tab-pane label="班级" name="name2">
+        <!-- 上部 搜索栏 -->
+        <Form class="app-search-form">
+          <form-item>
+            <Input placeholder="请输入关键字"></Input>
+          </form-item>
+          <form-item>
+            <Button type="primary">查询搜索</Button>
+          </form-item>
+        </Form>
+        <!-- 上部 搜索栏 end -->
+        <!-- 中部 列表title栏 -->
+        <Row class="app-content-header" type="flex" justify="space-between">
+          <Col>
+          <h2 icon="">智能测试</h2>
+          </Col>
+        </Row>
+        <!-- 中部 列表title栏 end -->
+        <!-- 下部 列表展示-->
+        <Table :data="buffer.class_list" :columns="colConfig"></Table>
+        <!-- 下部 列表展示 end -->
+        <!-- 底部 分页 -->
+        <app-pager></app-pager>
+        <!-- 底部 分页 end -->
+      </Tab-pane>
+      <!-- 班级tab -->
+    </Tabs>
+    <!-- tabs end -->
     <!-- 测试弹窗组件 -->
     <local-exam-edit v-model="switcher"></local-exam-edit>
     <!-- 测试弹窗组件 end -->
@@ -34,6 +69,7 @@
  * 测试管理 - 智能测试
  * @author hjz
  * @version 2017-06-22
+ * @description 切换列表是用tabs还是menu还需要结合后端接口考虑
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { colConfig, buffer } from './modules/config'
