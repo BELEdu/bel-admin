@@ -82,7 +82,7 @@
     <!-- 产品信息表单 -->
     <Form :label-width="130" v-show="process === 3" ref="productForm" :model="fdata.product" :rules="productRules">
       <!-- 产品选择 -->
-      <Form class="contract-create__product" :label-width="95" v-for="(item, index) in fdata.product.list" :model="item" ref="products" :rules="productRules" inline>
+      <Form class="contract-create__product" :label-width="95" v-for="(item, index) in fdata.product.list" :model="item" ref="products" :rules="productRules" inline :key="index">
         <!--<template v-for="(item, index) in fdata.product.list">-->
         <Form-item class="contract-create__product__select" label="选择产品" prop="product_id">
           <Select v-model="item.product_id">
