@@ -46,6 +46,12 @@ export default {
     }
   },
 
+  methods: {
+    checkStu() {
+      this.$router.push('/examination/wrongquestion/1')
+    },
+  },
+
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
   },

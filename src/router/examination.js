@@ -10,6 +10,7 @@ import {
   SmartAnalyse,
   StudentAnalyse,
   WrongQuestion,
+  StudentWrong,
 } from '@/views'
 
 export default [
@@ -62,6 +63,17 @@ export default [
       breadcrumb: [
         { name: '测试管理' },
         { name: '错题管理' },
+      ],
+    },
+  },
+  {
+    path: '/examination/wrongquestion/:id',
+    component: StudentWrong,
+    meta: {
+      breadcrumb: [
+        { name: '测试管理' },
+        { name: '错题管理' },
+        { name: '错题库' },
       ],
     },
   },
