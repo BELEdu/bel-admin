@@ -45,29 +45,31 @@ import { GLOBAL } from '@/store/mutationTypes'
 export default {
   name: 'app-index',
 
-  data: () => ({
-    // 表单数据
-    form: {
-      username: '',
-      password: '',
-    },
+  data() {
+    return {
+      // 表单数据
+      form: {
+        username: '',
+        password: '',
+      },
 
-    // 表单验证规则
-    rules: {
-      username: [
-        this.$rules.required('用户名'),
-      ],
-      password: [
-        this.$rules.required('密码'),
-      ],
-    },
+      // 表单验证规则
+      rules: {
+        username: [
+          this.$rules.required('用户名'),
+        ],
+        password: [
+          this.$rules.required('密码'),
+        ],
+      },
 
-    // 后台返回的表单提交错误
-    formError: '',
+      // 后台返回的表单提交错误
+      formError: '',
 
-    // 表单是否正在提交
-    formLoading: false,
-  }),
+      // 表单是否正在提交
+      formLoading: false,
+    }
+  },
 
   computed: {
     ...mapState(['token']),
