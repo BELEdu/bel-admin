@@ -47,3 +47,23 @@
     left: 0;
   }
 }
+
+// 正常样式的小号Page组件样式
+.app-page-small {
+  display: flex;
+  margin-top: 10px;
+  justify-content: flex-end;
+
+  &>li {
+  height: 24px;
+  width: 24px;
+  min-width: 24px;
+  line-height: 24px;
+  text-align: center;
+
+    &>a {
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}
