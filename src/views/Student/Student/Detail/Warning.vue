@@ -59,11 +59,11 @@
       </Form>
     </app-form-modal>
 
-     <!-- 学员信息表格 -->
-    <Table class="app-table" :columns="columns" :data="fdata" border></Table>
+    <!-- 预警信息列表 -->
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
     <!-- 分页 -->
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
   </div>
 </template>
@@ -74,12 +74,16 @@
  * @author zml
  * @version 2017-06-14
  */
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import fdata from './fdata'
+
 
 export default {
   name: 'app-student-student-detail-warning',
+
+  mixins: [list],
 
   data() {
     return {
@@ -110,12 +114,12 @@ export default {
       // 表格配置
       columns: [
         { title: 'ID', key: 'id', align: 'center' },
-        { title: '预警类型', key: 2, align: 'center' },
+        { title: '预警类型', key: 'warning_type', align: 'center' },
         { title: '预警时间', key: 3, align: 'center' },
-        { title: '操作人', key: 4, align: 'center' },
+        { title: '操作人', key: 'user_id', align: 'center' },
         { title: '操作人岗位', key: 5, align: 'center' },
-        { title: '预警原因', key: 6, align: 'center' },
-        { title: '状态', key: 7, align: 'center' },
+        { title: '预警原因', key: 'warning_reason', align: 'center' },
+        { title: '状态', key: 'warning_status', align: 'center' },
         {
           title: '操作',
           key: 8,
@@ -129,13 +133,24 @@ export default {
           ]),
         },
       ],
-      // 表格数据
-      fdata,
       // 分页配置
       pager: undefined,
       // 预警ID
       warningId: '',
+
+      query: {},
     }
+  },
+
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.warning.list,
+    }),
+
+    studentId() {
+      return this.$router.currentRoute.params.studentId
+    },
   },
 
   created() {
@@ -179,6 +194,19 @@ export default {
         // 重置该表单
         this.formOk.text = ''
       }, 1500)
+    },
+
+     // 获取列表数据
+    getData(qs) {
+      this.$store.dispatch(STUDENT.WARNING.INIT, {
+        id: this.studentId,
+        query: qs,
+      })
+        .then(() => {
+          this.$router.push(`/student/student/${this.studentId}/warning${qs}`)
+          // 关闭loading动画
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
     },
   },
 
