@@ -45,7 +45,6 @@ export { default as SystemDepartment } from './System/Department'
 // 学员管理
 export { default as Student } from './Student'
 export { default as StudentStudent } from './Student/Student'
-export { default as StudentStudentEdit } from './Student/Student/Edit'
 export { default as StudentStudentDetail } from './Student/Student/Detail'
 export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Edit'
 export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'

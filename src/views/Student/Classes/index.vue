@@ -196,6 +196,7 @@ export default {
       this.classId = id
     },
 
+
     // 打开删除班级模态框
     openDeleteModal(id) {
       this.modal.delete = true
