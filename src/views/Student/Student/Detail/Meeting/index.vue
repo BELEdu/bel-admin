@@ -13,9 +13,9 @@
           </Col>
         </Row>
       </Form-item>
-      <Form-item>
+      <!--<Form-item>
         <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
+      </Form-item>-->
       <Form-item>
         <Button type="primary" icon="ios-search">搜索</Button>
       </Form-item>
@@ -27,7 +27,7 @@
         <h2>交流会列表</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/student/student/detail/meeting/edit')">添加交流会</Button>
+        <Button type="primary" @click="$router.push(`/student/student/${studentId}/meeting/edit`)">添加交流会</Button>
       </Col>
     </Row>
 
@@ -36,17 +36,17 @@
       v-model="modal.delete"
       title="删除确认"
       :loading="loading.delete"
-      @on-ok="meetingDelete(name)"
+      @on-ok="meetingDelete(meetingId)"
       action="删除"
     >
-      <div class="text-center">删除该 <a href="">{{name}}</a> 交流会记录后，将无法恢复。<br>是否继续删除</div>
+      <div class="text-center">删除编号为 <a>{{meetingId}}</a> 的交流会记录后，将无法恢复。<br>是否继续删除</div>
     </app-warn-modal>
 
-    <!-- 学员信息表格 -->
-    <Table class="app-table" :columns="columns" :data="fdata" border></Table>
+    <!-- 交流会列表 -->
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
     <!-- 分页 -->
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
   </div>
 </template>
@@ -56,13 +56,17 @@
  * 学员管理 - 学员信息 - 学员详情 - 交流会
  * @author zml
  * @version 2017-06-14
+ * @version 2017-06-26
  */
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import fdata from './fdata'
 
 export default {
   name: 'app-student-student-detail-meeting',
+
+  mixins: [list],
 
   data() {
     return {
@@ -81,15 +85,25 @@ export default {
       },
       // 表格配置
       columns: [
-        { title: '会议类型', key: 'name', align: 'center' },
-        { title: '会议时间', key: 2, align: 'center' },
-        { title: '家长姓名', key: 3, align: 'center' },
-        { title: '与会人员', key: 4, align: 'center' },
+        { title: '会议类型', key: 'meeting_type', align: 'center' },
+        { title: '会议时间', key: 'meeting_date', align: 'center' },
+        { title: '家长姓名', key: 'parent_name', align: 'center' },
+        {
+          title: '与会人员',
+          key: 'meeting_person',
+          align: 'center',
+          render: (h, params) => {
+            const { meeting_person } = params.row
+            const text = meeting_person
+              .reduce((result, item) => `${result} ${item.username}，`, '')
+              .slice(0, -1)
+            return h('span', text)
+          },
+        },
         {
           title: '附件',
           key: 'file',
           align: 'center',
-          // 剩余课时小于10的时候变红
           render: (h, params) => {
             const row = params.row
             const className = 'color-primary'
@@ -112,42 +126,68 @@ export default {
           width: 140,
           render: createButton([
             // 删除该学员
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.name) },
-            { text: '编辑', type: 'primary', click: () => this.$router.push('/student/student/detail/meeting/edit/10086') },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/student/${this.studentId}/meeting/edit/${row.id}`) },
           ]),
         },
       ],
-      // 表格数据
-      fdata,
       // 分页配置
       pager: undefined,
       // 会议类型
       name: '',
+
+      meetingId: '',
+
+      query: {},
     }
   },
 
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.meeting.list,
+    }),
+
+    studentId() {
+      return this.$router.currentRoute.params.studentId
+    },
+  },
+
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    // this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 
   methods: {
-    // 打开删除模态框
-    openDeleteModal(name) {
-      this.modal.delete = true
-      // 传入表格中对应学员编号
-      this.name = name
+    // 获取列表数据
+    getData(qs) {
+      this.$store.dispatch(STUDENT.MEETING.INIT, {
+        id: this.studentId,
+        query: qs,
+      })
+        .then(() => {
+          this.$router.push(`/student/student/${this.studentId}/meeting${qs}`)
+          // 关闭loading动画
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
     },
-    // 删除未签约学员
-    meetingDelete(name) {
-      this.name = name
+
+    // 打开删除模态框
+    openDeleteModal(meetingId) {
+      this.modal.delete = true
+      this.meetingId = meetingId
+    },
+
+    // 删除交流会
+    meetingDelete(meetingId) {
+      this.meetingId = meetingId
       // 禁止连续点击
       this.loading.delete = true
-      // 用延时模拟请求成功
-      setTimeout(() => {
+      this.$store.dispatch(STUDENT.MEETING.DELETE, meetingId)
+      .then(() => {
         this.loading.delete = false
         this.modal.delete = false
         this.$Message.warning('删除成功！')
-      }, 1500)
+      })
     },
   },
 
