@@ -98,7 +98,7 @@ export default [
         },
       },
       {
-        path: '/student/student/:studentId/Meeting/edit/:id',
+        path: '/student/student/:studentId/Meeting/edit/:meetingId',
         name: 'StudentStudentDetailMeetingEdit',
         component: views.StudentStudentDetailMeetingEdit,
         meta: {
