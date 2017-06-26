@@ -2,7 +2,6 @@ export { default as Login } from './Login'
 export { default as Main } from './Main'
 export { default as Home } from './Home'
 export { default as Curriculum } from './Curriculum'
-export { default as Prepare } from './Prepare'
 export { default as Feedback } from './Feedback'
 export { default as AccessError } from './AccessError'
 
@@ -78,3 +77,9 @@ export { default as SmartAnalyse } from './examination/SmartAnalyse'
 export { default as StudentAnalyse } from './examination/SmartAnalyse/StudentAnalyse'
 export { default as WrongQuestion } from './examination/WrongQuestion'
 export { default as StudentWrong } from './examination/WrongQuestion/StudentWrong'
+
+// 备课管理
+export { default as Prepareplan } from './Prepare/Prepareplan'
+export { default as Smartpaper } from './Prepare/Smartpaper'
+export { default as Smartquestion } from './Prepare/Smartquestion'
+export { default as Question } from './Prepare/Question'

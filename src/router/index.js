@@ -17,6 +17,7 @@ import analysis from './analysis'
 import system from './system'
 import student from './student'
 import examination from './examination'
+import prepare from './prepare'
 
 Vue.use(Router)
 
@@ -49,16 +50,6 @@ const router = new Router({
           },
         },
         {
-          path: '/prepare',
-          name: 'Prepare',
-          component: views.Prepare,
-          meta: {
-            breadcrumb: [
-              { name: '备课管理' },
-            ],
-          },
-        },
-        {
           path: '/feedback',
           name: 'Feedback',
           component: views.Feedback,
@@ -79,6 +70,7 @@ const router = new Router({
         ...system,
         ...student,
         ...examination,
+        ...prepare,
       ],
     },
   ],
