@@ -7,7 +7,7 @@
       <Input type="textarea" placeholder="角色相关描述" v-model="form.description"></Input>
     </Form-item>
     <Form-item label="所属部门" prop="department_id">
-      <Cascader :data="cascaderDepartments" placeholder="请选择所属部门" v-model="form.department_id"></Cascader>
+      <Cascader :data="departments" placeholder="请选择所属部门" v-model="form.department_id" change-on-select></Cascader>
     </Form-item>
     <Form-item label="学员管理">
       <i-switch size="large" v-model="form.is_student_admin">
@@ -21,26 +21,10 @@
         <span slot="close">关闭</span>
       </i-switch>
     </Form-item>
-    <Form-item label="视图权限">
-      <Checkbox-group class="permi-group view-permi" v-model="form.menus">
-        <dl v-for="menu in permis.menus" :key="menu.id">
-          <dt>
-            <Checkbox :label="menu.id" @change.native="menusCheckAll($event, menu.id)">
-              <span>{{ menu.display_name }}</span>
-            </Checkbox>
-          </dt>
-          <dd v-for="submenu in menu.children" :key="submenu.id">
-            <Checkbox :label="submenu.id" @change.native="menuisCheckAll($event, menu.id)">
-              <span>{{ submenu.display_name }}</span>
-            </Checkbox>
-          </dd>
-        </dl>
-      </Checkbox-group>
-    </Form-item>
 
     <Form-item label="数据权限">
       <Checkbox-group class="permi-group data-permi" v-model="form.data_auths">
-        <Checkbox v-for="item in permis.data_auths" :key="item.id" :label="item.id">
+        <Checkbox v-for="item in data_auths" :key="item.id" :label="item.id">
           <span>{{ item.display_name }}</span>
         </Checkbox>
       </Checkbox-group>
@@ -55,18 +39,29 @@
         </div>
         <div>权限</div>
       </div>-->
-      <Checkbox-group class="permi-group operation-permi" v-model="form.permissions">
-        <dl v-for="item in permis.permissions" :key="item.id">
+      <Checkbox-group class="permi-group permission-table" v-model="form.permissions">
+        <dl v-for="permission in permissions" :key="permission.id">
           <dt>
-            <Checkbox :label="item.id" @change.native="permissionsCheckAll($event, item.id)">
-              <span>{{ item.display_name }}</span>
+            <Checkbox :label="permission.id">
+              <span>{{ permission.display_name }}</span>
             </Checkbox>
           </dt>
-          <div>
-            <dd v-for="subitem in item.children" :key="subitem.id">
-              <Checkbox :label="subitem.id" @change.native="permissionsIsCheckAll($event, item.id)">
-                <span>{{ subitem.display_name }}</span>
-              </Checkbox>
+          <div class="permission-table__items">
+            <dd v-for="item in permission.children" :key="item.id">
+              <dl>
+                <dt>
+                  <Checkbox :label="item.id">
+                    <span>{{ item.display_name }}</span>
+                  </Checkbox>
+                </dt>
+                <div class="permission-table__sub-items">
+                  <dd v-for="subItem in item.children" :key="subItem.id">
+                    <Checkbox :label="subItem.id">
+                      <span>{{ subItem.display_name }}</span>
+                    </Checkbox>
+                  </dd>
+                </div>
+              </dl>
             </dd>
           </div>
         </dl>
@@ -88,15 +83,18 @@
  * @version 2017-06-22
  */
 
-import { mapState, mapGetters } from 'vuex'
-import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
+import { GLOBAL } from '@/store/mutationTypes'
+import { transform, generatePaths, getPath } from '../utils'
 
 export default {
   name: 'app-system-role-edit',
 
   data() {
     return {
-      id: null, // 被编辑条目的id，若id为null，则为新建
+      departments: [],
+      departmentPaths: [],
+      permissions: [],
+      data_auths: [],
 
       form: {
         display_name: '',
@@ -125,81 +123,21 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      permis: state => state.system.role.permis,
-    }),
-    ...mapGetters(['cascaderDepartments', 'departmentPaths']),
+    id() {
+      return this.$router.currentRoute.params.id
+    },
   },
 
   methods: {
-    /**
-     * 获取所有子级权限的id
-     * @description 获取某个类别权限的父级权限下的所有子级权限的id
-     * @param {Stirng} type - 权限类别，如'menus'
-     * @param {Number} id - 父级权限的id
-     * @return {Array}
-     */
-    getSubids(type, id) {
-      return this.permis[type]
-        .find(item => item.id === id)
-        .children
-        .map(subitem => subitem.id)
-    },
-
-    // 选中菜单权限的某个父级权限时，如果还没有任何子权限被选中，那么选中父级权限时会同时选中所有子级权限
-    menusCheckAll({ target }, pid) {
-      if (pid !== 1 && target.checked) {
-        const ids = this.getSubids('menus', pid)
-        const isUncheckAll = ids
-          .every(id => !this.form.menus.includes(id))
-        if (isUncheckAll) {
-          this.form.menus.push(...ids)
-        }
-      }
-    },
-
-    // 更改菜单权限的某个子级权限时，如果该权限所属的父级权限下的所有子级权限都未勾选，那么取消父级权限的勾选
-    menuisCheckAll({ target }, pid) {
-      if (!target.checked) {
-        const isUncheckAll = this.getSubids('menus', pid)
-          .every(id => !this.form.menus.includes(id))
-        if (isUncheckAll) {
-          this.form.menus = this.form.menus.filter(id => id !== pid)
-        }
-      }
-    },
-
-    // 更改操作权限的某个父级权限时，若父级权限被选中，所有子级权限也被选中，反之亦然
-    permissionsCheckAll({ target }, pid) {
-      const ids = this.getSubids('permissions', pid)
-
-      if (target.checked) {
-        const uncheckedIds = ids
-          .filter(id => !this.form.permissions.includes(id))
-        this.form.permissions.push(...uncheckedIds)
-      } else {
-        this.form.permissions = this.form.permissions
-          .filter(id => !ids.includes(id))
-      }
-    },
-
-    // 更改操作权限的某个子级权限时，若该权限的父级权限下有任意权限未勾选，取消父级权限勾选，反之勾选父级权限
-    permissionsIsCheckAll({ target }, pid) {
-      if (target.checked) {
-        const isCheckAll = this.getSubids('permissions', pid)
-          .every(id => this.form.permissions.includes(id))
-        if (isCheckAll) {
-          this.form.permissions.push(pid)
-        }
-      } else {
-        this.form.permissions = this.form.permissions
-          .filter(id => id !== pid)
-      }
-    },
-
-    getDepartmentPath(id) {
-      return this.departmentPaths
-        .find(path => path[path.length - 1] === id)
+    // 获取某些表单组件所需数据项，如下拉框的数据
+    getData() {
+      return this.$http.get('/role/create')
+        .then(({ departments, permissions, data_auths }) => {
+          this.departments = transform(departments)
+          this.departmentPaths = generatePaths(departments)
+          this.permissions = permissions
+          this.data_auths = data_auths
+        })
     },
 
     // 获取当前编辑项的数据
@@ -208,13 +146,9 @@ export default {
         .then((res) => {
           this.form = {
             ...res,
-            department_id: this.getDepartmentPath(res.department_id),
+            department_id: getPath(res.department_id, this.departmentPaths),
             is_student_admin: !!res.is_student_admin,
             is_student_teac: !!res.is_student_teac,
-            // 以下字段应该让后台直接返回id
-            menus: res.menus.map(item => item.id),
-            data_auths: res.data_auths.map(item => item.id),
-            permissions: res.permissions.map(item => item.id),
           }
         })
     },
@@ -234,8 +168,6 @@ export default {
 
           request
             .then(() => this.goBack())
-            // eslint-disable-next-line
-            .catch(console.log)
         }
       })
     },
@@ -246,10 +178,7 @@ export default {
   },
 
   created() {
-    this.id = this.$router.currentRoute.params.id
-
-    this.$store.dispatch(SYSTEM.DEPARTMENT.INIT)
-      .then(() => this.$store.dispatch(SYSTEM.ROLE.PERMIS.INIT))
+    this.getData()
       .then(() => {
         if (this.id) {
           return this.getDetail(this.id)
@@ -275,23 +204,6 @@ export default {
   }
 }
 
-.view-permi {
-  display: flex;
-  text-align: center;
-
-  & > dl {
-    flex: 100% / 8;
-
-    &:not(:last-child) {
-      border-right: 1px solid @border-color-base;
-    }
-
-    & > dt {
-      border-bottom: 1px solid @border-color-base;
-    }
-  }
-}
-
 .data-permi {
   display: flex;
   flex-wrap: wrap;
@@ -299,94 +211,89 @@ export default {
 
   .ivu-checkbox-group-item {
     flex-basis: 25%;
-    padding: 5px 10px;
+    padding: 5px 15px;
   }
 }
 
-.operation-permi-title {
-  display: flex;
+.permission-table {
+  @padding: 5px 15px;
+  @border: 1px solid @border-color-base;
 
-  & .ivu-checkbox-wrapper {
-    margin: 0;
-  }
-
-  &__label {
-    display: inline-block;
-    width: 4em;
-  }
-
-  & > div {
-    padding: 0 15px;
-    border-width: 1px 1px 0 0;
-    border-style: solid;
-    border-color: @border-color-base;
-
-    &:first-child {
-      border-width: 1px 1px 0 1px;
-    }
-
-    &:last-child {
-      flex: auto;
-      text-align: center;
-    }
-  }
-}
-
-.operation-permi {
-  & > dl {
+  dl {
     display: flex;
-    flex-wrap: wrap;
 
     &:not(:last-child) {
-      border-bottom: 1px solid @border-color-base;
+      border-bottom: @border;
     }
 
     & > dt {
+      flex: none;
       align-self: center;
-      padding: 5px 15px;
+      padding: @padding;
     }
+  }
 
-    & > div {
-      flex: auto;
-      display: flex;
-      border-left: 1px solid @border-color-base;
+  &__items {
+    flex: auto;
+    border-left: @border;
 
-      & > dd {
-        flex: none;
-        width: 25%;
-        padding: 5px 10px;
+    & > dd {
+      flex: none;
+
+      &:not(:last-child) {
+        dl {
+          border-bottom: @border;
+        }
       }
+
+      dt {
+        width: 9em;
+      }
+    }
+  }
+
+  &__sub-items {
+    display: flex;
+    flex-wrap: wrap;
+    padding: @padding;
+    border-left: @border;
+
+    & > dd {
+      margin-right: 10px;
     }
   }
 }
 
 // 兼容ie
 .ie {
-  .view-permi {
-    height: 195px;
-    overflow: hidden;
-
-    & > dl {
-      float: left;
-      width: 100% / 8;
-      height: 100%;
-    }
-  }
-
-  .operation-permi {
+  .permission-table {
     dl {
       overflow: hidden;
 
       & > dt {
-        float: left;
+        display: inline-block;
+        width: 8em;
+        vertical-align: middle;
+        margin-right: -4px;
+        text-align: center;
       }
+    }
 
-      & > div {
+    &__items {
+      display: inline-block;
+      width: calc(~"100% - 8em");
+      vertical-align: middle;
+      margin-right: -4px;
+    }
+
+    &__sub-items {
+      display: inline-block;
+      width: calc(~"100% - 9em");
+      vertical-align: middle;
+      margin-right: -4px;
+
+      & > dd {
         float: left;
-
-        & > dd {
-          float: left;
-        }
       }
     }
   }
