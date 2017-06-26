@@ -41,15 +41,13 @@
         </Form-item>
         <Form-item label="文理科">
           <Radio-group v-model="form.subject_type">
-            <Radio label="0">不分科</Radio>
-            <Radio label="1">理科</Radio>
-            <Radio label="2">文科</Radio>
+            <Radio v-for="type in subjectTypes" :key="type.value" :label="type.value">{{type.display_name}}</Radio>
           </Radio-group>
         </Form-item>
         <Form-item label="是否复读">
           <Radio-group v-model="form.is_repeat">
-            <Radio :label="1">是</Radio>
             <Radio :label="0">否</Radio>
+            <Radio :label="1">是</Radio>
           </Radio-group>
         </Form-item>
         <Form-item label="初始建档人" v-if="isUpdate">
@@ -94,9 +92,10 @@
           </Select>
         </Form-item>
         <Form-item label="VIP">
-          <Select placeholder="请选择..." v-model="form.is_vip">
-            <Option value="0">是</Option>
-            <Option value="1">否</Option>
+          <Radio-group v-model="form.is_vip">
+            <Radio :label="0">否</Radio>
+            <Radio :label="1">是</Radio>
+          </Radio-group>
           </Select>
         </Form-item>
         <Form-item label="客户资源所在地">
@@ -112,11 +111,7 @@
         </Form-item>
         <Form-item label="当前状态">
           <Select placeholder="请选择..." v-model="form.student_current_status">
-            <Option value="1">未签约</Option>
-            <Option value="2">上课</Option>
-            <Option value="3">停课</Option>
-            <Option value="4">休学</Option>
-            <Option value="5">结课</Option>
+            <Option v-for="status in studentCurrentStatus" :key="status.value" :value="status.value">{{ status.display_name }}</Option>
           </Select>
         </Form-item>
         <Form-item label="初始签约人" v-if="isUpdate">
@@ -147,6 +142,14 @@ export default {
       default: () => [],
     },
     communicationTypes: {
+      type: Array,
+      default: () => [],
+    },
+    studentCurrentStatus: {
+      type: Array,
+      default: () => [],
+    },
+    subjectTypes: {
       type: Array,
       default: () => [],
     },

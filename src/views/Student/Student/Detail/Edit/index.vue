@@ -12,10 +12,23 @@
     >
       <app-form-alert :errors="formErrors"></app-form-alert>
       <!-- 学员基本信息 -->
-      <basic :isUpdate="isUpdate" :form="form" :genders="genders" :grades="grades" :communicationTypes="communicationTypes"></basic>
+      <basic
+       :form="form"
+       :isUpdate="isUpdate"
+       :genders="genders"
+       :grades="grades"
+       :communicationTypes="communicationTypes"
+       :studentCurrentStatus="studentCurrentStatus"
+       :subjectTypes="subjectTypes"
+      ></basic>
 
       <!-- 家长信息 -->
-      <parents :parent="form.parent" :genders="genders" @addParent="addParent" @removeParent="removeParent"></parents>
+      <parents
+       :parent="form.parent"
+       :genders="genders"
+       @addParent="addParent"
+       @removeParent="removeParent"
+      ></parents>
 
       <!-- 表单提交按钮 -->
       <Form-item>
@@ -38,9 +51,11 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
+import format from 'date-fns/format'
 // import format from 'date-fns/format'
 import Basic from './components/Basic'
 import Parents from './components/Parents'
+
 
 const defaultParent = {
   parent_name: '', // 家长姓名
@@ -80,7 +95,7 @@ export default {
         join_grade: '', // 入学年级
         current_grade: '', // 当前年级
         school_name: '', // 在读学校
-        subject_type: 0, // 文理科
+        subject_type: 3, // 文理科
         is_repeat: 0, // 是否复读
         user_id: '', // 初始建档人（仅可读）
 
@@ -118,6 +133,8 @@ export default {
       genders: state => state.dicts.gender, // 男女
       grades: state => state.dicts.grade, // 年级
       communicationTypes: state => state.dicts.communication_type, // 沟通类型
+      studentCurrentStatus: state => state.dicts.student_current_status, // 当前状态
+      subjectTypes: state => state.dicts.subject_type, // 文理分科
     }),
 
     // 判断是修改还是新增
@@ -164,18 +181,21 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          // 处理日期格式
-
+           // 处理日期格式
+          const data = {
+            ...this.form,
+            birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : '',
+          }
 
           // 提交时如果是修改操作
           if (this.isUpdate) {
-            this.$http.patch(`/student/${this.id}`, this.form)
+            this.$http.patch(`/student/${this.id}`, data)
               .then(this.successHandler)
               .catch(this.errorHandler)
           }
           // 提交时如果是添加操作
           if (this.isUpdate === false) {
-            this.$http.post('/student', this.form)
+            this.$http.post('/student', data)
               .then(this.successHandler)
               .catch(this.errorHandler)
           }
@@ -184,7 +204,7 @@ export default {
     },
 
     successHandler() {
-      // this.goBack()
+      this.goBack()
     },
 
     errorHandler({ errors }) {
