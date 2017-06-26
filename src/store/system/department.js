@@ -7,7 +7,7 @@ export default {
   },
 
   getters: {
-    flatDepartments(state) {
+    departments(state) {
       // 这里代码有点丑，待优化
       const flat = (items, array, level) => {
         // eslint-disable-next-line
@@ -24,37 +24,6 @@ export default {
       }
 
       return flat(state.list, [], 0)
-    },
-
-    departmentPaths(state) {
-      const result = []
-
-      const loop = (items, path) => {
-        items.forEach((item) => {
-          const updatedPath = [...path, item.id]
-          if (item.children) {
-            loop(item.children, updatedPath)
-          } else {
-            result.push(updatedPath)
-          }
-        })
-      }
-
-      loop(state.list, [])
-
-      return result
-    },
-
-    cascaderDepartments(state) {
-      function map(items) {
-        return items.map(item => ({
-          label: item.display_name,
-          value: item.id,
-          children: item.children ? map(item.children) : [],
-        }))
-      }
-
-      return map(state.list)
     },
   },
 

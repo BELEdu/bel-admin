@@ -5,7 +5,7 @@
       <h2>组织架构</h2>
       </Col>
     </Row>
-    <Table class="app-table app-table--department" :columns="columns" :data="flatDepartments" :row-class-name="rowClassName" border></Table>
+    <Table class="app-table app-table--department" :columns="columns" :data="departments" :row-class-name="rowClassName" border></Table>
   </div>
 </template>
 
@@ -42,7 +42,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['flatDepartments']),
+    ...mapGetters(['departments']),
   },
 
   methods: {
