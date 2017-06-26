@@ -11,7 +11,7 @@
         <Col span="12">
         <card class="studentanalyse__table">
           <Table :data="buffer.pie" :columns="colConfig.pie" size="small"></Table>
-          <Page class="studentanalyse__pager" :total="100"></Page>
+          <Page class="app-page-small" :total="100"></Page>
         </card>
         </Col>
       </Row>
@@ -26,7 +26,7 @@
         <Col span="12">
         <card class="studentanalyse__table">
           <Table :data="buffer.pie" :columns="colConfig.pie" size="small"></Table>
-          <Page class="studentanalyse__pager" :total="100"></Page>
+          <Page class="app-page-small" :total="100"></Page>
         </card>
         </Col>
       </Row>
@@ -41,7 +41,7 @@
         <Col span="12">
         <card class="studentanalyse__table">
           <Table :data="buffer.line" :columns="colConfig.line" size="small"></Table>
-          <Page class="studentanalyse__pager" :total="100"></Page>
+          <Page class="app-page-small" :total="100"></Page>
         </card>
         </Col>
       </Row>
@@ -56,7 +56,7 @@
         <Col span="12">
         <card class="studentanalyse__table">
           <Table :data="buffer.line" :columns="colConfig.line" size="small"></Table>
-          <Page class="studentanalyse__pager" :total="100"></Page>
+          <Page class="app-page-small" :total="100"></Page>
         </card>
         </Col>
       </Row>
@@ -145,24 +145,6 @@ export default {
       content: '';
       display: block;
       clear: both;
-    }
-  }
-}
-
-.studentanalyse__pager {
-  float: right;
-  margin-top: 10px;
-
-  &>li {
-    height: 24px;
-    width: 24px;
-    min-width: 24px;
-    line-height: 24px;
-    text-align: center;
-
-    &>a {
-      display: block;
-      margin: 0 auto;
     }
   }
 }
