@@ -12,9 +12,6 @@
       <Form-item label="姓名" prop="realname">
         <Input placeholder="请输入姓名" v-model="form.realname"></Input>
       </Form-item>
-      <Form-item label="员工编号">
-        <Input placeholder="请输入员工编号"></Input>
-      </Form-item>
       <Form-item label="邮箱账号" prop="email">
         <Input placeholder="请输入邮箱账号" v-model="form.email"></Input>
       </Form-item>
@@ -33,14 +30,14 @@
       </Form-item>
       <Form-item label="部门角色">
         <Radio-group v-model="form.default_role_id" style="display: block;">
-          <div v-for="role,index in form.roles" class="user-edit-role">
+          <div v-for="role,index in form.roles" :key="role.value" class="user-edit-role">
             <Cascader
               placeholder="请选择部门与角色" :data="roles" v-model="form.roles[index]"
               @on-change="(value, detail) => selectRole(value, detail, index)"
             ></Cascader>
-            <Button class="user-edit-role__modify" :class="{hidden: !isRoleInDb(role)}" type="text">修改权限</Button>
+            <Button class="user-edit-role__modify" :class="{hidden: !isRoleInDb(role)}" type="text" @click="editUserRole(role)">修改权限</Button>
             <Radio class="user-edit-role__radio" :class="{hidden: !role.length}" :label="role[role.length - 1]">设为默认</Radio>
-            <Button :class="{hidden: form.roles.length <= 1}" type="text" @click="form.roles.pop()">删除</Button>
+            <Button :class="{hidden: form.roles.length <= 1}" type="text" @click="removeRole(index)">删除</Button>
           </div>
         </Radio-group>
         <Button type="dashed" icon="plus" class="color-primary" size="large" @click="form.roles.push([])">
@@ -98,7 +95,7 @@ export default {
         gender: 1,
         users_job_type: '',
         roles: [[]],
-        default_role_id: 1,
+        default_role_id: null,
         password: '',
         repassword: '',
         status: true,
@@ -179,6 +176,7 @@ export default {
       return this.rolesInDb.some(roleInDb => String(roleInDb) === String(role))
     },
 
+    // 添加角色时做的额外处理
     selectRole(value, detail, index) {
       const target = detail[detail.length - 1]
 
@@ -204,6 +202,38 @@ export default {
       if (hasSelected) {
         this.$Message.error('请勿重复选择角色')
       }
+
+      // 第一个添加的角色自动设置为默认角色
+      if (!this.form.default_role_id) {
+        setTimeout(() => {
+          this.form = {
+            ...this.form,
+            default_role_id: target.value,
+          }
+        })
+      }
+    },
+
+    // 删除角色
+    removeRole(index) {
+      const role = this.form.roles[index]
+      const roleId = role[role.length - 1]
+      this.form.roles.splice(index, 1)
+
+      // 如果被删除的是默认角色，自动把第一个角色设置为默认角色
+      if (this.form.default_role_id === roleId) {
+        const firstRole = this.form.roles[0]
+        this.form = {
+          ...this.form,
+          default_role_id: firstRole[firstRole.length - 1],
+        }
+      }
+    },
+
+    // 修改某一个已存在于数据库中的角色的权限
+    editUserRole(role) {
+      const id = role[role.length - 1]
+      this.$router.push(`/system/user/edit/${this.id}/role/${id}`)
     },
 
     submit() {
@@ -213,7 +243,9 @@ export default {
             ...this.form,
             status: +this.form.status,
           }
-          const request = this.id ? () => {} : this.$http.post('/user', data)
+          const request = this.id ?
+            () => {} :
+            this.$http.post('/user', data)
 
           request
             .then(() => this.goBack())
@@ -227,6 +259,12 @@ export default {
   },
 
   created() {
+    // 编辑已存在用户时，密码非必填，去除相关验证规则
+    if (this.id) {
+      this.rules.password.shift()
+      this.rules.repassword.shift()
+    }
+
     this.getData()
       .then(() => {
         if (this.id) this.getUser()
@@ -265,7 +303,6 @@ export default {
   }
 
   .hidden {
-    opacity: 0;
     visibility: hidden;
   }
 }
