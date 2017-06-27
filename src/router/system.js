@@ -6,15 +6,24 @@
 
 import * as views from '@/views'
 
+const SYSTEM_ROLE = {
+  name: '角色管理',
+  link: '/system/role',
+}
+const SYSTEM_USER = {
+  name: '用户管理',
+  link: '/system/user',
+}
+
 export default [
   {
-    path: '/system/role',
+    path: SYSTEM_ROLE.link,
     name: 'SystemRole',
     component: views.SystemRole,
     meta: {
       breadcrumb: [
         { name: '系统管理' },
-        { name: '角色管理' },
+        SYSTEM_ROLE,
       ],
     },
   },
@@ -25,7 +34,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '系统管理' },
-        { name: '角色管理' },
+        SYSTEM_ROLE,
         { name: '添加角色' },
       ],
     },
@@ -37,13 +46,13 @@ export default [
     meta: {
       breadcrumb: [
         { name: '系统管理' },
-        { name: '角色管理' },
+        SYSTEM_ROLE,
         { name: '编辑角色' },
       ],
     },
   },
   {
-    path: '/system/user',
+    path: SYSTEM_USER.link,
     name: 'SystemUser',
     component: views.SystemUser,
     meta: {
@@ -60,7 +69,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '系统管理' },
-        { name: '用户管理' },
+        SYSTEM_USER,
         { name: '添加用户' },
       ],
     },
@@ -72,8 +81,20 @@ export default [
     meta: {
       breadcrumb: [
         { name: '系统管理' },
-        { name: '用户管理' },
+        SYSTEM_USER,
         { name: '编辑用户' },
+      ],
+    },
+  },
+  {
+    path: '/system/user/edit/:userId/role/:roleId',
+    name: 'SystemUserRole',
+    component: views.SystemUserRole,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        SYSTEM_USER,
+        { name: '修改用户权限' },
       ],
     },
   },
