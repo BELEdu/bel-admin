@@ -39,6 +39,7 @@ export { default as SystemRole } from './System/Role'
 export { default as SystemRoleEdit } from './System/Role/Edit'
 export { default as SystemUser } from './System/User'
 export { default as SystemUserEdit } from './System/User/Edit'
+export { default as SystemUserRole } from './System/User/Role'
 export { default as SystemLog } from './System/Log'
 export { default as SystemDepartment } from './System/Department'
 
