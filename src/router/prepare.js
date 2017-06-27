@@ -30,6 +30,18 @@ export default [
     },
   },
   {
+    path: '/prepare/smartpaper/:id',
+    name: 'PrepareSmartpaperInfo',
+    component: views.SmartpaperInfo,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '智能组卷' },
+        { name: '学员试卷列表' },
+      ],
+    },
+  },
+  {
     path: '/prepare/smartquestion',
     name: 'PrepareSmartquestion',
     component: views.Smartquestion,

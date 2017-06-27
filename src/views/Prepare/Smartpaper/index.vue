@@ -37,61 +37,70 @@ import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
 
-  data: () => ({
-    fcol: [
-      { title: '学员姓名', key: 1, align: 'center' },
-      { title: '地区', key: 2, align: 'center' },
-      { title: '在读学校', key: 3, align: 'center' },
-      { title: '当前年级', key: 4, align: 'center' },
-      { title: '学科', key: 5, align: 'center' },
-      { title: '知识点总数', key: 6, align: 'center' },
-      { title: '试卷总数', key: 7, align: 'center' },
-      {
-        title: '操作',
-        key: 8,
-        align: 'center',
-        width: 250,
-        render: h => h(
-          'div',
-          [
-            h(
-              'Button',
-              {
-                props: { size: 'small', type: 'primary' },
-                style: { margin: '3px' },
-              },
-              '查看试卷',
-            ),
-            h(
-              'Button',
-              {
-                props: { size: 'small', type: 'success' },
-                style: { margin: '3px' },
-              },
-              '智能组卷',
-            ),
-            h(
-              'Button',
-              {
-                props: { size: 'small', type: 'info' },
-                style: { margin: '3px' },
-              },
-              '人工组卷',
-            ),
-          ],
-        ),
-      },
-    ],
-    fdata: Array(10).fill(null).map(() => ({
-      1: '李园园',
-      2: '福建省厦门市',
-      3: '蔡塘中学',
-      4: '高中三年级',
-      5: '【语文】【数学】【英语】',
-      6: 100,
-      7: 2,
-    })),
-  }),
+  data() {
+    return {
+      fcol: [
+        { title: '学员姓名', key: 1, align: 'center' },
+        { title: '地区', key: 2, align: 'center' },
+        { title: '在读学校', key: 3, align: 'center' },
+        { title: '当前年级', key: 4, align: 'center' },
+        { title: '学科', key: 5, align: 'center' },
+        { title: '知识点总数', key: 6, align: 'center' },
+        { title: '试卷总数', key: 7, align: 'center' },
+        {
+          title: '操作',
+          key: 8,
+          align: 'center',
+          width: 250,
+          render: h => h(
+            'div',
+            [
+              h(
+                'Button',
+                {
+                  props: { size: 'small', type: 'primary' },
+                  style: { margin: '3px' },
+                  on: { click: this.checkInfo },
+                },
+                '查看试卷',
+              ),
+              h(
+                'Button',
+                {
+                  props: { size: 'small', type: 'success' },
+                  style: { margin: '3px' },
+                },
+                '智能组卷',
+              ),
+              h(
+                'Button',
+                {
+                  props: { size: 'small', type: 'info' },
+                  style: { margin: '3px' },
+                },
+                '人工组卷',
+              ),
+            ],
+          ),
+        },
+      ],
+      fdata: Array(10).fill(null).map(() => ({
+        1: '李园园',
+        2: '福建省厦门市',
+        3: '蔡塘中学',
+        4: '高中三年级',
+        5: '【语文】【数学】【英语】',
+        6: 100,
+        7: 2,
+      })),
+    }
+  },
+
+  methods: {
+    checkInfo() {
+      this.$router.push('/prepare/smartpaper/1')
+    },
+  },
 
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
