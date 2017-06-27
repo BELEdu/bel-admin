@@ -49,11 +49,9 @@
   /**
    * 学员-所有评价弹窗
    */
-  import AppFormModal from '@/components/AppFormModal'
 
   export default{
     name: 'appraise-mult-modal',
-    components: { AppFormModal },
     props: {
       // 弹窗状态
       value: {

@@ -110,12 +110,11 @@
    */
 
   import { GLOBAL } from '@/store/mutationTypes'
-  import AppFormModal from '@/components/AppFormModal'
   import WeeklyTable from '../../Components/WeeklyTable'
 
   export default{
     name: 'app-student-course-manage',
-    components: { AppFormModal, WeeklyTable },
+    components: { WeeklyTable },
     data() {
       return {
         // 课表弹窗-初始化

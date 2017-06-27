@@ -9,7 +9,7 @@
     <div class="appraise-content">
       <Form :model="appraiseSingleData">
         <template v-if="param.type!='class'">
-          <Form-item v-for="item in appraiseSingleData">
+          <Form-item v-for="item in appraiseSingleData" :key="item.student_id">
               <Input v-model="item.comment" type="textarea"
                      :autosize="{minRows: 6,maxRows: 8}"
                      :readonly="!param.okBtn||param.readonly"
@@ -19,7 +19,7 @@
         </template>
         <template v-else>
             <Row>
-              <Col span="12" v-for="item in appraiseSingleData">
+              <Col span="12" v-for="item in appraiseSingleData" :key="item.student_id">
                 <Form-item v-bind:class="'appraise-li'">
                   <Row>
                     <Col span="10">
@@ -50,11 +50,9 @@
   /**
    * 学员|班级-单项评价弹窗
    */
-  import AppFormModal from '@/components/AppFormModal'
 
   export default{
     name: 'appraise-single-modal',
-    components: { AppFormModal },
     props: {
       // 弹窗状态
       value: {

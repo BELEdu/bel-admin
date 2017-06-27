@@ -91,7 +91,7 @@ export default {
       },
       // 学员字段
       studentColumns: [
-        { title: '学员姓名', key: 'student_name', align: 'center' },
+        { title: '学员姓名', key: 'display_name', align: 'center' },
         { title: '学员编号', key: 'number', align: 'center' },
         { title: '当前年级', key: 'current_grade', align: 'center' },
         { title: '班主任', key: 'belong_customer_relationships', align: 'center' },

@@ -38,13 +38,12 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import AppFormModal from '@/components/AppFormModal'
 import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
 import AppraiseMultModal from '../../Components/AppraiseMultModal'
 
 export default{
   name: 'app-student-record-manage',
-  components: { AppFormModal, AppraiseMultModal, AppraiseSingleModal },
+  components: { AppraiseMultModal, AppraiseSingleModal },
   data() {
     return {
       // 弹窗-初始化

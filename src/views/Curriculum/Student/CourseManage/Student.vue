@@ -122,12 +122,11 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import AppFormModal from '@/components/AppFormModal'
 import WeeklyTable from '../../Components/WeeklyTable'
 
 export default{
   name: 'app-student-course-manage',
-  components: { AppFormModal, WeeklyTable },
+  components: { WeeklyTable },
   data() {
     return {
       // 课表弹窗-初始化
@@ -148,11 +147,14 @@ export default{
       },
       // 日课表字段
       dailyColumns: [
-        { title: '学员姓名', key: 'student_name', align: 'center', width: 120 },
+        { title: '学员姓名',
+          align: 'center',
+          width: 120,
+          render: (h, params) => h('span', {}, `${params.model_info.display_name}`),
+        },
         { title: '教师姓名', key: 'teacher_name', align: 'center', width: 120 },
         { title: '上课日期', key: 'date', align: 'center', width: 80 },
         { title: '上课时段',
-          key: 'class_time',
           align: 'center',
           width: 110,
           render: (h, params) => h('span', {}, `${params.start_at}-${params.end_at}`),
@@ -166,31 +168,7 @@ export default{
         { title: '课时状态',
           align: 'center',
           width: 80,
-          render: (h, params) => {
-            let name
-            let styleName
-            switch (params.row.schedule_status) {
-              case '1':
-                name = '已上课'
-                styleName = '66bae5'
-                break
-              case '2':
-                name = '已排定'
-                styleName = 'e5bb79'
-                break
-              case '3':
-                name = '待确认'
-                styleName = 'e47fa9'
-                break
-              default :
-                name = '已取消'
-                styleName = '999'
-                break
-            }
-            return h('span', {
-              style: `color:#${styleName}`,
-            }, name)
-          },
+          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.schedule_status } }),
         },
         {
           title: '操作',
