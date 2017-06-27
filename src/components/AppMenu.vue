@@ -1,5 +1,5 @@
 <template>
-  <Menu class="app-menu" theme="light" :active-name="activeName" :open-names="openNames" accordion @on-select="goTo">
+  <Menu class="app-menu" theme="light" :active-name="activeName" :open-names="openNames" accordion @on-select="goTo" width="200px">
     <Submenu v-for="menu in menus" :key="menu.name" :name="menu.name" :class="{'app-menu__link-item': !menu.children}">
       <template slot="title">
         <Icon :type="icons[menu.name]"></Icon>
@@ -38,11 +38,11 @@ export default {
       'front.index': 'ios-home',
       'front.business': 'briefcase',
       'front.student': 'ios-people',
-      'front.arrange': 'ios-calendar',
+      'front.curriculum': 'ios-calendar',
+      'front.examination': 'ios-book',
       'front.prepare': 'ios-list',
       'front.analysis': 'stats-bars',
       'front.system': 'ios-gear',
-      'front.feedback': 'chatbox',
     },
   }),
 
