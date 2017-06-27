@@ -144,7 +144,7 @@ export default {
               icon: 'edit',
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/student/clbumEdit/${params.id}`)
+                this.$router.push(`/curriculum/student/classEdit/${params.id}`)
               },
               text: '排课管理',
             },

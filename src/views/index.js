@@ -19,14 +19,13 @@ export { default as ProductEdit } from './Business/Product/ProductEdit'
 
 // 排课管理
 export { default as CurriculumTeacher } from './Curriculum/Teacher'
-export { default as CurriculumTeacherEdit } from './Curriculum/Teacher/Edit'
+export { default as CurriculumTeacherEdit } from './Curriculum/Teacher/CourseEdit'
 export { default as CurriculumStudentCurricula } from './Curriculum/Student'
 export { default as CurriculumStudentEdit } from './Curriculum/Student/CourseManage/Student'
-export { default as CurriculumStudentClbumEdit } from './Curriculum/Student/CourseManage/Clbum'
+export { default as CurriculumStudentClassEdit } from './Curriculum/Student/CourseManage/Class'
 export { default as CurriculumRecord } from './Curriculum/Record'
 export { default as CurriculumRecordShow } from './Curriculum/Record/ClassManage/Student'
 export { default as CurriculumRecordClassShow } from './Curriculum/Record/ClassManage/Class'
-export { default as CurriculumTimeTable } from './Curriculum/TimeTable/'
 
 // 统计管理
 export { default as Analysis } from './Analysis'
