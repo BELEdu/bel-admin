@@ -25,6 +25,7 @@ Vue.component('app-pager', components.AppPager)
 Vue.component('app-form-modal', components.AppFormModal)
 Vue.component('app-warn-modal', components.AppWarnModal)
 Vue.component('app-form-alert', components.AppFormAlert)
+Vue.component('app-dicts-filter', components.AppDictsFilter)
 
 // 注册插件
 Vue
