@@ -3,7 +3,7 @@
     <Checkbox-group class="permission-table" :value="value" @input="updateValue">
       <dl v-for="permission in data" :key="permission.id">
         <dt>
-          <Checkbox :label="permission.id">
+          <Checkbox :label="permission.id" :disabled="isDisabled(permission.id)">
             <span>{{ permission.display_name }}</span>
           </Checkbox>
         </dt>
@@ -11,13 +11,13 @@
           <dd v-for="item in permission.children" :key="item.id">
             <dl>
               <dt>
-                <Checkbox :label="item.id">
+                <Checkbox :label="item.id" :disabled="isDisabled(item.id)">
                   <span>{{ item.display_name }}</span>
                 </Checkbox>
               </dt>
               <div class="permission-table__sub-items">
                 <dd v-for="subItem in item.children" :key="subItem.id">
-                  <Checkbox :label="subItem.id">
+                  <Checkbox :label="subItem.id" :disabled="isDisabled(subItem.id)">
                     <span>{{ subItem.display_name }}</span>
                   </Checkbox>
                 </dd>
@@ -35,6 +35,7 @@
  * 操作权限表单组件
  * @author lmn
  * @param {Array} data - 数据权限数组
+ * @param {Array} disabledIds - 角色固有权限的id，对应的勾选框将被禁用，用于修改用户权限页
  * @version 2017-06-27
  */
 
@@ -57,6 +58,10 @@ export default {
   methods: {
     updateValue(value) {
       this.$emit('input', value)
+    },
+
+    isDisabled(id) {
+      return this.disabledIds.includes(id)
     },
   },
 }
