@@ -2,12 +2,15 @@
   <div class="smartpaper">
     <!-- 上部 搜索栏 -->
     <Form class="app-search-form">
-      <form-item>
+      <Form-item>
+        <Date-picker format="yyyy/MM/dd" type="daterange" placeholder="请选择时间段..."></Date-picker>
+      </Form-item>
+      <Form-item>
         <Input placeholder="请输入关键字"></Input>
-      </form-item>
-      <form-item>
+      </Form-item>
+      <Form-item>
         <Button type="primary">查询搜索</Button>
-      </form-item>
+      </Form-item>
     </Form>
     <!-- 上部 搜索栏 end -->
     <!-- 中部 列表title栏 -->
@@ -51,15 +54,15 @@ export default {
           title: '操作',
           key: 8,
           align: 'center',
-          width: 250,
+          width: 230,
           render: h => h(
             'div',
             [
               h(
                 'Button',
                 {
-                  props: { size: 'small', type: 'primary' },
-                  style: { margin: '3px' },
+                  props: { size: 'small', type: 'text' },
+                  class: 'color-info',
                   on: { click: this.checkInfo },
                 },
                 '查看试卷',
@@ -67,16 +70,16 @@ export default {
               h(
                 'Button',
                 {
-                  props: { size: 'small', type: 'success' },
-                  style: { margin: '3px' },
+                  props: { size: 'small', type: 'text' },
+                  class: 'color-success',
                 },
                 '智能组卷',
               ),
               h(
                 'Button',
                 {
-                  props: { size: 'small', type: 'info' },
-                  style: { margin: '3px' },
+                  props: { size: 'small', type: 'text' },
+                  class: 'color-info',
                 },
                 '人工组卷',
               ),
