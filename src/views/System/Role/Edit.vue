@@ -9,6 +9,7 @@
     <Form-item label="所属部门" prop="department_id">
       <Cascader :data="departments" placeholder="请选择所属部门" v-model="form.department_id" change-on-select></Cascader>
     </Form-item>
+
     <Form-item label="学员管理">
       <i-switch size="large" v-model="form.is_student_admin">
         <span slot="open">开启</span>
@@ -22,51 +23,9 @@
       </i-switch>
     </Form-item>
 
-    <Form-item label="数据权限">
-      <Checkbox-group class="permi-group data-permi" v-model="form.data_auths">
-        <Checkbox v-for="item in data_auths" :key="item.id" :label="item.id">
-          <span>{{ item.display_name }}</span>
-        </Checkbox>
-      </Checkbox-group>
-    </Form-item>
+    <data-auths :data="data_auths" v-model="form.data_auths"></data-auths>
 
-    <Form-item label="操作权限">
-      <!--<div class="operation-permi-title">
-        <div>
-          <Checkbox @change.native="permissionsToggleAll">
-            <span class="operation-permi-title__label">模块</span>
-          </Checkbox>
-        </div>
-        <div>权限</div>
-      </div>-->
-      <Checkbox-group class="permi-group permission-table" v-model="form.permissions">
-        <dl v-for="permission in permissions" :key="permission.id">
-          <dt>
-            <Checkbox :label="permission.id">
-              <span>{{ permission.display_name }}</span>
-            </Checkbox>
-          </dt>
-          <div class="permission-table__items">
-            <dd v-for="item in permission.children" :key="item.id">
-              <dl>
-                <dt>
-                  <Checkbox :label="item.id">
-                    <span>{{ item.display_name }}</span>
-                  </Checkbox>
-                </dt>
-                <div class="permission-table__sub-items">
-                  <dd v-for="subItem in item.children" :key="subItem.id">
-                    <Checkbox :label="subItem.id">
-                      <span>{{ subItem.display_name }}</span>
-                    </Checkbox>
-                  </dd>
-                </div>
-              </dl>
-            </dd>
-          </div>
-        </dl>
-      </Checkbox-group>
-    </Form-item>
+    <permissions :data="permissions" v-model="form.permissions"></permissions>
 
     <Form-item>
       <Button type="ghost" size="large" @click="goBack">取消</Button>
@@ -79,12 +38,13 @@
 /**
  * 系统管理 - 角色管理 - 创建/编辑角色
  * @author lmh
- * @description 后台返回的数据与前台所需数据格式不符，需要协商解决
- * @version 2017-06-22
+ * @version 2017-06-27
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
 import { transform, generatePaths, getPath } from '../utils'
+import DataAuths from '../components/DataAuths'
+import Permissions from '../components/Permissions'
 
 export default {
   name: 'app-system-role-edit',
@@ -177,6 +137,11 @@ export default {
     },
   },
 
+  components: {
+    DataAuths,
+    Permissions,
+  },
+
   created() {
     this.getData()
       .then(() => {
@@ -191,111 +156,3 @@ export default {
   },
 }
 </script>
-
-<style lang="less">
-@import '~vars';
-
-.permi-group {
-  border: 1px solid @border-color-base;
-
-  .ivu-checkbox-group-item {
-    margin: 0;
-    line-height: normal;
-  }
-}
-
-.data-permi {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 5px 0;
-
-  .ivu-checkbox-group-item {
-    flex-basis: 25%;
-    padding: 5px 15px;
-  }
-}
-
-.permission-table {
-  @padding: 5px 15px;
-  @border: 1px solid @border-color-base;
-
-  dl {
-    display: flex;
-
-    &:not(:last-child) {
-      border-bottom: @border;
-    }
-
-    & > dt {
-      flex: none;
-      align-self: center;
-      padding: @padding;
-    }
-  }
-
-  &__items {
-    flex: auto;
-    border-left: @border;
-
-    & > dd {
-      flex: none;
-
-      &:not(:last-child) {
-        dl {
-          border-bottom: @border;
-        }
-      }
-
-      dt {
-        width: 9em;
-      }
-    }
-  }
-
-  &__sub-items {
-    display: flex;
-    flex-wrap: wrap;
-    padding: @padding;
-    border-left: @border;
-
-    & > dd {
-      margin-right: 10px;
-    }
-  }
-}
-
-// 兼容ie
-.ie {
-  .permission-table {
-    dl {
-      overflow: hidden;
-
-      & > dt {
-        display: inline-block;
-        width: 8em;
-        vertical-align: middle;
-        margin-right: -4px;
-        text-align: center;
-      }
-    }
-
-    &__items {
-      display: inline-block;
-      width: calc(~"100% - 8em");
-      vertical-align: middle;
-      margin-right: -4px;
-    }
-
-    &__sub-items {
-      display: inline-block;
-      width: calc(~"100% - 9em");
-      vertical-align: middle;
-      margin-right: -4px;
-
-      & > dd {
-        float: left;
-      }
-    }
-  }
-}
-</style>
