@@ -19,9 +19,9 @@ export default [
     },
   },
   {
-    path: '/prepare/smartpaper',
-    name: 'PrepareSmartpaper',
-    component: views.Smartpaper,
+    path: '/prepare/papercenter',
+    name: 'PreparePaperCenter',
+    component: views.Papercenter,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
@@ -30,9 +30,9 @@ export default [
     },
   },
   {
-    path: '/prepare/smartpaper/:id',
-    name: 'PrepareSmartpaperInfo',
-    component: views.SmartpaperInfo,
+    path: '/prepare/papercenter/:id',
+    name: 'PreparePaperInfo',
+    component: views.Paperinfo,
     meta: {
       breadcrumb: [
         { name: '备课管理' },

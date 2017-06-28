@@ -101,7 +101,7 @@ export default {
 
   methods: {
     checkInfo() {
-      this.$router.push('/prepare/smartpaper/1')
+      this.$router.push('/prepare/papercenter/1')
     },
   },
 
