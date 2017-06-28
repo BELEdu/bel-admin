@@ -65,13 +65,13 @@ export function colConfig(that) {
       width: 110,
     },
     {
-      title: '最新回访时间',
+      title: '回访时间',
       key: 'return_visited_at',
       align: 'center',
       width: 110,
     },
     {
-      title: '联系方式',
+      title: '手机号码',
       key: 'mobile',
       align: 'center',
       width: 115,
@@ -83,7 +83,7 @@ export function colConfig(that) {
     },
     {
       title: '性别',
-      key: 'gender',
+      key: 'gender_name',
       align: 'center',
     },
     {
@@ -93,7 +93,7 @@ export function colConfig(that) {
     },
     {
       title: '当前年级',
-      key: 'grade',
+      key: 'grade_name',
       align: 'center',
     },
     {
@@ -108,8 +108,8 @@ export function colConfig(that) {
       width: 60,
     },
     {
-      title: '签约状态',
-      key: 'status',
+      title: '当前状态',
+      key: 'signed_status_name',
       align: 'center',
       width: 90,
     },
@@ -120,7 +120,7 @@ export function colConfig(that) {
     },
     {
       title: '最新沟通情况',
-      key: '12',
+      key: 'last_content',
       align: 'center',
       width: 300,
     },
