@@ -1,17 +1,19 @@
 <template>
   <Form class="app-form-entire" :model="form" :label-width="140" ref="form">
-     <Form-item label="学员管理">
-      <i-switch size="large" v-model="form.is_student_admin">
-        <span slot="open">开启</span>
-        <span slot="close">关闭</span>
-      </i-switch>
+    <app-form-alert :errors="formErrors"></app-form-alert>
+
+    <Form-item label="学员管理">
+      <Radio-group v-model="form.is_student_admin">
+        <Radio :label="0">关闭</Radio>
+        <Radio :label="1">开启</Radio>
+      </Radio-group>
     </Form-item>
 
     <Form-item label="学员授课">
-      <i-switch size="large" v-model="form.is_student_teac">
-        <span slot="open">开启</span>
-        <span slot="close">关闭</span>
-      </i-switch>
+      <Radio-group v-model="form.is_student_teac">
+        <Radio :label="0">关闭</Radio>
+        <Radio :label="1">开启</Radio>
+      </Radio-group>
     </Form-item>
 
     <!--这里后台暂时还没有数据，过后需要补上-->
@@ -38,18 +40,25 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
+import { formError, goBack } from '@/mixins'
 import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
 
 export default {
+  name: 'app-system-user-role',
+
+  mixins: [formError, goBack],
+
   data() {
     return {
+      goStep: -2, // 见goBack mixin
+
       permissions: [],
       data_auths: [],
 
       form: {
-        is_student_admin: false,
-        is_student_teac: false,
+        is_student_admin: 0,
+        is_student_teac: 0,
         role_permission_ids: [], // 该角色固有权限
         user_permission_ids: [], // 该角色自定义权限
       },
@@ -62,6 +71,11 @@ export default {
     url() {
       const { userId, roleId } = this.$router.currentRoute.params
       return `/user/${userId}/role/${roleId}`
+    },
+
+    user_permission_ids() {
+      this.permission_ids
+        .filter(id => !this.form.role_permission_ids.includes(id))
     },
   },
 
@@ -77,36 +91,20 @@ export default {
     getRole() {
       return this.$http.get(this.url)
         .then((res) => {
-          const {
-            is_student_admin,
-            is_student_teac,
-            role_permission_ids,
-            user_permission_ids,
-          } = res
+          this.form = res
 
-          this.form = {
-            ...res,
-            is_student_admin: !!is_student_admin,
-            is_student_teac: !!is_student_teac,
-          }
-
+          const { role_permission_ids, user_permission_ids } = this.form
           this.permission_ids = [...role_permission_ids, ...user_permission_ids]
         })
     },
 
     submit() {
-      const data = {
+      this.$http.patch(this.url, {
         ...this.form,
-        user_permission_ids: this.permission_ids
-          .filter(id => !this.form.role_permission_ids.includes(id)),
-      }
-
-      this.$http.patch(this.url, data)
+        user_permission_ids: this.user_permission_ids,
+      })
         .then(this.goBack)
-    },
-
-    goBack() {
-      this.$router.go(-1)
+        .catch(this.errorHandler)
     },
   },
 

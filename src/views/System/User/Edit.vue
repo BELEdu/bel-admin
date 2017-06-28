@@ -6,28 +6,36 @@
     </h1>
 
     <Form class="app-form-entire" :model="form" :rules="rules" :label-width="140" ref="form">
+      <app-form-alert :errors="formErrors"></app-form-alert>
+
       <Form-item label="用户名" prop="username">
         <Input placeholder="请输入用户名" v-model="form.username"></Input>
       </Form-item>
+
       <Form-item label="姓名" prop="realname">
         <Input placeholder="请输入姓名" v-model="form.realname"></Input>
       </Form-item>
+
       <Form-item label="邮箱账号" prop="email">
         <Input placeholder="请输入邮箱账号" v-model="form.email"></Input>
       </Form-item>
+
       <Form-item label="手机号码" prop="mobile">
         <Input placeholder="请输入手机号码" v-model="form.mobile"></Input>
       </Form-item>
+
       <Form-item label="性别" prop="gender">
         <Radio-group v-model="form.gender">
           <Radio v-for="gender in genders" :key="gender.value" :label="gender.value">{{ gender.display_name }}</Radio>
         </Radio-group>
       </Form-item>
+
       <Form-item label="岗位性质" prop="users_job_type">
         <Radio-group v-model="form.users_job_type">
           <Radio v-for="jobType in jobTypes" :key="jobType.value" :label="jobType.value">{{ jobType.display_name }}</Radio>
         </Radio-group>
       </Form-item>
+
       <Form-item label="部门角色">
         <Radio-group v-model="form.default_role_id" style="display: block;">
           <div v-for="role,index in form.roles" :key="role.value" class="user-edit-role">
@@ -44,17 +52,20 @@
           增加部门角色
         </Button>
       </Form-item>
+
       <Form-item label="密码" prop="password">
         <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
       </Form-item>
+
       <Form-item label="重复密码" prop="repassword">
         <Input type="password" placeholder="请输入密码" v-model="form.repassword"></Input>
       </Form-item>
+
       <Form-item label="状态">
-        <i-switch size="large" v-model="form.status">
-          <span slot="open">启用</span>
-          <span slot="close">禁用</span>
-        </i-switch>
+        <Radio-group v-model="form.users_job_type">
+          <Radio :label="0">禁用</Radio>
+          <Radio :label="1">启用</Radio>
+        </Radio-group>
       </Form-item>
 
       <Form-item>
@@ -74,10 +85,13 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
+import { formError, goBack } from '@/mixins'
 import { transform, generatePaths, getPath } from '../utils'
 
 export default {
   name: 'app-system-user-detail',
+
+  mixins: [formError, goBack],
 
   data() {
     return {
@@ -98,8 +112,7 @@ export default {
         default_role_id: null,
         password: '',
         repassword: '',
-        status: true,
-        avatar: '',
+        status: 1,
       },
 
       rules: {
@@ -166,7 +179,6 @@ export default {
           this.form = {
             ...res,
             roles: res.roles.map(role => getPath(role.id, this.rolePaths)),
-            status: !!res.status,
           }
           this.rolesInDb = [...this.form.roles]
         })
@@ -239,22 +251,15 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          const data = {
-            ...this.form,
-            status: +this.form.status,
-          }
           const request = this.id ?
             () => {} :
-            this.$http.post('/user', data)
+            this.$http.post('/user', this.form)
 
           request
-            .then(() => this.goBack())
+            .then(this.goBack)
+            .catch(this.errorHandler)
         }
       })
-    },
-
-    goBack() {
-      this.$router.go(-1)
     },
   },
 
