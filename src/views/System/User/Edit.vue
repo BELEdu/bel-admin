@@ -70,7 +70,7 @@
 
       <Form-item>
         <Button type="ghost" size="large" @click="goBack">取消</Button>
-        <Button type="primary" size="large" @click="submit">提交</Button>
+        <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
       </Form-item>
     </Form>
   </div>
@@ -249,17 +249,15 @@ export default {
     },
 
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          const request = this.id ?
-            () => {} :
-            this.$http.post('/user', this.form)
+      this.formLoading = true
 
-          request
-            .then(this.goBack)
-            .catch(this.errorHandler)
-        }
-      })
+      const request = this.id ?
+        () => {} :
+        this.$http.post('/user', this.form)
+
+      request
+        .then(this.successHandler)
+        .catch(this.errorHandler)
     },
   },
 

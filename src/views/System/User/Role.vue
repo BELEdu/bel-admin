@@ -27,7 +27,7 @@
 
     <Form-item>
       <Button type="ghost" size="large" @click="goBack">取消</Button>
-      <Button type="primary" size="large" @click="submit">提交</Button>
+      <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
     </Form-item>
   </Form>
 </template>
@@ -97,11 +97,13 @@ export default {
     },
 
     submit() {
+      this.formLoading = true
+
       this.$http.patch(this.url, {
         ...this.form,
         user_permission_ids: this.user_permission_ids,
       })
-        .then(this.goBack)
+        .then(this.successHandler)
         .catch(this.errorHandler)
     },
   },

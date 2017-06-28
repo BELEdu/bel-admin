@@ -34,7 +34,7 @@
 
     <Form-item>
       <Button type="ghost" size="large" @click="goBack">取消</Button>
-      <Button type="primary" size="large" @click="submit">提交</Button>
+      <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
     </Form-item>
   </Form>
 </template>
@@ -120,21 +120,20 @@ export default {
     },
 
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          const data = {
-            ...this.form,
-            department_id: this.form.department_id[this.form.department_id.length - 1],
-          }
-          const request = this.id ?
-            this.$http.patch(`/role/${this.id}`, data) :
-            this.$http.post('/role', data)
+      const data = {
+        ...this.form,
+        department_id: this.form.department_id[this.form.department_id.length - 1],
+      }
 
-          request
-            .then(this.goBack)
-            .catch(this.errorHandler)
-        }
-      })
+      this.formLoading = true
+
+      const request = this.id ?
+        this.$http.patch(`/role/${this.id}`, data) :
+        this.$http.post('/role', data)
+
+      request
+        .then(this.successHandler)
+        .catch(this.errorHandler)
     },
   },
 
