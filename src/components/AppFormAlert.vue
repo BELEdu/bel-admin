@@ -1,5 +1,5 @@
 <template>
-  <Form-item>
+  <Form-item :label-width="fullWidth ? 0 : null">
     <Alert class="app-form-alert" type="error" show-icon v-if="flatErrors.length !== 0">
       <!--<Alert type="error" show-icon >-->
       {{ title }}
@@ -28,6 +28,10 @@ export default {
     errors: {
       type: Object,
       required: true,
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
     },
   },
 
