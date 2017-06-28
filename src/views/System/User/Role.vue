@@ -51,8 +51,6 @@ export default {
 
   data() {
     return {
-      goStep: -2, // 见goBack mixin
-
       permissions: [],
       data_auths: [],
 
