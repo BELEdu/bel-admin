@@ -18,6 +18,19 @@ export default [
       ],
     },
   },
+  // 自定义路由，后期根据后端接口修改
+  {
+    path: '/prepare/prepareplan/create',
+    name: 'PreparePrepareplanCreate',
+    component: views.PlanEdit,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '教案管理' },
+        { name: '添加教案' },
+      ],
+    },
+  },
   {
     path: '/prepare/papercenter',
     name: 'PreparePaperCenter',

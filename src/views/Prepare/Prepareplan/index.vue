@@ -19,7 +19,7 @@
       <h2 icon="">教案管理</h2>
       </Col>
       <Col>
-      <Button type="primary">添加教案</Button>
+      <Button type="primary" @click="createPlan()">添加教案</Button>
       </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
@@ -66,7 +66,7 @@ export default {
                 {
                   props: { size: 'small', type: 'text' },
                   class: 'color-info',
-                  on: { click: this.checkInfo },
+                  on: { click: this.checkPlan },
                 },
                 '查看',
               ),
@@ -84,6 +84,15 @@ export default {
         7: 100,
       })),
     }
+  },
+
+  methods: {
+    // checkPlan() {
+    //   this.$router.push('/prepare/prepareplan/edit')
+    // },
+    createPlan() {
+      this.$router.push('/prepare/prepareplan/create')
+    },
   },
 
   created() {
