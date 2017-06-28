@@ -125,8 +125,6 @@ export default {
         department_id: this.form.department_id[this.form.department_id.length - 1],
       }
 
-      this.formLoading = true
-
       const request = this.id ?
         this.$http.patch(`/role/${this.id}`, data) :
         this.$http.post('/role', data)

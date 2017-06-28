@@ -97,8 +97,6 @@ export default {
     },
 
     submit() {
-      this.formLoading = true
-
       this.$http.patch(this.url, {
         ...this.form,
         user_permission_ids: this.user_permission_ids,

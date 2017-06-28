@@ -32,6 +32,7 @@ export default {
     beforeSubmit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
+          this.formLoading = true
           this.submit()
         } else {
           this.$emit('scrollToTop')

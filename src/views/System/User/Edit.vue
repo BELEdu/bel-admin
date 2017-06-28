@@ -249,8 +249,6 @@ export default {
     },
 
     submit() {
-      this.formLoading = true
-
       const request = this.id ?
         () => {} :
         this.$http.post('/user', this.form)
