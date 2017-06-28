@@ -1,5 +1,5 @@
 <template>
-  <div class="smartpaper">
+  <div class="papercenter">
     <!-- 上部 搜索栏 -->
     <Form class="app-search-form">
       <Form-item>
@@ -116,7 +116,7 @@ export default {
 </script>
 
 <style lang="less">
-.smartpaper {
+.papercenter {
 
   & .ivu-form-item {
     display: inline-block;

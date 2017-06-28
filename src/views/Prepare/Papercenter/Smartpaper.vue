@@ -1,6 +1,6 @@
 <template>
   <div class="smartpaper">
-    <Form class="app-form-entire" label-width="130">
+    <Form class="app-form-entire" :label-width="130">
       <Form-item label="试卷名称" required>
         <Input placeholder="请输入试卷名称..."></Input>
       </Form-item>
@@ -67,7 +67,7 @@
         </div>
       </Form-item>
       <Form-item label="选择知识点"> 
-        <!--穿梭框-->
+        <!-- 穿梭框 -->
       </Form-item>
       <Form-item> 
         <Button>取消</Button>
@@ -146,12 +146,12 @@ export default {
 // iview样式修复
 .smartpaper {
 
-  .ivu-radio-group-item {
+  & .ivu-radio-group-item {
     margin-right: 0;
     padding: 0 17px;
   }
 
-  .ivu-slider-wrap {
+  & .ivu-slider-wrap {
     margin: 16px auto;
     // width: 90%;
   }
