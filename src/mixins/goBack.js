@@ -16,10 +16,15 @@ export default {
   methods: {
     goBack() {
       if (!this.from || this.from.matched.length <= 0) {
-        const { breadcrumb } = this.$route.meta
-        const { link } = breadcrumb[breadcrumb.length - 2]
+        try {
+          const { breadcrumb } = this.$route.meta
+          const { link } = breadcrumb[breadcrumb.length - 2]
 
-        this.$router.push(this.backRoute || link)
+          this.$router.push(this.backRoute || link)
+        } catch (error) {
+          // eslint-disable-next-line
+          console.log(error)
+        }
       } else {
         this.$router.go(-1)
       }
