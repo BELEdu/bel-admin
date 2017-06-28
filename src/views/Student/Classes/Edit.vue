@@ -1,8 +1,8 @@
 <template>
   <div>
     <app-editor-title></app-editor-title>
-    <!--{{isUpdate}}，{{form.classes_type}}，{{form.current_grade}}，{{form.classes_director}}，{{form.teachers}}，{{form.start_at}}，{{form.students}}-->
-
+    <!--{{isUpdate}}，{{form.classes_type}}，{{form.current_grade}}，{{form.classes_director}}，{{form.teachers}}，{{form.students}}-->
+{{form.start_at}}
     <Form :label-width="130" class="app-form-entire" :model="form" :rules="rules" ref="form" >
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="班级名称" required prop="display_name">
@@ -10,16 +10,19 @@
       </Form-item>
       <Form-item label="班级分类" required prop="classes_type">
         <Select placeholder="请选择..." v-model="form.classes_type">
+
           <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="当前年级" >
         <Select placeholder="请选择..." v-model="form.current_grade">
+
           <Option v-for="item in grade" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="班主任">
         <Select placeholder="请选择..." v-model="form.classes_director" >
+
           <Option v-for="item in classes_director_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
@@ -90,9 +93,9 @@ export default {
       form: {
         id: '',
         display_name: '',  // 班级名称
-        classes_type: '', // 班级分类
-        current_grade: '', // 当前年级
-        classes_director: '', // 班主任
+        classes_type: null, // 班级分类
+        current_grade: null, // 当前年级
+        classes_director: null, // 班主任
         start_at: '', // 开始时间
         students: [], // 班级学生列表
         teachers: [], // 班级老师列表
@@ -221,7 +224,10 @@ export default {
             ...form
           } = res
 
-          this.form = form
+          this.form = {
+            ...form,
+            start_at: new Date(res.start_at),
+          }
           this.classes_director_data = classes_director_data
           this.classes_teacher_data = classes_teacher_data
           this.student_data = student_data
