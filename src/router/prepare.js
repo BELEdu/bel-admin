@@ -25,7 +25,20 @@ export default [
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '智能组卷' },
+        { name: '组卷中心' },
+      ],
+    },
+  },
+  // 自定义路由，后期根据后端接口修改
+  {
+    path: '/prepare/papercenter/smartpaper',
+    name: 'PrepareSmartpaper',
+    component: views.Smartpaper,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '组卷中心' },
+        { name: '学员智能组卷' },
       ],
     },
   },
@@ -36,7 +49,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '智能组卷' },
+        { name: '组卷中心' },
         { name: '学员试卷列表' },
       ],
     },

@@ -72,6 +72,7 @@ export default {
                 {
                   props: { size: 'small', type: 'text' },
                   class: 'color-success',
+                  on: { click: this.paperSmart },
                 },
                 '智能组卷',
               ),
@@ -102,6 +103,9 @@ export default {
   methods: {
     checkInfo() {
       this.$router.push('/prepare/papercenter/1')
+    },
+    paperSmart() {
+      this.$router.push('/prepare/papercenter/smartpaper')
     },
   },
 
