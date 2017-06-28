@@ -7,7 +7,7 @@
     @on-ok="submit()"
     @on-cancle="closeModal()"
   >
-  {{studentItem}}
+  <!--{{studentItem}}-->
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="分配给" prop="teacher_id">
@@ -102,7 +102,7 @@ export default {
     },
 
     closeModal() {
-      console.log('关闭')
+      // console.log('关闭')
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.loading = false
