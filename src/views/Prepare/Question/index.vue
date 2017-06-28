@@ -22,7 +22,8 @@
           <div v-show="singleSelect">
             <Button type="primary" long @click="toggleSelect()">切换为多选</Button>
             <Tree :data="treePrivateData"></Tree>
-            <Tree :data="treeWholeData"></Tree>
+            <!-- 注释：全部&个人知识点，V2.0保留功能-->
+            <!--<Tree :data="treeWholeData"></Tree>-->
           </div>
           <!-- 知识点单选 end -->
           <!-- 知识点多选 -->
@@ -32,7 +33,7 @@
               <Button type="primary" long>确定</Button>
             </Row>
             <Tree :data="treePrivateData" show-checkbox></Tree>
-            <Tree :data="treeWholeData" show-checkbox></Tree>
+            <!--<Tree :data="treeWholeData" show-checkbox></Tree>-->
           </div>
           <!-- 知识点多选 end -->
         </Tab-pane>
@@ -55,7 +56,6 @@
           <div v-show="singleSelect">
             <Button type="primary" long @click="toggleSelect()">切换为多选</Button>
             <Tree :data="treePrivateData"></Tree>
-            <Tree :data="treeWholeData"></Tree>
           </div>
           <!-- 章节单选 end -->
           <!-- 章节多选 -->
@@ -65,7 +65,6 @@
               <Button type="primary" long>确定</Button>
             </Row>
             <Tree :data="treePrivateData" show-checkbox></Tree>
-            <Tree :data="treeWholeData" show-checkbox></Tree>
           </div>
           <!-- 章节多选 end -->
         </Tab-pane>
@@ -220,57 +219,23 @@ export default {
     ],
     treePrivateData: [
       {
-        title: '个人知识点',
         expand: true,
+        title: '平行线',
         children: [
-          {
-            expand: true,
-            title: '平行线',
-            children: [
-              { title: '平行线定义' },
-              { title: '同位角、内错角、同旁内角' },
-              { title: '平行线定义的判定' },
-              { title: '平行线定义的性质' },
-            ],
-          },
-          {
-            expand: true,
-            title: '二院一次方程组',
-            children: [
-              { title: '二院一次方程组定义' },
-              { title: '解二院一次方程组' },
-              { title: '二院一次方程组的应用' },
-              { title: '二院一次方程组的解法（选修）' },
-            ],
-          },
+          { title: '平行线定义' },
+          { title: '同位角、内错角、同旁内角' },
+          { title: '平行线定义的判定' },
+          { title: '平行线定义的性质' },
         ],
       },
-    ],
-    treeWholeData: [
       {
-        title: '全部知识点',
-        expand: false,
+        expand: true,
+        title: '二院一次方程组',
         children: [
-          {
-            expand: true,
-            title: '平行线',
-            children: [
-              { title: '平行线定义' },
-              { title: '同位角、内错角、同旁内角' },
-              { title: '平行线定义的判定' },
-              { title: '平行线定义的性质' },
-            ],
-          },
-          {
-            expand: true,
-            title: '二院一次方程组',
-            children: [
-              { title: '二院一次方程组定义' },
-              { title: '解二院一次方程组' },
-              { title: '二院一次方程组的应用' },
-              { title: '二院一次方程组的解法（选修）' },
-            ],
-          },
+          { title: '二院一次方程组定义' },
+          { title: '解二院一次方程组' },
+          { title: '二院一次方程组的应用' },
+          { title: '二院一次方程组的解法（选修）' },
         ],
       },
     ],
@@ -517,19 +482,16 @@ export default {
 
   & .ivu-tabs-tabpane {
     padding: 8px;
-  }
-
-  & .ivu-tree{
-
-    &>ul>li>span {
-      font-size: 14px;
-      font-weight: bolder;
-      color: @link-color;
-    }
-
-    & .ivu-checkbox-wrapper {
-      margin: 0
-    }
-  }
+  } // 注释：全部&个人知识点，V2.0保留功能
+  // & .ivu-tree{
+  //   &>ul>li>span {
+  //     font-size: 14px;
+  //     font-weight: bolder;
+  //     color: @link-color;
+  //   }
+  //   & .ivu-checkbox-wrapper {
+  //     margin: 0
+  //   }
+  // }
 }
 </style>
