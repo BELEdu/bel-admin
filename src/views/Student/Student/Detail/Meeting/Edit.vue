@@ -10,8 +10,6 @@
     >
       <app-form-alert :errors="formErrors"></app-form-alert>
 
-      {{form.meeting_date}}
-
       <Form-item label="会议时间" prop="meeting_date">
         <Date-picker type="date" placeholder="请选择会议的时间" v-model="form.meeting_date"></Date-picker>
       </Form-item>
@@ -68,7 +66,7 @@
       </Form-item>
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="submit()" >
+        <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
           提交
         </Button>
       </Form-item>
@@ -85,10 +83,13 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
+import { form, goBack } from '@/mixins'
 import format from 'date-fns/format'
 
 export default {
   name: 'app-student-student-detail-meeting-edit',
+
+  mixins: [form, goBack],
 
   data() {
     return {
@@ -143,8 +144,6 @@ export default {
           { required: true, type: 'number', message: '会议类型必填', trigger: 'change' },
         ],
       },
-
-      formErrors: {}, // 表单提交错误信息
     }
   },
 
@@ -160,6 +159,9 @@ export default {
     // 交流会id
     meetingId() {
       return this.$router.currentRoute.params.meetingId
+    },
+    backRoute() {
+      return `/student/student/${this.studentId}/meeting`
     },
     // 判断是修改还是新增
     isUpdate() {
@@ -189,11 +191,11 @@ export default {
         .then((res) => {
           const {
             meeting_persons_data,
-            ...form
+            ...others
           } = res
 
           this.form = {
-            ...form,
+            ...others,
             meeting_date: new Date(res.meeting_date),
           }
           this.meeting_persons_data = meeting_persons_data
@@ -228,44 +230,23 @@ export default {
 
      // 提交表单
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          const data = {
-            ...this.form,
-            meeting_date: this.form.meeting_date ? format(this.form.meeting_date, 'YYYY-MM-DD') : '',
-            student_id: this.studentId,
-          }
-          // 提交时如果是修改操作
-          if (this.isUpdate) {
-            this.$http.patch(`/meeting/${this.meetingId}`, data)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
-          // 提交时如果是添加操作
-          if (this.isUpdate === false) {
-            this.$http.post('/meeting', data)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
-        }
-      })
-    },
-
-    successHandler() {
-      this.goBack()
-    },
-
-    errorHandler({ errors }) {
-      if (errors) {
-        this.formErrors = errors
-      } else {
-        this.formErrors = { error: ['服务端错误，请稍后重试'] }
+      const data = {
+        ...this.form,
+        meeting_date: this.form.meeting_date ? format(this.form.meeting_date, 'YYYY-MM-DD') : '',
+        student_id: this.studentId,
       }
-      this.$emit('scrollToTop')
-    },
-
-    goBack() {
-      this.$router.go(-1)
+          // 提交时如果是修改操作
+      if (this.isUpdate) {
+        this.$http.patch(`/meeting/${this.meetingId}`, data)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
+          // 提交时如果是添加操作
+      if (this.isUpdate === false) {
+        this.$http.post('/meeting', data)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
     },
   },
 

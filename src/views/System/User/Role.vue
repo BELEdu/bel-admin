@@ -40,14 +40,14 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import { formError, goBack } from '@/mixins'
+import { form, goBack } from '@/mixins'
 import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
 
 export default {
   name: 'app-system-user-role',
 
-  mixins: [formError, goBack],
+  mixins: [form, goBack],
 
   data() {
     return {

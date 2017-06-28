@@ -32,7 +32,7 @@
       <!-- 表单提交按钮 -->
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="submit()" >
+        <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
           提交
         </Button>
       </Form-item>
@@ -51,7 +51,7 @@
 import { mapState } from 'vuex'
 import format from 'date-fns/format'
 import { GLOBAL } from '@/store/mutationTypes'
-import { formError } from '@/mixins'
+import { form, goBack } from '@/mixins'
 import Basic from './components/Basic'
 import Parents from './components/Parents'
 
@@ -83,10 +83,12 @@ const defaultSublist = {
 export default {
   name: 'app-student-student-detail-edit',
 
-  mixins: [formError],
+  mixins: [form, goBack],
 
   data() {
     return {
+      backRoute: '/student/student',
+
       form: {
         display_name: '', // 学员姓名
         number: '', // 学员编号（仅可读）
@@ -179,32 +181,20 @@ export default {
 
      // 提交表单
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-           // 处理日期格式
-          const data = {
-            ...this.form,
-            birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : '',
-          }
+       // 处理日期格式
+      const data = {
+        ...this.form,
+        birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : '',
+      }
 
-          // 提交时如果是修改操作
-          ;(
-            this.isUpdate ?
-              this.$http.patch(`/student/${this.id}`, data) :
-              this.$http.post('/student', data)
-          )
-            .then(this.successHandler)
-            .catch(this.errorHandler)
-        }
-      })
-    },
-
-    successHandler() {
-      this.goBack()
-    },
-
-    goBack() {
-      this.$router.go(-1)
+      // 提交时如果是修改操作
+      ;(
+        this.isUpdate ?
+          this.$http.patch(`/student/${this.id}`, data) :
+          this.$http.post('/student', data)
+      )
+        .then(this.successHandler)
+        .catch(this.errorHandler)
     },
   },
 

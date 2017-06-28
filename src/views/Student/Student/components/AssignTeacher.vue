@@ -3,8 +3,8 @@
     :value="value"
     @input="value => $emit('input', value)"
     title="分配教师"
-    :loading="loading"
-    @on-ok="submit()"
+    :loading="formLoading"
+    @on-ok="beforeSubmit()"
     @on-cancle="closeModal()"
   >
   <!--{{studentItem}}-->
@@ -30,8 +30,11 @@
  * 学员分配教师组件
  * @author  zhoumenglin
  */
+import { form } from '@/mixins'
 
 export default {
+  mixins: [form],
+
   props: {
     value: {
       type: Boolean,
@@ -52,8 +55,6 @@ export default {
 
       teachers: [],
 
-      loading: false,
-
       rules: {
         teacher_id: [
           { required: true, type: 'number', message: '请选择教师', trigger: 'change' },
@@ -62,27 +63,20 @@ export default {
           { required: true, type: 'number', message: '请选择通知方式', trigger: 'change' },
         ],
       },
-
-      formErrors: {},
     }
   },
 
   methods: {
     submit() {
-      // 验证表单
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          // 禁止连续点击
-          this.loading = true
-          // 用延时模拟请求成功
-          this.$http.post('/student/do_assign_teacher', {
-            ...this.form,
-            student_item: this.studentItem,
-          })
-            .then(this.successHandler)
-              .catch(this.errorHandler)
-        }
+      // 禁止连续点击
+      this.formLoading = true
+      // 用延时模拟请求成功
+      this.$http.post('/student/do_assign_teacher', {
+        ...this.form,
+        student_item: this.studentItem,
       })
+        .then(this.successHandler)
+        .catch(this.errorHandler)
     },
 
     successHandler() {
@@ -91,21 +85,10 @@ export default {
       this.closeModal()
     },
 
-    errorHandler({ errors }) {
-      if (errors) {
-        this.formErrors = errors
-        this.loading = false
-      } else {
-        this.formErrors = { error: ['服务端错误，请稍后重试'] }
-        this.loading = false
-      }
-    },
-
     closeModal() {
-      // console.log('关闭')
       this.$refs.form.resetFields()
       this.formErrors = {}
-      this.loading = false
+      this.formLoading = false
     },
   },
 

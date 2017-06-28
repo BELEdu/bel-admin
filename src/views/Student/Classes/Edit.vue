@@ -5,10 +5,10 @@
 {{form.start_at}}
     <Form :label-width="130" class="app-form-entire" :model="form" :rules="rules" ref="form" >
       <app-form-alert :errors="formErrors"></app-form-alert>
-      <Form-item label="班级名称" required prop="display_name">
+      <Form-item label="班级名称"  prop="display_name">
         <Input placeholder="请输入班级名称" v-model="form.display_name"></Input>
       </Form-item>
-      <Form-item label="班级分类" required prop="classes_type">
+      <Form-item label="班级分类">
         <Select placeholder="请选择..." v-model="form.classes_type">
 
           <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
@@ -46,7 +46,7 @@
       </Form-item>
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="submit()" :loading="loading.submit">
+        <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
           提交
         </Button>
       </Form-item>
@@ -65,8 +65,8 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-// 引入日期处理库
 import format from 'date-fns/format'
+import { form, goBack } from '@/mixins'
 
 // const myStudents = [
 //   '张三',
@@ -88,6 +88,8 @@ import format from 'date-fns/format'
 export default {
   name: 'app-student-classes-edit',
 
+  mixins: [form, goBack],
+
   data() {
     return {
       form: {
@@ -105,24 +107,18 @@ export default {
 
       rules: {
         display_name: [
-          { required: true, message: '班级名称必填', trigger: 'change' },
-          { min: 2, max: 32, message: '字符长度应在2到32之间', trigger: 'blur' },
+          this.$rules.required('班级名称'),
+          this.$rules.length(2, 32),
         ],
         classes_type: [
-          { type: 'number', required: true, message: '班级分类必填', trigger: 'change' },
+          this.$rules.required('班级分类', 'number'),
         ],
       },
-
-      formErrors: {}, // 表单提交错误信息
 
       classes_director_data: [], // 班主数据源
       classes_teacher_data: [], // 任课教师数据源
       student_data: [], // 班级学生数据源
       // studentList: [], // 班级学生数据源（测试）
-
-      loading: {
-        submit: false, // 提交表单的loading
-      },
     }
   },
 
@@ -147,56 +143,29 @@ export default {
 
     // 提交表单
     submit() {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          // 处理日期格式
-          this.form = {
-            ...this.form,
-            start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : '',
-          }
-          // 等同于
-          // this.form.start_at = this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : ''
-
-          this.loading.submit = true
-
-          // 提交时如果是修改操作
-          if (this.isUpdate) {
-            this.form.id = this.$router.currentRoute.params.id
-            this.$http.patch(`/classes/${this.form.id}`, this.form)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
-          // 提交时如果是添加操作
-          if (this.isUpdate === false) {
-            this.$http.post('/classes', this.form)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
-        }
-      })
-    },
-
-    successHandler() {
-      this.loading.submit = false
-      this.goBack()
-    },
-
-    errorHandler({ errors }) {
-      this.loading.submit = false
-
-      // 后台返回errors字段时，按errors字段展示错误信息
-      // 否则展示一个统一的错误信息（这里还没有考虑message的情况？）
-      if (errors) {
-        this.formErrors = errors
-      } else {
-        this.formErrors = { error: ['服务端错误，请稍后重试'] }
+      // 处理日期格式
+      this.form = {
+        ...this.form,
+        start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : '',
       }
-      this.$emit('scrollToTop')
-    },
+      // 等同于
+      // this.form.start_at = this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : ''
 
-    // 取消（返回上一页）
-    goBack() {
-      this.$router.go(-1)
+      this.formLoading = true
+
+      // 提交时如果是修改操作
+      if (this.isUpdate) {
+        this.form.id = this.$router.currentRoute.params.id
+        this.$http.patch(`/classes/${this.form.id}`, this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
+      // 提交时如果是添加操作
+      if (this.isUpdate === false) {
+        this.$http.post('/classes', this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
     },
 
     // 获取各个下拉菜单的数据
@@ -221,11 +190,11 @@ export default {
             classes_director_data,
             classes_teacher_data,
             student_data,
-            ...form
+            ...others
           } = res
 
           this.form = {
-            ...form,
+            ...others,
             start_at: new Date(res.start_at),
           }
           this.classes_director_data = classes_director_data

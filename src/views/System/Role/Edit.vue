@@ -47,7 +47,7 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import { formError, goBack } from '@/mixins'
+import { form, goBack } from '@/mixins'
 import { transform, generatePaths, getPath } from '../utils'
 import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
@@ -55,7 +55,7 @@ import Permissions from '../components/Permissions'
 export default {
   name: 'app-system-role-edit',
 
-  mixins: [formError, goBack],
+  mixins: [form, goBack],
 
   data() {
     return {

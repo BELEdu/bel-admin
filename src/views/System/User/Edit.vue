@@ -85,13 +85,13 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-import { formError, goBack } from '@/mixins'
+import { form, goBack } from '@/mixins'
 import { transform, generatePaths, getPath } from '../utils'
 
 export default {
   name: 'app-system-user-detail',
 
-  mixins: [formError, goBack],
+  mixins: [form, goBack],
 
   data() {
     return {
