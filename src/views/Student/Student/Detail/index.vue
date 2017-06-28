@@ -16,7 +16,7 @@
 /**
  * 学员管理 - 学员信息 - 学员详情 - 主组件
  * @author zml
- * @version 2017-06-14
+ * @version 2017-06-27
  */
 import { GLOBAL } from '@/store/mutationTypes'
 
@@ -44,10 +44,16 @@ export default {
     }
   },
 
+  computed: {
+    studentId() {
+      return this.$router.currentRoute.params.studentId
+    },
+  },
+
   methods: {
-    // 标签栏切换
+    // 标签栏路由切换
     tabSelect(name) {
-      this.$router.push(`${name}`)
+      this.$router.push(`/student/student/${this.studentId}/${name}`)
     },
   },
 

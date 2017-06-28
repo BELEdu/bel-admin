@@ -2,7 +2,6 @@
   <div>
     <app-editor-title></app-editor-title>
 
-
     <Form
      :label-width="130"
      :model="form"
@@ -50,19 +49,19 @@
  */
 
 import { mapState } from 'vuex'
-import { GLOBAL } from '@/store/mutationTypes'
 import format from 'date-fns/format'
-// import format from 'date-fns/format'
+import { GLOBAL } from '@/store/mutationTypes'
+import { formError } from '@/mixins'
 import Basic from './components/Basic'
 import Parents from './components/Parents'
 
 
 const defaultParent = {
   parent_name: '', // 家长姓名
-  gender: 1, // 家长性别
+  gender: null, // 家长性别
   phone: '', // 联系方式
   identity_card: '', // 家长身份证
-  is_guardian: 1, // 是否监护人
+  is_guardian: null, // 是否监护人
   relation: '', // 亲属关系
   city: '', // 现住城市
   address: '', // 街道地址
@@ -73,36 +72,38 @@ const defaultParent = {
 
 const defaultSublist = {
   birth_at: '', // 出生日期
-  belong_teacher: '', // 归属教师
-  turn_recommend_staff: '', // 转介绍员工
-  turn_recommend_student: '', // 转介绍学员
+  belong_teacher: null, // 归属教师
+  turn_recommend_staff: null, // 转介绍员工
+  turn_recommend_student: null, // 转介绍学员
   customer_resource: '', // 客户资源所在地
   information_source: '', // 信息来源
-  communication_type: '', // 沟通类型
+  communication_type: null, // 沟通类型
 }
 
 export default {
   name: 'app-student-student-detail-edit',
+
+  mixins: [formError],
 
   data() {
     return {
       form: {
         display_name: '', // 学员姓名
         number: '', // 学员编号（仅可读）
-        gender: 1, // 学员性别
+        gender: null, // 学员性别
         phone: '', // 联系方式
         identity_card: '', // 身份证号
-        join_grade: '', // 入学年级
-        current_grade: '', // 当前年级
+        join_grade: null, // 入学年级
+        current_grade: null, // 当前年级
         school_name: '', // 在读学校
-        subject_type: 3, // 文理科
-        is_repeat: 0, // 是否复读
+        subject_type: null, // 文理科
+        is_repeat: null, // 是否复读
         user_id: '', // 初始建档人（仅可读）
 
-        belong_counselor: '', // 归属咨询师
-        belong_customer_relationships: '', // 归属学管师
-        is_vip: '', // vip
-        student_current_status: '', // 学生当前状态
+        belong_counselor: null, // 归属咨询师
+        belong_customer_relationships: null, // 归属学管师
+        is_vip: null, // vip
+        student_current_status: null, // 学生当前状态
         original_contractor_id: '', // 初始签约人（仅可读）
 
         // 待定数据
@@ -122,8 +123,6 @@ export default {
           this.$rules.mobile,
         ],
       },
-
-      formErrors: {}, // 表单提交错误信息
     }
   },
 
@@ -161,7 +160,8 @@ export default {
     getListData() {
       return this.$http.get('/student/create')
         .then((res) => {
-          window.console.log(res)
+          // eslint-disable-next-line
+          console.log(res)
         })
     },
 
@@ -188,32 +188,19 @@ export default {
           }
 
           // 提交时如果是修改操作
-          if (this.isUpdate) {
-            this.$http.patch(`/student/${this.id}`, data)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
-          // 提交时如果是添加操作
-          if (this.isUpdate === false) {
-            this.$http.post('/student', data)
-              .then(this.successHandler)
-              .catch(this.errorHandler)
-          }
+          ;(
+            this.isUpdate ?
+              this.$http.patch(`/student/${this.id}`, data) :
+              this.$http.post('/student', data)
+          )
+            .then(this.successHandler)
+            .catch(this.errorHandler)
         }
       })
     },
 
     successHandler() {
       this.goBack()
-    },
-
-    errorHandler({ errors }) {
-      if (errors) {
-        this.formErrors = errors
-      } else {
-        this.formErrors = { error: ['服务端错误，请稍后重试'] }
-      }
-      this.$emit('scrollToTop')
     },
 
     goBack() {
