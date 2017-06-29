@@ -73,7 +73,7 @@
     <assign-teacher
       v-model="modal.teacher"
       @closeModalTeacher="modal.teacher = false"
-      :studentItem="student_item"
+      :studentItem="studentItem"
     ></assign-teacher>
 
     <!-- 学员信息表格 -->
@@ -190,7 +190,7 @@ export default {
 
       query: {},
 
-      student_item: [], // 学生id数组（用于分配教师）
+      studentItem: [], // 学生id数组（用于分配教师）
     }
   },
 
@@ -205,14 +205,10 @@ export default {
     AssignTeacher,
   },
 
-  created() {
-    // this.$store.commit(GLOBAL.LOADING.HIDE)
-  },
-
   methods: {
 
     openTeacherModal() {
-      if (this.student_item.length > 0) {
+      if (this.studentItem.length > 0) {
         this.modal.teacher = true
       } else {
         this.$Message.warning('请先选择要分配教师的学员')
@@ -221,16 +217,14 @@ export default {
 
     // 获取选中的学生ID
     onSelectionChange(selection) {
-      this.student_item = selection.map(item => item.id)
+      this.studentItem = selection.map(item => item.id)
     },
-
 
     // 根据接口和loaction.search（query）获取数据
     getData(qs) {
       this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
         .then(() => {
           this.$router.push(`/student/student${qs}`)
-          // 关闭loading动画
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
@@ -257,10 +251,10 @@ export default {
     },
 
     // 打开删除模态框
-    openDeleteModal(studentId) {
+    openDeleteModal(id) {
       this.modal.delete = true
       // 传入表格中对应学员编号
-      this.studentId = studentId
+      this.studentId = id
     },
 
     // 删除未签约学员

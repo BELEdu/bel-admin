@@ -7,7 +7,6 @@
     @on-ok="beforeSubmit()"
     @on-cancle="closeModal()"
   >
-  <!--{{studentItem}}-->
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="分配给" prop="teacher_id">
@@ -49,18 +48,18 @@ export default {
   data() {
     return {
       form: {
-        teacher_id: '',
-        send_type: '',
+        teacher_id: null,
+        send_type: null,
       },
 
       teachers: [],
 
       rules: {
         teacher_id: [
-          { required: true, type: 'number', message: '请选择教师', trigger: 'change' },
+          this.$rules.required('分配教师', 'number'),
         ],
         send_type: [
-          { required: true, type: 'number', message: '请选择通知方式', trigger: 'change' },
+          this.$rules.required('通知方式', 'number'),
         ],
       },
     }
@@ -68,9 +67,6 @@ export default {
 
   methods: {
     submit() {
-      // 禁止连续点击
-      this.formLoading = true
-      // 用延时模拟请求成功
       this.$http.post('/student/do_assign_teacher', {
         ...this.form,
         student_item: this.studentItem,
@@ -80,12 +76,12 @@ export default {
     },
 
     successHandler() {
-      this.$Message.info('教师分配成功！')
-      this.$emit('closeModalTeacher')
       this.closeModal()
+      this.$Message.info('提交成功！')
     },
 
     closeModal() {
+      this.$emit('closeModalTeacher')
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
