@@ -81,6 +81,7 @@ export { default as StudentWrong } from './examination/WrongQuestion/StudentWron
 // 备课管理
 export { default as Prepareplan } from './Prepare/Prepareplan'
 export { default as StuPreList } from './Prepare/Prepareplan/StuPreList'
+export { default as StuPlanList } from './Prepare/Prepareplan/StuPlanList'
 export { default as PlanEdit } from './Prepare/Prepareplan/PlanEdit'
 export { default as Papercenter } from './Prepare/Papercenter'
 export { default as Smartpaper } from './Prepare/Papercenter/Smartpaper'

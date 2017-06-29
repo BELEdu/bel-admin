@@ -44,6 +44,19 @@ export default [
     },
   },
   {
+    path: '/prepare/prepareplan/:id/:id',
+    name: 'PrepareStuPlanList',
+    component: views.StuPlanList,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '教案管理' },
+        { name: '学员列表' },
+        { name: '学员教案' },
+      ],
+    },
+  },
+  {
     path: '/prepare/papercenter',
     name: 'PreparePaperCenter',
     component: views.Papercenter,
