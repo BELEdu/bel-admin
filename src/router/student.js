@@ -80,7 +80,7 @@ export default [
           breadcrumb: [
             { name: '学员管理' },
             STUDENT_STUDENT,
-            { name: '学员详情' },
+            { name: '交流会' },
           ],
         },
       },
@@ -92,7 +92,8 @@ export default [
           breadcrumb: [
             { name: '学员管理' },
             STUDENT_STUDENT,
-            { name: '学员详情' },
+            { name: '交流会' },
+            { name: '添加交流会' },
           ],
         },
       },
@@ -104,7 +105,8 @@ export default [
           breadcrumb: [
             { name: '学员管理' },
             STUDENT_STUDENT,
-            { name: '学员详情' },
+            { name: '交流会' },
+            { name: '编辑交流会' },
           ],
         },
       },
@@ -116,7 +118,7 @@ export default [
           breadcrumb: [
             { name: '学员管理' },
             STUDENT_STUDENT,
-            { name: '学员详情' },
+            { name: '预警信息' },
           ],
         },
       },
