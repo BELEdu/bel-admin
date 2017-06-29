@@ -5,6 +5,16 @@
  */
 
 export default {
+  data() {
+    return {
+      query: {
+        ...this.$route.query,
+        order: {},
+        like: {},
+        between: [],
+      },
+    }
+  },
   computed: {
     qs() {
       return this.$parse(this.query)
@@ -20,30 +30,36 @@ export default {
           [key]: order,
         },
       }
-      this.filter()
     },
 
     // 更改每页条数
     pageSizeChange(per_page) {
       this.query = { ...this.query, per_page, page: 1 }
-      this.getData(this.qs)
     },
 
     // 跳页
     goTo(page) {
       this.query = { ...this.query, page }
-      this.getData(this.qs)
     },
 
     // 获取排序、过滤后的列表
     filter() {
+      this.updatePath()
+      this.getData(this.qs)
+    },
+    // 更新当前路由
+    updatePath() {
       const { path } = this.$router.currentRoute
       this.$router.push(`${path}${this.qs}`)
-      this.getData(this.qs)
     },
   },
 
   created() {
-    this.getData(location.search)
+    this.filter()
+  },
+  watch: {
+    qs() {
+      this.filter()
+    },
   },
 }
