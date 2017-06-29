@@ -82,7 +82,6 @@ export { default as StudentWrong } from './examination/WrongQuestion/StudentWron
 export { default as Prepareplan } from './Prepare/Prepareplan'
 export { default as PlanEdit } from './Prepare/Prepareplan/PlanEdit'
 export { default as Papercenter } from './Prepare/Papercenter'
-export { default as Paperinfo } from './Prepare/Papercenter/Paperinfo'
 export { default as Smartpaper } from './Prepare/Papercenter/Smartpaper'
 export { default as Smartquestion } from './Prepare/Smartquestion'
 export { default as Question } from './Prepare/Question'

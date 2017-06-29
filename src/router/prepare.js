@@ -57,12 +57,13 @@ export default [
   },
   {
     path: '/prepare/papercenter/:id',
-    name: 'PreparePaperInfo',
-    component: views.Paperinfo,
+    name: 'PreparePaperList',
+    // 使用个性题库组件
+    component: views.Papercenter,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '组卷中心' },
+        { name: '个性题库' },
         { name: '学员试卷列表' },
       ],
     },

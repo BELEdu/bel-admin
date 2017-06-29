@@ -1,5 +1,5 @@
 <template>
-  <div class="papercenter">
+  <div class="paperinfo">
     <!-- 上部 搜索栏 -->
     <Form class="app-search-form">
       <Form-item>
@@ -16,7 +16,12 @@
     <!-- 中部 列表title栏 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2 icon="">学员列表</h2>
+      <h2 icon="">试卷列表</h2>
+      <span v-if="$route.params.id">学员：李园园</span>
+      </Col>
+      <Col>
+        <Button type="primary">人工组卷</Button>
+        <Button type="primary">智能组卷</Button>
       </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
@@ -31,7 +36,7 @@
 
 <script>
 /**
- * 备课管理 - 智能组卷
+ * 备课管理 - 智能组卷 - 学员试卷列表
  * @author hjz
  * @version 2017-06-27
  */
@@ -43,18 +48,16 @@ export default {
   data() {
     return {
       fcol: [
-        { title: '学员姓名', key: 1, align: 'center' },
-        { title: '地区', key: 2, align: 'center' },
-        { title: '在读学校', key: 3, align: 'center' },
-        { title: '当前年级', key: 4, align: 'center' },
-        { title: '学科', key: 5, align: 'center' },
-        { title: '知识点总数', key: 6, align: 'center' },
-        { title: '试卷总数', key: 7, align: 'center' },
+        { title: '试卷标题', key: 1, width: 400, align: 'center' },
+        { title: '学科', key: 2, align: 'center' },
+        { title: '试题量', key: 3, align: 'center' },
+        { title: '创建人', key: 4, align: 'center' },
+        { title: '创建时间', key: 5, align: 'center' },
+        { title: '浏览量', key: 6, align: 'center' },
         {
           title: '操作',
-          key: 8,
+          key: 6,
           align: 'center',
-          width: 230,
           render: h => h(
             'div',
             [
@@ -62,50 +65,38 @@ export default {
                 'Button',
                 {
                   props: { size: 'small', type: 'text' },
-                  class: 'color-info',
-                  on: { click: this.checkInfo },
+                  class: 'color-error',
+                  style: { margin: '3px' },
                 },
-                '查看试卷',
+                '删除',
               ),
               h(
                 'Button',
                 {
                   props: { size: 'small', type: 'text' },
-                  class: 'color-success',
-                  on: { click: this.paperSmart },
+                  class: 'color-primary',
+                  style: { margin: '3px' },
                 },
-                '智能组卷',
-              ),
-              h(
-                'Button',
-                {
-                  props: { size: 'small', type: 'text' },
-                  class: 'color-info',
-                },
-                '人工组卷',
+                '查看',
               ),
             ],
           ),
         },
       ],
       fdata: Array(10).fill(null).map(() => ({
-        1: '李园园',
-        2: '福建省厦门市',
-        3: '蔡塘中学',
-        4: '高中三年级',
-        5: '【语文】【数学】【英语】',
-        6: 100,
-        7: 2,
+        1: '2017届广东省汕头市潮师高级中学高三上学期期中考试语文试卷',
+        2: '高中数学',
+        3: 15,
+        4: '李小平',
+        5: '2017-04-23',
+        6: 77,
       })),
     }
   },
 
   methods: {
     checkInfo() {
-      this.$router.push('/prepare/papercenter/1')
-    },
-    paperSmart() {
-      this.$router.push('/prepare/papercenter/smartpaper')
+      this.$router.push('/prepare/smartpaper/1')
     },
   },
 
@@ -116,7 +107,12 @@ export default {
 </script>
 
 <style lang="less">
-.papercenter {
+.paperinfo {
+
+  & h2 {
+    display: inline-block;
+    margin-right: 30px;
+  }
 
   & .ivu-form-item {
     display: inline-block;
