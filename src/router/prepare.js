@@ -32,7 +32,7 @@ export default [
     },
   },
   {
-    path: '/prepare/prepareplan/:id',
+    path: '/prepare/prepareplan/:tutorid',
     name: 'PrepareStuPreList',
     component: views.StuPreList,
     meta: {
@@ -44,7 +44,7 @@ export default [
     },
   },
   {
-    path: '/prepare/prepareplan/:id/:id',
+    path: '/prepare/prepareplan/:tutorid/:stuid',
     name: 'PrepareStuPlanList',
     component: views.StuPlanList,
     meta: {
