@@ -60,7 +60,9 @@ export default {
       studentColumns: [
         { title: '学员姓名', key: 'display_name', align: 'center' },
         { title: '学员编号', key: 'number', align: 'center' },
-        { title: '上课年级', key: 'current_grade', align: 'center' },
+        { title: '上课年级',
+          align: 'center',
+          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
         { title: '产品名称', key: 'schedule_product_name', align: 'center' },
         { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
         {

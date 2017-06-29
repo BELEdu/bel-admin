@@ -88,7 +88,9 @@ export default{
           render: (h, params) => h('span', {}, `${params.row.start_at}-${params.row.end_at}`),
         },
         { title: '实际课时', key: 'fact_cost', align: 'center', width: 80 },
-        { title: '上课年级', key: 'grade', align: 'center' },
+        { title: '上课年级',
+          align: 'center',
+          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '产品名称', key: 'product_name', align: 'center' },
         { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
         {

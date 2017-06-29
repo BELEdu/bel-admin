@@ -1,8 +1,8 @@
 <template>
   <div>
     <Tabs :value="tabActive" type="card" :animated="false" @on-click="tabSwitch" class="app-tabs">
-      <Tab-pane label="学员" name="list"></Tab-pane>
-      <Tab-pane label="班级" name="class"></Tab-pane>
+      <Tab-pane label="日课表" name="date"></Tab-pane>
+      <Tab-pane label="周课表" name="week"></Tab-pane>
     </Tabs>
     <router-view></router-view>
   </div>
@@ -10,15 +10,20 @@
 
 <script>
 /**
- * 排课管理 - 学员排课
+ * 排课管理 - 排课表
  * @author chenliangshan
- * @update 2017-06-28
+ * @version 2017-06-29
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'app-curriculum-studentcurricula',
+  name: 'app-curriculum-course-manage',
+  data() {
+    return {
+      currentType: [],
+    }
+  },
   computed: {
     qs() {
       return this.$parse(this.$route.query)
@@ -26,25 +31,18 @@ export default {
     tabActive() {
       this.$store.commit(GLOBAL.LOADING.HIDE)
       const pathArry = this.$route.path.split('/')
-      return pathArry[pathArry.length - 1]
+      return pathArry[pathArry.length - 2]
     },
   },
   methods: {
-    /**
-     * 标签切换事件
-     * @param id  [string]  1-> 学员 2-> 班级
-     * @returns {*}
-     */
-    tabSwitch(name = this.tabActive) {
-      if (name === this.tabActive) {
-        return false
-      }
-      this.tabActive = name
+    // 标签切换事件
+    tabSwitch(name) {
       return this.updateRoute(name)
     },
     // 更新路由
     updateRoute(name, qs = '') {
-      this.$router.push(`/curriculum/studentcurricula/${name}${qs}`)
+      const path = this.$route.path.replace(this.tabActive, name)
+      this.$router.push(`${path}${qs}`)
     },
   },
 }
