@@ -10,7 +10,7 @@
 
 // 大字号label
 .app-label-large {
-  .ivu-form-item-label {
+  :not(.original) > .ivu-form-item-label {
     font-size: 14px;
   }
 }
@@ -32,11 +32,11 @@
   }
 
   :not(.original) > input.ivu-input,
-  :not(.original) > .ivu-select-selection,
-  :not(.original) > .ivu-select-selected-value,
-  :not(.original) > .ivu-select-item,
-  :not(.original) > .ivu-select-input,
-  :not(.original) > .ivu-select-placeholder {
+  .ivu-select:not(.original) .ivu-select-selection,
+  .ivu-select:not(.original) .ivu-select-selected-value,
+  .ivu-select:not(.original) .ivu-select-item,
+  .ivu-select:not(.original) .ivu-select-input,
+  .ivu-select:not(.original) .ivu-select-placeholder {
     height: 38px !important;
     font-size: 14px !important;
   }
@@ -49,17 +49,17 @@
     padding: 7px 10px;
   }
 
-  :not(.original) > .ivu-select-placeholder,
-  :not(.original) > .ivu-select-selected-value {
+  .ivu-select:not(.original) .ivu-select-placeholder,
+  .ivu-select:not(.original) .ivu-select-selected-value {
     padding-left: 10px !important;
     line-height: 38px !important;
   }
 
-  :not(.original) > .ivu-select-item {
+  .ivu-select:not(.original) .ivu-select-item {
     padding: 7px 16px 8px;
   }
 
-  :not(.original) > .ivu-select-selection .ivu-tag {
+  .ivu-select:not(.original) .ivu-tag {
     height: 24px;
     margin-top: -2px;
     font-size: 14px;
