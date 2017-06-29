@@ -30,22 +30,6 @@
       </Col>
     </Row>
 
-    <!-- 班级学员管理模态框 -->
-    <app-form-modal
-      v-model="modal.manage"
-      :title="`班级学员管理 : ${classId}`"
-      :loading="loading.manage"
-      @on-ok="manageSubmit('formManage')"
-    >
-      <Form ref="formManage">
-        <Form-item>
-          <Select v-model="formManage.student" placeholder="请选择学生..." filterable multiple>
-            <Option v-for="item in studentList" :value="item.value" :key="item">{{ item.label }}</Option>
-          </Select>
-        </Form-item>
-      </Form>
-    </app-form-modal>
-
     <!-- 删除模态框 -->
     <app-warn-modal
       v-model="modal.delete"
@@ -56,6 +40,16 @@
     >
       <div class="text-center">删除该班级（{{classId}}）后将无法再回复，是否继续删除？</div>
     </app-warn-modal>
+
+    <!--学员管理组件-->
+    <manage-student
+      v-model="modal.manage"
+      :classId="classId"
+      @closeManageModal="closeManageModal()"
+      :form="form"
+      :studentData="student_data"
+    >
+    </manage-student>
 
     <!--班级管理表格-->
     <Table class="app-table" :columns="columns" :data="list.data" border></Table>
@@ -79,6 +73,7 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
+import ManageStudent from './components/ManageStudent'
 
 export default {
   name: 'app-student-classes',
@@ -93,37 +88,6 @@ export default {
         end: '',
         keyword: '',
       },
-      // 学员管理表单
-      formManage: {
-        student: [],
-      },
-      // 学生列表
-      studentList: [
-        {
-          value: '张三',
-          label: '张三',
-        },
-        {
-          value: '李四',
-          label: '李四',
-        },
-        {
-          value: '王五',
-          label: '王五',
-        },
-        {
-          value: '小六',
-          label: '小六',
-        },
-        {
-          value: '小七',
-          label: '小七',
-        },
-        {
-          value: '小八',
-          label: '小八',
-        },
-      ],
        // 模态框配置
       modal: {
         manage: false,
@@ -131,7 +95,6 @@ export default {
       },
       // 模态框确定按钮loading状态
       loading: {
-        manage: false,
         delete: false,
       },
       // 表格配置
@@ -176,9 +139,13 @@ export default {
         },
       ],
       //  班级编号（临时）
-      classId: '',
-      // location.search(query)
+      classId: 0,
+
       query: {},
+
+      form: {}, // 班级表单数据
+
+      student_data: [], // 学生数据源
     }
   },
 
@@ -189,13 +156,34 @@ export default {
     }),
   },
 
+  components: {
+    ManageStudent,
+  },
+
   methods: {
     // 打开班级学员管理模态框
     openManageModal(id) {
       this.modal.manage = true
       this.classId = id
+      this.$http.get(`/classes/${id}`)
+        .then((res) => {
+          const {
+            student_data,
+            ...others
+          } = res
+
+          this.form = {
+            ...others,
+            start_at: res.start_at ? new Date(res.start_at) : null,
+          }
+          this.student_data = student_data
+        })
     },
 
+    // 关闭班级学员管理模态框
+    closeManageModal() {
+      this.modal.manage = false
+    },
 
     // 打开删除班级模态框
     openDeleteModal(id) {
@@ -203,21 +191,11 @@ export default {
       this.classId = id
     },
 
-    // 班级学员管理表单提交
-    manageSubmit() {
-      this.loading.manage = true
-      setTimeout(() => {
-        this.loading.manage = false
-        this.modal.manage = false
-        this.$Message.success('提交成功！')
-      }, 1500)
-    },
-
     // 删除班级
     deleteSubmit(id) {
       this.classId = id
       this.loading.delete = true
-      // 这个id用来请求删除接口
+      // 班级id用来请求删除接口
       this.$store.dispatch(STUDENT.CLASSES.DELETE, id)
       .then(() => {
         this.loading.delete = false

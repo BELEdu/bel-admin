@@ -1,11 +1,13 @@
 <template>
-  <Alert type="error" show-icon v-if="flatErrors.length !== 0">
-  <!--<Alert type="error" show-icon >-->
-    错误提示文案
-    <span slot="desc">
-      <div v-for="error in flatErrors">{{ error }}</div>
-    </span>
-  </Alert>
+  <Form-item :label-width="fullWidth ? 0 : null">
+    <Alert class="app-form-alert" type="error" show-icon v-if="flatErrors.length !== 0">
+      <!--<Alert type="error" show-icon >-->
+      {{ title }}
+      <span slot="desc">
+        <div v-for="error in flatErrors">{{ error }}</div>
+      </span>
+    </Alert>
+  </Form-item>
 </template>
 
 <script>
@@ -19,9 +21,17 @@
 
 export default {
   props: {
+    title: {
+      type: String,
+      default: '错误提示文案',
+    },
     errors: {
       type: Object,
       required: true,
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -32,3 +42,10 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+.app-form-alert {
+  margin-bottom: 30px;
+}
+</style>
+

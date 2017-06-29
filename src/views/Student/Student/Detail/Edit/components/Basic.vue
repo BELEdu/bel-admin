@@ -58,37 +58,37 @@
       <Col span="11" offset="1">
         <Form-item label="归属咨询师">
           <Select placeholder="请选择..." v-model="form.belong_counselor">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-            <Option value="3">王五</Option>
+            <Option :value="1">张三</Option>
+            <Option :value="2">李四</Option>
+            <Option :value="3">王五</Option>
           </Select>
         </Form-item>
         <Form-item label="归属学管师">
           <Select placeholder="请选择..." v-model="form.belong_customer_relationships">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-            <Option value="3">王五</Option>
+            <Option :value="1">张三</Option>
+            <Option :value="2">李四</Option>
+            <Option :value="3">王五</Option>
           </Select>
         </Form-item>
         <Form-item label="归属教师">
           <Select placeholder="请选择..." v-model="form.sublist.belong_teacher">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-            <Option value="3">王五</Option>
+            <Option :value="1">张三</Option>
+            <Option :value="2">李四</Option>
+            <Option :value="3">王五</Option>
           </Select>
         </Form-item>
         <Form-item label="转介绍员工">
           <Select placeholder="请选择..." v-model="form.sublist.turn_recommend_staff">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-            <Option value="3">王五</Option>
+            <Option :value="1">张三</Option>
+            <Option :value="2">李四</Option>
+            <Option :value="3">王五</Option>
           </Select>
         </Form-item>
         <Form-item label="转介绍学员">
           <Select placeholder="请选择..." v-model="form.sublist.turn_recommend_student">
-            <Option value="1">张三</Option>
-            <Option value="2">李四</Option>
-            <Option value="3">王五</Option>
+            <Option :value="1">张三</Option>
+            <Option :value="2">李四</Option>
+            <Option :value="3">王五</Option>
           </Select>
         </Form-item>
         <Form-item label="VIP">

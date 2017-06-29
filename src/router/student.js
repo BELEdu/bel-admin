@@ -7,12 +7,15 @@
 
 import * as views from '@/views'
 
+const STUDENT_STUDENT = { name: '学员信息', link: '/student/student' }
+const STUDENT_CLASSES = { name: '班级管理', link: '/student/classes' }
+
 export default [
   {
     path: '/student',
     name: 'Student',
     // 测试:重定向到学员信息
-    redirect: '/student/student',
+    redirect: STUDENT_STUDENT.link,
     component: views.Student,
     meta: {
       breadcrumb: [
@@ -20,14 +23,16 @@ export default [
       ],
     },
   },
+
+  // 学员信息
   {
-    path: '/student/student',
+    path: STUDENT_STUDENT.link,
     name: 'StudentStudent',
     component: views.StudentStudent,
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '学员信息' },
+        STUDENT_STUDENT,
       ],
     },
   },
@@ -38,7 +43,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '学员信息' },
+        STUDENT_STUDENT,
         { name: '添加学员' },
       ],
     },
@@ -51,7 +56,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '学员信息' },
+        STUDENT_STUDENT,
         { name: '学员详情' },
       ],
     },
@@ -63,9 +68,8 @@ export default [
         meta: {
           breadcrumb: [
             { name: '学员管理' },
-            { name: '学员信息' },
+            STUDENT_STUDENT,
             { name: '学员详情' },
-            { name: '基础信息' },
           ],
         },
       },
@@ -77,8 +81,7 @@ export default [
         meta: {
           breadcrumb: [
             { name: '学员管理' },
-            { name: '学员信息' },
-            { name: '学员详情' },
+            STUDENT_STUDENT,
             { name: '交流会' },
           ],
         },
@@ -90,8 +93,7 @@ export default [
         meta: {
           breadcrumb: [
             { name: '学员管理' },
-            { name: '学员信息' },
-            { name: '学员详情' },
+            STUDENT_STUDENT,
             { name: '交流会' },
             { name: '添加交流会' },
           ],
@@ -104,8 +106,7 @@ export default [
         meta: {
           breadcrumb: [
             { name: '学员管理' },
-            { name: '学员信息' },
-            { name: '学员详情' },
+            STUDENT_STUDENT,
             { name: '交流会' },
             { name: '编辑交流会' },
           ],
@@ -118,14 +119,15 @@ export default [
         meta: {
           breadcrumb: [
             { name: '学员管理' },
-            { name: '学员信息' },
-            { name: '学员详情' },
+            STUDENT_STUDENT,
             { name: '预警信息' },
           ],
         },
       },
     ],
   },
+
+  // 学员进度
   {
     path: '/student/studyprogress',
     name: 'StudentStudyprogress',
@@ -138,6 +140,20 @@ export default [
     },
   },
   {
+    path: '/student/studyprogress/edit',
+    name: 'StudentStudyprogressEdit',
+    component: views.StudentStudyprogressEdit,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '学习进度' },
+        { name: '添加计划' },
+      ],
+    },
+  },
+
+  // 学员知识点
+  {
     path: '/student/knowledgepoint',
     name: 'StudentKnowledgepoint',
     component: views.StudentKnowledgepoint,
@@ -148,8 +164,10 @@ export default [
       ],
     },
   },
+
+  // 班级管理
   {
-    path: '/student/classes',
+    path: STUDENT_CLASSES.link,
     name: 'StudentClasses',
     component: views.StudentClasses,
     meta: {
@@ -166,7 +184,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '班级管理' },
+        STUDENT_CLASSES,
         { name: '添加班级' },
       ],
     },
@@ -178,7 +196,7 @@ export default [
     meta: {
       breadcrumb: [
         { name: '学员管理' },
-        { name: '班级管理' },
+        STUDENT_CLASSES,
         { name: '编辑班级' },
       ],
     },

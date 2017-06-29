@@ -28,7 +28,7 @@
         <h2>学员列表</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="modal.teacher = true">分配教师</Button>
+        <Button type="primary" @click="openTeacherModal()">分配教师</Button>
         <Button type="primary" @click="modal.manage = true">分配学管师</Button>
         <Button type="primary" @click="$router.push('/student/student/edit')">添加学员</Button>
       </Col>
@@ -44,30 +44,6 @@
     >
       <div class="text-center">是否删除该编号为{{studentId}}的学员？</div>
     </app-warn-modal>
-
-    <!-- 分配教师模态框 -->
-    <app-form-modal
-      v-model="modal.teacher"
-      title="分配教师"
-      :loading="loading.teacher"
-      @on-ok="teacherSubmit('formTeacher')"
-    >
-      <Form ref="formTeacher" :model="formTeacher" :rules="ruleTeacher" :label-width="100">
-        <Form-item label="分配给" prop="teacher">
-          <Select v-model="formTeacher.teacher" placeholder="请选择...">
-            <Option value="1">李老师</Option>
-            <Option value="2">王老师</Option>
-            <Option value="3">黄老师</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="通知该教师" prop="notice">
-          <Radio-group v-model="formTeacher.notice">
-            <Radio label="message">发送短信</Radio>
-            <Radio label="address">发送邮件</Radio>
-          </Radio-group>
-        </Form-item>
-      </Form>
-    </app-form-modal>
 
     <!-- 分配学管师模态框 -->
     <app-form-modal
@@ -86,15 +62,22 @@
         </Form-item>
         <Form-item label="通知该教师" prop="notice">
           <Radio-group v-model="formManage.notice">
-            <Radio label="message">发送短信</Radio>
-            <Radio label="address">发送邮件</Radio>
+            <Radio label="1">发送短信</Radio>
+            <Radio label="2">发送邮件</Radio>
           </Radio-group>
         </Form-item>
       </Form>
     </app-form-modal>
 
+    <!--分配教师组件-->
+    <assign-teacher
+      v-model="modal.teacher"
+      @closeModalTeacher="modal.teacher = false"
+      :studentItem="studentItem"
+    ></assign-teacher>
+
     <!-- 学员信息表格 -->
-    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-selection-change="onSelectionChange"></Table>
 
     <!-- 分页 -->
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -114,6 +97,7 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
+import AssignTeacher from './components/AssignTeacher'
 
 export default {
   name: 'app-student-student',
@@ -127,20 +111,6 @@ export default {
         start: '',
         end: '',
         keyword: '',
-      },
-      // 分配教师表单
-      formTeacher: {
-        teacher: '',
-        notice: '',
-      },
-      // 分配教师表单验证规则
-      ruleTeacher: {
-        teacher: [
-          { required: true, message: '请选择教师', trigger: 'change' },
-        ],
-        notice: [
-          { required: true, message: '请选择通知方式', trigger: 'change' },
-        ],
       },
       // 分配学管师表单
       formManage: {
@@ -164,7 +134,6 @@ export default {
       },
       // 模态框确定按钮loading状态
       loading: {
-        teacher: false,
         manage: false,
         delete: false,
       },
@@ -218,10 +187,10 @@ export default {
       ],
       // 学员编号
       studentId: '',
-      // 分页配置
-      pager: undefined,
 
       query: {},
+
+      studentItem: [], // 学生id数组（用于分配教师）
     }
   },
 
@@ -232,41 +201,32 @@ export default {
     }),
   },
 
-  created() {
-    // this.$store.commit(GLOBAL.LOADING.HIDE)
+  components: {
+    AssignTeacher,
   },
 
   methods: {
+
+    openTeacherModal() {
+      if (this.studentItem.length > 0) {
+        this.modal.teacher = true
+      } else {
+        this.$Message.warning('请先选择要分配教师的学员')
+      }
+    },
+
+    // 获取选中的学生ID
+    onSelectionChange(selection) {
+      this.studentItem = selection.map(item => item.id)
+    },
 
     // 根据接口和loaction.search（query）获取数据
     getData(qs) {
       this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
         .then(() => {
           this.$router.push(`/student/student${qs}`)
-          // 关闭loading动画
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })
-    },
-
-    // 分配教师表单提交
-    teacherSubmit(name) {
-      // 验证表单
-      this.$refs[name].validate((valid) => {
-        if (valid) {
-          // 禁止连续点击
-          this.loading.teacher = true
-          // 用延时模拟请求成功
-          setTimeout(() => {
-            this.loading.teacher = false
-            this.modal.teacher = false
-            this.$Message.success('教师分配成功！')
-            // 重置该表单
-            this.$refs[name].resetFields()
-          }, 1500)
-        } else {
-          this.$Message.error('表单验证失败！')
-        }
-      })
     },
 
     // 分配学管师表单提交
@@ -291,10 +251,10 @@ export default {
     },
 
     // 打开删除模态框
-    openDeleteModal(studentId) {
+    openDeleteModal(id) {
       this.modal.delete = true
       // 传入表格中对应学员编号
-      this.studentId = studentId
+      this.studentId = id
     },
 
     // 删除未签约学员
