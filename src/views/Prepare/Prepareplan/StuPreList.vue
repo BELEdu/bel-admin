@@ -16,7 +16,7 @@
     <!-- 中部 列表title栏 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2 icon="">教案管理</h2>
+      <h2 icon="">学员列表</h2>
       </Col>
       <Col>
       <Button type="primary" @click="createPlan()">添加教案</Button>
@@ -36,7 +36,7 @@
 /**
  * 备课管理 - 教案管理 - 学员管理
  * @author hjz
- * @version 2017-06-26
+ * @version 2017-06-29
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
@@ -77,7 +77,7 @@ export default {
       fdata: Array(10).fill(null).map(() => ({
         1: '张旭',
         2: '数学',
-        3: '高三',
+        3: '李白',
         4: '2017-06-06 至2017-08-08',
         5: 5,
         6: '数与式的课程管理',
