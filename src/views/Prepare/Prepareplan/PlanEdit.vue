@@ -111,6 +111,7 @@
       </Form-item>
     </Form>
     <!-- 本次课程内容 end -->
+    <!-- 下次课程计划 -->
     <Form class="app-form-entire planedit__next" :label-width="120">
       <h2>下次教学计划和教学思路</h2>
       <Form-item label="教学内容">
@@ -123,11 +124,14 @@
           <Option value="3">厦门一中试卷三</Option>
         </Select>
       </Form-item>
-      <Form-item>
-        <Button>取消</Button>
-        <Button type="primary">提交</Button>
-      </Form-item>
     </Form>
+    <!-- 下次课程计划 end -->
+    <!-- 编辑页行为按钮 -->
+    <div class="planedit__action app-form-entire">
+      <Button>取消</Button>
+      <Button type="primary">提交</Button>
+    </div>
+    <!-- 编辑页行为按钮 end -->    
   </div>
 </template>
 
@@ -310,6 +314,19 @@ export default {
   &>h2 {
     margin-left: 35px;
     margin-bottom: 30px;
+  }
+}
+
+.planedit__action {
+  margin: 0 0 30px 120px;
+
+  .ivu-btn {
+    width: 90px;
+    margin-top: 30px;
+
+    &:not(:last-child) {
+      margin-right: 2em;
+    }
   }
 }
 </style>
