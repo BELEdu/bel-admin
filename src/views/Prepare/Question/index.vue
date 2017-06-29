@@ -443,8 +443,8 @@ export default {
 // 屏幕右下角选中题目提示
 .question__cart {
   position: fixed;
-  right: 38px;
-  bottom: 70px;
+  left: 1411px;
+  bottom: 115px;
   border: @border-base;
   border-radius: @bd-radius;
   padding: 10px 17px;
@@ -482,7 +482,9 @@ export default {
 
   & .ivu-tabs-tabpane {
     padding: 8px;
-  } // 注释：全部&个人知识点，V2.0保留功能
+  } 
+  
+  // 注释：全部&个人知识点，V2.0保留功能
   // & .ivu-tree{
   //   &>ul>li>span {
   //     font-size: 14px;
