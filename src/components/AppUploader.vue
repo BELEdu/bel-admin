@@ -62,7 +62,7 @@ export default {
 
     onPreview(file) {
       // 这里需要了解open方法，写得更细致一些
-      window.open(`https://oa-api.caihonggou.com/${file.url}`)
+      window.open(`https://oa-api.caihonggou.com${file.url}`)
     },
 
     onRemove(...args) {
