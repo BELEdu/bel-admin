@@ -27,6 +27,7 @@ Vue.component('app-warn-modal', components.AppWarnModal)
 Vue.component('app-form-alert', components.AppFormAlert)
 Vue.component('app-dicts-filter', components.AppDictsFilter)
 Vue.component('app-uploader', components.AppUploader)
+Vue.component('app-knowledge-tree', components.AppKnowledgeTree)
 
 // 注册插件
 Vue
