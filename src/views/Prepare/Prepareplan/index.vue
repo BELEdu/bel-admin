@@ -18,9 +18,6 @@
       <Col>
       <h2 icon="">教案管理</h2>
       </Col>
-      <Col>
-      <Button type="primary" @click="createPlan()">添加教案</Button>
-      </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
     <!-- 下部 列表展示-->
@@ -48,16 +45,13 @@ export default {
       fcol: [
         { title: '教师姓名', key: 1, align: 'center' },
         { title: '上课科目', key: 2, align: 'center' },
-        { title: '教学对象', key: 3, align: 'center' },
-        { title: '上课时间', key: 4, align: 'center' },
-        { title: '课时', key: 5, align: 'center' },
-        { title: '课题', key: 6, align: 'center' },
-        { title: '知识点情况', key: 7, align: 'center' },
+        { title: '学员个数', key: 3, align: 'center' },
+        { title: '教案总数', key: 4, align: 'center' },
+        { title: '实际上课课时', key: 5, align: 'center' },
         {
           title: '操作',
-          key: 8,
+          key: 6,
           align: 'center',
-          width: 230,
           render: h => h(
             'div',
             [
@@ -66,7 +60,7 @@ export default {
                 {
                   props: { size: 'small', type: 'text' },
                   class: 'color-info',
-                  on: { click: this.checkPlan },
+                  on: { click: this.checkInfo },
                 },
                 '查看',
               ),
@@ -77,21 +71,16 @@ export default {
       fdata: Array(10).fill(null).map(() => ({
         1: '张旭',
         2: '数学',
-        3: '高三',
-        4: '2017-06-06 至2017-08-08',
+        3: 5,
+        4: 5,
         5: 5,
-        6: '数与式的课程管理',
-        7: 100,
       })),
     }
   },
 
   methods: {
-    // checkPlan() {
-    //   this.$router.push('/prepare/prepareplan/edit')
-    // },
-    createPlan() {
-      this.$router.push('/prepare/prepareplan/create')
+    checkInfo() {
+      this.$router.push('/prepare/prepareplan/1')
     },
   },
 
