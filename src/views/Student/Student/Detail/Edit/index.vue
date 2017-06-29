@@ -71,7 +71,7 @@ const defaultParent = {
 }
 
 const defaultSublist = {
-  birth_at: '', // 出生日期
+  birth_at: null, // 出生日期
   belong_teacher: null, // 归属教师
   turn_recommend_staff: null, // 转介绍员工
   turn_recommend_student: null, // 转介绍学员
@@ -174,20 +174,26 @@ export default {
           this.form = {
             ...this.form,
             ...res,
-            sublist: res.sublist && Object.keys(res.sublist).length ? res.sublist : defaultSublist,
+            // 处理日期格式
+            sublist: res.sublist && Object.keys(res.sublist).length ? {
+              ...res.sublist,
+              birth_at: res.sublist.birth_at ? new Date(res.sublist.birth_at) : null,
+            } : defaultSublist,
           }
         })
     },
 
      // 提交表单
     submit() {
-       // 处理日期格式
       const data = {
         ...this.form,
-        birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : '',
+        sublist: {
+          ...this.form.sublist,
+          // 处理日期格式
+          birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : null,
+        },
       }
-
-      // 提交时如果是修改操作
+      // 判断是编辑还是新建，以此提交不同的接口
       ;(
         this.isUpdate ?
           this.$http.patch(`/student/${this.id}`, data) :

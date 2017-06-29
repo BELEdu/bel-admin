@@ -96,7 +96,7 @@ export default {
       form: {
         id: '',
         student_id: '',
-        meeting_date: '',
+        meeting_date: null,
         meeting_type: null,
         parent_name: '',
         meeting_content: [
@@ -137,11 +137,10 @@ export default {
 
       rules: {
         meeting_date: [
-          // this.$rules.required('会议时间', 'date'),
-          { required: true, type: 'date', message: '会议时间必填', trigger: 'change' },
+          this.$rules.required('会议时间', 'date'),
         ],
         meeting_type: [
-          { required: true, type: 'number', message: '会议类型必填', trigger: 'change' },
+          this.$rules.required('会议类型', 'number'),
         ],
       },
     }
@@ -149,22 +148,18 @@ export default {
 
   computed: {
     ...mapState({
-      // 获取数据字典
       meetingTypes: state => state.dicts.meeting_type, // 交流会类型
     }),
-    // 学员id
-    studentId() {
+    studentId() { // 学员id
       return this.$router.currentRoute.params.studentId
     },
-    // 交流会id
-    meetingId() {
+    meetingId() { // 交流会id
       return this.$router.currentRoute.params.meetingId
     },
-    backRoute() {
+    backRoute() { // 返回上一层路由自定义
       return `/student/student/${this.studentId}/meeting`
     },
-    // 判断是修改还是新增
-    isUpdate() {
+    isUpdate() { // 判断是修改还是新增
       return !!this.$router.currentRoute.params.meetingId
     },
     files() {
@@ -177,15 +172,15 @@ export default {
   },
 
   methods: {
-    // 获取各个下拉菜单的数据
+    // 获取交流会数据源（添加）
     getListData() {
       return this.$http.get('/meeting/create')
         .then((res) => {
-          window.console.log(res)
+          this.meeting_persons_data = res.meeting_persons_data
         })
     },
 
-    // 获取当前编辑交流会的数据
+    // 获取交流会详情（编辑）
     getClassData() {
       return this.$http.get(`/meeting/${this.meetingId}`)
         .then((res) => {
@@ -196,7 +191,7 @@ export default {
 
           this.form = {
             ...others,
-            meeting_date: new Date(res.meeting_date),
+            meeting_date: res.meeting_date ? new Date(res.meeting_date) : null,
           }
           this.meeting_persons_data = meeting_persons_data
         })
@@ -232,16 +227,16 @@ export default {
     submit() {
       const data = {
         ...this.form,
-        meeting_date: this.form.meeting_date ? format(this.form.meeting_date, 'YYYY-MM-DD') : '',
+        meeting_date: this.form.meeting_date ? format(this.form.meeting_date, 'YYYY-MM-DD') : null,
         student_id: this.studentId,
       }
-          // 提交时如果是修改操作
+      // 提交修改
       if (this.isUpdate) {
         this.$http.patch(`/meeting/${this.meetingId}`, data)
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
-          // 提交时如果是添加操作
+      // 提交添加
       if (this.isUpdate === false) {
         this.$http.post('/meeting', data)
           .then(this.successHandler)
@@ -251,14 +246,11 @@ export default {
   },
 
   created() {
-     // 判断是编辑还是新建，以此调用不同的接口
-    if (this.isUpdate) {
-      this.getClassData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-    }
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+     // 判断是编辑还是添加，以此调用不同的接口
+    (this.isUpdate ? this.getClassData : this.getListData)()
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
 
-    // (this.isUpdate ? this.getClassData : this.getListData)()
-    //   .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    this.$route.meta.breadcrumb[2].link = `/student/student/${this.studentId}/meeting`
   },
 
 }
