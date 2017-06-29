@@ -23,6 +23,8 @@ export default [
       ],
     },
   },
+
+  // 学员信息
   {
     path: STUDENT_STUDENT.link,
     name: 'StudentStudent',
@@ -124,6 +126,8 @@ export default [
       },
     ],
   },
+
+  // 学员进度
   {
     path: '/student/studyprogress',
     name: 'StudentStudyprogress',
@@ -136,6 +140,20 @@ export default [
     },
   },
   {
+    path: '/student/studyprogress/edit',
+    name: 'StudentStudyprogressEdit',
+    component: views.StudentStudyprogressEdit,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '学习进度' },
+        { name: '添加计划' },
+      ],
+    },
+  },
+
+  // 学员知识点
+  {
     path: '/student/knowledgepoint',
     name: 'StudentKnowledgepoint',
     component: views.StudentKnowledgepoint,
@@ -146,6 +164,8 @@ export default [
       ],
     },
   },
+
+  // 班级管理
   {
     path: STUDENT_CLASSES.link,
     name: 'StudentClasses',

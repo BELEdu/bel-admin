@@ -50,8 +50,12 @@ export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Ed
 export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
 export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
 export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
+
 export { default as StudentStudyprogress } from './Student/Studyprogress'
+export { default as StudentStudyprogressEdit } from './Student/Studyprogress/edit'
+
 export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
+
 export { default as StudentClasses } from './Student/Classes'
 export { default as StudentClassesEdit } from './Student/Classes/Edit'
 
