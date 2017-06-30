@@ -1,9 +1,9 @@
 <template>
-  <Modal v-model="visible" :title="title" :width="width" :closable="closable" :mask-closable="maskClosable" @input="cancle">
+  <Modal v-model="visible" :title="title" :width="width" :closable="closable" :mask-closable="maskClosable" @input="cancel">
     <slot></slot>
     <div slot="footer">
       <div class="default-btn">
-        <Button type="ghost" size="large" @click="cancle" v-if="cancelBtn">{{cancelValue}}</Button>
+        <Button type="ghost" size="large" @click="cancel" v-if="cancelBtn">{{cancelValue}}</Button>
         <Button type="primary" size="large" :loading="loading" @click="ok" v-if="okBtn">{{okValue}}</Button>
       </div>
       <div class="assist-btn" v-if="assistValue">
@@ -27,7 +27,7 @@
  * @param {Boolean} closable - 是否显示右上角关闭按钮
  * @param {Boolean} maskClosable - 是否允许点击遮罩层关闭
  * @param {okCallback} on-ok 确认操作回调函数
- * @param {cancleCallback} on-cancle 取消操作回调函数
+ * @param {cancelCallback} on-cancel 取消操作回调函数
  * @param {assistCallback} on-assist 辅助操作回调函数
  * @param {Boolean} okBtn - 按钮显示状态
  * @param {String} okValue - 确认按钮文字
@@ -98,9 +98,9 @@ export default {
       this.$emit('on-ok')
     },
 
-    cancle() {
+    cancel() {
       this.$emit('input', false)
-      this.$emit('on-cancle')
+      this.$emit('on-cancel')
     },
 
     assist() {
