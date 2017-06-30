@@ -61,7 +61,7 @@ export default {
     },
 
     onPreview(file) {
-      // 这里需要了解open方法，写得更细致一些
+      // 这里需要了解open方法，写得更细致一些,临时链接，后面需要统一
       window.open(`https://oa-api.caihonggou.com${file.url}`)
     },
 
