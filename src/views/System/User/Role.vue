@@ -17,17 +17,16 @@
     </Form-item>
 
     <!--这里后台暂时还没有数据，过后需要补上-->
-    <!--<data-auths :data="data_auths" v-model="form.data_auths"></data-auths>-->
+    <data-auths :data="data_auths" v-model="form.data_auth_ids"></data-auths>
 
     <permissions
       :data="permissions"
-      v-model="permission_ids"
-      :disabledIds="form.role_permission_ids"
+      v-model="form.permission_ids"
     ></permissions>
 
     <Form-item>
       <Button type="ghost" size="large" @click="goBack">取消</Button>
-      <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
+      <Button type="primary" size="large" @click="submit" :loading="formLoading">提交</Button>
     </Form-item>
   </Form>
 </template>
@@ -39,7 +38,8 @@
  * @version 2017-06-27
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
 import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
@@ -51,56 +51,37 @@ export default {
 
   data() {
     return {
-      permissions: [],
-      data_auths: [],
-
       form: {
         is_student_admin: 0,
         is_student_teac: 0,
-        role_permission_ids: [], // 该角色固有权限
-        user_permission_ids: [], // 该角色自定义权限
+        data_auth_ids: [],
+        permission_ids: [],
       },
-
-      permission_ids: [], // 固有权限与自定义权限的并集
     }
   },
 
   computed: {
+    ...mapState({
+      data_auths: state => state.system.data.data_auths,
+      permissions: state => state.system.data.permissions,
+    }),
+
     url() {
       const { userId, roleId } = this.$router.currentRoute.params
       return `/user/${userId}/role/${roleId}`
     },
-
-    user_permission_ids() {
-      this.permission_ids
-        .filter(id => !this.form.role_permission_ids.includes(id))
-    },
   },
 
   methods: {
-    getData() {
-      return this.$http.get('/role/create')
-        .then(({ permissions, data_auths }) => {
-          this.permissions = permissions
-          this.data_auths = data_auths
-        })
-    },
-
     getRole() {
       return this.$http.get(this.url)
         .then((res) => {
           this.form = res
-
-          const { role_permission_ids, user_permission_ids } = this.form
-          this.permission_ids = [...role_permission_ids, ...user_permission_ids]
         })
     },
 
     submit() {
-      this.$http.patch(this.url, {
-        ...this.form,
-        user_permission_ids: this.user_permission_ids,
-      })
+      this.$http.patch(this.url, this.form)
         .then(this.successHandler)
         .catch(this.errorHandler)
     },
@@ -112,7 +93,7 @@ export default {
   },
 
   created() {
-    this.getData()
+    this.$store.dispatch(SYSTEM.DATA.PERMIS.INIT)
       .then(this.getRole)
       .then(() => {
         this.$store.commit(GLOBAL.LOADING.HIDE)
