@@ -28,6 +28,8 @@ Vue.component('app-form-alert', components.AppFormAlert)
 Vue.component('app-dicts-filter', components.AppDictsFilter)
 Vue.component('app-uploader', components.AppUploader)
 Vue.component('app-knowledge-tree', components.AppKnowledgeTree)
+Vue.component('app-date-picker', components.AppDatePicker)
+Vue.component('app-time-picker', components.AppTimePicker)
 
 // 注册插件
 Vue
