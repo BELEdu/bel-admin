@@ -3,7 +3,7 @@
     <Checkbox-group class="permission-table" :value="value" @input="updateValue">
       <dl v-for="permission in data" :key="permission.id">
         <dt>
-          <Checkbox :label="permission.id" :disabled="isDisabled(permission.id)">
+          <Checkbox :label="permission.id">
             <span>{{ permission.display_name }}</span>
           </Checkbox>
         </dt>
@@ -11,13 +11,13 @@
           <dd v-for="item in permission.children" :key="item.id">
             <dl>
               <dt>
-                <Checkbox :label="item.id" :disabled="isDisabled(item.id)">
+                <Checkbox :label="item.id">
                   <span>{{ item.display_name }}</span>
                 </Checkbox>
               </dt>
               <div class="permission-table__sub-items">
                 <dd v-for="subItem in item.children" :key="subItem.id">
-                  <Checkbox :label="subItem.id" :disabled="isDisabled(subItem.id)">
+                  <Checkbox :label="subItem.id">
                     <span>{{ subItem.display_name }}</span>
                   </Checkbox>
                 </dd>
@@ -49,19 +49,11 @@ export default {
       type: Array,
       required: true,
     },
-    disabledIds: {
-      type: Array,
-      default: () => [],
-    },
   },
 
   methods: {
     updateValue(value) {
       this.$emit('input', value)
-    },
-
-    isDisabled(id) {
-      return this.disabledIds.includes(id)
     },
   },
 }
