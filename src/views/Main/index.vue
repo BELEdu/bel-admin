@@ -59,6 +59,13 @@ export default {
     },
   },
 
+  watch: {
+    // 每次切换路由时，都应该把app-main滚回最顶上
+    $route() {
+      this.$refs.appMain.scrollTop = 0
+    },
+  },
+
   components: {
     AppHeader,
     AppMenu,
