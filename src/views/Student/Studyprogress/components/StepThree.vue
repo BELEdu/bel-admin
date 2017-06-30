@@ -11,6 +11,7 @@
           <Select class="original" multiple filterable v-model="lessons[index].knowledgepoints">
             <Option
               v-for="option in options"
+              :key="option"
               :value="option.value"
               :disabled="option.disabled"
             >{{ option.label }}</Option>
