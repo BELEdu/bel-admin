@@ -81,26 +81,11 @@ export default {
            },
          },
          { title: '当前年级', key: 3, align: 'center' },
-         { title: '学科', key: 4, align: 'center', width: 200 },
-         { title: '签约课时', key: 5, align: 'center' },
+         { title: '学科', key: 4, align: 'center' },
+         { title: '已掌握知识点', key: 5, align: 'center' },
+         { title: '总知识点', key: 6, align: 'center' },
          {
-           title: '剩余课时',
-           key: 'time',
-           align: 'center',
-           // 剩余课时小于10的时候变红
-           render: (h, params) => {
-             const row = params.row
-             const className = +row.time < 10 ? 'color-error' : ''
-             const text = row.time
-             return h('span', {
-               class: className,
-             }, text)
-           },
-         },
-         { title: '教材版本', key: 7, align: 'center' },
-         { title: '知识点', key: 8, align: 'center', width: 80 },
-         {
-           title: '知识点',
+           title: '学习进度',
            key: 'point',
            align: 'center',
            width: 200,
@@ -122,7 +107,7 @@ export default {
            align: 'center',
            width: 140,
            render: createButton([
-            { text: '详情', type: 'primary', click: () => this.$router.push('/student/knowledgepoint/edit') },
+            { text: '详情', type: 'primary', click: row => this.$router.push(`/student/knowledgepoint/${row.id}`) },
            ]),
          },
        ],
