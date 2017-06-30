@@ -1,6 +1,6 @@
 <template>
   <Menu class="app-menu" theme="light" :active-name="activeName" :open-names="openNames" accordion @on-select="goTo" width="200px">
-    <Submenu v-for="menu in menus" :key="menu.name" :name="menu.name" :class="{'app-menu__link-item': !menu.children}">
+    <Submenu v-for="menu in permissions" :key="menu.name" :name="menu.name" :class="{'app-menu__link-item': !menu.children}">
       <template slot="title">
         <Icon :type="icons[menu.name]"></Icon>
         <template v-if="menu.children">{{ menu.display_name }}</template>
@@ -23,7 +23,7 @@
 /**
  * 应用侧边导航
  * @author lmh
- * @version 2017-06-05
+ * @version 2017-06-30 使用permissions取代menus来循环出菜单
  */
 
 import { mapState } from 'vuex'
@@ -32,8 +32,6 @@ export default {
   name: 'app-menu',
 
   data: () => ({
-    activeName: 'front.index',
-    openNames: [],
     icons: {
       'front.index': 'ios-home',
       'front.business': 'briefcase',
@@ -47,7 +45,22 @@ export default {
   }),
 
   computed: {
-    ...mapState(['menus']),
+    ...mapState(['permissions']),
+
+    partials() {
+      return this.$route.path.split('/')
+    },
+
+    // 设置当前展开的菜单
+    openNames() {
+      return [`front${this.partials.slice(0, 2).join('.')}`]
+    },
+
+    // Menu组件不使用router-link来转跳路由
+    // 这里必须手动查看路由，以便通知Menu组件当前应该高亮的项目
+    activeName() {
+      return `front${this.partials.join('.')}`
+    },
   },
 
   methods: {
@@ -61,27 +74,18 @@ export default {
       }
     },
   },
-
-  created() {
-    // Menu组件不使用router-link来转跳路由
-    // 这里必须手动查看路由，以便通知Menu组件当前应该高亮的项目
-    const partials = this.$route.path.split('/')
-    this.activeName = `front${partials.join('.')}`
-
-    // 设置当前展开的菜单
-    this.openNames = [`front${partials.slice(0, 2).join('.')}`]
-  },
 }
 </script>
 
 <style lang="less">
-@import '~vars';
+@import "~vars";
 
 .app-menu {
   .ivu-menu-submenu-title {
     font-size: 16px;
   }
 }
+
 .app-menu__link-item {
   .ivu-menu-item {
     position: absolute;
