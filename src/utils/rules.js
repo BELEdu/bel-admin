@@ -10,11 +10,11 @@ const rules = {
    * @param {String} field - 必填项的label名，如“姓名”
    * @param {String} type - 数据类型，默认为string
    */
-  required: (field, type = 'string') => ({
+  required: (field, type = 'string', trigger = 'blur') => ({
     type,
     required: true,
     message: `${field}必填`,
-    trigger: 'blur',
+    trigger,
   }),
 
   /**
