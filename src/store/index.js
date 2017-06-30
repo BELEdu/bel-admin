@@ -23,74 +23,64 @@ const store = new Vuex.Store({
       paths: [
         'token',
         'user',
-        'menus',
         'roles',
         'permissions',
+        'dicts',
       ],
     }),
   ],
 
   modules: {
-    system,
     business,
     student,
+    system,
   },
 
   state: {
-    token: '',
-    user: {},
-    menus: [],
-    roles: [],
-    permissions: [],
+    token: '', // 用户凭证
+    user: {}, // 用户相关信息
+    roles: [], // 用户角色立标
+    permissions: [], // 用户权限列表（含菜单）
+    dicts: {}, // 字典数据
     loading: false,
-    dicts: {},
   },
 
   getters: {
+    // 获取当前用户的当前角色
     currentRole(state) {
       return state.roles.find(role => +role.id === +state.user.role_id)
     },
 
+    // 获取当前用户的其它角色列表
     otherRoles(state) {
       return state.roles.filter(role => +role.id !== +state.user.role_id)
     },
   },
 
   mutations: {
-    // 更新token
     [GLOBAL.TOKEN.UPDATE](state, token) {
       state.token = token
     },
 
-    // 更新用户信息
     [GLOBAL.USER.UPDATE](state, info) {
       state.info = { ...state.info, ...info }
     },
 
-    // 更新菜单
-    [GLOBAL.MENUS.UPDATE](state, menus) {
-      state.menus = menus
-    },
-
-    // 更新用户角色列表
     [GLOBAL.ROLES.UPDATE](state, roles) {
       state.roles = roles
     },
 
-    // 更新用户权限
     [GLOBAL.PERMISSIONS.UPDATE](state, permissions) {
       state.permissions = permissions
     },
 
-    // 获取字典
     [GLOBAL.DICTS.INIT](state, dicts) {
       state.dicts = dicts
     },
 
     // 登录
-    [GLOBAL.LOGIN](state, { user, menus, roles, permissions }) {
+    [GLOBAL.LOGIN](state, { user, roles, permissions }) {
       state.user = user
-      state.menus = menus
       state.roles = roles
       state.permissions = permissions
     },
@@ -99,9 +89,9 @@ const store = new Vuex.Store({
     [GLOBAL.LOGOUT](state) {
       state.token = ''
       state.user = {}
-      state.menus = []
       state.roles = []
       state.permissions = []
+      state.dicts = {}
     },
 
     // 显示加载动画
@@ -117,9 +107,13 @@ const store = new Vuex.Store({
 
   actions: {
     // 获取字典
-    [GLOBAL.DICTS.INIT]({ commit }) {
-      Http.get('/dict')
-        .then(res => commit(GLOBAL.DICTS.INIT, res))
+    [GLOBAL.DICTS.INIT]({ state, commit }) {
+      // 缓存了字典数据，只有当无数据时才重新做请求
+      if (Object.keys(state.dicts).length === 0) {
+        return Http.get('/dict')
+          .then(res => commit(GLOBAL.DICTS.INIT, res))
+      }
+      return Promise.resolve()
     },
 
     // 登录
