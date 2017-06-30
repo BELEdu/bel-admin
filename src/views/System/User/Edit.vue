@@ -84,9 +84,9 @@
  */
 
 import { mapState } from 'vuex'
-import { GLOBAL } from '@/store/mutationTypes'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import { transform, generatePaths, getPath } from '../utils'
+import { getPath } from '@/utils/helpers'
 
 export default {
   name: 'app-system-user-detail',
@@ -95,9 +95,6 @@ export default {
 
   data() {
     return {
-      roles: [],
-      rolePaths: [],
-
       // 后台返回的该用户已有的角色，只有这些角色可以被修改权限
       rolesInDb: [],
 
@@ -155,6 +152,8 @@ export default {
     ...mapState({
       genders: state => state.dicts.gender,
       jobTypes: state => state.dicts.users_job_type,
+      roles: state => state.system.data.roles,
+      rolePaths: state => state.system.data.rolePaths,
     }),
 
     id() {
@@ -163,15 +162,6 @@ export default {
   },
 
   methods: {
-    // 获取部门角色列表
-    getData() {
-      return this.$http.get('/department_role')
-        .then((res) => {
-          this.roles = transform(res)
-          this.rolePaths = generatePaths(res)
-        })
-    },
-
     // 获取当前用户信息
     getUser() {
       this.$http.get(`/user/${this.id}`)
@@ -266,13 +256,9 @@ export default {
       this.rules.repassword.shift()
     }
 
-    this.getData()
-      .then(() => {
-        if (this.id) this.getUser()
-      })
-      .then(() => {
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
+    this.$store.dispatch(SYSTEM.DATA.ROLES.INIT)
+      .then(() => this.id && this.getUser())
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>
