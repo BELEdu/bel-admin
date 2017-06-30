@@ -46,9 +46,10 @@
  * @version 2017-06-27
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import { transform, generatePaths, getPath } from '../utils'
+import { getPath } from '@/utils/helpers'
 import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
 
@@ -59,11 +60,6 @@ export default {
 
   data() {
     return {
-      departments: [],
-      departmentPaths: [],
-      permissions: [],
-      data_auths: [],
-
       form: {
         display_name: '',
         description: '',
@@ -91,23 +87,19 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      departments: state => state.system.data.departments,
+      data_auths: state => state.system.data.data_auths,
+      permissions: state => state.system.data.permissions,
+      departmentPaths: state => state.system.data.departmentPaths,
+    }),
+
     id() {
       return this.$router.currentRoute.params.id
     },
   },
 
   methods: {
-    // 获取某些表单组件所需数据项，如下拉框的数据
-    getData() {
-      return this.$http.get('/role/create')
-        .then(({ departments, permissions, data_auths }) => {
-          this.departments = transform(departments)
-          this.departmentPaths = generatePaths(departments)
-          this.permissions = permissions
-          this.data_auths = data_auths
-        })
-    },
-
     // 获取当前编辑项的数据
     getDetail(id) {
       return this.$http.get(`/role/${id}`)
@@ -141,7 +133,7 @@ export default {
   },
 
   created() {
-    this.getData()
+    this.$store.dispatch(SYSTEM.DATA.PERMIS.INIT)
       .then(() => {
         if (this.id) {
           return this.getDetail(this.id)
