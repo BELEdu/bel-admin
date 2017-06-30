@@ -164,6 +164,18 @@ export default [
       ],
     },
   },
+  {
+    path: '/student/knowledgepoint/:studentId',
+    name: 'StudentKnowledgepointDetail',
+    component: views.StudentKnowledgepointDetail,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '学员知识点', link: '/student/knowledgepoint' },
+        { name: '学员知识点详情' },
+      ],
+    },
+  },
 
   // 班级管理
   {
