@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="visible" :title="title" :width="width" :closable="closable" @input="cancle">
+  <Modal v-model="visible" :title="title" :width="width" :closable="closable" :mask-closable="maskClosable" @input="cancle">
     <slot></slot>
     <div slot="footer">
       <div class="default-btn">
@@ -24,6 +24,8 @@
  * @param {String} title - 模态框标题
  * @param {Number|String} width - 模态框宽度
  * @param {Boolean} loading - 操作按钮loading状态
+ * @param {Boolean} closable - 是否显示右上角关闭按钮
+ * @param {Boolean} maskClosable - 是否允许点击遮罩层关闭
  * @param {okCallback} on-ok 确认操作回调函数
  * @param {cancleCallback} on-cancle 取消操作回调函数
  * @param {assistCallback} on-assist 辅助操作回调函数
@@ -56,6 +58,10 @@ export default {
     closable: {
       type: Boolean,
       default: true,
+    },
+    maskClosable: {
+      type: Boolean,
+      default: false,
     },
     okBtn: {
       type: Boolean,
