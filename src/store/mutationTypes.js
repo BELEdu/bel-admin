@@ -8,10 +8,6 @@ export const GLOBAL = {
     UPDATE: 'GLOBAL.USER.UPDATE',
   },
 
-  MENUS: {
-    UPDATE: 'GLOBAL.MENUS.UPDATE',
-  },
-
   ROLES: {
     UPDATE: 'GLOBAL.ROLES.UPDATE',
   },
@@ -35,10 +31,6 @@ export const GLOBAL = {
 }
 
 export const SYSTEM = {
-  FORM_LOADING: {
-    UPDATE: 'SYSTEM.FORM_LOADING.UPDATE',
-  },
-
   DEPARTMENT: {
     INIT: 'SYSTEM.DEPARTMENT.INIT',
     CREATE: 'SYSTEM.DEPARTMENT.CREATE',
@@ -46,13 +38,18 @@ export const SYSTEM = {
     DELETE: 'SYSTEM.DEPARTMENT.DELETE',
   },
 
+  DATA: {
+    PERMIS: {
+      INIT: 'SYSTEM.DATA.PERMIS.INIT',
+    },
+    ROLES: {
+      INIT: 'SYSTEM.DATA.ROLES.INIT',
+    },
+  },
+
   ROLE: {
     INIT: 'SYSTEM.ROLE.INIT',
     DELETE: 'SYSTEM.ROLE.DELETE',
-
-    PERMIS: {
-      INIT: 'SYSTEM.ROLE.PERMIS.INIT',
-    },
   },
 
   USER: {
