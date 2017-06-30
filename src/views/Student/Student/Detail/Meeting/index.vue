@@ -102,21 +102,21 @@ export default {
         },
         {
           title: '附件',
-          key: 'file',
+          key: 'meeting_attachment',
           align: 'center',
           render: (h, params) => {
-            const row = params.row
-            const className = 'color-primary'
-            const text = row.file
-            const link = 'https://www.baidu.com/link?url=2yIvX64nLJN5XXgyhzUfgCC12QmlPxQpF7cG6iPxFGVZ4D7DomywRxbW5ZQRrTqXErDevEYqwceq0PidCO-dLdjqriQtKHLWN6E4gxsrowy&wd=&eqid=8410049c00009e5c0000000659424693'
-            return h('a', {
-              class: className,
-              attrs: {
-                href: link,
-                title: '我是附件',
-                target: '_blank',
-              },
-            }, text)
+            const { meeting_attachment: attachs } = params.row
+            return h(
+              'div',
+              attachs.map(({ name, url }) => h('a', {
+                class: 'attachs_space',
+                attrs: {
+                  title: name,
+                  href: `https://oa-api.caihonggou.com${url}`,
+                  target: '_blank',
+                },
+              }, name)),
+            )
           },
         },
         {
@@ -195,5 +195,7 @@ export default {
 </script>
 
 <style <style lang="less">
-
+  .attachs_space{
+    display: block
+  }
 </style>

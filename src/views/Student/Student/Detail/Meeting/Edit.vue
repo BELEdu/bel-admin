@@ -211,7 +211,7 @@ export default {
     // 图片上传失败
     uploadError() {
       // 这里可以的话，应该进一步细腻化，按实际的错误显示错误消息
-      this.$Message.error('图片上传失败')
+      this.$Message.error('上传失败,请注意附件大小和格式')
     },
 
     // 从已上传的图片列表中删除一张图片
