@@ -4,14 +4,16 @@
  * @version 2017-06-06
  */
 
-import role from './role'
 import department from './department'
+import data from './data'
+import role from './role'
 import user from './user'
 
 export default {
   modules: {
-    role,
     department,
+    data,
+    role,
     user,
   },
 }
