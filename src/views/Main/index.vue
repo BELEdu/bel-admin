@@ -7,7 +7,7 @@
       <!--左侧导航-->
       <app-menu></app-menu>
       <!--右侧主内容区-->
-      <div class="app-main" ref="appMain">
+      <div class="app-main" :class="{'app-main--loading': $store.state.loading}" ref="appMain">
         <!--面包屑导航-->
         <div class="app-content">
           <Breadcrumb class="app-creadcrumb">
@@ -22,7 +22,10 @@
         <app-footer></app-footer>
 
         <!--数据加载动画-->
-        <Spin size="large" fix v-show="$store.state.loading"></Spin>
+        <Spin size="large" fix v-show="$store.state.loading">
+          <Icon class="spin-icon" type="load-c" :size="30"></Icon>
+          <div class="spin-text">数据加载中，请稍后...</div>
+        </Spin>
       </div>
     </div>
   </div>
@@ -84,6 +87,47 @@ export default {
 </script>
 
 <style lang="less">
+.app-main--loading {
+  overflow-y: hidden;
+}
+
+.ivu-spin {
+  background-color: transparent;
+}
+
+.spin-icon {
+  opacity: 0;
+  animation: spin 1s linear 1s infinite;
+}
+
+.spin-text {
+  margin-top: 0.4em;
+  opacity: 0;
+  animation: fade-in 0.2s ease-in 1s forwards;
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  from {
+    opacity: 1;
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(360deg);
+  }
+}
+
 // ie9不支持css动画，spin组件不应该显示出来
 // 若要在ie9下也显示加载动画，应该使用gif或svg动画？
 .ie {
