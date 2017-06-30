@@ -148,7 +148,7 @@
     <ul class="question__cart">
       <li v-for="i in 6" :key="i">选择题(10)</li>
       <li>
-        <Button type="primary" size="small" long>生成试卷</Button>
+        <Button type="primary" size="small" long @click="previewPaper()">生成试卷</Button>
       </li>
     </ul>
     <!-- 屏幕右下角选中题目提示 end -->
@@ -275,6 +275,10 @@ export default {
     // 高级搜索标签@click handler
     typeFliter(name, index) {
       this.filterType[name] = index
+    },
+    // 进入预览试卷
+    previewPaper() {
+      this.$router.push('/prepare/question/paperpreview')
     },
   },
 

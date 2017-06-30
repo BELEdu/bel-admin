@@ -115,4 +115,16 @@ export default [
       ],
     },
   },
+  {
+    path: '/prepare/question/paperpreview',
+    name: 'PrepareQuestionPaperpreview',
+    component: views.PaperPreview,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '题库列表' },
+        { name: '试卷预览' },
+      ],
+    },
+  },
 ]
