@@ -131,6 +131,7 @@ export default [
   {
     path: '/student/studyprogress',
     name: 'StudentStudyprogress',
+    redirect: '/student/studyprogress/student',
     component: views.StudentStudyprogress,
     meta: {
       breadcrumb: [
@@ -138,6 +139,32 @@ export default [
         { name: '学习进度' },
       ],
     },
+    children: [
+      {
+        path: '/student/studyprogress/student',
+        name: 'StudentStudyprogressListStudent',
+        component: views.StudentStudyprogressListStudent,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学习进度' },
+            { name: '学员列表' },
+          ],
+        },
+      },
+      {
+        path: '/student/studyprogress/classes',
+        name: 'StudentStudyprogressListClasses',
+        component: views.StudentStudyprogressListClasses,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学习进度' },
+            { name: '班级列表' },
+          ],
+        },
+      },
+    ],
   },
   {
     path: '/student/studyprogress/edit',

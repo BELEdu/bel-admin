@@ -62,6 +62,8 @@ export { default as StudentStudentDetailWarning } from './Student/Student/Detail
 
 export { default as StudentStudyprogress } from './Student/Studyprogress'
 export { default as StudentStudyprogressEdit } from './Student/Studyprogress/edit'
+export { default as StudentStudyprogressListStudent } from './Student/Studyprogress/List/Student'
+export { default as StudentStudyprogressListClasses } from './Student/Studyprogress/List/Classes'
 
 export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
 export { default as StudentKnowledgepointDetail } from './Student/Knowledgepoint/Detail'
