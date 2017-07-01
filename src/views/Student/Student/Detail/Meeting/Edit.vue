@@ -13,7 +13,7 @@
       <Form-item label="会议时间" prop="meeting_date">
         <Date-picker type="date" placeholder="请选择会议的时间" v-model="form.meeting_date"></Date-picker>
       </Form-item>
-      <Form-item label="参会家长">
+      <Form-item label="参会家长" prop="parent_name">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
       </Form-item>
       <Form-item label="参会员工">
@@ -27,32 +27,29 @@
         </Select>
       </Form-item>
 
-      <div v-if="form.meeting_type === 1">
-        <Form-item label="学科水平" >
-          <Input type="textarea" v-model="form.meeting_content[0].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="学员基本信息及学科水平介绍（咨询师）"></Input>
-        </Form-item>
-        <Form-item label="沟通交流情况" >
-          <Input type="textarea" v-model="form.meeting_content[1].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="沟通交流（学管师）"></Input>
-        </Form-item>
-        <Form-item label="备课建议" >
-          <Input type="textarea" v-model="form.meeting_content[2].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="第一次备课、上课的注意事项及建议"></Input>
-        </Form-item>
-      </div>
+      <!--课前交流会文本框组-->
+      <Form-item
+        v-if="form.meeting_type === 1"
+        v-for="(item, index) in form.meeting_content.slice(0,3)"
+        :key="index"
+        :label="item.content_tag"
+        :prop="`meeting_content.${index}.content`"
+        :rules="[$rules.max(500)]"
+      >
+        <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
+      </Form-item>
 
-      <div v-if="form.meeting_type === 3">
-        <Form-item label="近期学情" >
-          <Input type="textarea" v-model="form.meeting_content[3].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="近期学情反馈"></Input>
-        </Form-item>
-        <Form-item label="需要提升的地方" >
-          <Input type="textarea" v-model="form.meeting_content[4].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="需要提升的地方"></Input>
-        </Form-item>
-        <Form-item label="家长意见与要求" >
-          <Input type="textarea" v-model="form.meeting_content[5].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="家长意见与要求"></Input>
-        </Form-item>
-        <Form-item label="本次会议结果" >
-          <Input type="textarea" v-model="form.meeting_content[6].content" :autosize="{minRows: 4,maxRows: 8}" placeholder="本次会议结果"></Input>
-        </Form-item>
-      </div>
+      <!--家长座谈会文本框组-->
+      <Form-item
+        v-if="form.meeting_type === 3"
+        v-for="(item, index) in form.meeting_content.slice(3,7)"
+        :key="index"
+        :label="item.content_tag"
+        :prop="`meeting_content.${index+3}.content`"
+        :rules="[$rules.max(500)]"
+      >
+        <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
+      </Form-item>
 
       <Form-item  >
         <app-uploader
@@ -141,6 +138,9 @@ export default {
         ],
         meeting_type: [
           this.$rules.required('会议类型', 'number'),
+        ],
+        parent_name: [
+          this.$rules.name,
         ],
       },
     }
