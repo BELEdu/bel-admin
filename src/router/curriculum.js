@@ -10,6 +10,20 @@ const CURRICULUM_STUDENT_PATH = '/Curriculum/studentcurricula'
 const CURRICULUM_STUDENT_LIST_PATH = '/Curriculum/studentcurricula/list'
 const CURRICULUM_TEACHER_PATH = '/curriculum/teachercurricula'
 const CURRICULUM_RECORD_PATH = '/curriculum/curricularecord'
+const COURSE_MANAGE = [{
+  name: '日课表',
+  value: 'date',
+}, {
+  name: '周课表',
+  value: 'week',
+}]
+const RECORD_MANAGE = [{
+  name: '学员',
+  value: 'student',
+}, {
+  name: '班级',
+  value: 'class',
+}]
 
 export default [
   {
@@ -35,9 +49,10 @@ export default [
     },
   },
   {
-    path: '/curriculum/teachercurricula/edit/:id',
-    name: 'CurriculumTeacherEdit',
-    component: views.CurriculumTeacherEdit,
+    path: '/curriculum/teachercurricula/course/:id',
+    name: 'CurriculumTeacherCourse',
+    component: views.CurriculumTeacherCourse,
+    redirect: '/curriculum/teachercurricula/course/date/:id',
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -45,6 +60,31 @@ export default [
         { name: '教师排课表' },
       ],
     },
+    children: [{
+      path: '/curriculum/teachercurricula/course/date/:id',
+      name: 'CurriculumTeacherCourseDate',
+      component: views.CurriculumTeacherCourseDate,
+      meta: {
+        tabName: COURSE_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '教师排课', link: CURRICULUM_TEACHER_PATH },
+          { name: '日课表' },
+        ],
+      },
+    }, {
+      path: '/curriculum/teachercurricula/course/week/:id',
+      name: 'CurriculumTeacherCourseWeek',
+      component: views.CurriculumTeacherCourseWeek,
+      meta: {
+        tabName: COURSE_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '教师排课', link: CURRICULUM_TEACHER_PATH },
+          { name: '周课表' },
+        ],
+      },
+    }],
   },
   {
     path: CURRICULUM_STUDENT_PATH,
@@ -99,6 +139,7 @@ export default [
       name: 'CurriculumStudentCourseDate',
       component: views.CurriculumStudentCourseDate,
       meta: {
+        tabName: COURSE_MANAGE,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
@@ -110,6 +151,7 @@ export default [
       name: 'CurriculumStudentCourseWeek',
       component: views.CurriculumStudentCourseWeek,
       meta: {
+        tabName: COURSE_MANAGE,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
@@ -135,6 +177,7 @@ export default [
       name: 'CurriculumClassCourseDate',
       component: views.CurriculumClassCourseDate,
       meta: {
+        tabName: COURSE_MANAGE,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
@@ -146,6 +189,7 @@ export default [
       name: 'CurriculumClassCourseWeek',
       component: views.CurriculumClassCourseWeek,
       meta: {
+        tabName: COURSE_MANAGE,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
@@ -158,12 +202,38 @@ export default [
     path: CURRICULUM_RECORD_PATH,
     name: 'CurriculumRecord',
     component: views.CurriculumRecord,
+    redirect: '/curriculum/record/student',
     meta: {
       breadcrumb: [
         { name: '课程管理' },
         { name: '上课记录' },
       ],
     },
+    children: [{
+      path: '/curriculum/record/student',
+      name: 'CurriculumRecordStudent',
+      component: views.CurriculumRecordStudent,
+      meta: {
+        tabName: RECORD_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '上课记录', link: CURRICULUM_RECORD_PATH },
+          { name: '学员记录' },
+        ],
+      },
+    }, {
+      path: '/curriculum/record/class',
+      name: 'CurriculumRecordClass',
+      component: views.CurriculumRecordClass,
+      meta: {
+        tabName: RECORD_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '上课记录', link: CURRICULUM_RECORD_PATH },
+          { name: '班级记录' },
+        ],
+      },
+    }],
   },
   {
     path: '/curriculum/record/show/:id',

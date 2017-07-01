@@ -40,7 +40,7 @@
 /**
  * 学员排课表
  * @author  chenliangshan
- * @update    2017/06/28
+ * @update    2017/07/01
  */
 
 import { GLOBAL } from '@/store/mutationTypes'

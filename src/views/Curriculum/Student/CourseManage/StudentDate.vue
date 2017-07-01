@@ -189,7 +189,10 @@ export default{
         { title: '计划课时', key: 'course_cost', align: 'center', width: 80 },
         { title: '实际课时', key: 'fact_cost', align: 'center', width: 80 },
         { title: '上课科目', key: 'subject_type', align: 'center' },
-        { title: '上课年级', key: 'grade', align: 'center' },
+        {
+          title: '上课年级',
+          align: 'center',
+          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '产品名称', key: 'product_name', align: 'center' },
         { title: '知识点', key: 'language_points', align: 'center' },
         { title: '课时状态',

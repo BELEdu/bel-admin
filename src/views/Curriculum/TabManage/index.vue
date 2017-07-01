@@ -1,8 +1,9 @@
 <template>
   <div>
     <Tabs :value="tabActive" type="card" :animated="false" @on-click="tabSwitch" class="app-tabs">
-      <Tab-pane label="日课表" name="date"></Tab-pane>
-      <Tab-pane label="周课表" name="week"></Tab-pane>
+      <template v-for="tab in $route.meta.tabName">
+        <Tab-pane :label="tab.name" :name="tab.value"></Tab-pane>
+      </template>
     </Tabs>
     <router-view></router-view>
   </div>
@@ -10,15 +11,15 @@
 
 <script>
 /**
- * 排课管理 - 排课表
+ * 切换标签 - 公用
  * @author chenliangshan
- * @version 2017-06-29
+ * @version 2017-07-01
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'app-curriculum-course-manage',
+  name: 'app-curriculum-tab-manage',
   data() {
     return {
       currentType: [],
