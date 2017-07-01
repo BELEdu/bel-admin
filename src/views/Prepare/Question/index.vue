@@ -95,7 +95,7 @@
           </span>
           <span v-for="(item, index) in fdata[1]" :key="item" @click="typeFliter('level',index)" :class="{ selected: index === filterType.level }">
             <span>{{item.name}}</span>
-            <br/>
+            <br>
             <span>{{item.value}}</span>
           </span>
         </div>
@@ -116,8 +116,25 @@
       <!-- 帮助条 -->
       <div class="question__help">
         <div>
-          <Button>默认排序</Button>
-          <Button>难度系数</Button>
+          <h4>排序</h4>
+          <a 
+            :class="{ selected: helpType === 1 }"
+            @click="helpFliter(1)"
+          >
+            综合排序
+          </a>
+          <a 
+            :class="{ selected: helpType === 2 }"
+            @click="helpFliter(2)"
+          >
+            难度系数
+          </a>
+          <a 
+            :class="{ selected: helpType === 3 }"
+            @click="helpFliter(3)"
+          >
+            组卷次数
+          </a>
         </div>
         <Page class="app-page-small" :total="100"></Page>
       </div>
@@ -174,6 +191,7 @@ export default {
       level: -1,
       source: -1,
     },
+    helpType: 1,
     // 以下是临时数据...
     area: null,
     subject: [
@@ -276,6 +294,9 @@ export default {
     typeFliter(name, index) {
       this.filterType[name] = index
     },
+    helpFliter(index) {
+      this.helpType = index
+    },
     // 进入预览试卷
     previewPaper() {
       this.$router.push('/prepare/question/paperpreview')
@@ -295,6 +316,7 @@ export default {
 @bd-radius: 4px;
 @rcol-padding: 0 20px;
 @border-base: 1px solid @border-color-base;
+@color-font-select: #fff;
 
 .question {
   width: 1160px;
@@ -364,6 +386,7 @@ export default {
   &>div>span {
     display: inline-block;
     width: 90px;
+    border-left: 1px solid @bg-color;
     text-align: center;
     color: @text-color;
     cursor: pointer;
@@ -395,13 +418,36 @@ export default {
   background-color: @bg-color;
   align-items: center;
   justify-content: space-between;
+  line-height: 34px;
 
-  &>div>button {
-    padding-left: 0;
-    border: none;
+  &>div {
+    font-size: 0;
 
-    &:hover {
-      background-color: @bg-color;
+    &>h4 {
+      display: inline;
+      margin-right: 10px;
+      vertical-align: middle;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    &>a {
+      display: inline-block;
+      padding: 0 10px;
+      border-left: 1px solid @bg-color;
+      vertical-align: middle;
+      font-size: 12px;
+      color: @text-color;
+
+      &:hover {
+        color: @color-font-select;
+        background-color: @link-color;
+      }
+
+      &.selected {
+        background-color: @link-color;
+        color: @bg-color;
+      }
     }
   }
 
@@ -486,9 +532,7 @@ export default {
 
   & .ivu-tabs-tabpane {
     padding: 8px;
-  } 
-  
-  // 注释：全部&个人知识点，V2.0保留功能
+  } // 注释：全部&个人知识点，V2.0保留功能
   // & .ivu-tree{
   //   &>ul>li>span {
   //     font-size: 14px;
