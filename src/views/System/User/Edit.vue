@@ -239,9 +239,15 @@ export default {
     },
 
     submit() {
+      const data = {
+        ...this.form,
+        roles: this.form.roles
+          .map(role => role[role.length - 1]),
+      }
+
       const request = this.id ?
-        () => {} :
-        this.$http.post('/user', this.form)
+        this.$http.patch(`/user/${this.id}`, data) :
+        this.$http.post('/user', data)
 
       request
         .then(this.successHandler)
