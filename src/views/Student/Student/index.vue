@@ -176,7 +176,7 @@ export default {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 180,
+          width: 200,
           render: createButton([
             // 删除该学员
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },

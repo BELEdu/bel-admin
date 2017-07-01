@@ -118,11 +118,14 @@ export default {
       rules: {
         display_name: [
           this.$rules.required('学生姓名'),
-          this.$rules.length(1, 32),
+          this.$rules.name,
+          this.$rules.max(32),
         ],
         phone: [
-          this.$rules.required('学生联系方式'),
           this.$rules.mobile,
+        ],
+        identity_card: [
+          this.$rules.idcard,
         ],
       },
     }

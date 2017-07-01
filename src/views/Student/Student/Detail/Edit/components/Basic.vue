@@ -23,7 +23,7 @@
         <Form-item label="出生日期">
           <Date-picker placeholder="请选择日期" v-model="form.sublist.birth_at"></Date-picker>
         </Form-item>
-        <Form-item label="身份证号">
+        <Form-item label="身份证号" prop="identity_card">
           <Input placeholder="请输入身份证号" v-model="form.identity_card"></Input>
         </Form-item>
         <Form-item label="入学年级">

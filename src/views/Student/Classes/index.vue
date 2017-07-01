@@ -130,7 +130,7 @@ export default {
           title: '操作',
           key: 10,
           align: 'center',
-          width: 160,
+          width: 180,
           render: createButton([
             { text: '删除', type: 'error', isShow: ({ row }) => row.status_name === '未开班', click: row => this.openDeleteModal(row.id) },
             { text: '管理', type: 'primary', click: row => this.openManageModal(row.id) },

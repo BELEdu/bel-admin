@@ -12,7 +12,7 @@
         <Col span="11">
           <Form-item label="家长姓名"
             :prop="`parent.${index}.parent_name`"
-            :rules="$rules.required('家长姓名')"
+            :rules="[$rules.required('家长姓名'),$rules.name]"
           >
             <Input placeholder="请输入家长姓名" v-model="item.parent_name"></Input>
           </Form-item>
@@ -29,7 +29,10 @@
           >
             <Input placeholder="请输入手机号码" v-model="item.phone"></Input>
           </Form-item>
-          <Form-item label="身份证号" required>
+          <Form-item label="身份证号" required
+            :prop="`parent.${index}.identity_card`"
+            :rules="[$rules.idcard]"
+          >
             <Input placeholder="请输入身份证号" v-model="item.identity_card"></Input>
           </Form-item>
           <Form-item label="是否监护人">
@@ -50,7 +53,10 @@
           <Form-item label="街道地址">
             <Input placeholder="请输入详细地址" v-model="item.address"></Input>
           </Form-item>
-          <Form-item label="家长Email">
+          <Form-item label="家长Email"
+            :prop="`parent.${index}.email`"
+            :rules="[$rules.email]"
+          >
             <Input placeholder="请输入Email地址" v-model="item.email"></Input>
           </Form-item>
           <Form-item label="家庭年总收入">
