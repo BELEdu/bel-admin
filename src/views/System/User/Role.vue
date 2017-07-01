@@ -16,6 +16,13 @@
       </Radio-group>
     </Form-item>
 
+    <Form-item label="学员咨询">
+      <Radio-group v-model="form.is_student_advisory">
+        <Radio :label="0">关闭</Radio>
+        <Radio :label="1">开启</Radio>
+      </Radio-group>
+    </Form-item>
+
     <!--这里后台暂时还没有数据，过后需要补上-->
     <data-auths :data="data_auths" v-model="form.data_auth_ids"></data-auths>
 
@@ -54,6 +61,7 @@ export default {
       form: {
         is_student_admin: 0,
         is_student_teac: 0,
+        is_student_advisory: 0,
         data_auth_ids: [],
         permission_ids: [],
       },
