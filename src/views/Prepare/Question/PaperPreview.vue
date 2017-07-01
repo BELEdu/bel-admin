@@ -9,6 +9,7 @@
         <Option :value="3">结构结构</Option>
         <Option :value="4">作业结构</Option>
       </Select>
+      <!-- end 试卷结构选择 -->
       <!-- 试卷结构自定义选择 -->
       <ul>
         <li v-for="item in paperUnit" :key="item">
@@ -17,11 +18,14 @@
           <span>{{item}}</span>
         </li>
       </ul>
+      <!-- end 试卷结构自定义选择 -->      
     </aside>
+    <!-- end 边栏配置 -->
     <!-- 试卷部分 -->
     <main>
       <!-- 装订线 -->
       <aside></aside>
+      <!-- end 装订线 -->
       <!-- 试卷内容主题 -->
       <article class="paperpreview__content">
         <!-- 试卷头部 -->
@@ -37,6 +41,7 @@
             注意事项：本卷包含Ⅰ. Ⅱ两卷，第一卷为选择题，所有答案必须用2B铅笔涂在答题卡中相应的位置。第Ⅱ圈为非选择题，所有答案必须填在答案卷的相应位置。答案写在试卷上均无效，不予计分。
           </p>
         </header>
+        <!-- end 试卷头部 -->
         <!-- 题型部分 -->
         <section v-for="index in 3" :key="index">
           <div
@@ -64,7 +69,9 @@
                 <Button size="small">上移</Button>
                 <Button size="small">下移</Button>
               </div>
+              <!-- end 标题控制条 -->              
             </h3>
+            <!-- end 题型标题 -->
             <!-- 题目列表 -->
             <ul class="paperpreview__topics">
               <li v-for="i in 5" :key="i" class="paperpreview__topic">
@@ -80,10 +87,14 @@
                 </div>
               </li>
             </ul>
+            <!-- end 题目列表 -->
           </div>
         </section>
+        <!-- end 题型部分 -->
       </article>
+      <!-- end 试卷内容主题 -->
     </main>
+    <!-- end 试卷部分 -->
   </div>
 </template>
 
