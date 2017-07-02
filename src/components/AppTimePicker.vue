@@ -31,10 +31,12 @@
         type: String,
         default: 'time',
       },
-      value: {
+      // 设置输出类型
+      timeType: {
         type: String,
-        default: '',
+        default: 'string',
       },
+      value: [String, Date],
       format: {
         type: String,
         default: 'HH:mm:ss',
@@ -76,8 +78,27 @@
       },
       timeVal(val) {
         let time = val || ''
-        if (toDate(val)) {
-          time = formatDate(val, this.format)
+        if (val) {
+          const fnTime = (value) => {
+            if (typeof value === 'string') {
+              const date = new Date()
+              const dateTime = value.split(':')
+              // 设置时间
+              date.setHours(dateTime[0])
+              date.setMinutes(dateTime[1])
+              if (dateTime.length >= 3) {
+                date.setSeconds(dateTime[2])
+              }
+              return date
+            }
+            return value
+          }
+          // 输入字符类型
+          if (toDate(val) && this.timeType === 'string') {
+            time = formatDate(fnTime(val), this.format)
+          } else if (this.timeType === 'date') {
+            time = fnTime(val)
+          }
         }
         this.$emit('input', time)
       },

@@ -24,6 +24,7 @@
     data() {
       return {
         dateVal: this.value,
+        cycle: 0,
       }
     },
     props: {
@@ -31,10 +32,12 @@
         type: String,
         default: 'date',
       },
-      value: {
+      // 设置输出类型
+      dateType: {
         type: String,
-        default: '',
+        default: 'string',
       },
+      value: [String, Date],
       format: {
         type: String,
         default: 'yyyy-MM-dd',
@@ -75,7 +78,17 @@
         this.dateVal = val
       },
       dateVal(val) {
-        this.$emit('input', val ? formatDate(val, this.format) : '')
+        let date = val
+        if (val) {
+          if (this.dateType === 'string' && Object.prototype.toString.call(val) === '[object Date]' && (formatDate(val, this.format) !== this.value || !this.cycle)) {
+            date = val ? formatDate(val, this.format) : ''
+          } else if (this.dateType === 'date' && (val !== this.value || !this.cycle)) {
+            date = new Date(val)
+          }
+          // 初始周期结束
+          if (!this.cycle) this.cycle = 1
+        }
+        this.$emit('input', date)
       },
     },
   }
