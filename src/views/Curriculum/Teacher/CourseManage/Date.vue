@@ -40,6 +40,165 @@
     </Row>
     <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+
+    <!--添加课表弹窗-->
+    <app-form-modal v-model="courseModal"
+                    title="排课情况"
+                    :closable="false"
+                    :loading="false"
+                    :width="800">
+      <div class="teacher-modal-content">
+        <div class="app-table ivu-table-wrapper">
+          <div class="ivu-table ivu-table-border">
+            <div class="ivu-table-body">
+              <table cellspacing="0" cellpadding="0" border="0" width="100%">
+                <colgroup>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                  <col>
+                </colgroup>
+                <tbody class="ivu-table-tbody">
+                <tr class="ivu-table-row">
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>教学对象</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          李佳航
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>上课科目</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          数学
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>上课年级</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          七年级
+                        </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="ivu-table-row">
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>上课日期</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          2017-06-06
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>上课时段</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          19：00-20：00
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>排课人</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          张旭
+                        </span>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="ivu-table-row">
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>上课节数</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          第 1 节
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          <strong>计划课时</strong>
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span>
+                          1
+                        </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span></span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                        <span></span>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="points">
+          <h3 class="title">知识点</h3>
+        </div>
+      </div>
+    </app-form-modal>
   </div>
 </template>
 
