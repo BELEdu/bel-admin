@@ -69,7 +69,7 @@
       <div class="app-table ivu-table-wrapper">
         <div class="ivu-table ivu-table-border">
           <div class="ivu-table-header">
-            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+            <!--<table cellspacing="0" cellpadding="0" border="0" width="100%">
               <colgroup>
                 <col width="50">
                 <col width="14%">
@@ -84,50 +84,24 @@
               <tr>
                 <th class="ivu-table-column-center">
                   <div class="ivu-table-cell">
-                    <span>6月</span>
+                    <span></span>
                   </div>
                 </th>
-                <th class="ivu-table-column-center">
+                <th class="ivu-table-column-center" v-for="thead in weeklyData.week">
                   <div class="ivu-table-cell">
-                    <span>5日 （星期一）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>6日 （星期二）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>7日 （星期三）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>8日 （星期四）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>9日 （星期五）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>10日 （星期六）</span>
-                  </div>
-                </th>
-                <th class="ivu-table-column-center">
-                  <div class="ivu-table-cell">
-                    <span>11日 （星期日）</span>
+                    <span>{{thead.date}}</span>
                   </div>
                 </th>
               </tr>
               </thead>
-            </table>
+            </table>-->
+            <ul class="weekly-ul-head clearfix">
+              <li></li>
+              <li v-for="thead in weeklyData.week">{{thead.date}}</li>
+            </ul>
           </div>
-          <div class="ivu-table-body" v-show="weeklyData.length">
-            <table cellspacing="0" cellpadding="0" border="0" width="100%">
+          <div class="ivu-table-body" v-if="weeklyData.week">
+            <!--<table cellspacing="0" cellpadding="0" border="0" width="100%">
               <colgroup>
                 <col width="50">
                 <col width="14%">
@@ -179,9 +153,44 @@
                   </template>
                 </tr>
               </tbody>
-            </table>
+            </table>-->
+            <ul class="weekly-ul clearfix">
+              <li>
+                <div>
+                  上午
+                </div>
+                <div>
+                  下午
+                </div>
+                <div>
+                  晚上
+                </div>
+              </li>
+              <li class="weekly-li" v-for="list in weeklyData.week">
+                <template v-for="(v, k) in weeklyData.count">
+                  <div v-for="item in list.course[k]">
+                    <Row>
+                      <Col span="24">
+                      {{item.start_at}}-{{item.end_at}}</Col>
+                    </Row>
+                    <Row>
+                      <Col span="12">
+                      <app-dicts-filter :value="item.grade" name="grade"></app-dicts-filter>
+                      </Col>
+                      <Col span="12">
+                      {{item.teacher_name}}</Col>
+                    </Row>
+                  </div>
+                  <template v-if="v-list.course[k].length>0">
+                    <div v-for="item in (v-list.course[k].length)">
+                      +
+                    </div>
+                  </template>
+                </template>
+              </li>
+            </ul>
           </div>
-          <div class="ivu-table-tip" v-show="!weeklyData.length">
+          <div class="ivu-table-tip" v-show="!weeklyData.week || !weeklyData.week.length">
             <table cellspacing="0" cellpadding="0" border="0">
               <tbody>
               <tr>
@@ -208,9 +217,13 @@
     },
     data() {
       return {
-        weeklyData: {},
         isActive: '',
       }
+    },
+    computed: {
+      weeklyData() {
+        return this.data
+      },
     },
     methods: {
       courseDetails(item) {
@@ -237,12 +250,6 @@
             break
         }
         return className
-      },
-    },
-    watch: {
-      data(val) {
-        const arr = new Array(10).fill([])
-        this.weeklyData = arr.map((v, k) => val.data.map(({ weekly_data }) => weekly_data[k]))
       },
     },
   }
@@ -335,6 +342,26 @@
       }
     }
     .weekly-right {
+      .weekly-ul-head, .weekly-ul {
+        li {
+          display: inline-block;
+          text-align: center;
+          width: 13.71%;
+          min-height: 40px;
+          float: left;
+          &:first-child {
+            width: 4%;
+          }
+          > div {
+            height: 40px;
+          }
+        }
+      }
+      .weekly-ul-head {
+        li {
+          font-weight: bold;
+        }
+      }
       .ivu-table,.ivu-table-body {
         overflow: visible;
       }

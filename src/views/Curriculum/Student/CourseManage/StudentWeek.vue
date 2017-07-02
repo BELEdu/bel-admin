@@ -72,8 +72,6 @@ export default{
           page: 1,
           per_page: 10,
         },
-        // (日课表)分页数据
-        daily: {},
         // (周课表)分页数据
         weekly: {},
       },
