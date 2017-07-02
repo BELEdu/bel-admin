@@ -43,63 +43,12 @@
     <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
-    <!--添加课表弹窗-->
-    <app-form-modal v-model="courseModal"
-                    title="学员排课"
-                    :closable="false"
-                    :loading="formLoading"
-                    :width="500"
-                    @on-ok="beforeSubmit"
-                    @on-cancel="formCancel('form')">
-      <div class="student-modal-content">
-        <Form ref="form" :model="formItem" :rules="ruleValidate" :label-width="90">
-          <Form-item label="教师名称：" prop="teacher_id">
-            <Select v-model="formItem.teacher_id" placeholder="请选择">
-              <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课科目：" prop="subject_type">
-            <Select v-model="formItem.subject_type" placeholder="请选择">
-              <Option v-for="list in courseOption.subject_type" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课年级：" prop="grade">
-            <Select v-model="formItem.grade" placeholder="请选择">
-              <Option v-for="list in courseOption.grade" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="产品名称：" prop="product_id">
-            <Select v-model="formItem.product_id" placeholder="请选择">
-              <Option v-for="list in courseOption.product_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="选择课时：" prop="course_cost">
-            <Select v-model="formItem.course_cost" placeholder="请选择">
-              <Option v-for="list in courseOption.course_cost" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课日期：" prop="date">
-            <Date-picker placeholder="选择日期" v-model="formItem.date"></Date-picker>
-          </Form-item>
-          <Form-item label="上课时段：" required>
-            <Row>
-              <Col span="11">
-              <Form-item prop="start_at">
-                <Time-picker placeholder="选择开始时间" v-model="formItem.start_at" format="HH:mm"></Time-picker>
-              </Form-item>
-              </Col>
-              <Col span="2" style="text-align: center">-</Col>
-              <Col span="11">
-              <Form-item prop="end_at">
-                <Time-picker placeholder="选择结束时间" v-model="formItem.end_at" format="HH:mm"></Time-picker>
-              </Form-item>
-              </Col>
-            </Row>
-          </Form-item>
-          <Form-item label="学馆师：">{{formItem.customer_teacher}}</Form-item>
-        </Form>
-      </div>
-    </app-form-modal>
+    <!--添加|编辑|填写课时-课表弹窗-->
+    <course-modal v-model="courseModal"
+                  title="学员排课"
+                  :data="formItem"
+                  :id="courseModalParam.id"
+                  :status="courseModalParam.status" :urlConf="urlConf"></course-modal>
   </div>
 </template>
 
@@ -111,59 +60,24 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import { form, list } from '@/mixins'
+import { list } from '@/mixins'
 import WeeklyTable from '../../Components/WeeklyTable'
+import CourseModal from '../../Components/CourseModal'
 
 export default{
-  name: 'app-student-course-manage',
-  mixins: [form, list],
-  components: { WeeklyTable },
+  name: 'app-student-course',
+  mixins: [list],
+  components: { WeeklyTable, CourseModal },
   data() {
     return {
       formLoading: false,
       // 课表弹窗-初始化
       courseModal: false,
       courseModalParam: {
-        id: this.$route.params.id,
+        id: parseInt(this.$route.params.id, 10),
       },
       // 弹窗数据
-      formItem: {
-        teacher_id: null,
-        subject_type: null,
-        grade: null,
-        product_id: null,
-        course_cost: null,
-        date: null,
-        start_at: null,
-        end_at: null,
-      },
-      // 弹窗表单校验
-      ruleValidate: {
-        teacher_id: [
-          this.$rules.required('教师名称', 'number', 'change'),
-        ],
-        subject_type: [
-          this.$rules.required('上课科目', 'number', 'change'),
-        ],
-        grade: [
-          this.$rules.required('上课年级', 'number', 'change'),
-        ],
-        product_id: [
-          this.$rules.required('产品名称', 'number', 'change'),
-        ],
-        course_cost: [
-          this.$rules.required('课时', 'number', 'change'),
-        ],
-        date: [
-          { required: true, type: 'date', message: '请选择日期', trigger: 'change' },
-        ],
-        start_at: [
-          { required: true, type: 'date', message: '请选择时间', trigger: 'change' },
-        ],
-        end_at: [
-          { required: true, type: 'date', message: '请选择时间', trigger: 'change' },
-        ],
-      },
+      formItem: {},
       // 搜索字段
       form: {
 //        startTime: '',
@@ -244,7 +158,7 @@ export default{
                   class: 'color-cancel',
                 }, '已取消'),
               ])
-            } else if (status === 2 && factCost) {
+            } else if (status === 2 && !factCost) {
               // 完成上课-未填写课时
               return h('div', [
                 h('Button', {
@@ -255,7 +169,7 @@ export default{
                   },
                   on: {
                     click() {
-                      self.openCourseModal('edit', params.row)
+                      self.openCourseModal('finish', params.row)
                     },
                   },
                 }, '填写课时'),
@@ -264,7 +178,7 @@ export default{
             // 完成上课且填写课时
             return h('div', [
               h('span', {
-                class: 'color-primary',
+                class: 'color-success ',
               }, '完成上课'),
             ])
           },
@@ -272,22 +186,18 @@ export default{
       ],
       // 日课表数据
       dailyData: {},
-      // 备选数据
-      courseOption: {},
+      // 请求接口
+      urlConf: {
+        option: '/courseoption/',
+        edit: '/studentcurricula/',
+        finish: '/studentcurricula/finish/',
+      },
     }
   },
   methods: {
-    // 获取备选数据
-    getCourseOption() {
-      this.$http.get(`/courseoption/${this.$route.params.id}`)
-        .then((result) => {
-          this.courseOption = result.option
-        })
-    },
     // 获取学员日课表数据
     getData() {
-      this.getCourseOption()
-      this.$http.get(`/studentcurricula/${this.$route.params.id}${this.qs}`)
+      this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${this.qs}`)
         .then((data) => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.dailyData = data
@@ -305,17 +215,8 @@ export default{
           break
       }
       this.courseModalParam.status = type
-      this.courseModalParam.id = id
+      this.courseModalParam.id = parseInt(id, 10)
       this.courseModal = true
-    },
-    // 保存|添加课表
-    submit() {
-      this.$http.post(`/studentcurricula/${this.courseModalParam.id}`, this.formItem)
-        .then((result) => {
-          this.formLoading = false
-          window.console.log(result)
-        })
-        .catch(this.errorHandler)
     },
     // 取消排课
     cancelCurriculum(row) {
@@ -330,17 +231,7 @@ export default{
         },
       })
     },
-    // 关闭弹窗
-    formCancel(name) {
-      this.$refs[name].resetFields()
-    },
   },
 }
 </script>
 
-<style lang="less" scoped>
-  .student-modal-content {
-    width: 300px;
-    margin: 0 auto;
-  }
-</style>

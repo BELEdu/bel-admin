@@ -41,57 +41,14 @@
     </Row>
 
     <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
-    <app-pager :data="dailyData" @on-change="getPageData" @on-page-size-change="getPerPageData"></app-pager>
+    <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
-    <!--添加课表弹窗-->
-    <app-form-modal v-model="courseModal"
-                    title="学员排课"
-                    :closable="false"
-                    :loading="false"
-                    :width="500">
-      <div class="student-modal-content">
-        <Form :model="formItem" :label-width="80">
-          <Form-item label="教师名称：">
-            <Select v-model="formItem.teacher_name" placeholder="请选择">
-              <Option value="1">张三</Option>
-              <Option value="2">李四</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课科目：">
-            <Select v-model="formItem.subjects_class" placeholder="请选择">
-              <Option value="1">语文</Option>
-
-              <Option value="2">数学</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课年级：">
-            <Select v-model="formItem.grade_class" placeholder="请选择">
-              <Option value="1">七年级</Option>
-              <Option value="2">八年级</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="产品名称：">
-            <Select v-model="formItem.product_name" placeholder="请选择">
-              <Option value="1">奥数提高</Option>
-              <Option value="2">冲刺</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="选择课时：">
-            <Select v-model="formItem.plan_class" placeholder="请选择">
-              <Option value="1">第1节</Option>
-              <Option value="2">第2节</Option>
-            </Select>
-          </Form-item>
-          <Form-item label="上课日期：">
-            <Date-picker type="date" placeholder="选择日期" v-model="formItem.class_date"></Date-picker>
-          </Form-item>
-          <Form-item label="上课时段：">
-            <Time-picker confirm type="timerange" placement="bottom-end" placeholder="选择时间" style="width: 168px" v-model="formItem.class_time"></Time-picker>
-          </Form-item>
-          <Form-item label="学馆师：">{{formItem.customer_teacher}}</Form-item>
-        </Form>
-      </div>
-    </app-form-modal>
+    <!--添加|编辑|填写课时-课表弹窗-->
+    <course-modal v-model="courseModal"
+                  title="学员排课"
+                  :data="formItem"
+                  :id="courseModalParam.id"
+                  :status="courseModalParam.status" :urlConf="urlConf"></course-modal>
   </div>
 </template>
 
@@ -105,18 +62,50 @@
   import { GLOBAL } from '@/store/mutationTypes'
   import { list } from '@/mixins'
   import WeeklyTable from '../../Components/WeeklyTable'
+  import CourseModal from '../../Components/CourseModal'
 
   export default{
-    name: 'app-student-course-manage',
+    name: 'app-class-course',
     mixins: [list],
-    components: { WeeklyTable },
+    components: { WeeklyTable, CourseModal },
     data() {
       return {
+        formLoading: false,
         // 课表弹窗-初始化
         courseModal: false,
         courseModalId: this.$route.params.id,
+        courseModalParam: {
+          id: parseInt(this.$route.params.id, 10),
+        },
         // 弹窗数据
         formItem: {},
+        // 弹窗表单校验
+        ruleValidate: {
+          teacher_id: [
+            this.$rules.required('教师名称', 'number', 'change'),
+          ],
+          subject_type: [
+            this.$rules.required('上课科目', 'number', 'change'),
+          ],
+          grade: [
+            this.$rules.required('上课年级', 'number', 'change'),
+          ],
+          product_id: [
+            this.$rules.required('产品名称', 'number', 'change'),
+          ],
+          course_cost: [
+            this.$rules.required('课时', 'number', 'change'),
+          ],
+          date: [
+            { required: true, type: 'date', message: '请选择日期', trigger: 'change' },
+          ],
+          start_at: [
+            { required: true, type: 'date', message: '请选择时间', trigger: 'change' },
+          ],
+          end_at: [
+            { required: true, type: 'date', message: '请选择时间', trigger: 'change' },
+          ],
+        },
         // 当前标签
         currentTab: {
           id: '1',
@@ -165,7 +154,9 @@
             width: 110,
             render: (h, params) => {
               const self = this
-              if (params.row) {
+              const status = params.row.schedule_status
+              const factCost = params.row.fact_cost
+              if (status === 0 || status === 1) {
                 return h('div', [
                   h('Button', {
                     class: 'color-primary',
@@ -176,12 +167,12 @@
                     on: {
                       click() {
                         // 编辑
-                        self.openCourseModal(params.row)
+                        self.openCourseModal('edit', params.row)
                       },
                     },
                   }, '编辑'),
                   h('Button', {
-                    class: 'color-cancel',
+                    class: 'color-error',
                     props: {
                       type: 'text',
                       size: 'small',
@@ -194,28 +185,47 @@
                     },
                   }, '取消'),
                 ])
-              }
-              // 完成上课
-              return h('div', [
-                h('Button', {
-                  class: 'table-btn color-primary',
-                  props: {
-                    icon: 'thumbsup',
-                    type: 'text',
-                    size: 'small',
-                  },
-                  on: {
-                    click() {
-                      // 回调
+              } else if (status === 3) {
+                // 已取消
+                return h('div', [
+                  h('span', {
+                    class: 'color-cancel',
+                  }, '已取消'),
+                ])
+              } else if (status === 2 && !factCost) {
+                // 完成上课-未填写课时
+                return h('div', [
+                  h('Button', {
+                    class: 'color-primary',
+                    props: {
+                      type: 'text',
+                      size: 'small',
                     },
-                  },
-                }),
+                    on: {
+                      click() {
+                        self.openCourseModal('finish', params.row)
+                      },
+                    },
+                  }, '填写课时'),
+                ])
+              }
+              // 完成上课且填写课时
+              return h('div', [
+                h('span', {
+                  class: 'color-success ',
+                }, '完成上课'),
               ])
             },
           },
         ],
         // 日课表数据
         dailyData: {},
+        // 请求接口
+        urlConf: {
+          option: '/courseoption/',
+          edit: '/classcurricula/',
+          finish: '/classcurricula/finish/',
+        },
       }
     },
     methods: {
@@ -224,7 +234,7 @@
        * @param pageData  分页信息
        */
       getData() {
-        this.$http.get(`/classcurricula/${this.$route.params.id}${this.qs}`)
+        this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${this.qs}`)
           .then((data) => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
             this.dailyData = data
@@ -232,23 +242,18 @@
       },
       // 打开编辑|添加课表弹窗
       openCourseModal(type, item = {}) {
+        let id = this.$route.params.id
         switch (type) {
           case 'add':
-            this.courseModalId = this.$route.params.id
             break
           default :
-            this.courseModalId = item.id
+            id = item.id
+            this.formItem = { ...this.formItem, ...item }
             break
         }
-        this.formItem = item
+        this.courseModalParam.status = type
+        this.courseModalParam.id = parseInt(id, 10)
         this.courseModal = true
-      },
-      // 保存|添加课表
-      addCourse() {
-        this.$http.post(`/classcurricula/${this.courseModalId}`, this.formItem)
-          .then((result) => {
-            window.console.log(result)
-          })
       },
       // 取消排课
       cancelCurriculum(row) {
