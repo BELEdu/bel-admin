@@ -3,6 +3,7 @@
  * @author hjz
  * @version 2017-06-22
  */
+import echarts from 'echarts'
 import { createButton } from '@/utils'
 
 export function colConfig(that) {
@@ -138,3 +139,100 @@ export const buffer = [
     6: 60,
   },
 ]
+
+export const errorOption = {
+  title: {
+    text: '全体学员易错知识点',
+    left: 'center',
+  },
+  tooltip: {
+
+  },
+  xAxis: {
+    name: '知识点',
+    nameLocation: 'middle',
+    nameTextStyle: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#00a8ff',
+    },
+    axisLine: {
+      show: true,
+    },
+    axisTick: {
+      show: false,
+    },
+    axisLabel: {
+      inside: true,
+      formatter(value) {
+        return value.split('').join('\n')
+      },
+      textStyle: {
+        // color: '#fff',
+      },
+    },
+    data: ['倍数的特征', '有理数的认知', '奇数与偶数的初步认识', '绝对值', '整数的认识', '数与式', '因式分解', '一元二次方程', '数与式', '二元一次方程', '有理数'],
+    z: 10,
+  },
+  yAxis: {
+    name: '失\n分\n率',
+    nameLocation: 'middle',
+    nameRotate: 0,
+    nameTextStyle: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#00a8ff',
+    },
+    axisLine: {
+      show: true,
+    },
+    axisTick: {
+      show: false,
+    },
+    axisLabel: {
+      show: false,
+      textStyle: {
+        color: '#999',
+      },
+    },
+    splitLine: {
+      show: false,
+    },
+  },
+  series: [
+    {
+      type: 'bar',
+      itemStyle: {
+        normal: {
+          color: new echarts.graphic.LinearGradient(
+            0, 0, 0, 1,
+            [
+              { offset: 0, color: '#83bff6' },
+              { offset: 0.5, color: '#188df0' },
+              { offset: 1, color: '#188df0' },
+            ],
+          ),
+        },
+        emphasis: {
+          color: new echarts.graphic.LinearGradient(
+            0, 0, 0, 1,
+            [
+              { offset: 0, color: '#2378f7' },
+              { offset: 0.7, color: '#2378f7' },
+              { offset: 1, color: '#83bff6' },
+            ],
+          ),
+        },
+      },
+      barCategoryGap: '40%',
+      data: [0.21, 0.43, 0.51, 0.9, 0.67, 0.59, 0.86, 0.76, 0.32, 0.11, 0.3],
+      tooltip: {
+        formatter({ name, data }) {
+          return `${name}: ${data * 100}%`
+        },
+      },
+    },
+  ],
+}
+
+export { errorOption as scoreOption }
