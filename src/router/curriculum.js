@@ -6,8 +6,8 @@
 
 import * as views from '@/views'
 
-const CURRICULUM_STUDENT_PATH = '/Curriculum/studentcurricula'
-const CURRICULUM_STUDENT_LIST_PATH = '/Curriculum/studentcurricula/list'
+const CURRICULUM_STUDENT_PATH = '/curriculum/studentcurricula'
+const CURRICULUM_STUDENT_LIST_PATH = '/curriculum/studentcurricula/list'
 const CURRICULUM_TEACHER_PATH = '/curriculum/teachercurricula'
 const CURRICULUM_RECORD_PATH = '/curriculum/curricularecord'
 const COURSE_MANAGE = [{
@@ -110,7 +110,7 @@ export default [
       },
     },
     {
-      path: '/Curriculum/studentcurricula/class',
+      path: '/curriculum/studentcurricula/class',
       name: 'CurriculumStudentClassList',
       component: views.CurriculumStudentClassList,
       meta: {
