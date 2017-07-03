@@ -8,6 +8,7 @@
                   @on-cancel="formCancel('form')">
     <div class="modal-content">
       <Form ref="form" :model="data" :rules="ruleValidate" :label-width="110">
+        <app-form-alert :errors="formErrors"></app-form-alert>
         <Form-item label="教师名称：" prop="teacher_id">
           <Select v-model="data.teacher_id" placeholder="请选择" :disabled="status === 'finish'">
             <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
@@ -126,13 +127,13 @@
             this.$rules.required('课时', 'number', 'change'),
           ],
           date: [
-            this.$rules.required('日期', 'date', 'change'),
+            this.$rules.required('日期', 'date', 'blur'),
           ],
           start_at: [
-            this.$rules.required('开始时间', 'date', 'change'),
+            this.$rules.required('开始时间', 'date', 'blur'),
           ],
           end_at: [
-            this.$rules.required('结束时间', 'date', 'change'),
+            this.$rules.required('结束时间', 'date', 'blur'),
           ],
           fact_cost: [
             this.$rules.required('实际上课课时'),
@@ -183,6 +184,7 @@
       },
       // 关闭弹窗
       formCancel(name) {
+        this.formErrors = {}
         this.$refs[name].resetFields()
       },
     },
