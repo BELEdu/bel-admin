@@ -29,10 +29,11 @@
       <!-- 试卷内容主题 -->
       <article class="paperpreview__content">
         <!-- 试卷头部 -->
+        <!-- 注释部分暂时不加 -->
         <header>
-          <p>绝密*启用前</p>
+          <!--<p>绝密*启用前</p>-->
           <h1>主标题</h1>
-          <h2>副标题</h2>
+          <!--<h2>副标题</h2>-->
           <p>考试范围：xxx；考试时间：100分钟；命题人：xxx</p>
           <p>班级：___________考号：___________</p>
           <Table class="paperpreview__content-point" :columns="fconfig" :data="fdata" size="small" border>
@@ -113,10 +114,10 @@ export default {
     paperStructure: 1,
     paperUnit: [
       '试卷标题',
-      '副标题',
+      // '副标题',
       '装订线',
-      '保密标记',
-      '试卷信息',
+      // '保密标记',
+      // '试卷信息',
       '试卷信息栏',
       '考生输入栏',
       '誊分栏',
@@ -182,10 +183,11 @@ export default {
 // 试卷section、topic hover mixin
 .hoverbar() {
   position: absolute;
-  right: @gutter-unit/2;
-  top: @gutter-unit/2;
+  right: 0;
+  top: 0;
   display: none;
-  border: @bd-primary;
+  border-bottom: @bd-primary;
+  border-left: @bd-primary;
   border-radius: @bd-radius;
   background-color: @color-font-select;
   padding: @gutter-unit/2;
@@ -218,8 +220,9 @@ export default {
 .paperpreview {
   display: flex;
   width: 1160px;
-  align-items: flex-start; // 边栏配置
-
+  align-items: flex-start; 
+  
+  // 边栏配置
   &>aside {
     margin-right: @gutter-block;
     border-radius: @bd-radius;
@@ -275,6 +278,7 @@ export default {
   
   // 试卷头部
   &>header {
+    padding-top: 10px;
     text-align: center;
 
     &>p {
@@ -282,9 +286,10 @@ export default {
       margin-top: @gutter-unit;
       margin-bottom: @gutter-unit;
 
-      &:first-of-type {
-        text-align: left;
-      }
+      // 保密标记左对齐
+      // &:first-of-type {
+      //   text-align: left;
+      // }
 
       &:last-of-type {
         padding: 10px 30px;
@@ -333,20 +338,23 @@ export default {
     }
 
     & dl {
-      display: inline-block;
+      display: flex;
       margin-right: 10px;
       border: @bd-base;
-      width: 70px;
+      border-radius: @bd-radius;
+      // width: 70px;
     }
 
     & dt {
       text-align: center;
-      border-bottom: @bd-base;
+      border-right: @bd-base;
       font-size: @mid-font;
     }
 
     & dt,
     & dd {
+      display: inline-block;
+      width: 50px;
       height: 30px;
       line-height: 30px;
     }
