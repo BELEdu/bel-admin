@@ -69,7 +69,7 @@
    */
 
   import { form } from '@/mixins'
-  import { formatDate } from 'iview/src/components/date-picker/util'
+  import { formatDate } from '@/utils/date'
 
   export default {
     name: 'course-modal',
