@@ -17,11 +17,11 @@
       </Form-item>
       <Form-item>
         <Select v-model="form.status">
-          <Option value="1">全部</Option>
-          <Option value="2">待确认</Option>
-          <Option value="3">已排定</Option>
-          <Option value="4">已取消</Option>
-          <Option value="5">已上课</Option>
+          <Option value="">全部</Option>
+          <Option value="0">待确认</Option>
+          <Option value="1">已排定</Option>
+          <Option value="2">已上课</Option>
+          <Option value="3">已取消</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -32,7 +32,7 @@
     <!--列表工具模块-->
     <Row class="app-content-header" type="flex" justify="end">
       <Col>
-      <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
+      <Button type="primary">打印</Button>
       </Col>
     </Row>
     <Weekly-table :data="weeklyData"></Weekly-table>
