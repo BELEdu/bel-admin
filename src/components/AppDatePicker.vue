@@ -17,7 +17,7 @@
    * @addTime   2017/06/30
    */
 
-  import { formatDate } from 'iview/src/components/date-picker/util'
+  import { formatDate } from '@/utils/date'
 
   export default {
     name: 'app-date-picker',
@@ -82,7 +82,7 @@
         if (val) {
           if (this.dateType === 'string' && Object.prototype.toString.call(val) === '[object Date]' && (formatDate(val, this.format) !== this.value || !this.cycle)) {
             date = val ? formatDate(val, this.format) : ''
-          } else if (this.dateType === 'date' && (val !== this.value || !this.cycle)) {
+          } else if (this.dateType === 'date' && (val !== this.value || !this.cycle || typeof val === 'string')) {
             date = new Date(val)
           }
           // 初始周期结束

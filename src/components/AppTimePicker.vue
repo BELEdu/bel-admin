@@ -17,7 +17,7 @@
    * @addTime   2017/06/30
    */
 
-  import { toDate, formatDate } from 'iview/src/components/date-picker/util'
+  import { toDate, formatDate } from '@/utils/date'
 
   export default {
     name: 'app-time-picker',
