@@ -17,7 +17,7 @@
     </Row>
 
     <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
-    <app-pager :data="studentData" @on-change="getPageData" @on-page-size-change="getPerPageData"></app-pager>
+    <app-pager :data="studentData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--编写评价弹窗-->
     <appraise-single-modal v-model="appraiseSingleModal"
@@ -34,15 +34,17 @@
 /**
  * 上课记录-学员
  * @author  chenliangshan
- * @update    2017/06/22
+ * @update    2017/07/03
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
+import { list } from '@/mixins'
 import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
 import AppraiseMultModal from '../../Components/AppraiseMultModal'
 
 export default{
   name: 'app-student-record-manage',
+  mixins: [list],
   components: { AppraiseMultModal, AppraiseSingleModal },
   data() {
     return {
@@ -132,42 +134,15 @@ export default{
       },
     }
   },
-  mounted() {
-    this.getStudentData()
-  },
   methods: {
-    /**
-     * 获取学员上课记录
-     * @param pageData  分页信息
-     */
-    getStudentData(pageData = this.pagerConfig) {
+    // 获取学员上课记录
+    getData() {
       this.$store.commit(GLOBAL.LOADING.SHOW)
-      this.$http.get(`/curricularecord/student/index/${this.$route.params.id}?page=${pageData.page}&per_page=${pageData.per_page}`)
+      this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${this.qs}`)
         .then((data) => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
         })
-    },
-    /**
-     * 学员上课记录分页事件
-     * @param pageId  页码
-     */
-    getPageData(pageId = 1) {
-      this.pagerConfig = Object.assign({}, this.pagerConfig, { page: pageId })
-      this.getStudentData(this.pagerConfig)
-    },
-    /**
-     * 学员上课记录每页条数事件
-     * @param perPage  每页条数
-     */
-    getPerPageData(perPage = 1) {
-      this.pagerConfig = Object.assign({}, this.pagerConfig, { per_page: perPage })
-      this.getStudentData(this.pagerConfig)
-    },
-    // 获取查看所有评价
-    getAppraiseInfo() {
-      this.multModalData = this.studentData.data[0]
-      this.appraiseShow = true
     },
     /**
      * 编写|查看评价

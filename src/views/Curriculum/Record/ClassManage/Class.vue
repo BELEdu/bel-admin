@@ -10,7 +10,7 @@
     </Form>
 
     <Table class="app-table" :columns="classColumns" :data="classData.data" border></Table>
-    <app-pager :data="classData" @on-change="getPageData" @on-page-size-change="getPerPageData"></app-pager>
+    <app-pager :data="classData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--编写评价弹窗-->
     <appraise-single-modal v-model="appraiseSingleModal"
@@ -26,10 +26,12 @@
    */
 
   import { GLOBAL } from '@/store/mutationTypes'
+  import { list } from '@/mixins'
   import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
 
   export default{
     name: 'app-student-record-manage',
+    mixins: [list],
     components: { AppraiseSingleModal },
     data() {
       return {
@@ -139,37 +141,15 @@
         },
       }
     },
-    mounted() {
-      this.getClassData()
-    },
     methods: {
-      /**
-       * 获取班级上课记录
-       * @param pageData  分页信息
-       */
-      getClassData(pageData = this.pagerConfig) {
+      // 获取班级上课记录
+      getData() {
         this.$store.commit(GLOBAL.LOADING.SHOW)
-        this.$http.get(`/curricularecord/student/index/${this.$route.params.id}?page=${pageData.page}&per_page=${pageData.per_page}`)
+        this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${this.qs}`)
           .then((data) => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
             this.classData = data
           })
-      },
-      /**
-       * 班级上课记录分页事件
-       * @param pageId  页码
-       */
-      getPageData(pageId = 1) {
-        this.pagerConfig = Object.assign({}, this.pagerConfig, { page: pageId })
-        this.getClassData(this.pagerConfig)
-      },
-      /**
-       * 班级上课记录每页条数事件
-       * @param perPage  每页条数
-       */
-      getPerPageData(perPage = 1) {
-        this.pagerConfig = Object.assign({}, this.pagerConfig, { per_page: perPage })
-        this.getClassData(this.pagerConfig)
       },
       // 获取查看所有评价
       getAppraiseInfo() {
