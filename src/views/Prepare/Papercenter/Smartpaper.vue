@@ -147,7 +147,7 @@ export default {
 .smartpaper {
 
   & .ivu-radio-group-item {
-    margin-right: 0;
+    margin-right: 0 !important;
     padding: 0 17px;
   }
 
