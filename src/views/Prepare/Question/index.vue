@@ -165,7 +165,7 @@
     <ul class="question__cart">
       <li v-for="i in 6" :key="i">选择题(10)</li>
       <li>
-        <Button type="primary" size="small" long @click="previewPaper()">生成试卷</Button>
+        <Button type="primary" size="small" long @click="previewPaper()">试卷预览</Button>
       </li>
     </ul>
     <!-- 屏幕右下角选中题目提示 end -->
