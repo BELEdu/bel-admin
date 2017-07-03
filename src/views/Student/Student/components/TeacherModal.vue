@@ -4,8 +4,8 @@
     @input="value => $emit('input', value)"
     title="分配教师"
     :loading="formLoading"
-    @on-ok="beforeSubmit()"
-    @on-cancle="closeModal()"
+    @on-ok="beforeSubmit"
+    @on-cancle="closeModal"
   >
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>
@@ -28,7 +28,9 @@
 /**
  * 学员分配教师组件
  * @author  zhoumenglin
+ * @version 2017-06-28
  */
+
 import { form } from '@/mixins'
 
 export default {
@@ -81,7 +83,7 @@ export default {
     },
 
     closeModal() {
-      this.$emit('closeModalTeacher')
+      this.$emit('closeTeacherModal')
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false

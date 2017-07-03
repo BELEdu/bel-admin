@@ -28,7 +28,7 @@
         <h2>学员列表</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="openTeacherModal()">分配教师</Button>
+        <Button type="primary" @click="openTeacherModal">分配教师</Button>
         <Button type="primary" @click="modal.manage = true">分配学管师</Button>
         <Button type="primary" @click="$router.push('/student/student/edit')">添加学员</Button>
       </Col>
@@ -70,11 +70,11 @@
     </app-form-modal>
 
     <!--分配教师组件-->
-    <assign-teacher
+    <teacher-modal
       v-model="modal.teacher"
-      @closeModalTeacher="modal.teacher = false"
+      @closeTeacherModal="modal.teacher = false"
       :studentItem="studentItem"
-    ></assign-teacher>
+    ></teacher-modal>
 
     <!-- 学员信息表格 -->
     <Table class="app-table" :columns="columns" :data="list.data" border @on-selection-change="onSelectionChange"></Table>
@@ -97,7 +97,7 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import AssignTeacher from './components/AssignTeacher'
+import TeacherModal from './components/TeacherModal'
 
 export default {
   name: 'app-student-student',
@@ -164,12 +164,11 @@ export default {
           align: 'center',
           // 剩余课时小于10的时候变红
           render: (h, params) => {
-            const row = params.row
-            const className = +row.time < 10 ? 'color-error' : ''
-            const text = row.time
+            const { course_total } = params.row
+            const className = +course_total < 10 ? 'color-error' : ''
             return h('span', {
               class: className,
-            }, text)
+            }, course_total)
           },
         },
         {
@@ -202,11 +201,12 @@ export default {
   },
 
   components: {
-    AssignTeacher,
+    TeacherModal,
   },
 
   methods: {
 
+    // 打开分配教师弹窗
     openTeacherModal() {
       if (this.studentItem.length > 0) {
         this.modal.teacher = true
