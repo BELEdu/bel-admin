@@ -283,4 +283,24 @@ export default {
     margin-bottom: 30px;
   }
 }
+
+.ie {
+
+  & .contract-create__product {
+
+    &__create {
+
+      & .ivu-col {
+        width: 100%;
+        text-align: center;
+        padding-bottom: 30px;
+        padding-left: 40px;
+
+        & .ivu-btn {
+          width: auto;
+        }
+      }
+    }
+  }
+}
 </style>
