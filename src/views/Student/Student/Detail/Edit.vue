@@ -52,8 +52,8 @@ import { mapState } from 'vuex'
 import format from 'date-fns/format'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import Basic from './components/Basic'
-import Parents from './components/Parents'
+import Basic from '../components/Basic'
+import Parents from '../components/Parents'
 
 
 const defaultParent = {
