@@ -54,7 +54,7 @@
  */
 
 export default {
-  name: 'app-student-studyprogress-edit-one',
+  name: 'app-student-studyprogress-editplan-one',
 
   props: {
     subjectTypes: {

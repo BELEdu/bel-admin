@@ -24,6 +24,7 @@
  */
 
 export default {
+  name: 'app-student-studyprogress-classes-modal',
 
   props: {
     value: {

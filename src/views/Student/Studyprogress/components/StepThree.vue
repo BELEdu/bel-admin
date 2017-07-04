@@ -28,7 +28,7 @@
     <div class="text-center">
       <Button
         type="dashed" icon="plus" class="color-primary" size="large"
-         v-show="step < 3" @click="$emit('addLesson')"
+         v-show="step < 3 || step === 4" @click="$emit('addLesson')"
       >增加计划</Button>
     </div>
   </div>
@@ -42,7 +42,7 @@
  */
 
 export default {
-  name: 'app-student-studyprogress-edit-three',
+  name: 'app-student-studyprogress-editplan-three',
 
   props: {
     step: {

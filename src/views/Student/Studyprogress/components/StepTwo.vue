@@ -7,7 +7,7 @@
       </ul>
     </div>
 
-    <div class="studyprogress-step-two__tree" v-show="step < 3">
+    <div class="studyprogress-step-two__tree" v-show="step < 3 || step === 4">
       <h3 class="studyprogress-edit__sub-title">添加知识点</h3>
       <slot></slot>
     </div>
@@ -22,7 +22,7 @@
  */
 
 export default {
-  name: 'app-student-studyprogress-edit-two',
+  name: 'app-student-studyprogress-editplan-two',
 
   props: {
     step: {
