@@ -27,6 +27,8 @@ import { form } from '@/mixins'
 import format from 'date-fns/format'
 
 export default {
+  name: 'app-student-classes-manage-modal',
+
   mixins: [form],
 
   props: {
