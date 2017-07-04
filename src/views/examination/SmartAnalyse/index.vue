@@ -39,10 +39,8 @@
     </Form>
     <!-- end 上部 搜索栏 -->
     <!-- 中部 列表title栏 -->
-    <Row class="app-content-header" type="flex" justify="space-between">
-      <Col>
+    <Row class="app-content-header">
       <h2 icon="">智能分析</h2>
-      </Col>
     </Row>
     <!-- end 中部 列表title栏 -->
     <!-- 下部 列表展示-->
@@ -104,6 +102,7 @@ export default {
 
 <style lang="less">
 @import "~vars";
+@import "~mixin";
 
 @gutter-block: 8px;
 @bd-radius: 4px;
@@ -169,6 +168,24 @@ export default {
     &:last-child {
       float: right;
       margin: 0;
+    }
+  }
+}
+
+.ie {
+
+  & .smartanalyse {
+
+    &__point-analyse {
+      .clearfix();
+
+      & .ivu-col {
+        float: left;
+      }
+    }
+
+    &__course-list > dd {
+      padding: 8px 10px 0 10px;
     }
   }
 }
