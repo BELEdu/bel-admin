@@ -144,5 +144,11 @@ export default {
 </script>
 
 <style lang="less">
+// iview样式重写
+.hotlineeditor {
 
+  & .ivu-date-picker {
+    display: block;
+  }
+}
 </style>
