@@ -30,7 +30,7 @@
       </Col>
     </Row>
   
-    <Table size="small" :columns="colConfig" :data="buffer.data" stripe></Table>
+    <Table :columns="colConfig" :data="buffer.data" border></Table>
   
     <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
   </div>

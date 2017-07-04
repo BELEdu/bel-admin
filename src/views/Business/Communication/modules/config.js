@@ -105,7 +105,7 @@ export function colConfig(that) {
       title: '偏科',
       key: 'is_tend_subject_name',
       align: 'center',
-      width: 60,
+      width: 70,
     },
     {
       title: '当前状态',
