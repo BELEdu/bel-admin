@@ -13,7 +13,7 @@
       <Form-item label="会议时间" prop="meeting_date">
         <Date-picker type="date" placeholder="请选择会议的时间" v-model="form.meeting_date"></Date-picker>
       </Form-item>
-      <Form-item label="参会家长" prop="parent_name">
+      <Form-item label="参会家长">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
       </Form-item>
       <Form-item label="参会员工">
@@ -138,9 +138,6 @@ export default {
         ],
         meeting_type: [
           this.$rules.required('会议类型', 'number'),
-        ],
-        parent_name: [
-          this.$rules.name,
         ],
       },
     }
