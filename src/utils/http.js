@@ -29,16 +29,17 @@ class Http {
   // 每次请求时，检查token
   static updateToken(res) {
     const { status, headers } = res
+
+    // 只有登陆和token时效时，相应头会带token字段
     const token = headers.get('token')
 
-    // 存在token，则更新token
-    // 只有登陆时会存在token
+    // token有值，则更新token（登陆时）
     if (token) {
       store.commit(GLOBAL.TOKEN.UPDATE, token)
     }
 
-    // 状态400且token为空，强制用户登出
-    if (status === 400 && token === '') {
+    // 状态400且token为空值，强制用户登出（token失效时）
+    if (status === Http.FAIL && token === '') {
       store.commit(GLOBAL.LOGOUT)
       router.push('/auth/login')
     }
@@ -82,7 +83,7 @@ class Http {
   /**
    * POST请求
    * @param {String} uri - 请求接口
-   * @param {Number} body - 请求所需携带参数
+   * @param {Object} body - 请求所需携带参数
    * @returns {Promise}
    */
   static post(uri, body) {
@@ -101,7 +102,7 @@ class Http {
   /**
    * PATCH请求
    * @param {String} uri - 请求接口
-   * @param {Number} body - 请求所需携带参数
+   * @param {Object} body - 请求所需携带参数
    * @returns {Promise}
    */
   static patch(uri, body) {
