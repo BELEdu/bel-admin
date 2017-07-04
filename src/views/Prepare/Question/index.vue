@@ -16,7 +16,7 @@
       <!-- 左侧知识点列表 -->
       <Col class="question__knowledge" span="5">
       <!-- 知识点选择 -->
-      <Tabs value="name1" type="card">
+      <Tabs value="name1" type="card" :animated="false">
         <Tab-pane label="按知识点" name="name1">
           <!-- 知识点单选 -->
           <div v-show="singleSelect">
@@ -311,6 +311,7 @@ export default {
 
 <style lang="less">
 @import '~vars';
+@import '~mixin';
 
 @gutter: 8px;
 @bd-radius: 4px;
@@ -360,7 +361,7 @@ export default {
   border-radius: @bd-radius;
   background-color: @bg-color;
 
-  & div {
+  &>div {
     display: flex;
     border-bottom: 1px dashed @border-color-split;
     height: 40px;
@@ -532,7 +533,9 @@ export default {
 
   & .ivu-tabs-tabpane {
     padding: 8px;
-  } // 注释：全部&个人知识点，V2.0保留功能
+  } 
+  
+  // 注释：全部&个人知识点，V2.0保留功能
   // & .ivu-tree{
   //   &>ul>li>span {
   //     font-size: 14px;
@@ -543,5 +546,32 @@ export default {
   //     margin: 0
   //   }
   // }
+}
+
+
+.ie {
+
+  & .question {
+
+    &__help {
+
+      &>div {
+        float: left;
+      }
+    }
+
+    &__filter {
+      .clearfix();
+
+      &>div>h4,
+      &>div>span {
+        float: left;
+      }
+      
+      &>div>span {
+        height: 40px;
+      }
+    }
+  }
 }
 </style>
