@@ -181,6 +181,10 @@ export default {
     }
   }
 
+  & .ivu-date-picker {
+    display: block;
+  }
+
   &-duration {
 
     & .ivu-form-item-content {
@@ -199,7 +203,8 @@ export default {
 
 .planedit__info {
   margin-left: 35px;
-  margin-bottom: 30px; // 后期改成统一常量
+  margin-bottom: 30px; 
+  // 后期改成统一常量
   width: 940px;
   border: @border-base;
   border-radius: @bd-radius;
