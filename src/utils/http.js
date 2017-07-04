@@ -9,6 +9,7 @@
 
 import 'whatwg-fetch'
 import store from '@/store'
+import router from '@/router'
 import { GLOBAL } from '@/store/mutationTypes'
 
 class Http {
@@ -36,9 +37,10 @@ class Http {
       store.commit(GLOBAL.TOKEN.UPDATE, token)
     }
 
-    // 状态400且不存在token，强制用户登出
+    // 状态400且token为空，强制用户登出
     if (status === 400 && token === '') {
       store.commit(GLOBAL.LOGOUT)
+      router.push('/auth/login')
     }
 
     return res
