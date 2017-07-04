@@ -101,6 +101,10 @@ export default {
       margin-bottom: 10px!important;
     }
   }
+
+  & .ivu-date-picker {
+    width: 100%;
+  }
 }
 
 .examedit__composition {
