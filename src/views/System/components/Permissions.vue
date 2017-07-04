@@ -69,7 +69,7 @@ export default {
   border: 1px solid @border-color-base;
 
   .ivu-checkbox-group-item {
-    margin: 0;
+    margin: 0 !important;
     line-height: normal;
   }
 
