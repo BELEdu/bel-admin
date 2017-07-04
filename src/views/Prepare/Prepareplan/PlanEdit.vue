@@ -1,7 +1,7 @@
 <template>
   <div class="planedit">
     <!-- 头部表单 -->
-    <Form class="app-form-entire planedit__coures" :label-width="120" inline>
+    <Form class="app-form-entire planedit__coures" :label-width="120">
       <Form-item label="上课科目">
         <Select placeholder="请选择科目...">
           <Option value="1">语文</Option>
@@ -26,12 +26,12 @@
           <Option value="2">第2节</Option>
           <Option value="3">第3节</Option>
         </Select>
+        <span>课时长 2</span>
       </Form-item>
-      <span>课时长 2</span>
       <Form-item label="上课时段">
         <Time-picker type="timerange" format="HH:mm" placeholder="请选择时段..." :editable="false" confirm></Time-picker>
       </Form-item>
-      <Form-item label="课题题目" >
+      <Form-item label="课题题目">
         <Input placeholder="请输入课题..."></Input>
       </Form-item>
     </Form>
@@ -131,7 +131,7 @@
       <Button>取消</Button>
       <Button type="primary">提交</Button>
     </div>
-    <!-- 编辑页行为按钮 end -->    
+    <!-- 编辑页行为按钮 end -->
   </div>
 </template>
 
@@ -158,41 +158,41 @@ export default {
 
 <style lang="less">
 @import '~vars';
+@import '~mixin';
 
 @gutter: 8px;
 @bd-radius: 4px;
 @rcol-padding: 0 20px;
 @border-base: 1px solid @border-color-base;
 
-.planedit {
-  // 
-}
-
 .planedit__coures {
+  display: flex;
+  flex-wrap: wrap;
 
-  & .ivu-form-item-content {
-    width: 193px;
+  & .ivu-form-item {
+    width: calc(~'100% / 3');
+
+    &:nth-child(2) {
+      margin-right: 10px;
+    }
+
+    &:last-child {
+      width: 100%;
+    }
   }
 
   &-duration {
 
     & .ivu-form-item-content {
-      width: 126px;
-    }
+      display: flex;
 
-    &+span {
-      display: inline-block;
-      line-height: 34px;
-      font-size: 14px;
-      margin-right: 10px;
-    }
-  }
-
-  & .ivu-form-item:last-child {
-    display: block;
-
-    & .ivu-form-item-content {
-      width: auto;
+      &>span {
+        display: inline-block;
+        white-space: nowrap;
+        margin-left: 10px;
+        line-height: 34px;
+        font-size: 14px;
+      }
     }
   }
 }
@@ -200,7 +200,7 @@ export default {
 .planedit__info {
   margin-left: 35px;
   margin-bottom: 30px; // 后期改成统一常量
-  width: 930px;
+  width: 940px;
   border: @border-base;
   border-radius: @bd-radius;
   font-size: 0px;
@@ -329,4 +329,73 @@ export default {
     }
   }
 }
+
+.ie {
+
+  .planedit__coures {
+    .clearfix();
+
+    & .ivu-form-item {
+      float: left;
+    }
+
+    &-duration {
+
+      & .ivu-form-item-content {
+        .clearfix();
+
+        & .ivu-select {
+          float: left;
+          width: calc(~'100% - 64px');
+        }
+
+        &>span {
+          float: left;
+        }
+      }
+    }
+  }
+
+  .planedit__info {
+
+    &>div {
+      &:nth-of-type(3),
+      &:nth-of-type(4) {
+        background-color: @bg-color;
+
+        &>dt {
+          float: left;
+        }
+
+        &>dd {
+          display: block;
+          width: auto;
+          background-color: #fff;
+          padding: 15px;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  .planedit__now {
+
+    & .ivu-form-item-content {
+
+      &>dl {
+        
+        &>dt {
+          float: left;
+          width: 10%;
+        }
+
+        &>dd {
+          overflow: hidden;
+        }
+      }
+    }
+  }
+}
+
+
 </style>

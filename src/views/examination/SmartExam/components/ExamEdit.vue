@@ -7,17 +7,17 @@
       <Form-item label="测试类型：">
         <Select placeholder="请选择类型">
           <Option value="1">单元测试</Option>
-          <Option value="1">单元测试</Option>
-          <Option value="1">单元测试</Option>
-          <Option value="1">单元测试</Option>
+          <Option value="2">单元测试</Option>
+          <Option value="3">单元测试</Option>
+          <Option value="4">单元测试</Option>
         </Select>
       </Form-item>
       <Form-item label="测试科目：">
         <Select placeholder="请选择科目">
           <Option value="1">语文</Option>
-          <Option value="1">语文</Option>
-          <Option value="1">语文</Option>
-          <Option value="1">语文</Option>
+          <Option value="2">语文</Option>
+          <Option value="3">语文</Option>
+          <Option value="4">语文</Option>
         </Select>
       </Form-item>
       <Form-item label="测试时间：">
@@ -26,9 +26,9 @@
       <Form-item label="测试试卷：">
         <Select placeholder="请选择试卷" class="examedit__text-select">
           <Option value="1">厦门附中期末模拟考</Option>
-          <Option value="1">厦门附中期末模拟考</Option>
-          <Option value="1">厦门附中期末模拟考</Option>
-          <Option value="1">厦门附中期末模拟考</Option>
+          <Option value="2">厦门附中期末模拟考</Option>
+          <Option value="3">厦门附中期末模拟考</Option>
+          <Option value="4">厦门附中期末模拟考</Option>
         </Select>
         <Button type="ghost">个性化组卷</Button>
       </Form-item>
@@ -80,10 +80,16 @@ export default {
 
 <style lang="less">
 @import "~vars";
+@import "~mixin";
+
+.examedit {
+  .ivu-form-item-content {
+    display: flex;
+  }
+}
 
 .examedit__text-select {
-  display: inline-block;
-  width: 193px;
+  margin-right: 10px;
 }
 
 .examedit__info {
@@ -102,6 +108,25 @@ export default {
 
   &:hover {
     color: @link-color!important;
+  }
+}
+
+.ie {
+
+  .examedit {
+    .ivu-form-item-content {
+      .clearfix();
+    }
+  }
+
+  .examedit__text-select {
+    float: left;
+    margin-right: 10px;
+    width: calc(~'100% - 102px');
+
+    &+button {
+      float: left;
+    }
   }
 }
 </style>

@@ -22,7 +22,8 @@ module.exports = {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       '@': resolve('src'),
-      'vars': resolve('src/styles/vars.less')
+      'vars': resolve('src/styles/vars.less'),
+      'mixin': resolve('src/styles/mixin.less')
     }
   },
   module: {
