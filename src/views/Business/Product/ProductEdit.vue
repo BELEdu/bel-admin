@@ -214,7 +214,7 @@ export default {
   &-left {
     flex-basis: 100px;
     flex-shrink: 0;
-    border-right: 1px solid @border-color-base;
+    text-align: center;
 
     & dt {
       height: 33px;
@@ -225,12 +225,13 @@ export default {
       text-align: center;
 
       & .ivu-checkbox-wrapper {
-        margin: 0;
+        margin: 0 !important;
       }
     }
   }
 
   &-right {
+    border-left: 1px solid @border-color-base;    
     padding-left: 20px;
     flex-grow: 1;
 
@@ -243,6 +244,22 @@ export default {
     & dd {
       display: inline-block;
     }
+  }
+}
+
+.ie {
+
+  .product-edit__areas {
+
+    &-left {
+      float: left;
+      width: 100px;
+    }
+
+    &-right {
+      overflow: hidden;
+    }
+
   }
 }
 </style>
