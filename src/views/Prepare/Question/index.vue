@@ -494,7 +494,7 @@ export default {
 // 屏幕右下角选中题目提示
 .question__cart {
   position: fixed;
-  left: 1411px;
+  left: 1420px;
   bottom: 115px;
   border: @border-base;
   border-radius: @bd-radius;
