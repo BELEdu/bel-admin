@@ -22,7 +22,8 @@
     <!--编写评价弹窗-->
     <appraise-single-modal v-model="appraiseSingleModal"
                            :config="singleModal.config"
-                           :data="currentAppraiseInfo"></appraise-single-modal>
+                           :data="currentAppraiseInfo"
+                           @on-submit="getData"></appraise-single-modal>
 
     <!--查看评价弹窗-->
     <appraise-mult-modal v-model="appraiseShow"
@@ -143,6 +144,11 @@ export default{
           this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
         })
+    },
+    // 获取查看所有评价
+    getAppraiseInfo() {
+      this.multModalData = this.studentData.data[0]
+      this.appraiseShow = true
     },
     /**
      * 编写|查看评价

@@ -48,6 +48,8 @@
 <script>
   /**
    * 学员-所有评价弹窗
+   * @author  chenliangshan
+   * @update  2017/07/04
    */
 
   export default{
