@@ -1,17 +1,17 @@
 <template>
   <div>
 
-    <Tabs :value="tabActive" type="card"  @on-click="tabSelect" class="app-tabs">
+    <Tabs :value="tabActive" type="card" @on-click="tabSelect" class="app-tabs">
       <Tab-pane v-for="item in subjects" :key="item.name" :label="item.label" :name="item.name"></Tab-pane>
     </Tabs>
 
-    <Tabs value="high">
+    <Tabs value="high" >
         <Tab-pane label="高中" name="high"></Tab-pane>
         <Tab-pane label="初中" name="middle"></Tab-pane>
         <Tab-pane label="小学" name="primary"></Tab-pane>
     </Tabs>
 
-    <Table class="app-table point-table" :columns="columns" :data="fdata" border></Table>
+    <Table class="app-table point-table" :columns="columns" :data="ddata" border></Table>
 
     <app-pager :data="pager" @on-change="() => {}"></app-pager>
 
@@ -24,11 +24,11 @@
  * @version 2017-06-30
 */
 import { GLOBAL } from '@/store/mutationTypes'
-import fdata from './fdata'
+import ddata from './ddata'
 
 export default {
 
-  name: 'app-student-student',
+  name: 'app-student-knowledgepoint-detail',
 
   data() {
     return {
@@ -104,14 +104,16 @@ export default {
 
       tabActive: '',
       // 表格数据
-      fdata,
+      ddata,
       // 分页配置
       pager: undefined,
     }
   },
 
   methods: {
-    tabSelect() {},
+    tabSelect(name) {
+      this.$Message.info(`你选择了${name}`)
+    },
   },
 
   created() {
@@ -146,6 +148,5 @@ export default {
         }
       }
     }
-
   }
 </style>
