@@ -120,16 +120,21 @@
 
 // 兼容ie9
 .ie {
+  .app-body {
+    height: calc(~"100vh" - @header-height);
+    background-color: #eee;
+  }
+
   .app-menu {
     float: left;
     width: 200px !important;
-    height: calc(~"100vh" - @header-height);
+    height: 100%;
   }
 
   .app-main {
     float: right;
-    width: ~"calc(100vw - 200px)";
-    height: calc(~"100vh" - @header-height);
+    width: ~"calc(100vw - 215px)"; // 215 = app-menu宽度 + 滚动条宽度
+    height: 100%;
   }
 
   .app-content-header {
