@@ -98,6 +98,8 @@ export default {
 </script>
 
 <style lang="less">
+@import "~mixin";
+
 .smartpaper {
 
   &__topics-amount {
@@ -133,7 +135,7 @@ export default {
       display: flex;
       justify-content: space-between;
       // margin: 0 -10px 0 -50px;
-      margin-right: -50px;
+      margin-right: -55px;
       margin-left: -50px;
 
       &>span {
@@ -154,6 +156,39 @@ export default {
   & .ivu-slider-wrap {
     margin: 16px auto;
     // width: 90%;
+  }
+}
+
+.ie {
+
+  & .smartpaper {
+
+    &__topics-amount {
+      .clearfix();
+
+      &>dt {
+        float: left;
+        height: 100%;
+      }
+
+      &>dd {
+        float: left;
+      }
+    }
+
+    &__level {
+
+      &-text {
+        
+        &>span {
+          margin-right: 110px;
+
+          &:last-of-type {
+             margin-right: 0;
+          }
+        }
+      }
+    }
   }
 }
 </style>
