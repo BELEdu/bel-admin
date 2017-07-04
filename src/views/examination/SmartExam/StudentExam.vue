@@ -12,8 +12,12 @@
     <!-- 顶部 搜索栏 end -->
     <!-- 中部 列表title栏 -->
     <Row class="app-content-header" type="flex" justify="space-between">
-      <h2 icon="">智能测试</h2>
-      <Button type="primary" @click="examineStu()">添加测试</Button>
+      <Col>
+        <h2 icon="">智能测试</h2>
+      </Col>
+      <Col>
+        <Button type="primary" @click="examineStu()">添加测试</Button>
+      </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
     <!-- 下部 列表展示-->

@@ -14,10 +14,8 @@
     </Form>
     <!-- 上部 搜索栏 end -->
     <!-- 中部 列表title栏 -->
-    <Row class="app-content-header" type="flex" justify="space-between">
-      <Col>
+    <Row class="app-content-header">
       <h2 icon="">教案管理</h2>
-      </Col>
     </Row>
     <!-- 中部 列表title栏 end -->
     <!-- 下部 列表展示-->
