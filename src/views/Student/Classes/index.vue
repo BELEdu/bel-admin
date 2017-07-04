@@ -42,14 +42,14 @@
     </app-warn-modal>
 
     <!--学员管理组件-->
-    <manage-student
+    <manage-modal
       v-model="modal.manage"
       :classId="classId"
-      @closeManageModal="closeManageModal()"
+      @closeManageModal="modal.manage=false"
       :form="form"
       :studentData="student_data"
     >
-    </manage-student>
+    </manage-modal>
 
     <!--班级管理表格-->
     <Table class="app-table" :columns="columns" :data="list.data" border></Table>
@@ -73,7 +73,7 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import ManageStudent from './components/ManageStudent'
+import ManageModal from './components/ManageModal'
 
 export default {
   name: 'app-student-classes',
@@ -157,7 +157,7 @@ export default {
   },
 
   components: {
-    ManageStudent,
+    ManageModal,
   },
 
   methods: {
@@ -178,11 +178,6 @@ export default {
           }
           this.student_data = student_data
         })
-    },
-
-    // 关闭班级学员管理模态框
-    closeManageModal() {
-      this.modal.manage = false
     },
 
     // 打开删除班级模态框

@@ -1,7 +1,7 @@
 <template>
   <div>
     <app-editor-title></app-editor-title>
-    <Form :label-width="130" class="app-form-entire" :model="form" :rules="rules" ref="form" >
+    <Form :label-width="140" class="app-form-entire" :model="form" :rules="rules" ref="form" >
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="班级名称"  prop="display_name">
         <Input placeholder="请输入班级名称" v-model="form.display_name"></Input>
