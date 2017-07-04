@@ -284,4 +284,12 @@ export default {
     color: @error-color;
   }
 }
+
+// iview样式重写
+.commeditor {
+
+  & .ivu-date-picker {
+    display: block;
+  }
+}
 </style>
