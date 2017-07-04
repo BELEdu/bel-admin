@@ -11,18 +11,6 @@ const STUDENT_STUDENT = { name: '学员信息', link: '/student/student' }
 const STUDENT_CLASSES = { name: '班级管理', link: '/student/classes' }
 
 export default [
-  {
-    path: '/student',
-    name: 'Student',
-    // 测试:重定向到学员信息
-    redirect: STUDENT_STUDENT.link,
-    component: views.Student,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-      ],
-    },
-  },
 
   // 学员信息
   {
@@ -142,34 +130,32 @@ export default [
     children: [
       {
         path: '/student/studyprogress/student',
-        name: 'StudentStudyprogressListStudent',
-        component: views.StudentStudyprogressListStudent,
+        name: 'StudentStudyprogressStudent',
+        component: views.StudentStudyprogressStudent,
         meta: {
           breadcrumb: [
             { name: '学员管理' },
             { name: '学习进度' },
-            { name: '学员列表' },
           ],
         },
       },
       {
         path: '/student/studyprogress/classes',
-        name: 'StudentStudyprogressListClasses',
-        component: views.StudentStudyprogressListClasses,
+        name: 'StudentStudyprogressClasses',
+        component: views.StudentStudyprogressClasses,
         meta: {
           breadcrumb: [
             { name: '学员管理' },
             { name: '学习进度' },
-            { name: '班级列表' },
           ],
         },
       },
     ],
   },
   {
-    path: '/student/studyprogress/edit',
-    name: 'StudentStudyprogressEdit',
-    component: views.StudentStudyprogressEdit,
+    path: '/student/studyprogress/:type/:id/add',
+    name: 'StudentStudyprogressAdd',
+    component: views.StudentStudyprogressAdd,
     meta: {
       breadcrumb: [
         { name: '学员管理' },
@@ -177,6 +163,57 @@ export default [
         { name: '添加计划' },
       ],
     },
+  },
+  {
+    path: '/student/studyprogress/:type/:id',
+    name: 'StudentStudyprogressDetail',
+    redirect: '/student/studyprogress/:type/:id/progress',
+    component: views.StudentStudyprogressDetail,
+    meta: {
+      breadcrumb: [
+        { name: '学员管理' },
+        { name: '学习进度' },
+        { name: '进度详情' },
+      ],
+    },
+    children: [
+      {
+        path: '/student/studyprogress/:type/:id/progress',
+        name: 'StudentStudyprogressDetailProgress',
+        component: views.StudentStudyprogressDetailProgress,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学习进度' },
+            { name: '学习进度' },
+          ],
+        },
+      },
+      {
+        path: '/student/studyprogress/:type/:id/plan',
+        name: 'StudentStudyprogressDetailPlan',
+        component: views.StudentStudyprogressDetailPlan,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学习进度' },
+            { name: '学习计划' },
+          ],
+        },
+      },
+      {
+        path: '/student/studyprogress/:type/:id/history',
+        name: 'StudentStudyprogressDetailHistory',
+        component: views.StudentStudyprogressDetailHistory,
+        meta: {
+          breadcrumb: [
+            { name: '学员管理' },
+            { name: '学习进度' },
+            { name: '历史计划' },
+          ],
+        },
+      },
+    ],
   },
 
   // 学员知识点

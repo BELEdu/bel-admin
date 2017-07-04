@@ -51,7 +51,6 @@ export { default as SystemLog } from './System/Log'
 export { default as SystemDepartment } from './System/Department'
 
 // 学员管理
-export { default as Student } from './Student'
 export { default as StudentStudent } from './Student/Student'
 export { default as StudentStudentDetail } from './Student/Student/Detail'
 export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Edit'
@@ -60,9 +59,13 @@ export { default as StudentStudentDetailMeetingEdit } from './Student/Student/De
 export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
 
 export { default as StudentStudyprogress } from './Student/Studyprogress'
-export { default as StudentStudyprogressEdit } from './Student/Studyprogress/edit'
-export { default as StudentStudyprogressListStudent } from './Student/Studyprogress/List/Student'
-export { default as StudentStudyprogressListClasses } from './Student/Studyprogress/List/Classes'
+export { default as StudentStudyprogressStudent } from './Student/Studyprogress/Student'
+export { default as StudentStudyprogressClasses } from './Student/Studyprogress/Classes'
+export { default as StudentStudyprogressAdd } from './Student/Studyprogress/Add'
+export { default as StudentStudyprogressDetail } from './Student/Studyprogress/Detail'
+export { default as StudentStudyprogressDetailProgress } from './Student/Studyprogress/Detail/Progress'
+export { default as StudentStudyprogressDetailPlan } from './Student/Studyprogress/Detail/Plan'
+export { default as StudentStudyprogressDetailHistory } from './Student/Studyprogress/Detail/History'
 
 export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
 export { default as StudentKnowledgepointDetail } from './Student/Knowledgepoint/Detail'
