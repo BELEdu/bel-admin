@@ -28,21 +28,20 @@ export default {
     }
   },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-    const pathArry = this.$route.path.split('/')
-    this.tabActive = pathArry[pathArry.length - 1]
-  },
-
   methods: {
     tabSelect(name) {
       this.$router.push(`/student/studyprogress/${name}`)
     },
   },
 
+  created() {
+    this.$store.commit(GLOBAL.LOADING.HIDE)
+    const pathArry = this.$route.path.split('/')
+    this.tabActive = pathArry[pathArry.length - 1]
+  },
 }
 </script>
 
-<style <style lang="less">
+<style lang="less">
 @import '~vars';
 </style>
