@@ -7,6 +7,8 @@ import 'core-js/modules/es6.array.find-index'
 import 'core-js/modules/es7.array.includes'
 import 'core-js/modules/es6.set'
 
+import '@/utils/placeholders' // 使ie9兼容placeholder属性
+
 // 全局样式
 import '@/styles/global.less'
 
