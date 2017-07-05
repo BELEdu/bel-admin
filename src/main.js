@@ -36,8 +36,7 @@ Vue.component('app-time-picker', components.AppTimePicker)
 // 注册插件
 Vue
   .use(iView)
-  // 尚不清楚后台返回的权限字段是什么数据格式，这里先写一个空数组代替
-  .use(Acl, { router, permissions: [] })
+  .use(Acl)
   .use(Http)
   .use(Parse)
   .use(Rules)

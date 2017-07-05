@@ -55,6 +55,16 @@ const store = new Vuex.Store({
     otherRoles(state) {
       return state.roles.filter(role => +role.id !== +state.user.role_id)
     },
+
+    permissionsNames(state) {
+      const flat = items => items.reduce((result, item) => [
+        ...result,
+        item.name,
+        ...(item.children ? flat(item.children) : []),
+      ], [])
+
+      return flat(state.permissions)
+    },
   },
 
   mutations: {

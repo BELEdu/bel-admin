@@ -7,17 +7,21 @@
  * @version 2017-06-01 lmh 允许传入多个权限
  */
 
+import router from '@/router'
+import store from '@/store'
+
 export default class Acl {
-  static install(Vue, { router, permissions }) {
+  static install(Vue) {
     /**
      * 权限判断
      * @description 判断当前用户是否拥有某个所需权限
      * @param {String} as - 所需权限，多个权限用'|'隔开
      * @returns {Boolean}
      */
+
     const can = as => as
       .split('|')
-      .some(i => permissions.includes(i))
+      .some(permission => store.getters.permissionsNames.includes(permission))
 
     // eslint-disable-next-line
     Vue.prototype.$can = can
