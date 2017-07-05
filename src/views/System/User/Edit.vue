@@ -38,13 +38,13 @@
 
       <Form-item label="部门角色">
         <Radio-group v-model="form.default_role_id" style="display: block;">
-          <div v-for="role,index in form.roles" :key="role.value" class="user-edit-role">
+          <div v-for="(role, index) in form.roles" :key="role.value" class="multiple-select">
             <Cascader
               placeholder="请选择部门与角色" :data="roles" v-model="form.roles[index]"
               @on-change="(value, detail) => selectRole(value, detail, index)"
             ></Cascader>
-            <Button class="user-edit-role__modify" :class="{hidden: !isRoleInDb(role)}" type="text" @click="editUserRole(role)">修改权限</Button>
-            <Radio class="user-edit-role__radio" :class="{hidden: !role.length}" :label="role[role.length - 1]">设为默认</Radio>
+            <Button class="multiple-select__modify" :class="{hidden: !isRoleInDb(role)}" type="text" @click="editUserRole(role)">修改权限</Button>
+            <Radio class="multiple-select__radio" :class="{hidden: !role.length}" :label="role[role.length - 1]">设为默认</Radio>
             <Button :class="{hidden: form.roles.length <= 1}" type="text" @click="removeRole(index)">删除</Button>
           </div>
         </Radio-group>
@@ -269,34 +269,3 @@ export default {
 }
 </script>
 
-<style lang="less">
-.user-edit-role {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-
-  .ivu-cascader {
-    flex: 1;
-  }
-
-  &__radio.ivu-radio-wrapper {
-    flex: 0;
-    margin: 0 10px 0 25px;
-    font-size: 12px !important;
-  }
-
-  &__btn {
-    flex: none;
-    width: 56px;
-  }
-
-  &__modify {
-    position: relative;
-    margin-left: -90px;
-  }
-
-  .hidden {
-    visibility: hidden;
-  }
-}
-</style>
