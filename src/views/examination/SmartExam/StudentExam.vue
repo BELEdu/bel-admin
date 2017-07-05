@@ -1,5 +1,5 @@
 <template>
-  <div class="smartexam">
+  <div class="studentexam">
     <!-- 顶部 搜索栏 -->
     <Form class="app-search-form">
       <form-item>
@@ -77,5 +77,15 @@ export default {
 </script>
 
 <style lang="less">
+.studentexam {
 
+  & .ivu-form-item {
+    display: inline-block;
+
+    &:last-child {
+      float: right;
+      margin: 0;
+    }
+  }
+}
 </style>
