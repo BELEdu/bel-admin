@@ -13,7 +13,7 @@ const rules = {
   required: (field, type = 'string', trigger = 'blur') => ({
     type,
     required: true,
-    message: `${field}必填`,
+    message: `${field}不能为空`,
     trigger,
   }),
 
