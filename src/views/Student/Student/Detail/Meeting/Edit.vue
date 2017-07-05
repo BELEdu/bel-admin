@@ -11,7 +11,7 @@
       <app-form-alert :errors="formErrors"></app-form-alert>
 
       <Form-item label="会议时间" prop="meeting_date">
-        <Date-picker type="date" placeholder="请选择会议的时间" v-model="form.meeting_date"></Date-picker>
+        <app-date-picker  placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
       </Form-item>
       <Form-item label="参会家长">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
@@ -81,7 +81,6 @@
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import format from 'date-fns/format'
 
 export default {
   name: 'app-student-student-detail-meeting-edit',
@@ -134,10 +133,10 @@ export default {
 
       rules: {
         meeting_date: [
-          this.$rules.required('会议时间', 'date'),
+          this.$rules.required('会议时间', 'string', 'change'),
         ],
         meeting_type: [
-          this.$rules.required('会议类型', 'number'),
+          this.$rules.required('会议类型', 'number', 'change'),
         ],
       },
     }
@@ -186,10 +185,7 @@ export default {
             ...others
           } = res
 
-          this.form = {
-            ...others,
-            meeting_date: res.meeting_date ? new Date(res.meeting_date) : null,
-          }
+          this.form = { ...others }
           this.meeting_persons_data = meeting_persons_data
         })
     },
@@ -224,7 +220,6 @@ export default {
     submit() {
       const data = {
         ...this.form,
-        meeting_date: this.form.meeting_date ? format(this.form.meeting_date, 'YYYY-MM-DD') : null,
         student_id: this.studentId,
       }
       // 提交修改
