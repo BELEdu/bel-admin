@@ -68,7 +68,8 @@ export default {
         {
           title: ' ',
           key: 'point',
-          align: 'center',
+          align: 'left',
+          width: 500,
           render: (h, params) => {
             const { point } = params.row
             return h(
@@ -79,39 +80,18 @@ export default {
             )
           },
         },
-        { title: '教授情况（%）', key: 3, align: 'center' },
         {
-          title: ' ',
+          title: '完成情况',
           key: 'point',
           align: 'center',
           render: (h, params) => {
             const { point } = params.row
             return h(
               'div',
-              point.map(({ before }) => h('Rate', {
-                class: 'table-item',
+              point.map(({ ok }) => h('Icon', {
+                class: ['table-item', 'color-primary'],
                 props: {
-                  value: before,
-                  disabled: true,
-                },
-              })),
-            )
-          },
-        },
-        { title: '测试情况（次）', key: 4, align: 'center' },
-        {
-          title: ' ',
-          key: 'point',
-          align: 'center',
-          render: (h, params) => {
-            const { point } = params.row
-            return h(
-              'div',
-              point.map(({ now }) => h('Rate', {
-                class: 'table-item',
-                props: {
-                  value: now,
-                  disabled: true,
+                  type: ok ? 'checkmark' : '',
                 },
               })),
             )
@@ -155,6 +135,7 @@ export default {
       border-bottom: 1px solid #e3e8ee;
       display: block;
       line-height: 30px;
+      min-height: 30px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
