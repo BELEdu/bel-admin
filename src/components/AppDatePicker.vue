@@ -59,6 +59,9 @@
         default: false,
       },
     },
+    created() {
+      this.dateFormat(this.value)
+    },
     methods: {
       onChange() {
         this.$emit('on-change')
@@ -72,12 +75,8 @@
       onClear() {
         this.$emit('on-clear')
       },
-    },
-    watch: {
-      value(val) {
-        this.dateVal = val
-      },
-      dateVal(val) {
+      // 日期格式转换
+      dateFormat(val) {
         let date = val
         if (val) {
           if (this.dateType === 'string' && Object.prototype.toString.call(val) === '[object Date]' && (formatDate(val, this.format) !== this.value || !this.cycle)) {
@@ -88,7 +87,15 @@
           // 初始周期结束
           if (!this.cycle) this.cycle = 1
         }
-        this.$emit('input', date)
+        this.$emit('input', date || null)
+      },
+    },
+    watch: {
+      value(val) {
+        this.dateVal = val
+      },
+      dateVal(val) {
+        this.dateFormat(val)
       },
     },
   }

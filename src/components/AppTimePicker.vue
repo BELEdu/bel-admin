@@ -58,6 +58,9 @@
         default: false,
       },
     },
+    created() {
+      this.timeFormat(this.value)
+    },
     methods: {
       onChange() {
         this.$emit('on-change')
@@ -71,12 +74,8 @@
       onClear() {
         this.$emit('on-clear')
       },
-    },
-    watch: {
-      value(val) {
-        this.timeVal = val
-      },
-      timeVal(val) {
+      // 时间格式转换
+      timeFormat(val) {
         let time = val || ''
         if (val) {
           const fnTime = (value) => {
@@ -100,7 +99,15 @@
             time = fnTime(val)
           }
         }
-        this.$emit('input', time)
+        this.$emit('input', time || null)
+      },
+    },
+    watch: {
+      value(val) {
+        this.timeVal = val
+      },
+      timeVal(val) {
+        this.timeFormat(val)
       },
     },
   }
