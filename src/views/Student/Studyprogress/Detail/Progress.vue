@@ -7,6 +7,13 @@
       <Tab-pane label="语文" name="chinese"></Tab-pane>
     </Tabs>
 
+    <Steps :current="1">
+        <Step title="已完成" content="第1节课"></Step>
+        <Step title="进行中" content="第5节课"></Step>
+        <Step title="待进行" content="第6节课"></Step>
+        <Step title="待进行" content="第10节课"></Step>
+    </Steps>
+
     <Tabs class="app-tabs" @on-click="tabSelect">
       <Tab-pane label="高中" name="high"></Tab-pane>
       <Tab-pane label="初中" name="middle"></Tab-pane>
