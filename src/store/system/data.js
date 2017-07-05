@@ -17,6 +17,11 @@ export default {
 
     roles: [],
     rolePaths: [],
+
+    process: {
+      types: [],
+      departments: [],
+    },
   },
 
   mutations: {
@@ -30,6 +35,11 @@ export default {
     [SYSTEM.DATA.ROLES.INIT](state, roles) {
       state.roles = transform(roles)
       state.rolePaths = generatePaths(roles)
+    },
+
+    [SYSTEM.DATA.PROCESS.INIT](state, { type_list, department_list }) {
+      state.process.types = type_list
+      state.process.departments = department_list
     },
   },
 
@@ -48,6 +58,14 @@ export default {
       if (state.rolePaths.length === 0) {
         return Http.get('/department_role')
           .then(res => commit(SYSTEM.DATA.ROLES.INIT, res))
+      }
+      return Promise.resolve()
+    },
+
+    [SYSTEM.DATA.PROCESS.INIT]({ state, commit }) {
+      if (state.process.types.length === 0) {
+        return Http.get('/process/create')
+          .then(res => commit(SYSTEM.DATA.PROCESS.INIT, res))
       }
       return Promise.resolve()
     },

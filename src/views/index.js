@@ -49,6 +49,8 @@ export { default as SystemUserEdit } from './System/User/Edit'
 export { default as SystemUserRole } from './System/User/Role'
 export { default as SystemLog } from './System/Log'
 export { default as SystemDepartment } from './System/Department'
+export { default as SystemProcess } from './System/Process'
+export { default as SystemProcessEdit } from './System/Process/Edit'
 
 // 学员管理
 export { default as StudentStudent } from './Student/Student'

@@ -6,16 +6,12 @@
 
 import * as views from '@/views'
 
-const SYSTEM_ROLE = {
-  name: '角色管理',
-  link: '/system/role',
-}
-const SYSTEM_USER = {
-  name: '用户管理',
-  link: '/system/user',
-}
+const SYSTEM_ROLE = { name: '角色管理', link: '/system/role' }
+const SYSTEM_USER = { name: '用户管理', link: '/system/user' }
+const SYSTEM_PROCESS = { name: '流程管理', link: '/system/process' }
 
 export default [
+  // 角色管理
   {
     path: SYSTEM_ROLE.link,
     name: 'SystemRole',
@@ -51,6 +47,7 @@ export default [
       ],
     },
   },
+  // 用户管理
   {
     path: SYSTEM_USER.link,
     name: 'SystemUser',
@@ -109,6 +106,7 @@ export default [
       ],
     },
   },
+  // 部门管理
   {
     path: '/system/department',
     name: 'SystemDepartment',
@@ -117,6 +115,42 @@ export default [
       breadcrumb: [
         { name: '系统管理' },
         { name: '部门管理' },
+      ],
+    },
+  },
+  // 流程管理
+  {
+    path: SYSTEM_PROCESS.link,
+    name: 'SystemProcess',
+    component: views.SystemProcess,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        { name: '流程管理' },
+      ],
+    },
+  },
+  {
+    path: '/system/process/edit',
+    name: 'SystemProcessAdd',
+    component: views.SystemProcessEdit,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        SYSTEM_PROCESS,
+        { name: '添加流程' },
+      ],
+    },
+  },
+  {
+    path: '/system/process/edit/:id',
+    name: 'SystemProcessEdit',
+    component: views.SystemProcessEdit,
+    meta: {
+      breadcrumb: [
+        { name: '系统管理' },
+        SYSTEM_PROCESS,
+        { name: '编辑流程' },
       ],
     },
   },

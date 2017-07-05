@@ -45,6 +45,9 @@ export const SYSTEM = {
     ROLES: {
       INIT: 'SYSTEM.DATA.ROLES.INIT',
     },
+    PROCESS: {
+      INIT: 'SYSTEM.DATA.PROCESS.INIT',
+    },
   },
 
   ROLE: {
