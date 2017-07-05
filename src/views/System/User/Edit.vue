@@ -83,6 +83,7 @@
  * @version 2017-06-19
  */
 
+import Vue from 'vue'
 import { mapState } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
@@ -134,11 +135,11 @@ export default {
         repassword: [
           this.$rules.required('密码'),
           {
-            validator: (rule, value, callback) => {
+            validator: (rule, value, next) => {
               if (value === this.form.password) {
-                callback()
+                next()
               } else {
-                callback(new Error('两次密码不一致'))
+                next(new Error('两次密码不一致'))
               }
             },
             trigger: 'blur',
@@ -187,15 +188,10 @@ export default {
         .slice(0, -1)
         .some(role => role[role.length - 1] === target.value)
 
+      // 如果该项是部门，或者已被选中过，把该项的值重置为空
+      // 相当于撤销此次选择
       if (canNotChoose || hasSelected) {
-        this.form = {
-          ...this.form,
-          roles: [
-            ...this.form.roles.slice(0, index),
-            [],
-            ...this.form.roles.slice(index + 1),
-          ],
-        }
+        Vue.set(this.form.roles, index, [])
       }
 
       if (canNotChoose) {
