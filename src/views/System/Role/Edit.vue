@@ -103,7 +103,7 @@ export default {
     }),
 
     id() {
-      return this.$router.currentRoute.params.id
+      return this.$route.params.id
     },
   },
 

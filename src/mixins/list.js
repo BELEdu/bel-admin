@@ -49,7 +49,7 @@ export default {
     },
     // 更新当前路由
     updatePath() {
-      const { path } = this.$router.currentRoute
+      const { path } = this.$route
       this.$router.push(`${path}${this.qs}`)
     },
   },

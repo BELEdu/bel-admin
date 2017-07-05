@@ -75,7 +75,7 @@ export default {
     }),
 
     url() {
-      const { userId, roleId } = this.$router.currentRoute.params
+      const { userId, roleId } = this.$route.params
       return `/user/${userId}/role/${roleId}`
     },
   },
