@@ -2,7 +2,7 @@
   <div>
     <h1 class="app-form-header">
       <Icon type="edit"></Icon>
-      添加用户
+      {{ this.id ? '编辑用户' : '添加用户' }}
     </h1>
 
     <Form class="app-form-entire" :model="form" :rules="rules" :label-width="140" ref="form">

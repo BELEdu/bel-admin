@@ -1,49 +1,56 @@
 <template>
-  <Form class="app-form-entire" :model="form" :rules="rules" :label-width="140" ref="form">
-    <app-form-alert :errors="formErrors"></app-form-alert>
+  <div>
+    <h1 class="app-form-header">
+      <Icon type="edit"></Icon>
+      {{ this.id ? '编辑角色' : '添加角色' }}
+    </h1>
 
-    <Form-item label="角色名称" prop="display_name">
-      <Input placeholder="请输入角色名称" v-model="form.display_name"></Input>
-    </Form-item>
+    <Form class="app-form-entire" :model="form" :rules="rules" :label-width="140" ref="form">
+      <app-form-alert :errors="formErrors"></app-form-alert>
 
-    <Form-item label="角色描述" prop="description">
-      <Input type="textarea" placeholder="角色相关描述" v-model="form.description"></Input>
-    </Form-item>
+      <Form-item label="角色名称" prop="display_name">
+        <Input placeholder="请输入角色名称" v-model="form.display_name"></Input>
+      </Form-item>
 
-    <Form-item label="所属部门" prop="department_id">
-      <Cascader :data="departments" placeholder="请选择所属部门" v-model="form.department_id" change-on-select></Cascader>
-    </Form-item>
+      <Form-item label="角色描述" prop="description">
+        <Input type="textarea" placeholder="角色相关描述" v-model="form.description"></Input>
+      </Form-item>
 
-    <Form-item label="学员管理">
-      <Radio-group v-model="form.is_student_admin">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
+      <Form-item label="所属部门" prop="department_id">
+        <Cascader :data="departments" placeholder="请选择所属部门" v-model="form.department_id" change-on-select></Cascader>
+      </Form-item>
 
-    <Form-item label="学员授课">
-      <Radio-group v-model="form.is_student_teac">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
+      <Form-item label="学员管理">
+        <Radio-group v-model="form.is_student_admin">
+          <Radio :label="0">关闭</Radio>
+          <Radio :label="1">开启</Radio>
+        </Radio-group>
+      </Form-item>
 
-    <Form-item label="学员咨询">
-      <Radio-group v-model="form.is_student_advisory">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
+      <Form-item label="学员授课">
+        <Radio-group v-model="form.is_student_teac">
+          <Radio :label="0">关闭</Radio>
+          <Radio :label="1">开启</Radio>
+        </Radio-group>
+      </Form-item>
 
-    <data-auths :data="data_auths" v-model="form.data_auths"></data-auths>
+      <Form-item label="学员咨询">
+        <Radio-group v-model="form.is_student_advisory">
+          <Radio :label="0">关闭</Radio>
+          <Radio :label="1">开启</Radio>
+        </Radio-group>
+      </Form-item>
 
-    <permissions :data="permissions" v-model="form.permissions"></permissions>
+      <data-auths :data="data_auths" v-model="form.data_auths"></data-auths>
 
-    <Form-item>
-      <Button type="ghost" size="large" @click="goBack">取消</Button>
-      <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
-    </Form-item>
-  </Form>
+      <permissions :data="permissions" v-model="form.permissions"></permissions>
+
+      <Form-item>
+        <Button type="ghost" size="large" @click="goBack">取消</Button>
+        <Button type="primary" size="large" @click="beforeSubmit" :loading="formLoading">提交</Button>
+      </Form-item>
+    </Form>
+  </div>
 </template>
 
 <script>
