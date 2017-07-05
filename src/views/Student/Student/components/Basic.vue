@@ -21,7 +21,7 @@
           <Input placeholder="请输入手机号码" v-model="form.phone"></Input>
         </Form-item>
         <Form-item label="出生日期">
-          <Date-picker placeholder="请选择日期" v-model="form.sublist.birth_at"></Date-picker>
+          <app-date-picker placeholder="请选择日期" v-model="form.sublist.birth_at"></app-date-picker>
         </Form-item>
         <Form-item label="身份证号" prop="identity_card">
           <Input placeholder="请输入身份证号" v-model="form.identity_card"></Input>

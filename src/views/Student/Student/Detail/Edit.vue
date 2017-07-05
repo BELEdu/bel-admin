@@ -49,7 +49,7 @@
  */
 
 import { mapState } from 'vuex'
-import format from 'date-fns/format'
+// import format from 'date-fns/format'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
 import Basic from '../components/Basic'
@@ -178,10 +178,11 @@ export default {
             ...this.form,
             ...res,
             // 处理日期格式
-            sublist: res.sublist && Object.keys(res.sublist).length ? {
-              ...res.sublist,
-              birth_at: res.sublist.birth_at ? new Date(res.sublist.birth_at) : null,
-            } : defaultSublist,
+            // sublist: res.sublist && Object.keys(res.sublist).length ? {
+            //   ...res.sublist,
+            //   birth_at: res.sublist.birth_at ? new Date(res.sublist.birth_at) : null,
+            // } : defaultSublist,
+            sublist: res.sublist && Object.keys(res.sublist).length ? res.sublist : defaultSublist,
           }
         })
     },
@@ -193,9 +194,9 @@ export default {
         sublist: {
           ...this.form.sublist,
           // 处理日期格式
-          birth_at: this.form.sublist.birth_at ? format(this.form.sublist.birth_at, 'YYYY-MM-DD') : null,
         },
       }
+
       // 判断是编辑还是新建，以此提交不同的接口
       ;(
         this.isUpdate ?
