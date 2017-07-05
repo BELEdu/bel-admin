@@ -27,7 +27,7 @@
         </Select>
       </Form-item>
       <Form-item label="开办日期" >
-        <Date-picker placeholder="请选择开办日期" v-model="form.start_at" ></Date-picker>
+        <app-date-picker placeholder="请选择开办日期" v-model="form.start_at" ></app-date-picker>
       </Form-item>
       <!--<Form-item label="选择学员（测试）" >
         <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
@@ -60,7 +60,7 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-import format from 'date-fns/format'
+// import format from 'date-fns/format'
 import { form, goBack } from '@/mixins'
 
 // const myStudents = [
@@ -106,7 +106,7 @@ export default {
           this.$rules.length(2, 32),
         ],
         classes_type: [
-          this.$rules.required('班级分类', 'number'),
+          this.$rules.required('班级分类', 'number', 'change'),
         ],
       },
 
@@ -118,13 +118,11 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      // 将班级类型和年级类型数据字典放在data中
+    ...mapState({// 将班级类型和年级类型数据字典放在data中
       grade: state => state.dicts.grade,
       classes_type: state => state.dicts.classes_type,
     }),
-    // 判断是编辑还是新增
-    isUpdate() {
+    isUpdate() { // 判断是编辑还是新增
       return !!this.$router.currentRoute.params.id
     },
   },
@@ -138,11 +136,10 @@ export default {
     // 提交表单
     submit() {
       // 处理日期格式
-      this.form = {
-        ...this.form,
-        start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : null,
-      }
-      // 等同于
+      // this.form = {
+      //   ...this.form,
+      //   start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : null,
+      // }
       // this.form.start_at = this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : ''
 
       // 提交时如果是修改操作
@@ -185,10 +182,11 @@ export default {
             ...others
           } = res
 
-          this.form = {
-            ...others,
-            start_at: res.start_at ? new Date(res.start_at) : null,
-          }
+          this.form = { ...others }
+          // this.form = {
+          //   ...others,
+          //   start_at: res.start_at ? new Date(res.start_at) : null,
+          // }
           this.classes_director_data = classes_director_data
           this.classes_teacher_data = classes_teacher_data
           this.student_data = student_data
