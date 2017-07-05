@@ -74,6 +74,7 @@
  * @version 2017-06-23
  */
 import echarts from 'echarts'
+import { throttle } from 'lodash'
 import { GLOBAL } from '@/store/mutationTypes'
 import { colConfig, buffer, pieOption, lineOption } from './modules/detailConfig'
 
@@ -124,7 +125,8 @@ export default {
         width: 'auto',
       })
     }
-    window.onresize = refresh
+
+    window.onresize = throttle(refresh, 100)
   },
 }
 </script>
