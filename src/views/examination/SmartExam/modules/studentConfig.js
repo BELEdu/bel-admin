@@ -6,16 +6,18 @@
 // import { createButton } from '@/utils'
 
 // 列表 - 操作 - 按钮action
-const stageOperate = status => () => {
-  window.console.log(status.code)
+const stageOperate = (status, that) => () => {
+  if (status.code === 2) {
+    that.$router.push('/examination/smartexam/1/collation/1')
+  }
 }
 
 // 列表 - 操作 - 按钮render
-const stageOperateBtn = (h, params) => h(
+const stageOperateBtn = that => (h, params) => h(
   'Button',
   {
     props: { type: 'text', size: 'small' },
-    on: { click: stageOperate(params.row.status) },
+    on: { click: stageOperate(params.row.status, that) },
     class: 'color-primary',
   },
   params.row.status.text,
@@ -63,7 +65,7 @@ export function colConfig(that) {
       title: '操作',
       key: 8,
       align: 'center',
-      render: stageOperateBtn,
+      render: stageOperateBtn(that),
     },
   ]
 }

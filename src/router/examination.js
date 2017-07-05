@@ -7,6 +7,7 @@
 import {
   SmartExam,
   StudentExam,
+  ExamCollation,
   SmartAnalyse,
   StudentAnalyse,
   WrongQuestion,
@@ -32,6 +33,18 @@ export default [
         { name: '测试管理' },
         { name: '智能测试' },
         { name: '学员测试' },
+      ],
+    },
+  },
+  {
+    path: '/examination/smartexam/:stuid/collation/:textid',
+    component: ExamCollation,
+    meta: {
+      breadcrumb: [
+        { name: '测试管理' },
+        { name: '智能测试' },
+        { name: '学员测试' },
+        { name: '试卷批阅' },
       ],
     },
   },
