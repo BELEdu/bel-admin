@@ -1,5 +1,6 @@
 <template>
   <div class="studyprogress-edit">
+
     <Steps :current="step" class="studyprogress-steps" v-if="step < 4">
       <Step title="完善基础信息"></Step>
       <Step title="添加知识点"></Step>
@@ -11,12 +12,15 @@
       <step-one
         v-show="step === 0 || step >= 3"
         :subjectTypes="subjectTypes"
+        :versions="versions"
+        :form="form"
       ></step-one>
 
       <step-two
         v-show="step === 1 || step >= 3"
         :step="step"
         :knowledgepoints="knowledgepoints"
+        :form="form"
       >
         <app-knowledge-tree
           :data="baseData" v-model="form.points"
@@ -57,11 +61,26 @@ import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
 
+const defaultCoures = {
+  id: null, // 排课id
+  sort_value: null, // 第几节课
+  course_num: null, // 课时数
+  knowledge_num: null, // 知识点数
+  course_knowledge: [
+    133,
+    245,
+  ],
+}
+
 export default {
   name: 'app-student-studyprogress-editplan',
 
   props: {
     initialStep: {
+      type: Number,
+      default: 0,
+    },
+    planId: { // 编辑的时候点击科目传回计划id
       type: Number,
       default: 0,
     },
@@ -76,6 +95,18 @@ export default {
           { time: '', knowledgepoints: [] },
         ],
         points: [],
+
+        id: null, // 计划id
+        model_id: null, // 学员id或者班级id
+        subject_type: null, // 科目
+        teaching_version: null, // 教材版本
+        teacher_id: null, // 教师
+        character_analysis: '', // 学员个性分析
+        methods_measures: '', // 拟采用的方法或措施
+        teaching_objectives: '',  // 教学目标
+        course: [{ ...defaultCoures }], // 排课计划
+        knowledgeData: [], // 知识点数据源
+        weakKnowledge: [], // 薄弱知识点
       },
 
       knowledgepoints: [
@@ -133,8 +164,20 @@ export default {
 
   computed: {
     ...mapState({
-      subjectTypes: state => state.dicts.course_subject_type,
+      subjectTypes: state => state.dicts.course_subject_type, // 科目
+      versions: state => state.dicts.teaching_version, // 教材版本
     }),
+
+    isAdd() {
+      const pathArry = this.$route.path.split('/')
+      return pathArry[pathArry.length - 1] === 'add'
+    },
+
+    isStudent() {
+      const pathArry = this.$route.path.split('/')
+      return pathArry[pathArry.length - 3] === 'student'
+    },
+
   },
 
   methods: {
@@ -158,6 +201,27 @@ export default {
       const lesson = this.form.lessons.splice(index, 1)[0]
       this.form.lessons.splice(index + order, 0, lesson)
     },
+    // 编辑
+    getEditData() {
+      return this.$http.get('/studentplan/info/2')
+        .then((res) => {
+          this.form = {
+            ...this.form,
+            ...res,
+            lessons: this.form.lessons,
+            points: this.form.points,
+          }
+        })
+    },
+    // 添加
+    getAddData() {
+      return this.$http.get('/studentplan/create')
+        .then((res) => {
+          // eslint-disable-next-line
+          console.log(res)
+        })
+    },
+
   },
 
   components: {
@@ -168,7 +232,9 @@ export default {
 
   created() {
     this.step = this.initialStep
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+
+    ;(this.isAdd ? this.getAddData : this.getEditData)()
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>

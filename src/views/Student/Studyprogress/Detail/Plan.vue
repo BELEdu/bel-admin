@@ -34,6 +34,10 @@ export default {
       type: [Number, String],
       required: true,
     },
+    editInfo: {
+      type: Array,
+      required: true,
+    },
   },
 
   methods: {
