@@ -20,7 +20,14 @@
       </Form-item>
       <Form-item label="当前年级">
         <Select placeholder="请选择......" v-model="fdata.grade">
-          <Option v-if="grade" v-for="item in grade" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+          <Option 
+            v-if="dicts.grade" 
+            v-for="item in dicts.grade" 
+            :value="item.value" 
+            :key="item.display_name"
+          >
+            {{item.display_name}}
+          </Option>
         </Select>
       </Form-item>
       <Form-item label="邀约咨询师">
@@ -57,7 +64,6 @@
 
 import map from '@/views/Business/casdata'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { Http } from '@/utils'
 import { editInit, encode } from './modules/config'
 
 export default {
@@ -102,6 +108,13 @@ export default {
     }
   },
 
+  computed: {
+    dicts() {
+      const { grade } = this.$store.state.dicts
+      return { grade }
+    },
+  },
+
   methods: {
     submit() {
       this.loading = true
@@ -128,9 +141,6 @@ export default {
   },
 
   created() {
-    Http.get('/dict?keys=grade')
-      .then((res) => { this.grade = res.grade })
-
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
