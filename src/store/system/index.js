@@ -8,6 +8,7 @@ import department from './department'
 import data from './data'
 import role from './role'
 import user from './user'
+import process from './process'
 
 export default {
   modules: {
@@ -15,5 +16,6 @@ export default {
     data,
     role,
     user,
+    process,
   },
 }

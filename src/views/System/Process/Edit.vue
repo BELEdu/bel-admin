@@ -130,8 +130,8 @@ export default {
         .then((res) => {
           this.form = {
             ...res,
-            apply_role_id: getPath(res.apply_role_id),
-            approval_role_ids: res.approval_role_ids.map(id => getPath(id)),
+            apply_role_id: getPath(res.apply_role_id, this.rolePaths),
+            approval_role_ids: res.approval_role_ids.map(id => getPath(id, this.rolePaths)),
           }
         })
     },
@@ -170,7 +170,11 @@ export default {
           .map(item => item.slice(-1)[0]),
       }
 
-      this.$http.post('/process', data)
+      const request = this.id ?
+        this.$http.patch(`/process/${this.id}`, data) :
+        this.$http.post('/process', data)
+
+      request
         .then(this.successHandler)
         .catch(this.errorHandler)
     },

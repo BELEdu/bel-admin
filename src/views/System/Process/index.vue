@@ -18,9 +18,9 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo"></app-pager>
   </div>
 </template>
 
@@ -31,53 +31,59 @@
  * @version 2017-07-05
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-process',
 
-  data: () => ({
-    form: {
-      start: '',
-      end: '',
-      keyword: '',
+  mixins: [list],
+
+  data() {
+    return {
+      query: {},
+
+      form: {
+        start: '',
+        end: '',
+        keyword: '',
+      },
+
+      columns: [
+      { title: '序号', align: 'center', type: 'index' },
+      { title: '流程编号', key: 'flow_number', align: 'center' },
+      { title: '流程名称', key: 'display_name', align: 'center' },
+      { title: '所属部门', key: 'department_name', align: 'center' },
+      { title: '流程类型', key: 'flow_type_name', align: 'center' },
+      { title: '申请角色', key: 'apply_role_name', align: 'center' },
+      { title: '创建类型', key: 'flow_create_type_name', align: 'center' },
+        {
+          title: '操作',
+          align: 'center',
+          render: createButton([
+          { text: '删除', type: 'error', click: row => this.$store.dispatch(SYSTEM.PROCESS.DELETE, row.id) },
+          { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/process/edit/${row.id}`) },
+          ]),
+        },
+      ],
+    }
+  },
+
+  computed: {
+    ...mapState({
+      list: state => state.system.process.list,
+    }),
+  },
+
+  methods: {
+    getData(qs) {
+      this.$router.push(`/system/process${qs}`)
+
+      this.$store.dispatch(SYSTEM.PROCESS.INIT, qs)
+        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     },
-
-    columns: [
-      { title: '序号', key: 1, align: 'center', type: 'index' },
-      { title: '流程编号', key: 2, align: 'center' },
-      { title: '流程名称', key: 3, align: 'center' },
-      { title: '所属部门', key: 4, align: 'center' },
-      { title: '流程类型', key: 5, align: 'center' },
-      { title: '申请角色', key: 6, align: 'center' },
-      { title: '创建类型', key: 7, align: 'center' },
-      {
-        title: '操作',
-        align: 'center',
-        render: createButton([
-          { text: '删除', type: 'error' },
-          { text: '编辑', type: 'primary' },
-        ]),
-      },
-    ],
-
-    data: [
-      {
-        2: 'JSBH1000',
-        3: '新签流程审批',
-        4: '思明校区',
-        5: '新签合同审批流程',
-        6: '思明校区/咨询部-咨询师',
-        7: '系统创建',
-      },
-    ],
-
-    pager: undefined,
-  }),
-
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 }
 </script>

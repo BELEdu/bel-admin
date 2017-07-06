@@ -58,6 +58,11 @@ export const SYSTEM = {
   USER: {
     INIT: 'SYSTEM.USER.INIT',
   },
+
+  PROCESS: {
+    INIT: 'SYSTEM.PROCESS.INIT',
+    DELETE: 'SYSTEM.PROCESS.DELETE',
+  },
 }
 
 export const BUSINESS = {
