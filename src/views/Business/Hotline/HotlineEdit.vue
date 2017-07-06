@@ -124,10 +124,10 @@ export default {
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       } else {
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       }
     },
     handleSubmit(name) {
