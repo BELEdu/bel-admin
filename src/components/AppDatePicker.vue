@@ -5,6 +5,7 @@
                :placeholder="placeholder"
                :disabled="disabled"
                :readonly="readonly"
+               :editable="editable"
                @on-change="onChange"
                @on-open-change="onOpenChange"
                @on-ok="onOk"
@@ -23,7 +24,7 @@
     name: 'app-date-picker',
     data() {
       return {
-        dateVal: this.value,
+        dateVal: null,
         cycle: 0,
       }
     },
@@ -58,9 +59,13 @@
         type: Boolean,
         default: false,
       },
+      editable: {
+        type: Boolean,
+        default: false,
+      },
     },
     created() {
-      this.dateFormat(this.value)
+      this.dateVal = this.value
     },
     methods: {
       onChange() {
@@ -77,12 +82,12 @@
       },
       // 日期格式转换
       dateFormat(val) {
-        let date = val
-        if (val) {
-          if (this.dateType === 'string' && Object.prototype.toString.call(val) === '[object Date]' && (formatDate(val, this.format) !== this.value || !this.cycle)) {
-            date = val ? formatDate(val, this.format) : ''
-          } else if (this.dateType === 'date' && (val !== this.value || !this.cycle || typeof val === 'string')) {
-            date = new Date(val)
+        let date = val || ''
+        if (date) {
+          if (this.dateType === 'string' && Object.prototype.toString.call(date) === '[object Date]' && (formatDate(date, this.format) !== this.value || !this.cycle)) {
+            date = date ? formatDate(date, this.format) : ''
+          } else if (this.dateType === 'date' && (date !== this.value || !this.cycle || typeof date === 'string')) {
+            date = new Date(date)
           }
           // 初始周期结束
           if (!this.cycle) this.cycle = 1
@@ -95,7 +100,11 @@
         this.dateVal = val
       },
       dateVal(val) {
-        this.dateFormat(val)
+        if (val) {
+          this.dateFormat(val)
+        } else {
+          this.$emit('input', null)
+        }
       },
     },
   }

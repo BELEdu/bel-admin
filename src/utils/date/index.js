@@ -90,3 +90,20 @@ export const initTimeDate = function () {
   date.setSeconds(0);
   return date;
 };
+
+export const setTime = (value, type = ':') => {
+  if (typeof value === 'string') {
+    const date = new Date()
+    const dateTime = value.split(type)
+    // 设置时间
+    date.setHours(dateTime[0])
+    date.setMinutes(dateTime[1])
+    if (dateTime.length >= 3) {
+      date.setSeconds(dateTime[2])
+    } else {
+      date.setSeconds(0)
+    }
+    return date
+  }
+  return value
+}

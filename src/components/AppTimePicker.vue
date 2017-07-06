@@ -5,6 +5,7 @@
                :placeholder="placeholder"
                :disabled="disabled"
                :readonly="readonly"
+               :editable="editable"
                @on-change="onChange"
                @on-open-change="onOpenChange"
                @on-ok="onOk"
@@ -17,13 +18,13 @@
    * @addTime   2017/06/30
    */
 
-  import { toDate, formatDate } from '@/utils/date'
+  import { toDate, formatDate, setTime } from '@/utils/date'
 
   export default {
     name: 'app-time-picker',
     data() {
       return {
-        timeVal: this.value,
+        timeVal: null,
       }
     },
     props: {
@@ -57,9 +58,13 @@
         type: Boolean,
         default: false,
       },
+      editable: {
+        type: Boolean,
+        default: false,
+      },
     },
     created() {
-      this.timeFormat(this.value)
+      this.timeVal = this.value
     },
     methods: {
       onChange() {
@@ -78,25 +83,11 @@
       timeFormat(val) {
         let time = val || ''
         if (val) {
-          const fnTime = (value) => {
-            if (typeof value === 'string') {
-              const date = new Date()
-              const dateTime = value.split(':')
-              // 设置时间
-              date.setHours(dateTime[0])
-              date.setMinutes(dateTime[1])
-              if (dateTime.length >= 3) {
-                date.setSeconds(dateTime[2])
-              }
-              return date
-            }
-            return value
-          }
           // 输入字符类型
           if (toDate(val) && this.timeType === 'string') {
-            time = formatDate(fnTime(val), this.format)
+            time = formatDate(setTime(val), this.format)
           } else if (this.timeType === 'date') {
-            time = fnTime(val)
+            time = setTime(val)
           }
         }
         this.$emit('input', time || null)
@@ -107,7 +98,11 @@
         this.timeVal = val
       },
       timeVal(val) {
-        this.timeFormat(val)
+        if (val) {
+          this.timeFormat(val)
+        } else {
+          this.$emit('input', null)
+        }
       },
     },
   }

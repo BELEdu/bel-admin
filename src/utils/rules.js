@@ -3,6 +3,7 @@
  * @author lmh
  * @version 2017-06-23
  */
+import validatorDate from './validator/date'
 
 const rules = {
   /**
@@ -89,6 +90,14 @@ const rules = {
     message: '姓名格式不正确',
     trigger: 'blur',
   },
+  date: (field, params, validator = validatorDate) => ({
+    required: true,
+    type: 'date',
+    message: `${field}`,
+    trigger: 'change',
+    ...params,
+    validator,
+  }),
 }
 
 export default class Rules {
