@@ -44,7 +44,7 @@
           <Checkbox-group v-model="fdata.product_areas" class="product-edit__areas-right">
             <dl>
               <dt>全选</dt>
-              <dd v-for="item in dicts.product_areas" :key="item.display_name">
+              <dd v-for="item in school_list" :key="item.display_name">
                 <Checkbox :label="item.id">
                   <span>{{item.display_name}}</span>
                 </Checkbox>
@@ -54,7 +54,7 @@
         </div>
       </Form-item>
       <Form-item>
-        <Button @click="cancel()">取消</Button>
+        <Button @click="goBack()">取消</Button>
         <Button type="primary" @click="handleSubmit('form')">提交</Button>
       </Form-item>
     </Form>
@@ -67,25 +67,24 @@
  * @author hjz
  * @version 2017-06-07
  */
+
+import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 import { editInit, unit_encode, unit_decode } from './modules/config'
 
 export default {
 
+  mixins: [goBack],
+
   data() {
     return {
-      // "取消"按钮行为的路由对象
-      backRoute: null,
       // 最终提交给后端的数据
       fdata: editInit(),
       // 提交按钮状态控制
       loading: false,
-      // 字典数据
-      product_type: [],
       // 校区数据
-      product_areas: [],
-      sale_status: [],
+      school_list: [],
       // 表单验证
       formRules: {
         display_name: [
@@ -135,15 +134,18 @@ export default {
   watch: {
     allareas(nv) {
       if (nv) {
-        const list = this.dicts.product_areas.map(item => item.id)
+        const list = this.school_list.map(item => item.id)
         this.fdata.product_areas = list
-      } else if (this.fdata.product_areas.length === this.dicts.product_areas.length) {
+      } else if (this.fdata.product_areas.length === this.school_list.length) {
         this.fdata.product_areas = []
       }
     },
     areasChosed(nv) {
-      if (nv.length === this.dicts.product_areas.length) this.allareas = true
-      else this.allareas = false
+      if (nv.length === this.school_list.length) {
+        this.allareas = true
+      } else {
+        this.allareas = false
+      }
     },
   },
 
@@ -157,10 +159,10 @@ export default {
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       } else {
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       }
     },
     // Form click提交表单事件handler @click.stop="submit"
@@ -170,21 +172,12 @@ export default {
       // 进行表单提交
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
     },
-    cancel() {
-      if (this.backRoute === null || this.backRoute.matched.length === 0) {
-        // 根据上次路由提交
-        this.$router.push('/business/product')
-      } else {
-        this.$router.push(this.backRoute.fullPath)
-      }
-    },
   },
 
   created() {
-    window.console.log(this.dicts)
     Http.get('/school_list')
       .then((res) => {
-        this.dicts.product_areas = res
+        this.school_list = res
       })
 
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
@@ -193,15 +186,6 @@ export default {
         this.$store.commit(GLOBAL.LOADING.HIDE)
       })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  mounted() {
-    window.console.log(this.dicts)
-  },
-
-  beforeRouteEnter(to, from, next) {
-    // eslint-disable-next-line
-    next((vm) => { vm.backRoute = from })
   },
 }
 </script>

@@ -9,6 +9,7 @@ import * as views from '@/views'
 
 const BUSSINESS_HOTLINE = { name: '热线登记', link: '/business/hotline' }
 const BUSSINESS_COMMUNICATION = { name: '沟通记录', link: '/business/communication' }
+const BUSSINESS_PRODUCT = { name: '产品管理', link: '/business/product' }
 
 export default [
   {
@@ -160,7 +161,7 @@ export default [
       uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '产品管理' },
+        BUSSINESS_PRODUCT,
         { name: '添加产品' },
       ],
     },
@@ -173,7 +174,7 @@ export default [
       uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '产品管理' },
+        BUSSINESS_PRODUCT,
         { name: '编辑产品' },
       ],
     },
