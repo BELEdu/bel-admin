@@ -8,6 +8,7 @@
 import * as views from '@/views'
 
 const BUSSINESS_HOTLINE = { name: '热线登记', link: '/business/hotline' }
+const BUSSINESS_COMMUNICATION = { name: '沟通记录', link: '/business/communication' }
 
 export default [
   {
@@ -68,7 +69,7 @@ export default [
       uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '沟通记录' },
+        BUSSINESS_COMMUNICATION,
         { name: '添加记录' },
       ],
     },
@@ -81,7 +82,7 @@ export default [
       uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '沟通记录' },
+        BUSSINESS_COMMUNICATION,
         { name: '编辑记录' },
       ],
     },

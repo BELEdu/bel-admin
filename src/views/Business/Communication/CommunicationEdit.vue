@@ -88,7 +88,7 @@
       </Row>
       <!-- logs展示 end -->
       <Form-item>
-        <Button @click="cancel()">取消</Button>
+        <Button @click="goBack()">取消</Button>
         <Button type="primary" :loading="loading" @click="handleSubmit('form')">提交</Button>
       </Form-item>
     </Form>
@@ -102,6 +102,8 @@
  * @author hjz
  * @version 2017-06-07
  */
+
+import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 import { editInit, encode } from './modules/config'
@@ -109,10 +111,10 @@ import { editInit, encode } from './modules/config'
 export default {
   name: 'CommunicationEdit',
 
+  mixins: [goBack],
+
   data() {
     return {
-      // "取消"按钮行为的路由对象
-      backRoute: null,
       // 最终提交给后端的数据
       fdata: editInit(),
       // log 单独编辑表单数据
@@ -253,14 +255,6 @@ export default {
       // 进行表单提交
       this.$refs[name].validate((valid) => { if (valid && logValid) this.submit() })
     },
-    // 取消表单编辑
-    cancel() {
-      if (this.backRoute === null || this.backRoute.matched.length === 0) {
-        this.$router.push('/business/communication')
-      } else {
-        this.$router.push(this.backRoute.fullPath)
-      }
-    },
   },
 
   created() {
@@ -269,12 +263,6 @@ export default {
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
-
-  beforeRouteEnter(to, from, next) {
-    // eslint-disable-next-line
-    next((vm) => { vm.backRoute = from })
-  },
-
 }
 </script>
 
