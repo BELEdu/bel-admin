@@ -46,7 +46,6 @@
    * @update    2017/07/01
    */
 
-  import { GLOBAL } from '@/store/mutationTypes'
   import { list } from '@/mixins'
   import WeeklyTable from '../../Components/WeeklyTable'
 
@@ -74,10 +73,9 @@
     },
     methods: {
       // 获取教师周课表数据
-      getData() {
-        this.$http.get(`/teachercurricula/weekly/${this.$route.params.id}${this.qs}`)
+      getData(qs) {
+        return this.$http.get(`/teachercurricula/weekly/${this.$route.params.id}${qs}`)
           .then((data) => {
-            this.$store.commit(GLOBAL.LOADING.HIDE)
             this.weeklyData = data
           })
       },

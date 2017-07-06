@@ -29,7 +29,7 @@
    * @author    chenliangshan
    * @addTime   2017/06/28
    */
-import { GLOBAL } from '@/store/mutationTypes'
+
 import { createButton } from '@/utils'
 import { list } from '@/mixins'
 
@@ -75,16 +75,11 @@ import { list } from '@/mixins'
     },
     methods: {
       // 获取学员数据
-      getStudentData() {
-        this.$http.get(`/studentcurricula${this.qs}`)
+      getData(qs) {
+        return this.$http.get(`/studentcurricula${qs}`)
           .then((data) => {
-            this.$store.commit(GLOBAL.LOADING.HIDE)
             this.studentData = data
           })
-      },
-      // 根据当前页码或每页条数获取数据
-      getData() {
-        this.getStudentData()
       },
     },
   }

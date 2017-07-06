@@ -224,7 +224,6 @@
                       @click="editKnowledge" v-else>修改知识点</Button>
               </Col>
             </Row>
-
         </div>
       </div>
     </app-form-modal>
@@ -238,7 +237,6 @@
    * @update    2017/07/01
    */
 
-  import { GLOBAL } from '@/store/mutationTypes'
   import { list } from '@/mixins'
   import WeeklyTable from '../../Components/WeeklyTable'
 
@@ -409,14 +407,10 @@
       }
     },
     methods: {
-      /**
-       * 获取教师日课表数据
-       * @param pageData  分页信息
-       */
-      getData() {
-        this.$http.get(`/teachercurricula/${this.$route.params.id}${this.qs}`)
+      // 获取教师日课表数据
+      getData(qs) {
+        return this.$http.get(`/teachercurricula/${this.$route.params.id}${qs}`)
           .then((data) => {
-            this.$store.commit(GLOBAL.LOADING.HIDE)
             this.dailyData = data
           })
       },
@@ -460,20 +454,44 @@
           }
         }
       },
-      // 确认上课
+      // 确认上课|完成上课
       submit() {
-        this.$http.post(`/teachercurricula/confirm/${this.courseModalParam.id}`)
-          .then(() => {
-            this.$Message.success({
-              content: '该排课成功确定上课',
-              onClose() {
-                this.getData()
-              },
+        const status = this.formItem.schedule_status
+        let body
+        let postUrl
+        let msg
+        switch (status) {
+          case 0:
+            postUrl = '/teachercurricula/confirm/'
+            msg = '该排课成功确定上课'
+            break
+          case 1:
+            body = {}
+            postUrl = '/teachercurricula/finish/'
+            msg = '该排课成功完成上课'
+            break
+          default :
+            msg = '该排课当前状态不可编辑'
+            break
+        }
+        if (status === 0 || status === 1) {
+          const self = this
+          this.$http.post(`${postUrl}${this.courseModalParam.id}`, body || {})
+            .then(() => {
+              this.$Message.success({
+                content: `${msg}`,
+                onClose() {
+                  self.courseModal = false
+                  self.updateData()
+                },
+              })
             })
-          })
-          .catch((errors) => {
-            this.errorHandler(errors)
-          })
+            .catch((errors) => {
+              this.errorHandler(errors)
+            })
+        } else {
+          this.$Message.success(`${msg}`)
+        }
       },
       // 错误信息提示
       errorHandler({ errors, message }) {

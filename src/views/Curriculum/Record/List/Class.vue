@@ -12,7 +12,6 @@
  * @version 2017/07/01
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import { list } from '@/mixins'
 
@@ -105,10 +104,9 @@ export default {
         })
     },
     // 获取班级数据
-    getData() {
-      this.$http.get(`/curricularecord/class/information${this.qs}`)
+    getData(qs) {
+      return this.$http.get(`/curricularecord/class/information${qs}`)
         .then((data) => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
           this.clbumData = data
         })
     },

@@ -42,7 +42,6 @@
    * @addTime   2017/06/28
    */
 
-  import { GLOBAL } from '@/store/mutationTypes'
   import { createButton } from '@/utils'
   import { list } from '@/mixins'
 
@@ -136,16 +135,11 @@
           })
       },
       // 获取班级数据
-      getClbumData() {
-        this.$http.get(`/classcurricula${this.qs}`)
+      getData(qs) {
+        return this.$http.get(`/classcurricula${qs}`)
           .then((data) => {
-            this.$store.commit(GLOBAL.LOADING.HIDE)
             this.clbumData = data
           })
-      },
-      // 根据当前页码或每页条数获取数据
-      getData() {
-        this.getClbumData()
       },
       // 根据页码获取数据
       getPageInfo(pageId = 1) {

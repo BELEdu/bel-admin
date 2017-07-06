@@ -27,7 +27,6 @@
  * @version 2017/07/01
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import { list } from '@/mixins'
 
@@ -69,10 +68,9 @@ export default {
   },
   methods: {
     // 获取学员数据
-    getData() {
-      this.$http.get(`/curricularecord/student/information${this.qs}`)
+    getData(qs) {
+      return this.$http.get(`/curricularecord/student/information${qs}`)
         .then((data) => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
         })
     },

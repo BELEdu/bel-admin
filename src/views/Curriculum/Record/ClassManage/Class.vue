@@ -15,7 +15,8 @@
     <!--编写评价弹窗-->
     <appraise-single-modal v-model="appraiseSingleModal"
                            :config="singleModal.config"
-                           :data="currentAppraiseInfo"></appraise-single-modal>
+                           :data="currentAppraiseInfo"
+                           @on-close="updateData"></appraise-single-modal>
   </div>
 </template>
 <script>
@@ -25,7 +26,6 @@
    * @update    2017/06/23
    */
 
-  import { GLOBAL } from '@/store/mutationTypes'
   import { list } from '@/mixins'
   import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
 
@@ -143,11 +143,9 @@
     },
     methods: {
       // 获取班级上课记录
-      getData() {
-        this.$store.commit(GLOBAL.LOADING.SHOW)
-        this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${this.qs}`)
+      getData(qs) {
+        return this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${qs}`)
           .then((data) => {
-            this.$store.commit(GLOBAL.LOADING.HIDE)
             this.classData = data
           })
       },

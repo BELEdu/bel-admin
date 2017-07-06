@@ -23,7 +23,7 @@
     <appraise-single-modal v-model="appraiseSingleModal"
                            :config="singleModal.config"
                            :data="currentAppraiseInfo"
-                           @on-submit="getData"></appraise-single-modal>
+                           @on-close="updateData"></appraise-single-modal>
 
     <!--查看评价弹窗-->
     <appraise-mult-modal v-model="appraiseShow"
@@ -38,7 +38,6 @@
  * @update    2017/07/03
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
 import AppraiseMultModal from '../../Components/AppraiseMultModal'
@@ -137,11 +136,9 @@ export default{
   },
   methods: {
     // 获取学员上课记录
-    getData() {
-      this.$store.commit(GLOBAL.LOADING.SHOW)
-      this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${this.qs}`)
+    getData(qs) {
+      return this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${qs}`)
         .then((data) => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
           this.studentData = data
         })
     },

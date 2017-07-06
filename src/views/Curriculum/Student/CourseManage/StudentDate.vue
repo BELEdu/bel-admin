@@ -48,7 +48,9 @@
                   title="学员排课"
                   :data="formItem"
                   :id="courseModalParam.id"
-                  :status="courseModalParam.status" :urlConf="urlConf"></course-modal>
+                  :status="courseModalParam.status"
+                  :urlConf="urlConf"
+                  @on-close="updateData"></course-modal>
   </div>
 </template>
 
@@ -59,7 +61,6 @@
  * @update    2017/06/28
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import WeeklyTable from '../../Components/WeeklyTable'
 import CourseModal from '../../Components/CourseModal'
@@ -97,7 +98,7 @@ export default{
         { title: '上课日期', key: 'date', align: 'center', width: 90 },
         { title: '上课时段',
           align: 'center',
-          width: 110,
+          width: 125,
           render: (h, params) => h('span', {}, `${params.row.start_at}-${params.row.end_at}`),
         },
         { title: '计划课时', key: 'course_cost', align: 'center', width: 80 },
@@ -196,10 +197,9 @@ export default{
   },
   methods: {
     // 获取学员日课表数据
-    getData() {
-      this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${this.qs}`)
+    getData(qs) {
+      return this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${qs}`)
         .then((data) => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
           this.dailyData = data
         })
     },

@@ -43,7 +43,6 @@
  * @update    2017/07/01
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import WeeklyTable from '../../Components/WeeklyTable'
 
@@ -80,9 +79,8 @@ export default{
   methods: {
     // 获取学员周课表数据
     getData() {
-      this.$http.get(`/studentcurricula/weekly/${this.$route.params.id}`)
+      return this.$http.get(`/studentcurricula/weekly/${this.$route.params.id}`)
         .then((data) => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
           this.weeklyData = data
         })
     },
