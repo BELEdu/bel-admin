@@ -108,7 +108,7 @@ export default {
       this.updateData()
     },
 
-    // 模糊搜索（点击搜索按钮时，把likeKey和likeVal拼入query对象）
+    // 点击搜索按钮
     search() {
       this.updateData()
     },
@@ -148,7 +148,7 @@ export default {
     }
 
     // 改变likeKeys后，对应watch方法会把query中的like清空
-    // 因此必须在watch方法调用后再给query复制
+    // 因此必须在watch方法调用后再给query赋值
     // 由于watch是异步的，这里使用setTimeout来保证执行顺序
     setTimeout(() => {
       this.query = { ...this.query, ...parsed }
