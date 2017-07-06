@@ -50,7 +50,7 @@ import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { colConfig, list_decode } from './modules/config'
 
 export default {
-  name: 'business-hotline',
+  name: 'business-product',
 
   data() {
     return {

@@ -5,9 +5,9 @@
       <Form-item label="产品名称" prop="display_name">
         <Input placeholder="请输入流程名称" v-model="fdata.display_name"></Input>
       </Form-item>
-      <Form-item label="产品类型" v-if="product_type.length" prop="product_type_id">
+      <Form-item label="产品类型" v-if="dicts.product_type.length" prop="product_type_id">
         <Select placeholder="请选择......" v-model="fdata.product_type_id">
-          <Option v-for="item in product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+          <Option v-for="item in dicts.product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item label="产品子类型">
@@ -24,7 +24,7 @@
       </Form-item>
       <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
-          <Radio v-for="item in sale_status" :label="item.value" :key="item.display_name">
+          <Radio v-for="item in dicts.sale_status" :label="item.value" :key="item.display_name">
             <span>{{item.display_name}}</span>
           </Radio>
         </Radio-group>
@@ -44,7 +44,7 @@
           <Checkbox-group v-model="fdata.product_areas" class="product-edit__areas-right">
             <dl>
               <dt>全选</dt>
-              <dd v-for="item in product_areas" :key="item.display_name">
+              <dd v-for="item in dicts.product_areas" :key="item.display_name">
                 <Checkbox :label="item.id">
                   <span>{{item.display_name}}</span>
                 </Checkbox>
@@ -83,14 +83,8 @@ export default {
       loading: false,
       // 字典数据
       product_type: [],
-      // product_areas: [],
-      product_areas: [
-        { display_name: '岛内校区', id: 1 },
-        { display_name: '集美校区', id: 2 },
-        { display_name: '海沧校区', id: 3 },
-        { display_name: '翔安校区', id: 4 },
-        { display_name: '同安校区', id: 5 },
-      ],
+      // 校区数据
+      product_areas: [],
       sale_status: [],
       // 表单验证
       formRules: {
@@ -117,10 +111,15 @@ export default {
   },
 
   computed: {
+    // store字典数据
+    dicts() {
+      const { product_type, product_areas, sale_status } = this.$store.state.dicts
+      return { product_type, product_areas, sale_status }
+    },
     // 产品子类列表
     sub_type() {
       const id = this.fdata.product_type_id
-      const arr = this.product_type
+      const arr = this.dicts.product_type
       if (id && arr.length) {
         const product = arr.find(item => item.value === id)
         if (product) return product.children
@@ -136,14 +135,14 @@ export default {
   watch: {
     allareas(nv) {
       if (nv) {
-        const list = this.product_areas.map(item => item.id)
+        const list = this.dicts.product_areas.map(item => item.id)
         this.fdata.product_areas = list
-      } else if (this.fdata.product_areas.length === this.product_areas.length) {
+      } else if (this.fdata.product_areas.length === this.dicts.product_areas.length) {
         this.fdata.product_areas = []
       }
     },
     areasChosed(nv) {
-      if (nv.length === this.product_areas.length) this.allareas = true
+      if (nv.length === this.dicts.product_areas.length) this.allareas = true
       else this.allareas = false
     },
   },
@@ -182,11 +181,10 @@ export default {
   },
 
   created() {
-    Http.get('/dict?keys=product_type,product_areas,sale_status')
+    window.console.log(this.dicts)
+    Http.get('/school_list')
       .then((res) => {
-        this.product_type = res.product_type
-        // this.product_areas = res.product_areas
-        this.sale_status = res.sale_status
+        this.dicts.product_areas = res
       })
 
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
@@ -195,6 +193,10 @@ export default {
         this.$store.commit(GLOBAL.LOADING.HIDE)
       })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
+  mounted() {
+    window.console.log(this.dicts)
   },
 
   beforeRouteEnter(to, from, next) {

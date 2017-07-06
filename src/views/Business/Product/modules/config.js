@@ -23,10 +23,6 @@ export function unit_encode(data) {
 export function unit_decode(res) {
   const data = res
 
-  if (data.product_areas.length) {
-    data.product_areas = data.product_areas.map(item => item.area_id)
-  }
-
   data.course_duration = data.course_duration.toString()
 
   return data
