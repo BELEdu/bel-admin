@@ -16,9 +16,9 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="cdata" border></Table>
+     <Table class="app-table" :columns="columns" :data="list.data" border ></Table><!--sdata-->
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--班级详情组件-->
     <classes-modal
@@ -40,15 +40,18 @@
  * @author zml
  * @version 2017-07-01
  */
-
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import cdata from './Data/cdata'
+// import cdata from './Data/cdata'
 import csdata from './Data/csdata'
 import ClassesModal from './components/ClassesModal'
 
 export default {
   name: 'app-student-studyprogress-classes',
+
+  mixins: [list],
 
   data() {
     return {
@@ -142,9 +145,9 @@ export default {
         },
       ],
 
-      cdata, // 表格数据
+      // cdata,
 
-      pager: undefined, // 分页配置
+      query: {}, // 分页配置
 
       classesData: csdata, // 班级详情假数据
       display_name: '', // 班级名
@@ -152,6 +155,13 @@ export default {
       grade_name: '', // 当前年级
       classes_director: '', // 班主任
     }
+  },
+
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.studyprogress.list,
+    }),
   },
 
   methods: {
@@ -162,6 +172,14 @@ export default {
       this.student_total = student_total
       this.grade_name = grade_name
       this.classes_director = classes_director
+    },
+
+    getData(qs) {
+      this.$store.dispatch(STUDENT.STUDYPROGRESS.CLASSES.INIT, qs)
+        .then(() => {
+          this.$router.push(`/student/studyprogress/classes${qs}`)
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
     },
   },
 

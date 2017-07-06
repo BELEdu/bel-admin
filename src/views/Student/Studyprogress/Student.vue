@@ -16,9 +16,9 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="sdata" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border ></Table><!--sdata-->
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
   </div>
 </template>
@@ -27,16 +27,19 @@
 /**
  * 学员管理 - 学习进度 - 学员列表
  * @author zml
- * @version 2017-06-08
- * @version 2017-06-16
- * @version 2017-06-29
+ * @version 2017-07-06
  */
-import { GLOBAL } from '@/store/mutationTypes'
+
+import { mapState } from 'vuex'
+import { list } from '@/mixins'
+import { GLOBAL, STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import sdata from './Data/sdata'
+// import sdata from './Data/sdata'
 
 export default {
   name: 'app-student-studyprogress-student',
+
+  mixins: [list],
 
   data() {
     return {
@@ -60,10 +63,10 @@ export default {
             }, display_name)
           },
         },
-        { title: '当前年级', key: 2, align: 'center' },
-        { title: '归属学管师', key: 3, align: 'center' },
-        { title: '签约课时', key: 4, align: 'center' },
-        { title: '剩余课时', key: 5, align: 'center' },
+        { title: '当前年级', key: 'current_grade', align: 'center' },
+        { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '签约课时', key: 'course_remain', align: 'center' },
+        { title: '剩余课时', key: 'course_remain', align: 'center' },
         {
           title: '课时',
           key: 'class',
@@ -92,8 +95,8 @@ export default {
           align: 'left',
           width: '200',
           render: (h, params) => {
-            const { point_now, point_total } = params.row
-            const text = `总知识点：${point_total}个`
+            const { point_now, point_total, count_knowledge } = params.row
+            const text = `总知识点：${count_knowledge}个`
              // eslint-disable-next-line
             const percent = point_total === 0 ? 0 : Math.round(point_now / point_total * 100)
             // const percent = Math.round(point_now / point_total *10000)/100 //保留小数点后两位
@@ -114,7 +117,7 @@ export default {
           align: 'center',
           width: 300,
           render: createButton([
-            { text: '学习进度', type: 'primary', click: row => this.$router.push(`/student/studyprogress/student/${row.id}/progress`) },
+            { text: '学习进度', type: 'primary', click: row => this.$router.push(`/student/studyprogress/student/${row.id}/progress`), isShow: ({ row }) => row.is_edit },
             { text: '编辑计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/student/${row.id}/plan`) },
             { text: '添加计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/student/${row.id}/add`) },
             { text: '历史计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/student/${row.id}/history`) },
@@ -122,14 +125,31 @@ export default {
         },
       ],
        // 表格数据
-      sdata,
-       // 分页配置
-      pager: undefined,
+      // sdata,
+
+      query: {},
     }
+  },
+
+  computed: {
+    // 使用mapState获取list
+    ...mapState({
+      list: state => state.student.studyprogress.list,
+    }),
   },
 
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
+  },
+
+  methods: {
+    getData(qs) {
+      this.$store.dispatch(STUDENT.STUDYPROGRESS.STUDENT.INIT, qs)
+        .then(() => {
+          this.$router.push(`/student/studyprogress/student${qs}`)
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
   },
 }
 </script>
