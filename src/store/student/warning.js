@@ -17,17 +17,17 @@ export default {
 
   mutations: {
     // 预警信息列表
-    [STUDENT.WARNING.INIT](state, list) {
+    [STUDENT.STUDENT.WARNING.INIT](state, list) {
       state.list = list
     },
   },
 
   actions: {
     // 预警信息列表接口(传入学生id和query)
-    [STUDENT.WARNING.INIT]({ commit }, { id, query = '' }) {
+    [STUDENT.STUDENT.WARNING.INIT]({ commit }, { id, query = '' }) {
       return Http.get(`/studentwarning/${id}${query}`)
        .then((res) => {
-         commit(STUDENT.WARNING.INIT, res)
+         commit(STUDENT.STUDENT.WARNING.INIT, res)
        })
     },
   },
