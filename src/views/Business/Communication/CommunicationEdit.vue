@@ -26,7 +26,14 @@
       </Form-item>
       <Form-item label="当前年级">
         <Select placeholder="请选择......" v-model="fdata.grade">
-          <Option v-if="grade" v-for="item in grade" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+          <Option 
+            v-if="dicts.grade" 
+            v-for="item in dicts.grade" 
+            :value="item.value" 
+            :key="item.display_name"
+          >
+            {{item.display_name}}
+          </Option>
         </Select>
       </Form-item>
       <Form-item label="是否偏科">
@@ -43,8 +50,14 @@
         <Date-picker placeholder="年 / 月 / 日" :editable="false" v-model="fdata.return_visited_at"></Date-picker>
       </Form-item>
       <Form-item label="沟通类型">
-        <Select placeholder="请选择......" v-if="communication_type" v-model="fdata.communication_type">
-          <Option v-for="item in communication_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+        <Select placeholder="请选择......" v-model="fdata.communication_type">
+          <Option 
+            v-if="dicts.communication_type"
+            v-for="item in dicts.communication_type" 
+            :value="item.value" :key="item.display_name"
+          >
+            {{item.display_name}}
+          </Option>
         </Select>
       </Form-item>
     </Form>
@@ -142,6 +155,13 @@ export default {
         ],
       },
     }
+  },
+
+  computed: {
+    dicts() {
+      const { communication_type, grade } = this.$store.state.dicts
+      return { communication_type, grade }
+    },
   },
 
   methods: {
@@ -244,13 +264,6 @@ export default {
   },
 
   created() {
-    // 获取字典数据
-    Http.get('/dict?keys=communication_type,grade')
-      .then((res) => {
-        this.communication_type = res.communication_type
-        this.grade = res.grade
-      })
-
     // 编辑页面初始化以及loading页面关闭
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
