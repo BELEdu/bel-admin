@@ -48,7 +48,7 @@ export default {
       required: true,
     },
     classesDirector: {
-      type: String,
+      type: [String, Number],
       required: true,
     },
   },
