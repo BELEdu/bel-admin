@@ -11,6 +11,7 @@
       <app-form-alert :errors="formErrors"></app-form-alert>
 
       <Form-item label="会议时间" prop="meeting_date">
+        <!--<app-date-picker type="daterange" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>-->
         <app-date-picker  placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
       </Form-item>
       <Form-item label="参会家长">
@@ -133,7 +134,11 @@ export default {
 
       rules: {
         meeting_date: [
-          this.$rules.required('会议时间', 'string', 'change'),
+          // this.$rules.required('会议时间', 'array', 'change'),
+          // this.$rules.date('会议时间不能为空', {
+          //   type: 'range',
+          // }),
+          this.$rules.date('会议时间不能为空'),
         ],
         meeting_type: [
           this.$rules.required('会议类型', 'number', 'change'),

@@ -131,10 +131,6 @@ export default {
           ]),
         },
       ],
-      // 分页配置
-      pager: undefined,
-      // 会议类型
-      name: '',
 
       meetingId: '',
 
@@ -160,7 +156,7 @@ export default {
   methods: {
     // 获取列表数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.MEETING.INIT, {
+      this.$store.dispatch(STUDENT.STUDENT.MEETING.INIT, {
         id: this.studentId,
         query: qs,
       })
@@ -182,7 +178,7 @@ export default {
       this.meetingId = meetingId
       // 禁止连续点击
       this.loading.delete = true
-      this.$store.dispatch(STUDENT.MEETING.DELETE, meetingId)
+      this.$store.dispatch(STUDENT.STUDENT.MEETING.DELETE, meetingId)
       .then(() => {
         this.loading.delete = false
         this.modal.delete = false

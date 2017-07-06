@@ -133,8 +133,7 @@ export default {
           ]),
         },
       ],
-      // 分页配置
-      pager: undefined,
+
       // 预警ID
       warningId: '',
 
@@ -151,10 +150,6 @@ export default {
     studentId() {
       return this.$router.currentRoute.params.studentId
     },
-  },
-
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 
   methods: {
@@ -198,7 +193,7 @@ export default {
 
      // 获取列表数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.WARNING.INIT, {
+      this.$store.dispatch(STUDENT.STUDENT.WARNING.INIT, {
         id: this.studentId,
         query: qs,
       })
