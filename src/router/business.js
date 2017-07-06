@@ -7,6 +7,8 @@
 
 import * as views from '@/views'
 
+const BUSSINESS_HOTLINE = { name: '热线登记', link: '/business/hotline' }
+
 export default [
   {
     path: '/business/hotline',
@@ -28,7 +30,7 @@ export default [
       uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '热线登记' },
+        BUSSINESS_HOTLINE,
         { name: '添加热线' },
       ],
     },
@@ -41,7 +43,7 @@ export default [
       uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '热线登记' },
+        BUSSINESS_HOTLINE,
         { name: '编辑热线' },
       ],
     },

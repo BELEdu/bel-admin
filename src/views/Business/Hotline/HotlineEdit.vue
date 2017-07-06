@@ -48,7 +48,7 @@
         <Date-picker placeholder="年 / 月 / 日" v-model="fdata.return_visited_at" :editable="false"></Date-picker>
       </Form-item>
       <Form-item>
-        <Button @click.stop="cancel">取消</Button>
+        <Button @click.stop="goBack">取消</Button>
         <Button type="primary" @click.stop="handleSubmit('form')" :loading="loading">提交</Button>
       </Form-item>
     </Form>
@@ -63,15 +63,17 @@
  */
 
 import map from '@/views/Business/casdata'
+import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { editInit, encode } from './modules/config'
 
 export default {
   name: 'hotline-editor',
+
+  mixins: [goBack],
+
   data() {
     return {
-      // "取消"按钮行为的路由对象
-      backRoute: null,
       // 最终提交给后端的数据
       fdata: editInit(),
       // 提交按钮状态控制
@@ -131,24 +133,12 @@ export default {
     handleSubmit(name) {
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
     },
-    cancel() {
-      if (this.backRoute === null || this.backRoute.matched.length === 0) {
-        this.$router.push('/business/hotline')
-      } else {
-        this.$router.push(this.backRoute.fullPath)
-      }
-    },
   },
 
   created() {
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  beforeRouteEnter(to, from, next) {
-    // eslint-disable-next-line
-    next((vm) => { vm.backRoute = from })
   },
 }
 </script>
