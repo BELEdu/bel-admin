@@ -80,23 +80,37 @@ export const BUSINESS = {
 
 // 学员管理
 export const STUDENT = {
-  // 班级管理
-  CLASSES: {
+  CLASSES: {// 班级管理
     INIT: 'STUDENT.CLASSES.INIT',
     DELETE: 'STUDENT.CLASSES.DELETE',
   },
-  // 学员信息
-  STUDENT: {
+
+  STUDENT: {// 学员信息
     INIT: 'STUDENT.STUDENT.INIT',
     DELETE: 'STUDENT.STUDENT.DELETE',
+
+    MEETING: { // 交流会
+      INIT: 'STUDENT.STUDENT.MEETING.INIT',
+      DELETE: 'STUDENT.STUDENT.MEETING.DELETE',
+    },
+
+    WARNING: {// 预警信息
+      INIT: 'STUDENT.STUDENT.WARNING.INIT',
+    },
   },
-  // 交流会
-  MEETING: {
-    INIT: 'STUDENT.MEETING.INIT',
-    DELETE: 'STUDENT.MEETING.DELETE',
-  },
-  // 预警信息
-  WARNING: {
-    INIT: 'STUDENT.WARNING.INIT',
+
+  STUDYPROGRESS: {// 学习进度
+    STUDENT: {// (学员)
+      INIT: 'STUDENT.STUDYPROGRESS.STUDENT.INIT',
+      HISTORY: {// 历史计划(学员)
+        INIT: 'STUDENT.STUDYPROGRESS.STUDENT.HISTORY.INIT',
+      },
+    },
+    CLASSES: {// (班级)
+      INIT: 'STUDENT.STUDYPROGRESS.CLASSES.INIT',
+      HISTORY: {// 历史计划(班级)
+        INIT: 'STUDENT.STUDYPROGRESS.CLASSES.HISTORY.INIT',
+      },
+    },
   },
 }
