@@ -124,15 +124,16 @@
           schedule_id: this.data.id,
           comment: this.appraiseSingleData.items,
         }
+        const self = this
         this.$http.post(`/curricularecord/store/${body.schedule_id}`, body)
           .then(() => {
             this.formLoading = false
             this.$Message.success({
               content: '成功新增评价',
               onClose() {
-                this.appraiseSingleModal = false
-                // 重新获取当前列表数据
-                this.$emit('on-submit')
+                self.visible = false
+                // 关闭弹窗回调
+                self.$emit('on-close')
               },
             })
           })

@@ -29,7 +29,7 @@
         </p>
         <p>
           <label>上课科目：</label>
-          <span>{{currentDate.subject_type}}</span>
+          <span>{{currentDate.subject_type_name}}</span>
         </p>
         <p>
           <label>计划课时：</label>
@@ -108,7 +108,7 @@
                           </Row>
                           <Row>
                             <Col span="12">
-                            {{item.subject_type}}
+                            {{item.subject_type_name}}
                             </Col>
                             <Col span="12">
                             {{item.teacher_name}}</Col>

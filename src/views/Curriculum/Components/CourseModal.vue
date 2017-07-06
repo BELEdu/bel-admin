@@ -4,9 +4,10 @@
                   :closable="false"
                   :loading="formLoading"
                   :width="500"
+                  :ok-value="okValue"
                   @on-ok="beforeSubmit"
                   @on-cancel="formCancel('form')">
-    <div class="modal-content">
+    <div class="course-modal-content">
       <Form ref="form" :model="data" :rules="ruleValidate" :label-width="110">
         <app-form-alert :errors="formErrors"></app-form-alert>
         <Form-item label="教师名称：" prop="teacher_id">
@@ -25,9 +26,15 @@
           </Select>
         </Form-item>
         <Form-item label="产品名称：" prop="product_id">
-          <Select v-model="data.product_id" placeholder="请选择" :disabled="status === 'finish'">
-            <Option v-for="list in courseOption.product_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-          </Select>
+          <div class="course-select">
+            <Select v-model="data.product_id" placeholder="请选择" :disabled="status === 'finish'">
+              <Option v-for="list in courseOption.product_id" :value="list.value" :label="list.display_name" :key="list.value">
+                  <Tooltip content="Right Top 文字提示" placement="right-start" width="150">
+                    {{list.display_name}}
+                  </Tooltip>
+              </Option>
+            </Select>
+          </div>
         </Form-item>
         <Form-item label="选择课时：" prop="course_cost">
           <Select v-model="data.course_cost" placeholder="请选择" :disabled="status === 'finish'">
@@ -35,19 +42,19 @@
           </Select>
         </Form-item>
         <Form-item label="上课日期：" prop="date">
-          <app-date-picker placeholder="选择日期" date-type="date" v-model="data.date" :disabled="status === 'finish'"></app-date-picker>
+          <app-date-picker placeholder="选择日期" v-model="data.date" :disabled="status === 'finish'"></app-date-picker>
         </Form-item>
         <Form-item label="上课时段：" required>
           <Row>
             <Col span="11">
             <Form-item prop="start_at">
-              <app-time-picker placeholder="选择开始时间" time-type="date" v-model="data.start_at" format="HH:mm" :disabled="status === 'finish'"></app-time-picker>
+              <app-time-picker placeholder="选择开始时间" v-model="data.start_at" format="HH:mm" :disabled="status === 'finish'"></app-time-picker>
             </Form-item>
             </Col>
             <Col span="2" style="text-align: center">-</Col>
             <Col span="11">
             <Form-item prop="end_at">
-              <app-time-picker placeholder="选择结束时间" time-type="date" v-model="data.end_at" format="HH:mm" :disabled="status === 'finish'"></app-time-picker>
+              <app-time-picker placeholder="选择结束时间" v-model="data.end_at" format="HH:mm" :disabled="status === 'finish'"></app-time-picker>
             </Form-item>
             </Col>
           </Row>
@@ -69,7 +76,6 @@
    */
 
   import { form } from '@/mixins'
-  import { formatDate } from '@/utils/date'
 
   export default {
     name: 'course-modal',
@@ -78,10 +84,6 @@
       value: {
         type: Boolean,
         default: false,
-      },
-      title: {
-        type: String,
-        default: '',
       },
       // 表单数据
       data: {
@@ -108,6 +110,7 @@
     },
     data() {
       return {
+        title: '',
         courseOption: {},
         courseModal: false,
         ruleValidate: {
@@ -127,13 +130,15 @@
             this.$rules.required('课时', 'number', 'change'),
           ],
           date: [
-            this.$rules.required('日期', 'date', 'blur'),
+            this.$rules.date('日期必填', {
+              trigger: 'blur',
+            }),
           ],
           start_at: [
-            this.$rules.required('开始时间', 'date', 'blur'),
+            this.$rules.date('开始时间必填'),
           ],
           end_at: [
-            this.$rules.required('结束时间', 'date', 'blur'),
+            this.$rules.date('结束时间必填'),
           ],
           fact_cost: [
             this.$rules.required('实际上课课时'),
@@ -154,6 +159,27 @@
     created() {
       this.getCourseOption()
     },
+    computed: {
+      okValue() {
+        const status = this.data.schedule_status
+        let statusTxt
+        switch (status) {
+          case 0:
+            statusTxt = '确定上课'
+            break
+          case 1:
+            statusTxt = '完成上课'
+            break
+          case 2:
+            statusTxt = '确认课时'
+            break
+          default:
+            statusTxt = '确认'
+            break
+        }
+        return statusTxt
+      },
+    },
     methods: {
       // 获取备选数据
       getCourseOption() {
@@ -170,17 +196,13 @@
         } else {
           url = `${this.urlConf.edit}`
         }
-        const formData = {
-          date: formatDate(this.data.date, 'yyyy-MM-dd'),
-          start_at: formatDate(this.data.start_at, 'HH:mm'),
-          end_at: formatDate(this.data.end_at, 'HH:mm'),
-        }
-        this.$http.post(`${url}${this.id}`, { ...this.data, ...formData })
+        this.$http.post(`${url}${this.id}`, { ...this.data })
           .then((result) => {
             this.formLoading = false
+            this.$emit('on-close')
             window.console.log(result)
           })
-          .catch(this.errorHandler)
+          .catch(error => this.errorHandler(error))
       },
       // 关闭弹窗
       formCancel(name) {
@@ -201,9 +223,23 @@
   }
 </script>
 
-<style lang="less" scoped>
-  .modal-content {
+<style lang="less">
+  .course-modal-content {
     width: 360px;
     margin: 0 auto;
+    .course-select {
+      .ivu-select-item {
+        padding: 0;
+      }
+      .ivu-tooltip {
+        &, .ivu-tooltip-rel {
+          display: block;
+        }
+        .ivu-tooltip-rel {
+          padding: 7px 16px;
+        }
+      }
+    }
   }
+
 </style>
