@@ -15,7 +15,7 @@ import '@/styles/global.less'
 // app
 import Vue from 'vue'
 import iView from 'iview'
-import { Acl, Http, Parse, Rules } from '@/utils'
+import { Acl, Http, Rules } from '@/utils'
 import * as components from '@/components'
 import App from './App'
 import router from './router'
@@ -38,7 +38,6 @@ Vue
   .use(iView)
   .use(Acl)
   .use(Http)
-  .use(Parse)
   .use(Rules)
 
 Vue.config.productionTip = false

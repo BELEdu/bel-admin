@@ -1,11 +1,35 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="query.like.display_name" placeholder="请输入关键字"></Input>
-      </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search" @click="filter">搜索</Button>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width: 6em">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
+      </Form-item>
+      <!--临时示例-->
+      <Form-item>
+        <Select v-model="query.equal.display_name">
+          <Option value="公司总经理">公司总经理</Option>
+          <Option value="校长">校长</Option>
+        </Select>
+      </Form-item>
+      <!--临时示例-->
+      <Form-item>
+        <Row>
+          <Col span="11">
+            <Date-picker type="date" v-model="query.between.created_at[0]" placeholder="选择日期"></Date-picker>
+          </Col>
+          <Col span="2" style="text-align: center">至</Col>
+          <Col span="11">
+            <Date-picker type="date" v-model="query.between.created_at[1]" placeholder="选择日期"></Date-picker>
+          </Col>
+        </Row>
+      </Form-item>
+
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -39,7 +63,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
+import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
@@ -49,9 +73,18 @@ export default {
 
   data() {
     return {
+      likeKeys: [
+        { label: '角色编号', value: 'role_number' },
+        { label: '角色名称', value: 'display_name' },
+        { label: '所属部门', value: 'department_id' },
+      ],
+      likeKey: 'display_name',
       query: {
-        like: {
+        equal: {
           display_name: '',
+        },
+        between: {
+          created_at: [null, null],
         },
       },
 
@@ -100,17 +133,8 @@ export default {
 
     // 获取列表数据
     getData(qs) {
-      this.$router.push(`/system/role${qs}`)
-
-      this.$store.dispatch(SYSTEM.ROLE.INIT, qs)
-        .then(() => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      return this.$store.dispatch(SYSTEM.ROLE.INIT, qs)
     },
   },
 }
 </script>
-
-<style>
-
-</style>

@@ -2,10 +2,14 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Input type="text" v-model="form.keyword" placeholder="请输入关键字"></Input>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width: 6em">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">查询</Button>
+        <Button type="primary" icon="ios-search" @click="search">查询</Button>
       </Form-item>
     </Form>
 
@@ -33,7 +37,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
+import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
@@ -43,7 +47,14 @@ export default {
 
   data() {
     return {
-      query: {},
+      likeKeys: [
+        { label: '流程编号', value: 'flow_number' },
+        { label: '流程名称', value: 'display_name' },
+        { label: '所属部门', value: 'department_name' },
+        { label: '流程类型', value: 'flow_type_name' },
+        { label: '申请角色', value: 'apply_role_name' },
+      ],
+      likeKey: 'flow_number',
 
       form: {
         start: '',
@@ -79,10 +90,7 @@ export default {
 
   methods: {
     getData(qs) {
-      this.$router.push(`/system/process${qs}`)
-
-      this.$store.dispatch(SYSTEM.PROCESS.INIT, qs)
-        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      return this.$store.dispatch(SYSTEM.PROCESS.INIT, qs)
     },
   },
 }

@@ -2,10 +2,14 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Input placeholder="请输入关键字"></Input>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width: 6em">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -33,7 +37,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
+import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
@@ -43,13 +47,21 @@ export default {
 
   data() {
     return {
-      query: {},
+      likeKeys: [
+        { label: '员工编号', value: 'user_number' },
+        { label: '用户名', value: 'username' },
+        { label: '姓名', value: 'realname' },
+        { label: '手机号码', value: 'mobile' },
+        { label: '岗位性质', value: 'users_job_type' },
+        { label: '状态', value: 'status' },
+      ],
+      likeKey: 'user_number',
 
       columns: [
         { title: '员工编号', key: 'user_number', align: 'center' },
         { title: '用户名', key: 'username', align: 'center' },
         { title: '姓名', key: 'realname', align: 'center' },
-        { title: '手机号', key: 'mobile', align: 'center' },
+        { title: '手机号码', key: 'mobile', align: 'center' },
         { title: '邮箱', key: 'email', align: 'center' },
         { title: '性别', key: 'gender', align: 'center' },
         { title: '部门角色', key: 'users_job_type', align: 'center' },
@@ -78,10 +90,7 @@ export default {
 
   methods: {
     getData(qs) {
-      this.$router.push(`/system/user${qs}`)
-
-      this.$store.dispatch(SYSTEM.USER.INIT, qs)
-        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      return this.$store.dispatch(SYSTEM.USER.INIT, qs)
     },
   },
 }
