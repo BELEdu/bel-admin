@@ -60,7 +60,7 @@
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
@@ -149,22 +149,13 @@ export default {
     },
   },
 
-  created() {
-    // this.$store.commit(GLOBAL.LOADING.HIDE)
-  },
-
   methods: {
     // 获取列表数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.STUDENT.MEETING.INIT, {
+      return this.$store.dispatch(STUDENT.STUDENT.MEETING.INIT, {
         id: this.studentId,
         query: qs,
       })
-        .then(() => {
-          this.$router.push(`/student/student/${this.studentId}/meeting${qs}`)
-          // 关闭loading动画
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
     },
 
     // 打开删除模态框

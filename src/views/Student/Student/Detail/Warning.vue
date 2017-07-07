@@ -76,7 +76,7 @@
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 
@@ -193,15 +193,10 @@ export default {
 
      // 获取列表数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.STUDENT.WARNING.INIT, {
+      return this.$store.dispatch(STUDENT.STUDENT.WARNING.INIT, {
         id: this.studentId,
         query: qs,
       })
-        .then(() => {
-          this.$router.push(`/student/student/${this.studentId}/warning${qs}`)
-          // 关闭loading动画
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
     },
   },
 

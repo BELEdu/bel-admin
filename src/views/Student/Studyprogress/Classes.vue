@@ -3,10 +3,14 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:7em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -42,7 +46,7 @@
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 // import cdata from './Data/cdata'
 import csdata from './Data/csdata'
@@ -55,16 +59,16 @@ export default {
 
   data() {
     return {
-       // 搜索栏配置
-      formSearch: {
-        keyword: '',
-      },
 
-      modal: {
-        classes: false,
-      },
+      likeKeys: [
+        { label: '班级名称', value: 'display_name' },
+        { label: '班主任', value: 'classes_director' },
+      ],
 
-       // 表格配置
+      likeKey: 'display_name',
+
+      query: {},
+
       columns: [
         {
           title: '班级',
@@ -145,9 +149,11 @@ export default {
         },
       ],
 
-      // cdata,
+      modal: {
+        classes: false,
+      },
 
-      query: {}, // 分页配置
+      // cdata,
 
       classesData: csdata, // 班级详情假数据
       display_name: '', // 班级名
@@ -175,11 +181,7 @@ export default {
     },
 
     getData(qs) {
-      this.$store.dispatch(STUDENT.STUDYPROGRESS.CLASSES.INIT, qs)
-        .then(() => {
-          this.$router.push(`/student/studyprogress/classes${qs}`)
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      return this.$store.dispatch(STUDENT.STUDYPROGRESS.CLASSES.INIT, qs)
     },
   },
 
@@ -187,9 +189,6 @@ export default {
     ClassesModal,
   },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-  },
 }
 </script>
 

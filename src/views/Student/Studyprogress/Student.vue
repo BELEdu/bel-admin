@@ -3,10 +3,19 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:7em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Select v-model="query.equal.current_grade" style="width:8em;" placeholder="请选择年级" >
+          <Option v-for="grade in grades" :value="grade.value" :key="grade.display_name">{{ grade.display_name }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -32,7 +41,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 // import sdata from './Data/sdata'
 
@@ -43,9 +52,17 @@ export default {
 
   data() {
     return {
-       // 搜索栏配置
-      formSearch: {
-        keyword: '',
+      likeKeys: [
+        { label: '学员姓名', value: 'display_name' },
+        { label: '归属学管师', value: 'belong_customer_relationships' },
+      ],
+
+      likeKey: 'display_name',
+
+      query: {
+        equal: {
+          current_grade: null,
+        },
       },
        // 表格配置
       columns: [
@@ -126,8 +143,6 @@ export default {
       ],
        // 表格数据
       // sdata,
-
-      query: {},
     }
   },
 
@@ -135,20 +150,13 @@ export default {
     // 使用mapState获取list
     ...mapState({
       list: state => state.student.studyprogress.list,
+      grades: state => state.dicts.grade,
     }),
-  },
-
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 
   methods: {
     getData(qs) {
-      this.$store.dispatch(STUDENT.STUDYPROGRESS.STUDENT.INIT, qs)
-        .then(() => {
-          this.$router.push(`/student/studyprogress/student${qs}`)
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      return this.$store.dispatch(STUDENT.STUDYPROGRESS.STUDENT.INIT, qs)
     },
   },
 }

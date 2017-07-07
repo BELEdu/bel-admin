@@ -2,22 +2,29 @@
   <div class="student-class">
 
     <Form inline class="app-search-form">
-      <Form-item>
-        <Row>
-          <Col span="11">
-          <Date-picker type="date" v-model="formSearch.start" placeholder="选择日期"></Date-picker>
-          </Col>
-          <Col span="2" style="text-align: center">至</Col>
-          <Col span="11">
-          <Date-picker type="date" v-model="formSearch.end" placeholder="选择日期"></Date-picker>
-          </Col>
-        </Row>
+       <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:6em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
+        <Select v-model="query.equal.current_grade" style="width:8em;" placeholder="请选择年级" >
+          <Option v-for="grade in grades" :value="grade.value" :key="grade.display_name">{{ grade.display_name }}</Option>
+        </Select>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Select v-model="query.equal.status" placeholder="请选择状态" style="width:7em;">
+          <Option :value="1">未开班</Option>
+          <Option :value="2">开班中</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Date-picker v-model="query.between.start_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择开班日期"></Date-picker>
+      </Form-item>
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -71,7 +78,7 @@
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import ManageModal from './components/ManageModal'
 
@@ -82,22 +89,23 @@ export default {
 
   data() {
     return {
-      // 搜索栏表单
-      formSearch: {
-        start: '',
-        end: '',
-        keyword: '',
+      likeKeys: [
+        { label: '班级名称', value: 'display_name' },
+        { label: '班级编号', value: 'classes_number' },
+      ],
+
+      likeKey: 'display_name',
+
+      query: {
+        equal: {
+          current_grade: null,
+          status: null,
+        },
+        between: {
+          start_at: [],
+        },
       },
-       // 模态框配置
-      modal: {
-        manage: false,
-        delete: false,
-      },
-      // 模态框确定按钮loading状态
-      loading: {
-        delete: false,
-      },
-      // 表格配置
+
       columns: [
         { title: '班级名称', key: 'display_name', align: 'center', width: 130 },
         { title: '班级编号', key: 'classes_number', align: 'center', width: 100 },
@@ -123,7 +131,7 @@ export default {
         // },
         { title: '教师', key: 'teacher_item', align: 'center' },
         { title: '学员人数', key: 'student_total', align: 'center', width: 80 },
-        { title: '开办日期', key: 'start_at', align: 'center' },
+        { title: '开班日期', key: 'start_at', align: 'center' },
         { title: '创建日期', key: 'created_at', align: 'center' },
         { title: '状态', key: 'status_name', align: 'center' },
         {
@@ -138,14 +146,21 @@ export default {
           ]),
         },
       ],
-      //  班级编号（临时）
-      classId: 0,
 
-      query: {},
+      modal: { // 模态框
+        manage: false,
+        delete: false,
+      },
 
-      form: {}, // 班级表单数据
+      loading: {
+        delete: false,
+      },
 
-      student_data: [], // 学生数据源
+      classId: 0, //  班级编号（管理班级学员用）
+
+      form: {}, // 班级表单数据（管理班级学员用）
+
+      student_data: [], // 学生数据源（管理班级学员用）
     }
   },
 
@@ -153,6 +168,7 @@ export default {
     // 使用mapState获取list
     ...mapState({
       list: state => state.student.classes.list,
+      grades: state => state.dicts.grade,
     }),
   },
 
@@ -172,10 +188,7 @@ export default {
             ...others
           } = res
 
-          this.form = {
-            ...others,
-            start_at: res.start_at ? new Date(res.start_at) : null,
-          }
+          this.form = { ...others }
           this.student_data = student_data
         })
     },
@@ -201,19 +214,7 @@ export default {
 
     // 根据接口和loaction.search（query）获取数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
-        .then(() => {
-          this.$router.push(`/student/classes${qs}`)
-          // 关闭loading动画
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
-    },
-
-    // 列表筛选，（排序）（字段筛选）（暂不使用）
-    search() {
-      const { path } = this.$router.currentRoute
-      this.$router.push(`${path}${this.qs}`)
-      this.getData(this.qs)
+      return this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
     },
   },
 }

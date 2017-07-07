@@ -3,22 +3,18 @@
 
     <!-- 搜索表单 -->
     <Form inline class="app-search-form">
-      <Form-item>
-        <Row>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.start" placeholder="选择日期"></Date-picker>
-          </Col>
-          <Col span="2" style="text-align: center">至</Col>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.end" placeholder="选择日期"></Date-picker>
-          </Col>
-        </Row>
+       <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:7em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
+        <Date-picker v-model="query.between.created_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -95,7 +91,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, STUDENT } from '@/store/mutationTypes'
+import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import TeacherModal from './components/TeacherModal'
 
@@ -106,38 +102,28 @@ export default {
 
   data() {
     return {
-      // 搜索表单
-      formSearch: {
-        start: '',
-        end: '',
-        keyword: '',
+
+      likeKeys: [
+        { label: '校区名称', value: 'school_zone' },
+        { label: '学员姓名', value: 'display_name' },
+        { label: '学员编号', value: 'id' },
+        { label: '在读学校', value: 'school_name' },
+        { label: '归属咨询师', value: 'belong_counselor' },
+        { label: '归属学管师', value: 'belong_customer_relationships' },
+      ],
+
+      likeKey: 'display_name',
+
+      query: {
+        equal: {
+          current_grade: null,
+          status: null,
+        },
+        between: {
+          created_at: [],
+        },
       },
-      // 分配学管师表单
-      formManage: {
-        manage: '',
-        notice: '',
-      },
-      // 分配学管师表单验证规则
-      ruleManage: {
-        manage: [
-          { required: true, message: '请选择学管师', trigger: 'change' },
-        ],
-        notice: [
-          { required: true, message: '请选择通知方式', trigger: 'change' },
-        ],
-      },
-      // 模态框配置
-      modal: {
-        teacher: false,
-        manage: false,
-        delete: false,
-      },
-      // 模态框确定按钮loading状态
-      loading: {
-        manage: false,
-        delete: false,
-      },
-      // 表格配置
+
       columns: [
         {
           type: 'selection',
@@ -184,10 +170,33 @@ export default {
           ]),
         },
       ],
-      // 学员编号
-      studentId: '',
+      // 分配学管师表单
+      formManage: {
+        manage: '',
+        notice: '',
+      },
+      // 分配学管师表单验证规则
+      ruleManage: {
+        manage: [
+          { required: true, message: '请选择学管师', trigger: 'change' },
+        ],
+        notice: [
+          { required: true, message: '请选择通知方式', trigger: 'change' },
+        ],
+      },
+      // 模态框配置
+      modal: {
+        teacher: false,
+        manage: false,
+        delete: false,
+      },
+      // 模态框确定按钮loading状态
+      loading: {
+        manage: false,
+        delete: false,
+      },
 
-      query: {},
+      studentId: '', // 学员编号（用于删除学员）
 
       studentItem: [], // 学生id数组（用于分配教师）
     }
@@ -222,11 +231,7 @@ export default {
 
     // 根据接口和loaction.search（query）获取数据
     getData(qs) {
-      this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
-        .then(() => {
-          this.$router.push(`/student/student${qs}`)
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      return this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
     },
 
     // 分配学管师表单提交

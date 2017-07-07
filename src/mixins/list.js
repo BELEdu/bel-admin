@@ -79,7 +79,7 @@ export default {
               if (!result[type][key]) result[type][key] = []
               result[type][key].push(value)
             } else {
-              result[type][key] = value
+              result[type][key] = +value || value
             }
           }
 
