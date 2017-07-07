@@ -24,7 +24,7 @@
  * @version 2017-06-29
  */
 import { form } from '@/mixins'
-import format from 'date-fns/format'
+// import format from 'date-fns/format'
 
 export default {
   name: 'app-student-classes-manage-modal',
@@ -53,10 +53,11 @@ export default {
   methods: {
     submit() {
       this.formLoading = true
-      this.$http.patch(`/classes/${this.classId}`, {
-        ...this.form,
-        start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : null,
-      })
+      // this.$http.patch(`/classes/${this.classId}`, {
+      //   ...this.form,
+      //   start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : null,
+      // })
+      this.$http.patch(`/classes/${this.classId}`, this.form)
         .then(this.successHandler)
         .catch(this.errorHandler)
     },
