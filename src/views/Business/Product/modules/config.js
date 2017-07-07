@@ -66,6 +66,29 @@ export function list_decode(buffer) {
   return ectype
 }
 
+// 搜索配置
+export function searchConfig() {
+  return {
+    // 关键字检索范围
+    likeKeys: [
+      { label: '产品编号', value: 'product_number' },
+      { label: '创建人', value: 'username' },
+    ],
+    // 选择关键字
+    likeKey: 'product_number',
+    query: {
+      // 时间段搜索
+      between: {
+        created_at: [],
+      },
+      // 特殊字段搜索
+      equal: {
+        subject_id: null,
+      },
+    },
+  }
+}
+
 // eslint-disable-next-line
 export function colConfig(that) {
   return [
@@ -92,7 +115,12 @@ export function colConfig(that) {
       align: 'center',
     },
     {
-      title: '课程时长（分中）',
+      title: '学科',
+      key: 'subject_name',
+      align: 'center',
+    },
+    {
+      title: '每课程时长（分钟）',
       key: 'course_duration',
       align: 'center',
     },

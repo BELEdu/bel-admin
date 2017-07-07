@@ -1,23 +1,65 @@
 <template>
-  <div class="hotline">
+  <div class="product">
+    <!-- 顶部搜索 -->
     <Form class="app-search-form">
-      <Form-item label="来访日期">
-        <Date-picker class="hotline__form-date" placeholder="开始日期"></Date-picker>
-      </Form-item>
-      <Form-item label="至">
-        <Date-picker class="hotline__form-date" placeholder="结束日期"></Date-picker>
-      </Form-item>
-      <Form-item label="内容查找">
-        <Input class="hotline__form-keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
+      <!-- 关键字检索 -->
       <Form-item>
-        <Checkbox></Checkbox>
-        <span style="font-size: 14px;">不显示停售</span>
+        <Input 
+          placeholder="搜索关键字"
+          v-model="query.like[likeKey]"  
+          style="width: calc(7em + 200px);"         
+        >
+          <Select 
+            v-model="likeKey"
+            slot="prepend" 
+            style="width: 7em"
+          >
+            <Option 
+              v-for="likeKey in likeKeys" 
+              :key="likeKey.value" 
+              :value="likeKey.value"
+            >
+              {{ likeKey.label }}
+            </Option>
+          </Select>
+        </Input>
       </Form-item>
+      <!-- 日期范围搜索 -->
       <Form-item>
-        <Button type="primary">查询搜索</Button>
+        <Date-picker 
+          v-model="query.between.created_at" 
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+          placeholder="创建日期范围" style="width: 200px"
+          :editable="false"
+        >
+        </Date-picker>
+      </Form-item>
+      <!-- 学科搜索 -->
+      <Form-item>
+        <Select 
+          v-model="query.equal.subject_id"
+          placeholder="选择学科" 
+          style="width: 150px;"
+        >
+          <Option value="1">数学</Option>
+          <Option value="2">语文</Option>
+          <Option value="3">英语</Option>
+          <!--<Option 
+            v-for="item in subject" 
+            :value="item.value"
+          >
+            {{item.display_name}}
+          </Option>-->
+        </Select>
+      </Form-item>
+      <!-- 查询按钮 -->
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">
+          搜索
+        </Button>
       </Form-item>
     </Form>
+    <!-- end 顶部搜索 -->
   
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
@@ -32,7 +74,7 @@
     <Table :columns="colConfig" :data="buffer.data" border></Table>
   
     <!-- 分页插件 -->
-    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
+    <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
     <!--删除提醒框-->
     <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
       <p>删除该条记录后将无法再恢复，是否继续删除？</p>
@@ -46,14 +88,21 @@
  * @author hjz
  * @version 2017-06-06
  */
+
+// import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, list_decode } from './modules/config'
+import { colConfig, list_decode, searchConfig } from './modules/config'
 
 export default {
   name: 'business-product',
 
+  mixins: [list],
+
   data() {
     return {
+      // 搜索配置
+      ...searchConfig(),
       // 删除对话框数据
       warn: {
         show: false,
@@ -61,6 +110,7 @@ export default {
         row: null,
         loading: false,
       },
+      // Table配置
       colConfig: colConfig(this),
     }
   },
@@ -72,13 +122,6 @@ export default {
   },
 
   methods: {
-    pageTo(page) {
-      const per_page = this.buffer.per_page
-      this.$router.push({ path: this.$route.path, query: { page, per_page } })
-    },
-    pagesizeTo(per_page) {
-      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
-    },
     toCreate() {
       this.$router.push('/business/product/edit')
     },
@@ -114,14 +157,14 @@ export default {
 </script>
 
 <style lang="less">
-.hotline {
+
+@gutter-block: 8px;
+
+.product {
 
   & .ivu-form-item {
     display: inline-block;
-
-    &:first-child {
-      margin-right: 7px;
-    }
+    margin-right: @gutter-block;
   }
 
   & .ivu-form-item-label {
@@ -130,25 +173,6 @@ export default {
 
   & .ivu-form-item-content {
     display: inline-block;
-  }
-
-  &__form-keyword {
-    width: 200px;
-  }
-
-  &__form-date {
-    width: 150px;
-  }
-}
-
-.app-search-form {
-
-  &>.ivu-form-item {
-
-    &:last-child {
-      float: right;
-      margin-right: 0;
-    }
   }
 }
 </style>

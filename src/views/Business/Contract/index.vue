@@ -1,25 +1,62 @@
 <template>
   <div class="contract">
+    <!-- 顶部搜索 -->
     <Form class="app-search-form">
-      <Form-item label="来访日期">
-        <Date-picker class="contract__form-date" placeholder="开始日期"></Date-picker>
-      </Form-item>
-      <Form-item label="至">
-        <Date-picker class="contract__form-date" placeholder="结束日期"></Date-picker>
-      </Form-item>
-      <Form-item label="内容查找">
-        <Input class="contract__form-keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
-      <Form-item label="仅显示审批" class="ivu-switch-fix">
-        <i-switch size="large">
-          <span slot="open">审批</span>
-          <span slot="close">全部</span>
-        </i-switch>
-      </Form-item>
+      <!-- 关键字检索 -->
       <Form-item>
-        <Button type="primary">查询搜索</Button>
+        <Input 
+          placeholder="搜索关键字"
+          v-model="query.like[likeKey]"  
+          style="width: calc(7em + 200px);"         
+        >
+          <Select 
+            v-model="likeKey"
+            slot="prepend" 
+            style="width: 7em"
+          >
+            <Option 
+              v-for="likeKey in likeKeys" 
+              :key="likeKey.value" 
+              :value="likeKey.value"
+            >
+              {{ likeKey.label }}
+            </Option>
+          </Select>
+        </Input>
+      </Form-item>
+      <!-- 日期范围搜索 -->
+      <Form-item>
+        <Date-picker 
+          v-model="query.between.apply_time" 
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+          placeholder="申请日期范围" style="width: 200px"
+          :editable="false"
+        >
+        </Date-picker>
+      </Form-item>
+      <!-- 特殊字段搜索 -->
+      <!--<Form-item>
+        <Select 
+          v-model="query.equal.subject_id"
+          placeholder="选择学科" 
+          style="width: 150px;"
+        >
+          <Option 
+            v-for="item in subject" 
+            :value="item.value"
+          >
+            {{item.display_name}}
+          </Option>
+        </Select>
+      </Form-item>-->
+      <!-- 查询按钮 -->
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">
+          搜索
+        </Button>
       </Form-item>
     </Form>
+    <!-- end 顶部搜索 -->
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
@@ -55,7 +92,7 @@
 
     <Table :columns="colConfig" :data="buffer.data" border></Table>
 
-    <app-pager @on-change="pageTo" @on-page-size-change="pagesizeTo" :data="buffer"></app-pager>
+    <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
   </div>
 </template>
 
@@ -66,14 +103,19 @@
  * @version 2017-06-06
  */
 import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig } from './modules/config'
+import { colConfig, searchConfig } from './modules/config'
 
 export default {
   name: 'business-contract',
 
+  mixins: [list],
+
   data() {
     return {
+      // 搜索配置
+      ...searchConfig(),
       colConfig: colConfig(this),
     }
   },
@@ -85,13 +127,6 @@ export default {
   },
 
   methods: {
-    pageTo(page) {
-      const per_page = this.buffer.per_page
-      this.$router.push({ path: this.$route.path, query: { page, per_page } })
-    },
-    pagesizeTo(per_page) {
-      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
-    },
     // 创建合同跳转
     toCreate() {
       this.$router.push('/business/contract/edit')
@@ -116,14 +151,13 @@ export default {
 </script>
 
 <style lang="less">
+@gutter-block: 8px;
+
 .contract {
 
   & .ivu-form-item {
     display: inline-block;
-
-    &:first-child {
-      margin-right: 7px;
-    }
+    margin-right: @gutter-block;
   }
 
   & .ivu-form-item-label {
@@ -132,25 +166,6 @@ export default {
 
   & .ivu-form-item-content {
     display: inline-block;
-  }
-
-  &__form-keyword {
-    width: 200px;
-  }
-
-  &__form-date {
-    width: 150px;
-  }
-}
-
-.app-search-form {
-
-  &>.ivu-form-item {
-
-    &:last-child {
-      float: right;
-      margin-right: 0;
-    }
   }
 }
 </style>

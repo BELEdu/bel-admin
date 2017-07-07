@@ -55,6 +55,33 @@ export function encode(data) {
   return ectype
 }
 
+// 搜索配置
+export function searchConfig() {
+  return {
+    // 关键字检索范围
+    likeKeys: [
+      { label: '学员姓名', value: 'student_name' },
+      { label: '手机号码', value: 'mobile' },
+      { label: '在读学校', value: 'school_name' },
+    ],
+    // 选择关键字
+    likeKey: 'student_name',
+    query: {
+      // 时间段搜索
+      between: {
+        first_communication_at: [],
+      },
+      // 特殊字段搜索
+      equal: {
+        // 当前状态
+        student_current_status: null,
+        // 类型
+        communication_type: null,
+      },
+    },
+  }
+}
+
 // 列表头配置
 export function colConfig(that) {
   return [

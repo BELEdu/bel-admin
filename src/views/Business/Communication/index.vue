@@ -1,28 +1,78 @@
 <template>
   <main class="communication">
+    <!-- 顶部搜索 -->
     <Form class="app-search-form">
-      <Form-item label="沟通日期">
-        <Date-picker class="communication__form-date" placeholder="开始日期"></Date-picker>
+      <!-- 关键字检索 -->
+      <Form-item>
+        <Input 
+          placeholder="搜索关键字"
+          v-model="query.like[likeKey]"  
+          style="width: calc(7em + 200px);"         
+        >
+          <Select 
+            v-model="likeKey"
+            slot="prepend" 
+            style="width: 7em"
+          >
+            <Option 
+              v-for="likeKey in likeKeys" 
+              :key="likeKey.value" 
+              :value="likeKey.value"
+            >
+              {{ likeKey.label }}
+            </Option>
+          </Select>
+        </Input>
       </Form-item>
-      <Form-item label="至">
-        <Date-picker class="communication__form-date" placeholder="结束日期"></Date-picker>
+      <!-- 日期范围搜索 -->
+      <Form-item>
+        <Date-picker 
+          v-model="query.between.first_communication_at" 
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+          placeholder="首次沟通日期范围" style="width: 200px"
+          :editable="false"
+        >
+        </Date-picker>
       </Form-item>
-      <Form-item label="内容查找">
-        <Input class="communication__form-keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
-      <Form-item label="当前状态">
-        <Select placeholder="当前状态选择">
-          <Option value="1">未签约</Option>
-          <Option value="2">已结课</Option>
-          <Option value="3">已休学</Option>
-          <Option value="4">已签约</Option>
+      <!-- 选择当前状态 -->
+      <Form-item>
+        <Select 
+          v-model="query.equal.student_current_status"
+          placeholder="选择当前状态" 
+          style="width: 150px;"
+        >
+          <Option 
+            v-for="item in student_current_status" 
+            :value="item.value"
+          >
+            {{item.display_name}}
+          </Option>
         </Select>
       </Form-item>
+      <!-- 选择类型 -->
       <Form-item>
-        <Button type="primary">查询搜索</Button>
+        <Select 
+          v-model="query.equal.communication_type"
+          placeholder="选择类型" 
+          style="width: 150px;"
+        >
+          <Option 
+            v-for="item in communication_type" 
+            :value="item.value"
+          >
+            {{item.display_name}}
+          </Option>
+        </Select>
+      </Form-item>
+      <!-- 查询按钮 -->
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">
+          搜索
+        </Button>
       </Form-item>
     </Form>
-  
+    <!-- end 顶部搜索 -->
+    
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
       <h2>沟通记录</h2>
@@ -36,7 +86,7 @@
   
     <Table v-if="buffer" :columns="colConfig" :data="buffer.data" border></Table>
   
-    <app-pager :data="buffer" @on-change="pageTo" @on-page-size-change="pagesizeTo"></app-pager>
+    <app-pager :data="buffer" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   
     <!--删除提醒框-->
     <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
@@ -51,23 +101,30 @@
  * @author hjz
  * @version 2017-06-06
  */
+
 import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig } from './modules/config'
+import { colConfig, searchConfig } from './modules/config'
 
 
 export default {
   name: 'business-communication',
 
+  mixins: [list],
+
   data() {
     return {
-      // 删除对话框数据
+      // 搜索配置
+      ...searchConfig(),
+      // 删除警告对话框数据
       warn: {
         show: false,
         title: '确认删除',
         row: null,
         loading: false,
       },
+      // Table配置
       colConfig: colConfig(this),
     }
   },
@@ -75,17 +132,12 @@ export default {
   computed: {
     ...mapState({
       buffer: state => state.business.buffer.communication,
+      student_current_status: state => state.dicts.student_current_status,
+      communication_type: state => state.dicts.communication_type,
     }),
   },
 
   methods: {
-    pageTo(page) {
-      const per_page = this.buffer.per_page
-      this.$router.push({ path: this.$route.path, query: { page, per_page } })
-    },
-    pagesizeTo(per_page) {
-      this.$router.push({ path: this.$route.path, query: { page: 1, per_page } })
-    },
     toCreate() {
       this.$router.push('/business/communication/edit')
     },
@@ -122,14 +174,14 @@ export default {
 </script>
 
 <style lang="less">
+
+@gutter-block: 8px;
+
 .communication {
 
   & .ivu-form-item {
     display: inline-block;
-
-    &:first-child {
-      margin-right: 7px;
-    }
+    margin-right: @gutter-block;
   }
 
   & .ivu-form-item-label {
@@ -138,25 +190,6 @@ export default {
 
   & .ivu-form-item-content {
     display: inline-block;
-  }
-
-  &__form-keyword {
-    width: 200px;
-  }
-
-  &__form-date {
-    width: 150px;
-  }
-}
-
-.app-search-form {
-
-  &>.ivu-form-item {
-
-    &:last-child {
-      float: right;
-      margin-right: 0;
-    }
   }
 }
 </style>

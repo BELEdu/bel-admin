@@ -45,6 +45,33 @@ export function encode(data) {
   return ectype
 }
 
+// 搜索配置
+export function searchConfig() {
+  return {
+    // 关键字检索范围
+    likeKeys: [
+      { label: '学员姓名', value: 'student_name' },
+      { label: '家长姓名', value: 'elder_name' },
+      { label: '手机号码', value: 'mobile' },
+      { label: '邀约咨询师', value: 'invited_teacher_name' },
+      { label: '签约咨询师', value: 'signed_teacher_name' },
+      { label: '市场专员', value: 'market_staff_name' },
+    ],
+    // 选择关键字
+    likeKey: 'student_name',
+    query: {
+      // 时间段搜索
+      between: {
+        visited_at: [],
+      },
+      // 特殊字段搜索
+      equal: {
+        student_current_status: null,
+      },
+    },
+  }
+}
+
 export function colConfig(that) {
   return [
     {
