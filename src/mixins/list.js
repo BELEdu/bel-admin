@@ -49,7 +49,7 @@ export default {
         .entries(query)
         .reduce((result, [type, subQuery]) => {
           // $route.query中的值
-          if (typeof subQuery === 'string') {
+          if (typeof subQuery !== 'object') {
             // 碰到between字段时，必须把type字符串最后的[0]/[1]去掉
             return `${result}${type.replace(/\[\d\]$/, '')}=${subQuery}&`
           } else if (type.includes('between[')) {
@@ -120,10 +120,12 @@ export default {
       this.$router.push(`${path}${queryString}`)
 
       // 获取数据
-      this.getData(queryString)
-        .then(() => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      if (this.getData) {
+        this.getData(queryString)
+          .then(() => {
+            this.$store.commit(GLOBAL.LOADING.HIDE)
+          })
+      }
     },
   },
 
