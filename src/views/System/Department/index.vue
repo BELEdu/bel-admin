@@ -11,6 +11,15 @@
       </Col>
     </Row>
     <Table class="app-table app-table--department" :columns="columns" :data="departments" :row-class-name="rowClassName" border></Table>
+
+    <!--弹框-->
+    <department-modal
+      :item="currentItem"
+      :form="form"
+      :modal="modal"
+      :isCreate="isCreate"
+      @closeModal="closeModal"
+    ></department-modal>
   </div>
 </template>
 
@@ -18,12 +27,12 @@
 /**
  * 系统设置 - 组织架构
  * @author lmh
- * @version 2017-06-05
+ * @version 2017-06-07-07
  */
 
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
-import Operations from './components/Operations'
+import DepartmentModal from './components/DepartmentModal'
 
 export default {
   name: 'app-system-organization',
@@ -36,18 +45,63 @@ export default {
           title: '操作',
           width: 215,
           align: 'center',
-          render: (h, params) => h(Operations, {
+          render: (h, params) => h('div', {
+            class: 'department-btns',
+          }, [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small',
+              },
+              on: {
+                click: () => this.prepareCreate(params.row.id),
+              },
+            }, params.row.level === 1 ? '新增校区' : '新增子部门'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small',
+              },
+              on: {
+                click: () => this.prepareUpdate(params.row.id),
+              },
+            }, '更名'),
+          ].concat(params.row.id === 1 ? [] : [h('Button', {
             props: {
-              item: params.row,
+              type: 'warning',
+              size: 'small',
+              'v-if': params.row.level !== 1,
             },
-          }),
+            on: {
+              click: () => this.prepareRemove(params.row.id),
+            },
+          }, '删除')])),
         },
       ],
+
+      currentId: null,
+
+      form: {
+        display_name: '',
+      },
+
+      modal: {
+        form: false,
+        remove: false,
+      },
+
+      isCreate: false,
     }
   },
 
   computed: {
-    ...mapGetters(['departments']),
+    ...mapState({
+      departments: state => state.system.department.list,
+    }),
+
+    currentItem() {
+      return this.departments.find(department => department.id === this.currentId) || {}
+    },
   },
 
   methods: {
@@ -55,10 +109,38 @@ export default {
     rowClassName(row) {
       return `level-${row.level}`
     },
+
+    openModal(type) {
+      this.modal[type] = true
+    },
+
+    closeModal(type) {
+      this.modal[type] = false
+    },
+
+    prepareCreate(id) {
+      this.currentId = id
+      this.isCreate = true
+      this.form.display_name = ''
+      this.openModal('form')
+    },
+
+    prepareUpdate(id) {
+      this.currentId = id
+      this.isCreate = false
+      // 校区二字是固定后缀，不应该显示在输入框里
+      this.form.display_name = this.currentItem.display_name.replace('校区', '')
+      this.openModal('form')
+    },
+
+    prepareRemove(id) {
+      this.currentId = id
+      this.openModal('remove')
+    },
   },
 
   components: {
-    operations: Operations,
+    DepartmentModal,
   },
 
   created() {
@@ -82,4 +164,10 @@ export default {
 }
 
 .level-padding(10);
+
+.department-btns {
+  button:not(:first-child) {
+    margin-left: 0.8em;
+  }
+}
 </style>

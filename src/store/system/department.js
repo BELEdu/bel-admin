@@ -6,27 +6,6 @@ export default {
     list: [],
   },
 
-  getters: {
-    departments(state) {
-      // 这里代码有点丑，待优化
-      const flat = (items, array, level) => {
-        // eslint-disable-next-line
-        level++
-        items.forEach((item) => {
-          if (item.children) {
-            array.push({ ...item, level, children: true })
-            flat(item.children, array, level)
-          } else {
-            array.push({ ...item, level })
-          }
-        })
-        return array
-      }
-
-      return flat(state.list, [], 0)
-    },
-  },
-
   mutations: {
     // 读取部门
     [SYSTEM.DEPARTMENT.INIT](state, list) {
@@ -48,6 +27,10 @@ export default {
     [SYSTEM.DEPARTMENT.DELETE](state, id) {
       state.list = state.list
         .filter(item => item.id !== id)
+        .map(item => ({
+          ...item,
+          children: item.children && item.children.filter(i => i !== id),
+        }))
     },
   },
 
@@ -56,7 +39,22 @@ export default {
     [SYSTEM.DEPARTMENT.INIT]({ commit }) {
       return Http.get('/department')
         .then((res) => {
-          commit(SYSTEM.DEPARTMENT.INIT, res)
+          // 这里代码有点丑，待优化
+          const flat = (items, array, level) => {
+            // eslint-disable-next-line
+            level++
+            items.forEach((item) => {
+              if (item.children) {
+                array.push({ ...item, level, children: item.children.map(i => i.id) })
+                flat(item.children, array, level)
+              } else {
+                array.push({ ...item, level })
+              }
+            })
+            return array
+          }
+
+          commit(SYSTEM.DEPARTMENT.INIT, flat(res, [], 0))
         })
     },
 

@@ -1,11 +1,5 @@
 <template>
-  <div class="department-operation">
-    <div class="department-operation__btns">
-      <Button type="primary" size="small" @click="prepareCreate">{{ item.level === 1 ? '新增校区' : '新增子部门'}}</Button>
-      <Button type="primary" size="small" @click="prepareUpdate">更名</Button>
-      <Button v-if="item.level !== 1" type="warning" size="small" @click="openModal('remove')">删除</Button>
-    </div>
-
+  <div>
     <!--新增与更名对话框-->
     <app-form-modal v-model="modal.form" :title="title" :loading="formLoading" @on-ok="ok">
       <Form :model="form" :rules="rules" :label-width="70" ref="form">
@@ -22,9 +16,9 @@
     <!--根据该部门底下是否有子部门，分别显示无法删除或确认删除对话框-->
     <app-warn-modal
       v-model="modal.remove"
-      :title="item.children ? '无法删除' : '删除确认'"
+      :title="hasChildren ? '无法删除' : '删除确认'"
       :loading="formLoading"
-      :prevent="item.children"
+      :prevent="hasChildren"
       action="删除"
       @on-ok="remove"
     >
@@ -46,8 +40,7 @@
 /**
  * 系统管理 - 部门管理 - 条目操作
  * @author lmh
- * @description 后台数据库应不应该存储“校区”二字？
- * @version 2017-06-06
+ * @version 2017-07-07
  */
 
 import store from '@/store'
@@ -59,13 +52,21 @@ export default {
       type: Object,
       required: true,
     },
+    form: {
+      type: Object,
+      required: true,
+    },
+    modal: {
+      type: Object,
+      required: true,
+    },
+    isCreate: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data: () => ({
-    form: {
-      display_name: '',
-    },
-
     rules: {
       display_name: [
         { required: true, message: '名称不能为空', trigger: 'blur' },
@@ -75,16 +76,13 @@ export default {
     },
 
     formLoading: false,
-
-    modal: {
-      form: false,
-      remove: false,
-    },
-
-    isCreate: false,
   }),
 
   computed: {
+    hasChildren() {
+      return this.item.children && this.item.children.length > 0
+    },
+
     title() {
       switch (this.item.level) {
         case 1:
@@ -111,39 +109,24 @@ export default {
       const { item: { level } } = this
       return ((level === 1 && this.isCreate) || (level === 2 && !this.isCreate))
     },
+
+    data() {
+      // 如果是新增或更名的是校区，提交时应重新拼接上校区二字
+      if (this.isXiaoqu) {
+        return {
+          ...this.form,
+          display_name: `${this.form.display_name}校区`,
+        }
+      }
+      return this.form
+    },
   },
 
   methods: {
-    openModal(type) {
-      this.modal[type] = true
-    },
-
-    closeModal(type) {
-      this.modal[type] = false
-    },
-
-    prepareCreate() {
-      this.isCreate = true
-      this.form.display_name = ''
-      this.openModal('form')
-    },
-
-    prepareUpdate() {
-      this.isCreate = false
-      // 校区二字是固定后缀，不应该显示在输入框里
-      this.form.display_name = this.item.display_name.replace('校区', '')
-      this.openModal('form')
-    },
-
     // 表单判断是新增还是更名
     ok() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          // 如果是新增或更名的是校区，提交时应重新拼接上校区二字
-          if (this.isXiaoqu) {
-            this.form.display_name += '校区'
-          }
-
           if (this.isCreate) {
             this.create()
           } else {
@@ -157,7 +140,7 @@ export default {
     create() {
       this.formLoading = true
       store.dispatch(SYSTEM.DEPARTMENT.CREATE, {
-        ...this.form,
+        ...this.data,
         p_id: this.item.id,
       })
         .then(() => this.successHandler('form'))
@@ -166,11 +149,12 @@ export default {
     // 更名
     update() {
       this.formLoading = true
+      const { id, p_id } = this.item
       store.dispatch(SYSTEM.DEPARTMENT.UPDATE, {
-        id: this.item.id,
+        id,
         data: {
-          ...this.form,
-          p_id: this.item.pid,
+          ...this.data,
+          p_id,
         },
       })
         .then(() => this.successHandler('form'))
@@ -179,26 +163,18 @@ export default {
     // 删除
     remove() {
       this.formLoading = true
-      store.dispatch(SYSTEM.DEPARTMENT.DELETE, this.item.id)
+      const { id } = this.item
+      this.$emit('')
+      store.dispatch(SYSTEM.DEPARTMENT.DELETE, id)
         .then(() => this.successHandler('remove'))
     },
 
     // 接口调用成功后的的处理
     successHandler(type) {
       this.formLoading = false
-      this.closeModal(type)
+      this.$emit('closeModal', type)
       this.$Message.info('操作成功')
     },
   },
 }
 </script>
-
-<style lang="less">
-.department-operation {
-  &__btns {
-    button:not(:first-child) {
-      margin-left: 0.8em;
-    }
-  }
-}
-</style>
