@@ -44,6 +44,7 @@
           <Option 
             v-for="item in student_current_status" 
             :value="item.value"
+            :key="item.value"
           >
             {{item.display_name}}
           </Option>
