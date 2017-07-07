@@ -20,11 +20,8 @@
               <Input type="password" v-model="form.password"></Input>
             </Form-item>
             <Form-item>
-              <Checkbox-group>
-                <Checkbox label="保持登陆"></Checkbox>
-              </Checkbox-group>
+              <Button type="primary" @click="handleSubmit" :loading="formLoading" long>登陆</Button>
             </Form-item>
-            <Button type="primary" @click="handleSubmit" :loading="formLoading" long>登陆</Button>
           </Form>
         </div>
       </div>
