@@ -2,7 +2,12 @@
   <div class="system-department">
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2>组织架构</h2>
+      <h2>
+        <svg class="svg-icon" viewBox="0 0 1024 1024" width="14px" height="14px" style="transform:translateY(-2px);">
+          <path d="M320 0h384v256H320zM880 448H544V384h-64v64h-384v192h64V512h320v128h64V512h320v128h64V448h-48zM0 768h256v256H0zM384 768h256v256H384zM768 768h256v256h-256z"></path>
+        </svg>
+        组织架构
+      </h2>
       </Col>
     </Row>
     <Table class="app-table app-table--department" :columns="columns" :data="departments" :row-class-name="rowClassName" border></Table>

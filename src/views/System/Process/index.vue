@@ -15,7 +15,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>审批流程列表</h2>
+        <h2><Icon type="aperture"></Icon> 审批流程</h2>
       </Col>
       <Col>
         <Button type="primary" @click="$router.push('/system/process/edit')">新建流程</Button>
