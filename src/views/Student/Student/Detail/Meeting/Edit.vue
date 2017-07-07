@@ -1,18 +1,16 @@
 <template>
   <div>
     <app-editor-title></app-editor-title>
-    <Form
-     :label-width="130"
-     :model="form"
-     :rules="rules"
-     ref="form"
-     class="app-form-entire"
-    >
+    <Form :label-width="130" :model="form" :rules="rules" ref="form" class="app-form-entire">
       <app-form-alert :errors="formErrors"></app-form-alert>
 
       <Form-item label="会议时间" prop="meeting_date">
         <!--<app-date-picker type="daterange" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>-->
-        <app-date-picker  placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
+        <app-date-picker placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
+      </Form-item>
+      <Form-item label="datetime测试" prop="meeting_date">
+        <!--<app-date-picker type="daterange" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>-->
+        <app-date-picker placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
       </Form-item>
       <Form-item label="参会家长">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
@@ -23,44 +21,31 @@
         </Select>
       </Form-item>
       <Form-item label="会议类型" prop="meeting_type">
-        <Select placeholder="请选择..." v-model="form.meeting_type" >
+        <Select placeholder="请选择..." v-model="form.meeting_type">
           <Option v-for="type in meetingTypes" :key="type.value" :value="type.value">{{ type.display_name }}</Option>
         </Select>
       </Form-item>
 
       <!--课前交流会文本框组-->
-      <Form-item
-        v-if="form.meeting_type === 1"
-        v-for="(item, index) in form.meeting_content.slice(0,3)"
-        :key="index"
-        :label="item.content_tag"
-        :prop="`meeting_content.${index}.content`"
-        :rules="[$rules.max(500)]"
-      >
+      <Form-item v-if="form.meeting_type === 1" v-for="(item, index) in form.meeting_content.slice(0,3)" :key="index" :label="item.content_tag" :prop="`meeting_content.${index}.content`" :rules="[$rules.max(500)]">
         <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
+      </Form-item>
+
+      <Form-item label="家长满意度">
+        <Radio-group v-model="form.manyi">
+          <Radio :label="1">满意</Radio>
+          <Radio :label="2">一般</Radio>
+          <Radio :label="3">不满意</Radio>
+        </Radio-group>
       </Form-item>
 
       <!--家长座谈会文本框组-->
-      <Form-item
-        v-if="form.meeting_type === 3"
-        v-for="(item, index) in form.meeting_content.slice(3,7)"
-        :key="index"
-        :label="item.content_tag"
-        :prop="`meeting_content.${index+3}.content`"
-        :rules="[$rules.max(500)]"
-      >
+      <Form-item v-if="form.meeting_type === 3" v-for="(item, index) in form.meeting_content.slice(3,7)" :key="index" :label="item.content_tag" :prop="`meeting_content.${index+3}.content`" :rules="[$rules.max(500)]">
         <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
       </Form-item>
 
-      <Form-item  >
-        <app-uploader
-          action="/meeting/upload"
-          name="meeting_file"
-          @on-success="uploadSuccess"
-          @on-error="uploadError"
-          @on-remove="uploadRemove"
-          :files="files"
-        ></app-uploader>
+      <Form-item>
+        <app-uploader action="/meeting/upload" name="meeting_file" @on-success="uploadSuccess" @on-error="uploadError" @on-remove="uploadRemove" :files="files"></app-uploader>
       </Form-item>
       <Form-item>
         <Button @click="goBack()">取消</Button>
@@ -128,6 +113,9 @@ export default {
         ],
         meeting_persons: [],
         meeting_attachment: [],
+        manyi: null,
+
+        datetimetest: '',
       },
 
       meeting_persons_data: [],
@@ -221,7 +209,7 @@ export default {
       }
     },
 
-     // 提交表单
+    // 提交表单
     submit() {
       const data = {
         ...this.form,
@@ -243,7 +231,7 @@ export default {
   },
 
   created() {
-     // 判断是编辑还是添加，以此调用不同的接口
+    // 判断是编辑还是添加，以此调用不同的接口
     (this.isUpdate ? this.getClassData : this.getListData)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
 

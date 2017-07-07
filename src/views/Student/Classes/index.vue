@@ -18,6 +18,7 @@
         <Select v-model="query.equal.status" placeholder="请选择状态" style="width:7em;">
           <Option :value="1">未开班</Option>
           <Option :value="2">开班中</Option>
+          <Option :value="3">已结束</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -92,6 +93,8 @@ export default {
       likeKeys: [
         { label: '班级名称', value: 'display_name' },
         { label: '班级编号', value: 'classes_number' },
+        { label: '产品名称', value: '111' },
+        { label: '产品类型', value: '111' },
       ],
 
       likeKey: 'display_name',

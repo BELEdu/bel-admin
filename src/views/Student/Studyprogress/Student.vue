@@ -71,10 +71,10 @@ export default {
           key: 'display_name',
           align: 'center',
           render: (h, params) => {
-            const { display_name, number } = params.row
+            const { display_name, id } = params.row
             return h('Tooltip', {
               props: {
-                content: number,
+                content: id,
                 placement: 'right',
               },
             }, display_name)

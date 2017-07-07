@@ -111,14 +111,8 @@ export default {
         { label: '归属咨询师', value: 'belong_counselor' },
         { label: '归属学管师', value: 'belong_customer_relationships' },
       ],
-
       likeKey: 'display_name',
-
       query: {
-        equal: {
-          current_grade: null,
-          status: null,
-        },
         between: {
           created_at: [],
         },

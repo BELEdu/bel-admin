@@ -3,21 +3,17 @@
     <!-- 搜索表单 -->
     <Form inline class="app-search-form">
       <Form-item>
-        <Row>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.start" placeholder="选择日期"></Date-picker>
-          </Col>
-          <Col span="2" style="text-align: center">至</Col>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.end" placeholder="选择日期"></Date-picker>
-          </Col>
-        </Row>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:7em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
-      <!--<Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
-      </Form-item>-->
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Date-picker v-model="query.between.meeting_date" format="yyyy-MM-dd" type="daterange" placeholder="请选择会议时间日期"></Date-picker>
+      </Form-item>
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -70,19 +66,17 @@ export default {
 
   data() {
     return {
-      // 搜索表单
-      formSearch: {
-        start: '',
-        end: '',
-        keyword: '',
+
+      likeKeys: [
+        { label: '家长姓名', value: 'parent_name' },
+      ],
+      likeKey: 'parent_name',
+      query: {
+        between: {
+          meeting_date: [],
+        },
       },
-      modal: {
-        delete: false,
-      },
-      // 模态框确定按钮loading状态
-      loading: {
-        delete: false,
-      },
+
       // 表格配置
       columns: [
         { title: '会议类型', key: 'meeting_type', align: 'center' },
@@ -132,9 +126,15 @@ export default {
         },
       ],
 
-      meetingId: '',
+      modal: { // 弹窗状态
+        delete: false,
+      },
 
-      query: {},
+      loading: { // 模态框确定按钮loading状态
+        delete: false,
+      },
+
+      meetingId: '', // 交流会ID（删除用）
     }
   },
 
