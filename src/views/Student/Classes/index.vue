@@ -23,10 +23,10 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2>班级管理</h2>
+        <h2><Icon type="ios-browsers"/> 班级管理</h2>
       </Col>
       <Col>
-      <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级</Button>
+        <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级</Button>
       </Col>
     </Row>
 

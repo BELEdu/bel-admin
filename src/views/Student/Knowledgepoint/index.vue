@@ -24,7 +24,7 @@
     <!-- 操作按钮 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2>学员知识点</h2>
+        <h2><Icon type="ios-bookmarks"/> 学员知识点</h2>
       </Col>
     </Row>
 
