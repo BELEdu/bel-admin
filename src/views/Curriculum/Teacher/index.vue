@@ -2,17 +2,25 @@
   <div>
     <!--条件查询模块-->
     <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
+      <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
     <!--列表工具模块-->
-    <Row class="app-content-header" type="flex" justify="end">
+    <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
+      <h2><Icon type="ios-calendar" /> 教师列表</h2>
+      </Col>
       <Button type="primary">打印</Button>
       </Col>
     </Row>
@@ -39,12 +47,15 @@ export default {
   data() {
     return {
       // 搜索字段
-      form: {
-        keyword: '',
-      },
+      likeKeys: [
+        { label: '教师名称', value: 'teacher_name' },
+        { label: '员工编号', value: 'number' },
+        { label: '授课科目', value: 'subject_type' },
+      ],
+      likeKey: 'teacher_name',  // 默认模糊字段
       // 教师字段
       teacherColumns: [
-        { title: '教师姓名', key: 'username', align: 'center' },
+        { title: '教师姓名', key: 'teacher_name', align: 'center' },
         { title: '员工编号', key: 'user_number', align: 'center' },
         { title: '岗位性质', key: 'users_job_type', align: 'center' },
         {

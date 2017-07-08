@@ -69,7 +69,7 @@ export default [
         breadcrumb: [
           { name: '课程管理' },
           { name: '教师排课', link: CURRICULUM_TEACHER_PATH },
-          { name: '日课表' },
+          { name: '教师日课表' },
         ],
       },
     }, {
@@ -81,7 +81,7 @@ export default [
         breadcrumb: [
           { name: '课程管理' },
           { name: '教师排课', link: CURRICULUM_TEACHER_PATH },
-          { name: '周课表' },
+          { name: '教师周课表' },
         ],
       },
     }],

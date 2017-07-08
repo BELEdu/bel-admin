@@ -2,16 +2,25 @@
   <div>
     <!--条件查询模块-->
     <Form inline class="app-search-form">
-      <Form-item prop="start">
-        <Input v-model="form.keyword" placeholder="请输入关键字"></Input>
+      <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:6em">
+            <Option v-for="likeKey in likeKeys"
+                    :key="likeKey.value"
+                    :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
     <!--列表工具模块-->
-    <Row class="app-content-header" type="flex" justify="end">
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="ios-calendar" /> 学员列表</h2>
+      </Col>
       <Col>
       <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
       </Col>
@@ -39,9 +48,12 @@ import { list } from '@/mixins'
     data() {
       return {
         // 搜索字段
-        form: {
-          keyword: '',
-        },
+        likeKeys: [
+          { label: '学员姓名', value: 'display_name' },
+          { label: '学员编号', value: 'number' },
+          { label: '学管师', value: 'belong_customer_relationships' },
+        ],
+        likeKey: 'display_name',  // 默认模糊字段
         // 学员字段
         studentColumns: [
           { title: '学员姓名', key: 'display_name', align: 'center' },

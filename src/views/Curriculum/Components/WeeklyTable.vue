@@ -43,17 +43,17 @@
       <div class="switch">
         <Row>
           <Col span="8">
-          <span class="prev">
-                  <Icon type="chevron-left"></Icon>
-                </span>
+          <span class="prev" @click="onPrevWeek">
+            <Icon type="chevron-left"></Icon>
+          </span>
           </Col>
           <Col span="8">
           <span>周数</span>
           </Col>
           <Col span="8">
-          <span class="next">
-                  <Icon type="chevron-right"></Icon>
-                </span>
+            <span class="next" @click="onNextWeek">
+              <Icon type="chevron-right"></Icon>
+            </span>
           </Col>
         </Row>
       </div>
@@ -146,6 +146,8 @@
    * 周课表
    */
 
+  import { isEmpty } from 'lodash'
+
   export default{
     name: 'weekly-table',
     props: {
@@ -225,6 +227,18 @@
           this.afternoonHight = `${this.$refs.afternoon[0].offsetHeight}px`
           this.eveningHight = `${this.$refs.evening[0].offsetHeight}px`
         })
+      },
+      // 切换上一周
+      onPrevWeek() {
+        if (!isEmpty(this.data)) {
+          this.$emit('on-prev')
+        }
+      },
+      // 切换下一周
+      onNextWeek() {
+        if (!isEmpty(this.data)) {
+          this.$emit('on-next')
+        }
       },
     },
     watch: {

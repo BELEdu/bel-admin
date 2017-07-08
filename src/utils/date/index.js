@@ -106,4 +106,32 @@ export const setTime = (value, type = ':') => {
     return date
   }
   return value
-}
+};
+
+export const getDateRange = (value = initTimeDate(), format) => {
+  let src = value
+  if (typeof value === 'string') {
+    src = new Date(value)
+  }
+  const day = src.getDay()
+  const date = src.getDate()
+  return [formatDate(src.setDate(date - day), format), formatDate(src.setDate(date + (6 - day)), format)]
+};
+
+export const prevWeek = (value = initTimeDate(), format) => {
+  let src = value
+  if (typeof value === 'string') {
+    src = new Date(value)
+  }
+  src.setDate(src.getDate() - 7)
+  return getDateRange(src, format)
+};
+
+export const nextWeek = (value = initTimeDate(), format) => {
+  let src = value
+  if (typeof value === 'string') {
+    src = new Date(value)
+  }
+  src.setDate(src.getDate() + 7)
+  return getDateRange(src, format)
+};

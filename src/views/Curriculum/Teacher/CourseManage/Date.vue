@@ -1,25 +1,28 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="startTime">
-        <Date-picker type="date" v-model="form.startTime" placeholder="开始时间"></Date-picker>
-      </Form-item>
-      <Form-item prop="endTime">
-        <Date-picker type="date" v-model="form.endTime" placeholder="结束时间"></Date-picker>
-      </Form-item>
-      <Form-item prop="keyword">
-        <Input v-model="form.keyword" placeholder="请输入关键词"></Input>
+      <Form-item>
+        <Date-picker v-model="query.between.created_at" type="daterange" placeholder="请选择时间期间"></Date-picker>
       </Form-item>
       <Form-item>
-        <Select v-model="form.subject">
-          <Option value="1">全部</Option>
-          <Option value="2">英语</Option>
-          <Option value="3">数字</Option>
-          <Option value="4">语文</Option>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键词">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
+      </Form-item>
+      <Form-item>
+        <Select v-model="query.equal.subject_id">
+          <Option value="">全部</Option>
+          <Option v-for="list in subjectType"
+                  :key="list.value"
+                  :value="list.value">{{list.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="form.status">
+        <Select v-model="query.equal.schedule_status">
           <Option value="">全部</Option>
           <Option value="0">待确认</Option>
           <Option value="1">已排定</Option>
@@ -28,12 +31,15 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
     <!--列表工具模块-->
-    <Row class="app-content-header" type="flex" justify="end">
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="ios-calendar" /> 日课表</h2>
+      </Col>
       <Col>
       <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
       </Col>
@@ -246,6 +252,26 @@
     components: { WeeklyTable },
     data() {
       return {
+        // 搜索字段
+        query: {
+          between: {
+            created_at: [],
+          },
+          equal: {
+            schedule_status: '',
+          },
+        },
+        likeKeys: [
+          { label: '教师姓名', value: 'teacher_name' },
+          { label: '教学对象', value: 'display_name' },
+          { label: '学管师', value: 'belong_customer_relationships' },
+        ],
+        likeKey: 'teacher_name',
+        subjectType: [
+          { display_name: '语文', value: 1 },
+          { display_name: '数学', value: 2 },
+          { display_name: '英语', value: 3 },
+        ],
         // 课表弹窗-初始化
         courseModal: false,
         courseModalParam: {
@@ -271,14 +297,6 @@
           start_at: null,
           end_at: null,
           course_cost: null,
-        },
-        // 搜索字段
-        form: {
-//        startTime: '',
-//        endTime: '',
-//        keyword: '',
-//        subject: '',
-//        status: '',
         },
         // 日课表字段
         dailyColumns: [

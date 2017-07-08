@@ -1,39 +1,45 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="startTime">
-        <Date-picker type="date" v-model="form.startTime" placeholder="开始时间"></Date-picker>
-      </Form-item>
-      <Form-item prop="endTime">
-        <Date-picker type="date" v-model="form.endTime" placeholder="结束时间"></Date-picker>
-      </Form-item>
-      <Form-item prop="keyword">
-        <Input v-model="form.keyword" placeholder="请输入关键词"></Input>
+      <Form-item>
+        <Date-picker v-model="query.between.created_at" type="daterange" placeholder="请选择时间期间"></Date-picker>
       </Form-item>
       <Form-item>
-        <Select v-model="form.subject">
-          <Option value="1">全部</Option>
-          <Option value="2">英语</Option>
-          <Option value="3">数字</Option>
-          <Option value="4">语文</Option>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键词">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
+      </Form-item>
+      <Form-item>
+        <Select v-model="query.equal.subject_id">
+          <Option value="">全部</Option>
+          <Option v-for="list in subjectType"
+                  :key="list.value"
+                  :value="list.value">{{list.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="form.status">
-          <Option value="1">全部</Option>
-          <Option value="2">待确认</Option>
-          <Option value="3">已排定</Option>
-          <Option value="4">已取消</Option>
-          <Option value="5">已上课</Option>
+        <Select v-model="query.equal.schedule_status">
+          <Option value="">全部</Option>
+          <Option value="0">待确认</Option>
+          <Option value="1">已排定</Option>
+          <Option value="2">已上课</Option>
+          <Option value="3">已取消</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
     <!--列表工具模块-->
-    <Row class="app-content-header" type="flex" justify="end">
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="ios-calendar" /> 班级日课表</h2>
+      </Col>
       <Col>
       <Button type="primary" @click="openCourseModal('add')">添加课表</Button>
       <Button type="primary">打印</Button>
@@ -70,6 +76,26 @@
     components: { WeeklyTable, CourseModal },
     data() {
       return {
+        // 搜索字段
+        query: {
+          between: {
+            created_at: [],
+          },
+          equal: {
+            schedule_status: '',
+          },
+        },
+        likeKeys: [
+          { label: '教师姓名', value: 'teacher_name' },
+          { label: '上课科目', value: 'subject_type' },
+          { label: '产品名称', value: 'product_name' },
+        ],
+        likeKey: 'teacher_name',
+        subjectType: [
+          { display_name: '语文', value: 1 },
+          { display_name: '数学', value: 2 },
+          { display_name: '英语', value: 3 },
+        ],
         formLoading: false,
         // 课表弹窗-初始化
         courseModal: false,
@@ -109,14 +135,6 @@
         // 当前标签
         currentTab: {
           id: '1',
-        },
-        // 搜索字段
-        form: {
-//        startTime: '',
-//        endTime: '',
-//        keyword: '',
-//        subject: '',
-//        status: '',
         },
         // 日课表字段
         dailyColumns: [
@@ -234,7 +252,7 @@
        * @param pageData  分页信息
        */
       getData(qs) {
-        this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${qs}`)
+        return this.$http.get(`${this.urlConf.edit}${this.$route.params.id}${qs}`)
           .then((data) => {
             this.dailyData = data
           })

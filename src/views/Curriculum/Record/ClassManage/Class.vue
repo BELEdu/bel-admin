@@ -1,13 +1,29 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="keyword">
-        <Input v-model="form.keyword" placeholder="请输入关键词"></Input>
+      <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
+
+    <!--列表工具模块-->
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="document-text" /> 班级列表</h2>
+      </Col>
+      <Col>
+      <Button type="primary" @click="getAppraiseInfo" v-if="classData.data">查看评价</Button>
+      </Col>
+    </Row>
 
     <Table class="app-table" :columns="classColumns" :data="classData.data" border></Table>
     <app-pager :data="classData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -17,6 +33,10 @@
                            :config="singleModal.config"
                            :data="currentAppraiseInfo"
                            @on-close="updateData"></appraise-single-modal>
+    <!--查看评价弹窗-->
+    <appraise-mult-modal v-model="appraiseShow"
+                         :config="multModalConfig"
+                         :data="multModalData"></appraise-mult-modal>
   </div>
 </template>
 <script>
@@ -28,13 +48,22 @@
 
   import { list } from '@/mixins'
   import AppraiseSingleModal from '../../Components/AppraiseSingleModal'
+  import AppraiseMultModal from '../../Components/AppraiseMultModal'
 
   export default{
     name: 'app-student-record-manage',
     mixins: [list],
-    components: { AppraiseSingleModal },
+    components: { AppraiseSingleModal, AppraiseMultModal },
     data() {
       return {
+        // 搜索字段
+        likeKeys: [
+          { label: '班级名称', value: 'display_name' },
+          { label: '教师姓名', value: 'teacher_name' },
+          { label: '上课科目', value: 'subject_type' },
+          { label: '产品名称', value: 'product_name' },
+        ],
+        likeKey: 'display_name',  // 默认模糊字段
         // 弹窗-初始化
         appraiseSingleModal: false,
         appraiseShow: false,
@@ -54,14 +83,6 @@
         appraiseData: {},
         // 编写|查看单项评价
         appraiseSingleData: [],
-        // 搜索字段
-        form: {
-//        startTime: '',
-//        endTime: '',
-//        keyword: '',
-//        subject: '',
-//        status: '',
-        },
         // 班级字段
         classColumns: [
           { title: '班级名称',

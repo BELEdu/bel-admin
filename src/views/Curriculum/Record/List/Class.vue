@@ -1,5 +1,27 @@
 <template>
   <div>
+    <!--条件查询模块-->
+    <Form inline class="app-search-form">
+      <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
+      </Form-item>
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
+      </Form-item>
+    </Form>
+
+    <!--列表工具模块-->
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="document-text" /> 班级列表</h2>
+      </Col>
+    </Row>
     <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" border></Table>
     <app-pager :data="clbumData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   </div>
@@ -21,9 +43,10 @@ export default {
   data() {
     return {
       // 搜索字段
-      form: {
-        keyword: '',
-      },
+      likeKeys: [
+        { label: '班级名称', value: 'display_name' },
+      ],
+      likeKey: 'display_name',  // 默认模糊字段
       // 班级字段
       clbumColumns: [
         { title: '班级名称',

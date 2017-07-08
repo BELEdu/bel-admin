@@ -1,16 +1,25 @@
 <template>
   <div>
     <Form inline class="app-search-form">
-      <Form-item prop="keyword">
-        <Input v-model="form.keyword" placeholder="请输入关键词"></Input>
+      <Form-item>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Select v-model="likeKey" slot="prepend" style="width:6em">
+          <Option v-for="likeKey in likeKeys"
+                  :key="likeKey.value"
+                  :value="likeKey.value">{{ likeKey.label }}</Option>
+        </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
     <!--列表工具模块-->
-    <Row class="app-content-header" type="flex" justify="end">
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+      <h2><Icon type="document-text" /> 学员列表</h2>
+      </Col>
       <Col>
       <Button type="primary" @click="getAppraiseInfo" v-if="studentData.data">查看评价</Button>
       </Col>
@@ -48,6 +57,15 @@ export default{
   components: { AppraiseMultModal, AppraiseSingleModal },
   data() {
     return {
+      // 搜索字段
+      likeKeys: [
+        { label: '学员姓名', value: 'display_name' },
+        { label: '学员编号', value: 'number' },
+        { label: '教师姓名', value: 'teacher_name' },
+        { label: '上课科目', value: 'subject_type' },
+        { label: '学管师', value: 'belong_customer_relationships' },
+      ],
+      likeKey: 'display_name',  // 默认模糊字段
       // 弹窗-初始化
       appraiseSingleModal: false,
       appraiseShow: false,
@@ -65,14 +83,6 @@ export default{
       appraiseData: {},
       // 编写|查看单项评价
       appraiseSingleData: [],
-      // 搜索字段
-      form: {
-//        startTime: '',
-//        endTime: '',
-//        keyword: '',
-//        subject: '',
-//        status: '',
-      },
       // 学员字段
       studentColumns: [
         { title: '学员姓名',
