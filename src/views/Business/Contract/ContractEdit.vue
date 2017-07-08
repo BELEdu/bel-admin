@@ -249,6 +249,9 @@ export default {
 </script>
 
 <style lang="less">
+
+@gutter-block: 8px;
+
 .contract-create-step {
   margin-bottom: 30px;
   padding-left: 50px;
@@ -264,7 +267,7 @@ export default {
     }
 
     & .ivu-form-item-content {
-      margin-left: 17px !important;
+      margin-left: @gutter-block !important;
     }
 
     & .ivu-btn {
