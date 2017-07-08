@@ -132,25 +132,24 @@ export default {
       // 表单验证规则
       formRules: {
         student_name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' },
-          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间', trigger: 'blur' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.required('学生姓名'),
+          this.$rules.length(2, 10),
+          this.$rules.name,
         ],
         mobile: [
-          { required: true, message: '请输入联系方式', trigger: 'blur' },
-          { type: 'string', pattern: /^1/, min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
+          this.$rules.required('手机号码'),
+          this.$rules.mobile,
         ],
         school_name: [
-          { type: 'string', min: 2, max: 20, message: '长度应该在2到20之间' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.length(2, 20),
+          this.$rules.name,
         ],
         rank: [
           { type: 'string', pattern: /^[1-9][0-9]*$/, message: '排名应为大于1的有效数字', trigger: 'blur' },
-          { type: 'string', min: 1, max: 10, message: '长度在十位以内', trigger: 'blur' },
+          this.$rules.length(1, 10),
         ],
         communication_at: [
           { validator: this.validateLogAt },
-          // { type: 'date', }
         ],
         content: [
           { validator: this.validateLogContent },
@@ -172,11 +171,10 @@ export default {
       // 点击"新增沟通记录"按钮情况下，有空字段验证
       if (this.addLogClick && value === '') {
         callback('请选择日期')
-        // 点击"提交"按钮情况下，有空字段验证
+      // 点击"提交"按钮情况下，有空字段验证
       } else if (this.comm_log.content.length > 0 && value === '') {
         callback('请选择日期')
-
-        // 验证成功
+      // 验证成功
       } else {
         callback()
       }

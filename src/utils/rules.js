@@ -87,7 +87,7 @@ const rules = {
   // 姓名验证（中文包含少数民族如：买买提·陈奕迅·阿凡提，英文名支持由空格和·分隔开）
   name: {
     pattern: /^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+(·[\u4e00-\u9fa5]+)*|([a-zA-Z]+\s?)+|[a-zA-Z]+(·[a-zA-Z]+)*)$/,
-    message: '姓名格式不正确',
+    message: '名字格式不正确',
     trigger: 'blur',
   },
 

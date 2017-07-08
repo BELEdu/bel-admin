@@ -88,20 +88,20 @@ export default {
       // 表单验证
       formRules: {
         display_name: [
-          { required: true, message: '请填写产品名称', trigger: 'blur' },
-          { type: 'string', min: 2, max: 20, message: '长度应该在2到20之间' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.required('产品名称'),
+          this.$rules.length(2, 10),
+          this.$rules.name,
         ],
         product_type_id: [
-          { required: true, message: '请选择产品类型' },
+          this.$rules.required('产品类型', 'number', 'change'),
         ],
         course_duration: [
-          { required: true, message: '请填写课程时长', trigger: 'blur' },
-          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入正确的数字', trigger: 'blur' },
+          this.$rules.required('课程时长'),
+          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入有效数字', trigger: 'blur' },
         ],
         price: [
-          { required: true, message: '请填写产品单价', trigger: 'blur' },
-          { type: 'string', pattern: /^[1-9]\d*(\.\d+)?$/, message: '请输入正确的数字', trigger: 'blur' },
+          this.$rules.required('产品单价'),
+          this.$rules.price,
         ],
       },
       // 校区全选

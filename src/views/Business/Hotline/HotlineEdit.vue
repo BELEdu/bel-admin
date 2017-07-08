@@ -3,7 +3,7 @@
     <app-editor-title></app-editor-title>
     <Form :label-width="130" :rules="formRules" ref="form" :model="fdata">
       <Form-item label="来访时间" required prop="visited_at">
-        <Date-picker placeholder="年 / 月 / 日" v-model="fdata.visited_at" formate="yyyy-MM-dd" type="date" :editable="false"></Date-picker>
+        <app-date-picker placeholder="年 / 月 / 日" v-model="fdata.visited_at" formate="yyyy-MM-dd" :editable="false"></app-date-picker>
       </Form-item>
       <Form-item label="家长姓名" required prop="elder_name">
         <Input placeholder="请输入家长姓名" v-model="fdata.elder_name"></Input>
@@ -18,7 +18,7 @@
         <!--地区接口还未确定 -->
         <Cascader :data="map" trigger="hover"></Cascader>
       </Form-item>
-      <Form-item label="当前年级">
+      <Form-item label="当前年级" prop="grade">
         <Select placeholder="请选择......" v-model="fdata.grade">
           <Option 
             v-if="dicts.grade" 
@@ -45,7 +45,7 @@
         <Input placeholder="请输入在读学校名称" v-model="fdata.school_name"></Input>
       </Form-item>
       <Form-item label="二次上门日期">
-        <Date-picker placeholder="年 / 月 / 日" v-model="fdata.return_visited_at" :editable="false"></Date-picker>
+        <app-date-picker placeholder="年 / 月 / 日" v-model="fdata.return_visited_at" :editable="false"></app-date-picker>
       </Form-item>
       <Form-item>
         <Button @click.stop="goBack">取消</Button>
@@ -83,28 +83,29 @@ export default {
       // 年级信息 - 后端字典数据
       grade: null,
       formRules: {
-        visited_at: [{ required: true, message: '请选择日期' }],
+        visited_at: [this.$rules.required('来访时间')],
         elder_name: [
-          { required: true, message: '请输入家长姓名', trigger: 'blur' },
-          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.required('家长姓名'),
+          this.$rules.length(2, 10),
+          this.$rules.name,
         ],
         student_name: [
-          { required: true, message: '请输入学生姓名', trigger: 'blur' },
-          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间', trigger: 'blur' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.required('家长姓名'),
+          this.$rules.length(2, 10),
+          this.$rules.name,
         ],
         mobile: [
-          { required: true, message: '请输入联系方式', trigger: 'blur' },
-          { type: 'string', pattern: /^1/, min: 11, max: 11, message: '请输入正确的手机号码', trigger: 'blur' },
+          this.$rules.required('手机号码'),
+          this.$rules.mobile,
         ],
+        grade: [this.$rules.required('当前年级', 'number', 'change')],
         market_staff_name: [
-          { type: 'string', min: 2, max: 10, message: '长度应该在2到10之间' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, min: 2, max: 10, message: '请输入正确的姓名', trigger: 'blur' },
+          this.$rules.length(2, 10),
+          this.$rules.name,
         ],
         school_name: [
-          { type: 'string', min: 2, max: 20, message: '长度应该在2到20之间' },
-          { type: 'string', pattern: /^[A-Za-z\u4e00-\u9fa5]+$/, message: '仅允许中文，大小写字母', trigger: 'blur' },
+          this.$rules.length(2, 20),
+          this.$rules.name,
         ],
       },
     }
@@ -121,6 +122,7 @@ export default {
     submit() {
       this.loading = true
       const fdata = encode(this.fdata)
+
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
