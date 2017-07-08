@@ -57,24 +57,18 @@
 
       <Col span="11" offset="1">
         <Form-item label="归属咨询师">
-          <Select placeholder="请选择..." v-model="form.belong_counselor">
-            <Option :value="1">张三</Option>
-            <Option :value="2">李四</Option>
-            <Option :value="3">王五</Option>
+          <Select  v-model="form.sublist.belong_counselor">
+            <Option v-for="item in advisoryList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="归属学管师">
-          <Select placeholder="请选择..." v-model="form.belong_customer_relationships">
-            <Option :value="1">张三</Option>
-            <Option :value="2">李四</Option>
-            <Option :value="3">王五</Option>
+          <Select  v-model="form.sublist.belong_customer_relationships">
+            <Option v-for="item in adminList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="归属教师">
-          <Select placeholder="请选择..." v-model="form.sublist.belong_teacher">
-            <Option :value="1">张三</Option>
-            <Option :value="2">李四</Option>
-            <Option :value="3">王五</Option>
+          <Select  v-model="form.sublist.belong_teacher">
+            <Option v-for="item in teacherList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="转介绍员工">
@@ -105,12 +99,12 @@
           <Input placeholder="请输入信息来源" v-model="form.sublist.information_source"></Input>
         </Form-item>
         <Form-item label="沟通类型">
-          <Select placeholder="请选择..." v-model="form.sublist.communication_type">
+          <Select  v-model="form.sublist.communication_type">
             <Option v-for="item in communicationTypes" :key="item.value" :value="item.value">{{ item.display_name }}</Option>
           </Select>
         </Form-item>
         <Form-item label="当前状态">
-          <Select placeholder="请选择..." v-model="form.student_current_status">
+          <Select  v-model="form.student_current_status">
             <Option v-for="status in studentCurrentStatus" :key="status.value" :value="status.value">{{ status.display_name }}</Option>
           </Select>
         </Form-item>
@@ -150,6 +144,18 @@ export default {
       default: () => [],
     },
     subjectTypes: {
+      type: Array,
+      default: () => [],
+    },
+    adminList: {
+      type: Array,
+      default: () => [],
+    },
+    teacherList: {
+      type: Array,
+      default: () => [],
+    },
+    advisoryList: {
       type: Array,
       default: () => [],
     },

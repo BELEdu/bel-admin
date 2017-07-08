@@ -56,6 +56,7 @@
       @closeManageModal="modal.manage=false"
       :form="form"
       :studentData="student_data"
+      @updateData="updateData"
     >
     </manage-modal>
 
@@ -96,9 +97,7 @@ export default {
         { label: '产品名称', value: '111' },
         { label: '产品类型', value: '111' },
       ],
-
       likeKey: 'display_name',
-
       query: {
         equal: {
           current_grade: null,
@@ -219,6 +218,11 @@ export default {
     getData(qs) {
       return this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
     },
+
+    // refresh() {
+    //   console.log(this.$route.query)
+    //   this.$store.dispatch(STUDENT.CLASSES.INIT, this.$route.query)
+    // },
   },
 }
 </script>

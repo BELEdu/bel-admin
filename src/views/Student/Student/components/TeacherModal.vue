@@ -11,7 +11,7 @@
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="分配给" prop="teacher_id">
         <Select v-model="form.teacher_id" placeholder="请选择...">
-          <Option v-for="teacher in teachers" :key="teacher.value" :value="teacher.value">{{ teacher.display_name }}</Option>
+          <Option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">{{ teacher.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="通知该教师" prop="send_type">
@@ -80,6 +80,7 @@ export default {
     successHandler() {
       this.closeModal()
       this.$Message.info('提交成功！')
+      this.$emit('updateData')
     },
 
     closeModal() {
@@ -91,7 +92,8 @@ export default {
   },
 
   created() {
-    this.$http.get('/student/assign_teacher')
+    // this.$http.get('/student/assign_teacher')
+    this.$http.get('/teacher_list?attr=is_student_teac')
     .then((res) => {
       this.teachers = res
     })

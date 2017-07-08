@@ -23,7 +23,7 @@
       </Form-item>
       <Form-item label="教师">
         <Select placeholder="请选择老师..." v-model="form.teachers" filterable multiple >
-          <Option v-for="item in classes_teacher_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
+          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="开办日期" >
@@ -157,13 +157,21 @@ export default {
       }
     },
 
+    // 获取教师数据源
+    getTeacherData() {
+      this.$http.get('/teacher_list?attr=is_student_teac')
+        .then((res) => {
+          this.classes_teacher_data = res
+        })
+    },
+
     // 获取各个下拉菜单的数据
     getListData() {
       return this.$http.get('/classes/create')
        .then((res) => {
         //  获取班主任、任课教师、班级学员的数据源
          this.classes_director_data = res.classes_director_data
-         this.classes_teacher_data = res.classes_teacher_data
+        //  this.classes_teacher_data = res.classes_teacher_data
          this.student_data = res.student_data
        })
     },
@@ -183,12 +191,8 @@ export default {
           } = res
 
           this.form = { ...others }
-          // this.form = {
-          //   ...others,
-          //   start_at: res.start_at ? new Date(res.start_at) : null,
-          // }
           this.classes_director_data = classes_director_data
-          this.classes_teacher_data = classes_teacher_data
+          // this.classes_teacher_data = classes_teacher_data
           this.student_data = student_data
         })
     },
@@ -198,8 +202,9 @@ export default {
     // 通过接口获取我的学生(测试)
     // this.studentList = myStudents
 
-    // 判断是编辑还是新建，以此调用不同的接口
-    (this.isUpdate ? this.getClassData : this.getListData)()
+    this.getTeacherData()
+
+    ;(this.isUpdate ? this.getClassData : this.getListData)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }

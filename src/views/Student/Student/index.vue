@@ -11,6 +11,11 @@
         </Input>
       </Form-item>
       <Form-item>
+        <Select v-model="query.equal.school_zone" style="width:7em;" placeholder="请选择校区" >
+          <Option v-for="school in school_list" :value="school.display_name" :key="school.display_name">{{ school.display_name }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
         <Date-picker v-model="query.between.created_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
       </Form-item>
       <Form-item>
@@ -70,6 +75,7 @@
       v-model="modal.teacher"
       @closeTeacherModal="modal.teacher = false"
       :studentItem="studentItem"
+      :updateData="updateData"
     ></teacher-modal>
 
     <!-- 学员信息表格 -->
@@ -113,6 +119,9 @@ export default {
       ],
       likeKey: 'display_name',
       query: {
+        equal: {
+          school_zone: '',
+        },
         between: {
           created_at: [],
         },
@@ -157,20 +166,19 @@ export default {
           align: 'center',
           width: 200,
           render: createButton([
-            // 删除该学员
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
             { text: '交流会', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/meeting/edit`) },
           ]),
         },
       ],
-      // 分配学管师表单
-      formManage: {
+
+      formManage: {// 分配学管师表单
         manage: '',
         notice: '',
       },
-      // 分配学管师表单验证规则
-      ruleManage: {
+
+      ruleManage: { // 分配学管师表单验证规则
         manage: [
           { required: true, message: '请选择学管师', trigger: 'change' },
         ],
@@ -178,14 +186,14 @@ export default {
           { required: true, message: '请选择通知方式', trigger: 'change' },
         ],
       },
-      // 模态框配置
-      modal: {
+
+      modal: {// 模态框状态
         teacher: false,
         manage: false,
         delete: false,
       },
-      // 模态框确定按钮loading状态
-      loading: {
+
+      loading: { // 模态框按钮loading状态
         manage: false,
         delete: false,
       },
@@ -193,11 +201,12 @@ export default {
       studentId: '', // 学员编号（用于删除学员）
 
       studentItem: [], // 学生id数组（用于分配教师）
+
+      school_list: [], // 校区列表
     }
   },
 
   computed: {
-    // 使用mapState获取list
     ...mapState({
       list: state => state.student.student.list,
     }),
@@ -209,8 +218,7 @@ export default {
 
   methods: {
 
-    // 打开分配教师弹窗
-    openTeacherModal() {
+    openTeacherModal() { // 打开分配教师弹窗
       if (this.studentItem.length > 0) {
         this.modal.teacher = true
       } else {
@@ -218,22 +226,17 @@ export default {
       }
     },
 
-    // 获取选中的学生ID
-    onSelectionChange(selection) {
+    onSelectionChange(selection) { // 获取选中的学生ID（iview表格自带）
       this.studentItem = selection.map(item => item.id)
     },
 
-    // 根据接口和loaction.search（query）获取数据
     getData(qs) {
       return this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
     },
 
-    // 分配学管师表单提交
-    manageSubmit(name) {
-      // 验证表单
-      this.$refs[name].validate((valid) => {
+    manageSubmit(name) { // 分配学管师表单提交
+      this.$refs[name].validate((valid) => { // 验证表单
         if (valid) {
-          // 禁止连续点击
           this.loading.manage = true
           // 用延时模拟请求成功
           setTimeout(() => {
@@ -252,14 +255,11 @@ export default {
     // 打开删除模态框
     openDeleteModal(id) {
       this.modal.delete = true
-      // 传入表格中对应学员编号
       this.studentId = id
     },
 
-    // 删除未签约学员
-    studentDelete(id) {
+    studentDelete(id) { // 删除未签约学员
       this.studentId = id
-      // 禁止连续点击
       this.loading.delete = true
       this.$store.dispatch(STUDENT.STUDENT.DELETE, id)
       .then(() => {
@@ -268,6 +268,17 @@ export default {
         this.$Message.warning('删除成功！')
       })
     },
+
+    getSchoolList() { // 获取校区列表
+      this.$http.get('/school_list')
+        .then((res) => {
+          this.school_list = res
+        })
+    },
+  },
+
+  created() {
+    this.getSchoolList()
   },
 }
 </script>

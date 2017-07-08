@@ -90,6 +90,7 @@ const rules = {
     message: '姓名格式不正确',
     trigger: 'blur',
   },
+
   date: (field, params, validator = validatorDate) => ({
     required: true,
     type: 'date',

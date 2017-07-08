@@ -24,6 +24,7 @@
  * @version 2017-06-29
  */
 import { form } from '@/mixins'
+// import { STUDENT } from '@/store/mutationTypes'
 // import format from 'date-fns/format'
 
 export default {
@@ -65,6 +66,7 @@ export default {
     successHandler() {
       this.closeModal()
       this.$Message.info('提交成功！')
+      this.$emit('updateData')
     },
 
     closeModal() {

@@ -10,6 +10,7 @@
      class="app-form-entire"
     >
       <app-form-alert :errors="formErrors"></app-form-alert>
+
       <!-- 学员基本信息 -->
       <basic
        :form="form"
@@ -19,6 +20,9 @@
        :communicationTypes="communicationTypes"
        :studentCurrentStatus="studentCurrentStatus"
        :subjectTypes="subjectTypes"
+       :adminList="adminList"
+       :teacherList="teacherList"
+       :advisoryList="advisoryList"
       ></basic>
 
       <!-- 家长信息 -->
@@ -108,11 +112,10 @@ export default {
         student_current_status: null, // 学生当前状态
         original_contractor_id: '', // 初始签约人（仅可读）
 
-        // 待定数据
-        sublist: { ...defaultSublist },
+        sublist: { ...defaultSublist }, // 待定数据
 
-        // 家长
-        parent: [],
+        parent: [], // 家长
+
       },
 
       rules: {
@@ -128,12 +131,15 @@ export default {
           this.$rules.idcard,
         ],
       },
+
+      adminList: [], // 学管师数据源
+      teacherList: [], // 教师数据源
+      advisoryList: [], // 咨询师数据源
     }
   },
 
   computed: {
     ...mapState({
-      // 获取数据字典
       genders: state => state.dicts.gender, // 男女
       grades: state => state.dicts.grade, // 年级
       communicationTypes: state => state.dicts.communication_type, // 沟通类型
@@ -141,13 +147,11 @@ export default {
       subjectTypes: state => state.dicts.subject_type, // 文理分科
     }),
 
-    // 判断是修改还是新增
-    isUpdate() {
+    isUpdate() { // 判断是修改还是新增
       return !!this.$router.currentRoute.params.studentId
     },
 
-    // 学员id
-    id() {
+    id() { // 学员id
       return this.$router.currentRoute.params.studentId
     },
   },
@@ -161,8 +165,26 @@ export default {
       this.form.parent.splice(index, 1)
     },
 
-    // 获取各个下拉菜单的数据
     getListData() {
+      // 获取学管师数据源
+      this.$http.get('/teacher_list?attr=is_student_admin')
+        .then((res) => {
+          this.adminList = res
+        })
+      // 获取教师数据源
+      this.$http.get('/teacher_list?attr=is_student_teac')
+        .then((res) => {
+          this.teacherList = res
+        })
+      // 获取咨询师数据源
+      this.$http.get('/teacher_list?attr=is_student_advisory')
+        .then((res) => {
+          this.advisoryList = res
+        })
+    },
+
+    // 添加操作时候获取的数据
+    getCreateData() {
       return this.$http.get('/student/create')
         .then((res) => {
           // eslint-disable-next-line
@@ -193,10 +215,8 @@ export default {
         ...this.form,
         sublist: {
           ...this.form.sublist,
-          // 处理日期格式
         },
       }
-
       // 判断是编辑还是新建，以此提交不同的接口
       ;(
         this.isUpdate ?
@@ -214,8 +234,9 @@ export default {
   },
 
   created() {
-    // 判断是编辑还是新建，以此调用不同的接口
-    (this.isUpdate ? this.getClassData : this.getListData)()
+    this.getListData()
+
+    ;(this.isUpdate ? this.getClassData : this.getCreateData)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
