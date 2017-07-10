@@ -32,10 +32,10 @@
       </Form-item>
       <Form-item label="邀约咨询师">
         <Select placeholder="请选择......" v-model="fdata.invited_teacher_id">
-          <Option value="1">甲</Option>
-          <Option value="2">乙</Option>
-          <Option value="3">丙</Option>
-          <Option value="4">丁</Option>
+          <Option
+            v-for="item in advisories"
+            :key="item.id"
+            :value="item.id">{{item.username}}</Option>
         </Select>
       </Form-item>
       <Form-item label="市场专员" prop="market_staff_name">
@@ -64,6 +64,7 @@
 
 import map from '@/views/Business/casdata'
 import { goBack } from '@/mixins'
+import { Http } from '@/utils'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { editInit, encode } from './modules/config'
 
@@ -78,10 +79,9 @@ export default {
       fdata: editInit(),
       // 提交按钮状态控制
       loading: false,
-      // 表单预置数据
+      // 咨询师数据
+      advisories: null,
       map,
-      // 年级信息 - 后端字典数据
-      grade: null,
       formRules: {
         visited_at: [this.$rules.required('来访时间')],
         elder_name: [
@@ -138,6 +138,10 @@ export default {
   },
 
   created() {
+    // 获取咨询师数据
+    Http.get('/teacher_list?attr=is_student_advisory')
+      .then((res) => { this.advisories = res })
+
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
