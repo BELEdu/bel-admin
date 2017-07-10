@@ -32,6 +32,7 @@ Vue.component('app-uploader', components.AppUploader)
 Vue.component('app-knowledge-tree', components.AppKnowledgeTree)
 Vue.component('app-date-picker', components.AppDatePicker)
 Vue.component('app-time-picker', components.AppTimePicker)
+Vue.component('app-map-cascader', components.AppMapCascader)
 
 // 注册插件
 Vue

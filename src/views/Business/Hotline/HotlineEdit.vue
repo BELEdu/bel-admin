@@ -15,8 +15,7 @@
         <Input placeholder="请输入联系方式" v-model="fdata.mobile"></Input>
       </Form-item>
       <Form-item label="选择地区">
-        <!--地区接口还未确定 -->
-        <Cascader :data="map" trigger="hover"></Cascader>
+        <app-map-cascader v-model="fdata.areas_code"></app-map-cascader>
       </Form-item>
       <Form-item label="当前年级" prop="grade">
         <Select placeholder="请选择......" v-model="fdata.grade">
@@ -62,7 +61,6 @@
  * @version 2017-06-06
  */
 
-import map from '@/views/Business/casdata'
 import { goBack } from '@/mixins'
 import { Http } from '@/utils'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
@@ -81,7 +79,6 @@ export default {
       loading: false,
       // 咨询师数据
       advisories: null,
-      map,
       formRules: {
         visited_at: [this.$rules.required('来访时间')],
         elder_name: [
@@ -134,6 +131,9 @@ export default {
     },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
+    },
+    consolelog() {
+      console.log(this.area)
     },
   },
 
