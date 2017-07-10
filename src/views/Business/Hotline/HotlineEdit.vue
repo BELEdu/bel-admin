@@ -19,10 +19,10 @@
       </Form-item>
       <Form-item label="当前年级" prop="grade">
         <Select placeholder="请选择......" v-model="fdata.grade">
-          <Option 
-            v-if="dicts.grade" 
-            v-for="item in dicts.grade" 
-            :value="item.value" 
+          <Option
+            v-if="dicts.grade"
+            v-for="item in dicts.grade"
+            :value="item.value"
             :key="item.display_name"
           >
             {{item.display_name}}
@@ -131,9 +131,6 @@ export default {
     },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
-    },
-    consolelog() {
-      console.log(this.area)
     },
   },
 

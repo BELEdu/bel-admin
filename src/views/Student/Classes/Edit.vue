@@ -1,40 +1,57 @@
 <template>
   <div>
     <app-editor-title></app-editor-title>
-    <Form :label-width="140" class="app-form-entire" :model="form" :rules="rules" ref="form" >
+    <Form :label-width="140" class="app-form-entire" :model="form" :rules="rules" ref="form">
       <app-form-alert :errors="formErrors"></app-form-alert>
-      <Form-item label="班级名称"  prop="display_name">
+      <Form-item label="班级名称" prop="display_name">
         <Input placeholder="请输入班级名称" v-model="form.display_name"></Input>
       </Form-item>
       <Form-item label="班级分类" prop="classes_type">
-        <Select placeholder="请选择..." v-model="form.classes_type">
+        <Select placeholder="请选择..." v-model="form.classes_type" :disabled="isUpdate">
           <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
-      <Form-item label="当前年级" >
+      <Form-item label="当前年级（要去掉）">
         <Select placeholder="请选择..." v-model="form.current_grade">
           <Option v-for="item in grade" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="班主任">
-        <Select placeholder="请选择..." v-model="form.classes_director" >
+        <Select placeholder="请选择..." v-model="form.classes_director">
           <Option v-for="item in classes_director_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="教师">
-        <Select placeholder="请选择老师..." v-model="form.teachers" filterable multiple >
+        <Select placeholder="请选择老师..." v-model="form.teachers" filterable multiple>
           <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
         </Select>
       </Form-item>
-      <Form-item label="开办日期" >
-        <app-date-picker placeholder="请选择开办日期" v-model="form.start_at" ></app-date-picker>
+      <!--<Form-item label="开办日期">
+        <app-date-picker placeholder="请选择开办日期" v-model="form.start_at"></app-date-picker>
+      </Form-item>-->
+      <Form-item label="开办日期（range）">
+        <Date-picker type="daterange" placeholder="请选择开办日期" v-model="range"></Date-picker>
       </Form-item>
       <!--<Form-item label="选择学员（测试）" >
-        <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
-          <Option v-for="item in studentList" :value="item" :key="item">{{ item }}</Option>
-        </Select>
-      </Form-item>-->
-      <Form-item label="选择学员" >
+          <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
+            <Option v-for="item in studentList" :value="item" :key="item">{{ item }}</Option>
+          </Select>
+        </Form-item>-->
+      <Form-item label="设定假期">
+        <Checkbox-group >
+          <Checkbox label="1">每周一</Checkbox>
+          <Checkbox label="2">每周二</Checkbox>
+          <Checkbox label="3">每周三</Checkbox>
+          <Checkbox label="4">每周四</Checkbox>
+          <Checkbox label="5">每周五</Checkbox>
+          <Checkbox label="6">每周六</Checkbox>
+          <Checkbox label="7">每周日</Checkbox>
+        </Checkbox-group>
+      </Form-item>
+      <Form-item>
+        <Date-picker type="daterange" :options="options" placeholder="选择特定的日期" v-model="range2"></Date-picker>
+      </Form-item>
+      <Form-item label="选择学员">
         <Select v-model="form.students" placeholder="请选择学生..." multiple filterable>
           <Option v-for="item in student_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
@@ -114,6 +131,14 @@ export default {
       classes_teacher_data: [], // 任课教师数据源
       student_data: [], // 班级学生数据源
       // studentList: [], // 班级学生数据源（测试）
+      range: [], // 开班日期时间段
+      range2: [], // 选择特定的日期
+
+      options: {
+        disabledDate(date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        },
+      },
     }
   },
 
@@ -168,12 +193,11 @@ export default {
     // 获取各个下拉菜单的数据
     getListData() {
       return this.$http.get('/classes/create')
-       .then((res) => {
-        //  获取班主任、任课教师、班级学员的数据源
-         this.classes_director_data = res.classes_director_data
-        //  this.classes_teacher_data = res.classes_teacher_data
-         this.student_data = res.student_data
-       })
+        .then((res) => {
+          //  获取班主任、班级学员的数据源
+          this.classes_director_data = res.classes_director_data
+          this.student_data = res.student_data
+        })
     },
 
     // 获取当前编辑班级的数据
@@ -182,17 +206,15 @@ export default {
       const editId = this.$router.currentRoute.params.id
       return this.$http.get(`/classes/${editId}`)
         .then((res) => {
-          // 将班主任、任课教师、班级学员的数据源解构出来，需要提交的数据放在this.form中
+          // 将班主任、班级学员的数据源解构出来，需要提交的数据放在this.form中
           const {
             classes_director_data,
-            classes_teacher_data,
             student_data,
             ...others
           } = res
 
           this.form = { ...others }
           this.classes_director_data = classes_director_data
-          // this.classes_teacher_data = classes_teacher_data
           this.student_data = student_data
         })
     },
@@ -204,7 +226,7 @@ export default {
 
     this.getTeacherData()
 
-    ;(this.isUpdate ? this.getClassData : this.getListData)()
+    ; (this.isUpdate ? this.getClassData : this.getListData)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }

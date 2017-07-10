@@ -10,19 +10,24 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.current_grade" style="width:8em;" placeholder="请选择年级" >
+        <Select v-model="query.equal.current_grade" style="width:9em;" placeholder="请选择年级" >
           <Option v-for="grade in grades" :value="grade.value" :key="grade.display_name">{{ grade.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.status" placeholder="请选择状态" style="width:7em;">
+        <Select  placeholder="请选择产品类型" style="width:9em;">
+          <Option v-for="productType in productTypes" :value="productType.value" :key="productType.display_name">{{ productType.display_name }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Select v-model="query.equal.status" placeholder="请选择状态" style="width:9em;">
           <Option :value="1">未开班</Option>
           <Option :value="2">开班中</Option>
           <Option :value="3">已结束</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.start_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择开班日期"></Date-picker>
+        <Date-picker v-model="query.between.start_at" type="daterange" placeholder="请选择开班日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -94,7 +99,7 @@ export default {
       likeKeys: [
         { label: '班级名称', value: 'display_name' },
         { label: '班级编号', value: 'classes_number' },
-        { label: '产品名称', value: '111' },
+        { label: '产品名称', value: 'classes_type_name' },
         { label: '产品类型', value: '111' },
       ],
       likeKey: 'display_name',
@@ -111,7 +116,8 @@ export default {
       columns: [
         { title: '班级名称', key: 'display_name', align: 'center', width: 130 },
         { title: '班级编号', key: 'classes_number', align: 'center', width: 100 },
-        { title: '年级', key: 'grade_name', align: 'center', width: 120 },
+        { title: '产品名称', key: 'classes_type_name', align: 'center', width: 180 },
+        { title: '产品类型', key: '', align: 'center', width: 120 },
         { title: '班主任', key: 'classes_director', align: 'center', width: 100 },
         // {
         //   title: '教师',
@@ -167,10 +173,10 @@ export default {
   },
 
   computed: {
-    // 使用mapState获取list
     ...mapState({
       list: state => state.student.classes.list,
       grades: state => state.dicts.grade,
+      productTypes: state => state.dicts.product_type,
     }),
   },
 
@@ -179,8 +185,7 @@ export default {
   },
 
   methods: {
-    // 打开班级学员管理模态框
-    openManageModal(id) {
+    openManageModal(id) { // 打开班级学员管理模态框
       this.modal.manage = true
       this.classId = id
       this.$http.get(`/classes/${id}`)
@@ -195,14 +200,12 @@ export default {
         })
     },
 
-    // 打开删除班级模态框
-    openDeleteModal(id) {
+    openDeleteModal(id) { // 打开删除班级模态框
       this.modal.delete = true
       this.classId = id
     },
 
-    // 删除班级
-    deleteSubmit(id) {
+    deleteSubmit(id) { // 删除班级
       this.classId = id
       this.loading.delete = true
       // 班级id用来请求删除接口
@@ -214,15 +217,9 @@ export default {
       })
     },
 
-    // 根据接口和loaction.search（query）获取数据
-    getData(qs) {
+    getData(qs) { // 根据接口和loaction.search（query）获取数据
       return this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
     },
-
-    // refresh() {
-    //   console.log(this.$route.query)
-    //   this.$store.dispatch(STUDENT.CLASSES.INIT, this.$route.query)
-    // },
   },
 }
 </script>
