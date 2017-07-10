@@ -71,6 +71,9 @@
             <Option v-for="item in teacherList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
+        <Form-item label="产品名称" v-if="isUpdate">
+          <Input placeholder="无" disabled></Input>
+        </Form-item>
         <Form-item label="转介绍员工">
           <Select placeholder="请选择..." v-model="form.sublist.turn_recommend_staff">
             <Option :value="1">张三</Option>
