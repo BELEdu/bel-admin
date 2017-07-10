@@ -132,6 +132,7 @@ export default {
     // 删除某一列表项
     toDelete(row) {
       // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
+      this.warn.loading = false
       this.warn.show = true
       this.warn.row = row
     },
@@ -139,7 +140,6 @@ export default {
       this.warn.loading = true
       this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
         .then(() => {
-          this.warn.loading = false
           this.warn.show = false
         })
     },

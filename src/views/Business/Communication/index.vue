@@ -148,6 +148,7 @@ export default {
     },
     // 提醒：预备删除某一列
     toDelete(row) {
+      this.warn.loading = false
       this.warn.show = true
       this.warn.row = row
     },
@@ -156,7 +157,6 @@ export default {
       this.warn.loading = true
       this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
         .then(() => {
-          this.warn.loading = false
           this.warn.show = false
         })
     },
