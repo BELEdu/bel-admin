@@ -56,9 +56,7 @@ export default {
         { label: '学员姓名', value: 'display_name' },
         { label: '归属学管师', value: 'belong_customer_relationships' },
       ],
-
       likeKey: 'display_name',
-
       query: {
         equal: {
           current_grade: null,

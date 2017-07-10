@@ -5,10 +5,10 @@
       <Tab-pane label="学习计划" name="plan"></Tab-pane>
       <Tab-pane label="历史计划" name="history"></Tab-pane>
       <div slot="extra">
-        <Tag type="dot" color="blue" v-if="type === 'student'"><b>学员姓名</b>： {{studentName}} </Tag>
-        <Tag type="dot" color="yellow" v-if="type === 'student'"><b>学管师</b>： {{teacher}} </Tag>
-        <Tag type="dot" color="blue" v-if="type === 'classes'"><b> 班级 </b>： {{classesName}} </Tag>
-        <Tag type="dot" color="yellow" v-if="type === 'classes'"><b>班主任</b>： {{classes_director}} </Tag>
+        <Tag type="dot" color="blue" v-if="isStudent"><b>学员姓名</b>： {{studentName}} </Tag>
+        <Tag type="dot" color="yellow" v-if="isStudent"><b>学管师</b>： {{teacher}} </Tag>
+        <Tag type="dot" color="blue" v-if="!isStudent"><b> 班级 </b>： {{classesName}} </Tag>
+        <Tag type="dot" color="yellow" v-if="!isStudent"><b>班主任</b>： {{classes_director}} </Tag>
       </div>
     </Tabs>
 
@@ -84,7 +84,6 @@ export default {
     (this.isStudent ? this.getStudentInfo : this.getClassesInfo)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
 
-    this.$store.commit(GLOBAL.LOADING.HIDE)
     const pathArry = this.$route.path.split('/')
     this.tabActive = pathArry[pathArry.length - 1]
   },

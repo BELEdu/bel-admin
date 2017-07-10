@@ -3,10 +3,21 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input type="text" placeholder="请输入关键字"></Input>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:7em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Select v-model="query.equal.subject_type" style="width:8em;" placeholder="请选择科目" >
+          <Option value="语文" >语文</Option>
+          <Option value="数学" >数学</Option>
+          <Option value="英语" >英语</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -65,9 +76,14 @@ export default {
 
   data() {
     return {
-
-      modal: {
-        history: false,
+      likeKeys: [
+        { label: '科目', value: 'subject_type' },
+      ],
+      likeKey: 'subject_type',
+      query: {
+        equal: {
+          subject_type: null,
+        },
       },
 
       columns: [
@@ -86,9 +102,11 @@ export default {
         },
       ],
 
-      // hdata,
+      modal: {
+        history: false,
+      },
 
-      query: {}, // 分页配置
+      // hdata,
     }
   },
 
@@ -105,14 +123,13 @@ export default {
       this.$Message.info(`编号${id}`)
     },
     getData(qs) {
-      this.$store.dispatch(
+      return this.$store.dispatch(
         STUDENT.STUDYPROGRESS[this.isStudent ? 'STUDENT' : 'CLASSES'].HISTORY.INIT, {
           id: this.id,
           query: qs,
         })
         .then(() => {
           this.$router.push(`/student/studyprogress/${this.type}/${this.id}/history${qs}`)
-          this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
   },
