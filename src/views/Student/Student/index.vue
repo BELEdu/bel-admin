@@ -30,7 +30,7 @@
       </Col>
       <Col>
         <Button type="primary" @click="openTeacherModal">分配教师</Button>
-        <Button type="primary" @click="modal.manage = true">分配学管师</Button>
+        <Button type="primary" @click="openManageModal">分配学管师</Button>
         <Button type="primary" @click="$router.push('/student/student/edit')">添加学员</Button>
       </Col>
     </Row>
@@ -46,30 +46,6 @@
       <div class="text-center">是否删除该编号为{{studentId}}的学员？</div>
     </app-warn-modal>
 
-    <!-- 分配学管师模态框 -->
-    <app-form-modal
-      v-model="modal.manage"
-      title="分配学管师"
-      :loading="loading.manage"
-      @on-ok="manageSubmit('formManage')"
-    >
-      <Form ref="formManage" :model="formManage" :rules="ruleManage" :label-width="100">
-        <Form-item label="分配给" prop="manage">
-          <Select v-model="formManage.manage" placeholder="请选择...">
-            <Option value="1">学管李</Option>
-            <Option value="2">学管王</Option>
-            <Option value="3">学管黄</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="通知该教师" prop="notice">
-          <Radio-group v-model="formManage.notice">
-            <Radio label="1">发送短信</Radio>
-            <Radio label="2">发送邮件</Radio>
-          </Radio-group>
-        </Form-item>
-      </Form>
-    </app-form-modal>
-
     <!--分配教师组件-->
     <teacher-modal
       v-model="modal.teacher"
@@ -77,6 +53,14 @@
       :studentItem="studentItem"
       :updateData="updateData"
     ></teacher-modal>
+
+    <!-- 分配学管师组件 -->
+    <manage-modal
+      v-model="modal.manage"
+      @closeManageModal="modal.manage = false"
+      :studentItem="studentItem"
+      :updateData="updateData"
+    ></manage-modal>
 
     <!-- 学员信息表格 -->
     <Table class="app-table" :columns="columns" :data="list.data" border @on-selection-change="onSelectionChange"></Table>
@@ -100,6 +84,7 @@ import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import TeacherModal from './components/TeacherModal'
+import ManageModal from './components/ManageModal'
 
 export default {
   name: 'app-student-student',
@@ -151,8 +136,7 @@ export default {
           title: '剩余课时',
           key: 'course_total',
           align: 'center',
-          // 剩余课时小于10的时候变红
-          render: (h, params) => {
+          render: (h, params) => { // 剩余课时小于10的时候变红
             const { course_total } = params.row
             const className = +course_total < 10 ? 'color-error' : ''
             return h('span', {
@@ -173,20 +157,6 @@ export default {
         },
       ],
 
-      formManage: {// 分配学管师表单
-        manage: '',
-        notice: '',
-      },
-
-      ruleManage: { // 分配学管师表单验证规则
-        manage: [
-          { required: true, message: '请选择学管师', trigger: 'change' },
-        ],
-        notice: [
-          { required: true, message: '请选择通知方式', trigger: 'change' },
-        ],
-      },
-
       modal: {// 模态框状态
         teacher: false,
         manage: false,
@@ -194,15 +164,12 @@ export default {
       },
 
       loading: { // 模态框按钮loading状态
-        manage: false,
         delete: false,
       },
 
       studentId: '', // 学员编号（用于删除学员）
-
-      studentItem: [], // 学生id数组（用于分配教师）
-
-      school_list: [], // 校区列表
+      studentItem: [], // 勾选的学生id数组（用于分配教师和学管师）
+      school_list: [], // 校区列表（用于关键字检索）
     }
   },
 
@@ -214,10 +181,10 @@ export default {
 
   components: {
     TeacherModal,
+    ManageModal,
   },
 
   methods: {
-
     openTeacherModal() { // 打开分配教师弹窗
       if (this.studentItem.length > 0) {
         this.modal.teacher = true
@@ -226,34 +193,23 @@ export default {
       }
     },
 
+    openManageModal() { // 打开分配学管师弹窗
+      if (this.studentItem.length > 0) {
+        this.modal.manage = true
+      } else {
+        this.$Message.warning('请先选择要分配学管师的学员')
+      }
+    },
+
     onSelectionChange(selection) { // 获取选中的学生ID（iview表格自带）
       this.studentItem = selection.map(item => item.id)
     },
 
-    getData(qs) {
+    getData(qs) { // 获取列表数据
       return this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
     },
 
-    manageSubmit(name) { // 分配学管师表单提交
-      this.$refs[name].validate((valid) => { // 验证表单
-        if (valid) {
-          this.loading.manage = true
-          // 用延时模拟请求成功
-          setTimeout(() => {
-            this.loading.manage = false
-            this.modal.manage = false
-            this.$Message.success('学管师分配成功！')
-            // 重置该表单
-            this.$refs[name].resetFields()
-          }, 1500)
-        } else {
-          this.$Message.error('表单验证失败！')
-        }
-      })
-    },
-
-    // 打开删除模态框
-    openDeleteModal(id) {
+    openDeleteModal(id) { // 打开删除模态框
       this.modal.delete = true
       this.studentId = id
     },
