@@ -32,12 +32,16 @@
   }
 
   :not(.original) > input.ivu-input,
-  .ivu-select:not(.original) .ivu-select-selection,
   .ivu-select:not(.original) .ivu-select-selected-value,
   .ivu-select:not(.original) .ivu-select-item,
   .ivu-select:not(.original) .ivu-select-input,
   .ivu-select:not(.original) .ivu-select-placeholder {
     height: 38px !important;
+    font-size: 14px !important;
+  }
+
+  .ivu-select:not(.original) .ivu-select-selection {
+    line-height: 38px !important;
     font-size: 14px !important;
   }
 
@@ -91,5 +95,9 @@
         margin-right: 2em;
       }
     }
+  }
+
+  .ivu-date-picker {
+    display: block;
   }
 }
