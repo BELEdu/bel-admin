@@ -10,6 +10,13 @@
         </Input>
       </Form-item>
       <Form-item>
+        <Select style="width:8em;" placeholder="请选择满意度" >
+          <Option value="满意">满意</Option>
+          <Option value="一般">一般</Option>
+          <Option value="不满意">不满意</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
         <Date-picker v-model="query.between.meeting_date" format="yyyy-MM-dd" type="daterange" placeholder="请选择会议时间日期"></Date-picker>
       </Form-item>
       <Form-item>
@@ -72,6 +79,9 @@ export default {
       ],
       likeKey: 'parent_name',
       query: {
+        equal: {
+          1111111: '',
+        },
         between: {
           meeting_date: [],
         },
@@ -79,11 +89,11 @@ export default {
 
       // 表格配置
       columns: [
-        { title: '会议类型', key: 'meeting_type', align: 'center' },
         { title: '会议时间', key: 'meeting_date', align: 'center' },
-        { title: '家长姓名', key: 'parent_name', align: 'center' },
+        { title: '会议类型', key: 'meeting_type', align: 'center' },
+        { title: '参会家长', key: 'parent_name', align: 'center' },
         {
-          title: '与会人员',
+          title: '参会员工',
           key: 'meeting_person',
           align: 'center',
           render: (h, params) => {
@@ -113,6 +123,8 @@ export default {
             )
           },
         },
+        { title: '家长满意度', key: '', align: 'center' },
+        { title: '创建人', key: '', align: 'center' },
         {
           title: '操作',
           key: 13,

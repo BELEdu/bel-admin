@@ -5,12 +5,7 @@
       <app-form-alert :errors="formErrors"></app-form-alert>
 
       <Form-item label="会议时间" prop="meeting_date">
-        <!--<app-date-picker type="daterange" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>-->
-        <app-date-picker placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
-      </Form-item>
-      <Form-item label="datetime测试" prop="meeting_date">
-        <!--<app-date-picker type="daterange" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>-->
-        <app-date-picker placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
+        <app-date-picker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
       </Form-item>
       <Form-item label="参会家长">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
@@ -116,6 +111,7 @@ export default {
         manyi: null,
 
         datetimetest: '',
+        daterangetest: [],
       },
 
       meeting_persons_data: [],
@@ -127,6 +123,12 @@ export default {
           //   type: 'range',
           // }),
           this.$rules.date('会议时间不能为空'),
+        ],
+        datetimetest: [
+          this.$rules.date('datetime不能为空'),
+        ],
+        daterangetest: [
+          this.$rules.date('daterange不能为空不能为空'),
         ],
         meeting_type: [
           this.$rules.required('会议类型', 'number', 'change'),
