@@ -2,23 +2,16 @@
   <div>
 
     <!-- 搜索表单 -->
-    <Form inline class="app-search-form">
+   <Form inline class="app-search-form">
       <Form-item>
-        <Row>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.start" placeholder="选择日期"></Date-picker>
-          </Col>
-          <Col span="2" style="text-align: center">至</Col>
-          <Col span="11">
-            <Date-picker type="date" v-model="formSearch.end" placeholder="选择日期"></Date-picker>
-          </Col>
-        </Row>
+        <Select style="width:8em;" placeholder="请选择状态" >
+          <Option value="预警中">预警中</Option>
+          <Option value="已取消">已取消</Option>
+          <Option value="取消预警">取消预警</Option>
+        </Select>
       </Form-item>
       <Form-item>
-        <Input type="text" v-model="formSearch.keyword" placeholder="请输入关键字"></Input>
-      </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search">搜索</Button>
+        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
 
@@ -87,11 +80,10 @@ export default {
 
   data() {
     return {
-      // 搜索表单
-      formSearch: {
-        start: '',
-        end: '',
-        keyword: '',
+      query: {
+        equal: {
+          1111111: '',
+        },
       },
       // 取消预警表单
       formCancel: {
@@ -136,8 +128,6 @@ export default {
 
       // 预警ID
       warningId: '',
-
-      query: {},
     }
   },
 
