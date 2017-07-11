@@ -32,7 +32,13 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
+    <Table
+      class="app-table"
+      :columns="columns"
+      :data="list.data"
+      border
+      @on-sort-change="sort"
+    ></Table>
 
     <app-pager :data="list" @on-change="goTo"></app-pager>
   </div>
@@ -76,7 +82,7 @@ export default {
         { title: '性别', key: 'gender', align: 'center' },
         { title: '部门角色', key: 'users_job_type', align: 'center' },
         { title: '岗位性质', key: 'users_job_type', align: 'center' },
-        { title: '最近登录时间', key: 'updated_at', align: 'center' },
+        { title: '最近登录时间', key: 'updated_at', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'status', align: 'center' },
         {
           title: '操作',

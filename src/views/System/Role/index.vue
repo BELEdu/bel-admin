@@ -56,7 +56,6 @@
       :columns="columns"
       :data="list.data"
       border
-      @on-sort-change="sort"
     ></Table>
 
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -99,9 +98,9 @@ export default {
 
       columns: [
         { title: '序号', type: 'index', align: 'center', width: 50 },
-        { title: '角色编号', key: 'role_number', align: 'center', sortable: 'custom' },
+        { title: '角色编号', key: 'role_number', align: 'center' },
         { title: '角色名称', key: 'display_name', align: 'center' },
-        { title: '所属部门', key: 'department_id', align: 'center', sortable: 'custom' },
+        { title: '所属部门', key: 'department_id', align: 'center' },
         {
           title: '角色类型',
           key: 'role_type',
