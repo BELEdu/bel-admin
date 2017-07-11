@@ -35,7 +35,12 @@ export function editInit() {
       // 1.3 模板名称
       template_type: null,
       // 1.3 + 1.4 流程中涉及的审批人员编号，按顺序组成如下字符串:present|required
-      auditor_ids: '1,2,3',
+      authority: [
+        {
+          // 审批人id:present|required|exists:users,id|distinct
+          user_id: 22,
+        },
+      ],
     },
     // 学员信息
     student: {
@@ -177,6 +182,7 @@ export function colConfig(that) {
       title: '操作',
       key: '11',
       align: 'center',
+      width: 240,
       render: createButton([
         {
           text: '查看',
@@ -195,7 +201,7 @@ export function colConfig(that) {
         },
         {
           text: '取消',
-          type: '',
+          type: 'error',
           click: that.toCancel,
         },
       ]),

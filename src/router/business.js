@@ -114,6 +114,19 @@ export default [
       ],
     },
   },
+  {
+    path: 'business/contract/refund/:id',
+    name: 'BussinessContractRefund',
+    component: views.ContractRefund,
+    meta: {
+      uri: 'contract/refund',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSSINESS_CONTRACT,
+        { name: '添加审批' },
+      ],
+    },
+  },
   // // 修改表单
   // {
   //   path: 'business/contract/edit/:id',

@@ -4,19 +4,19 @@
     <Form class="app-search-form">
       <!-- 关键字检索 -->
       <Form-item>
-        <Input 
+        <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"  
-          style="width: calc(7em + 200px);"         
+          v-model="query.like[likeKey]"
+          style="width: calc(7em + 200px);"
         >
-          <Select 
+          <Select
             v-model="likeKey"
-            slot="prepend" 
+            slot="prepend"
             style="width: 7em"
           >
-            <Option 
-              v-for="likeKey in likeKeys" 
-              :key="likeKey.value" 
+            <Option
+              v-for="likeKey in likeKeys"
+              :key="likeKey.value"
               :value="likeKey.value"
             >
               {{ likeKey.label }}
@@ -26,9 +26,9 @@
       </Form-item>
       <!-- 日期范围搜索 -->
       <Form-item>
-        <Date-picker 
-          v-model="query.between.apply_time" 
-          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+        <Date-picker
+          v-model="query.between.apply_time"
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="申请日期范围" style="width: 200px"
           :editable="false"
         >
@@ -36,13 +36,13 @@
       </Form-item>
       <!-- 特殊字段搜索 -->
       <!--<Form-item>
-        <Select 
+        <Select
           v-model="query.equal.subject_id"
-          placeholder="选择学科" 
+          placeholder="选择学科"
           style="width: 150px;"
         >
-          <Option 
-            v-for="item in subject" 
+          <Option
+            v-for="item in subject"
             :value="item.value"
           >
             {{item.display_name}}
@@ -131,9 +131,14 @@ export default {
     toCreate() {
       this.$router.push('/business/contract/edit')
     },
-    // 合同进度跳转
+    // 查看合同进度
     toCheck(row) {
       this.$router.push(`/business/contract/audit/${row.id}`)
+    },
+    // 退费
+    // eslint-disable-next-line
+    toRefund(row) {
+      this.$router.push('/business/contract/refund/1')
     },
   },
 

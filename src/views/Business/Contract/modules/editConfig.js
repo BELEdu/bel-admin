@@ -68,7 +68,7 @@ export function formRules(that) {
     },
     productRules: {
       product_id: [
-        that.$rules.required('产品类型'),
+        that.$rules.required('产品类型', 'number', 'change'),
       ],
       location: [
         that.$rules.max(255),
