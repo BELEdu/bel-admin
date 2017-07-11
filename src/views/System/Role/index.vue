@@ -8,17 +8,6 @@
           </Select>
         </Input>
       </Form-item>
-      <!--临时示例-->
-      <Form-item>
-        <Select v-model="query.equal.display_name" style="width:7em;">
-          <Option value="公司总经理">公司总经理</Option>
-          <Option value="校长">校长</Option>
-        </Select>
-      </Form-item>
-      <!--临时示例-->
-      <Form-item>
-        <Date-picker v-model="query.between.created_at" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="选择日期"></Date-picker>
-      </Form-item>
 
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -87,14 +76,6 @@ export default {
         { label: '所属部门', value: 'department_id' },
       ],
       likeKey: 'display_name',
-      query: {
-        equal: {
-          display_name: '',
-        },
-        between: {
-          created_at: [],
-        },
-      },
 
       columns: [
         { title: '序号', type: 'index', align: 'center', width: 50 },
