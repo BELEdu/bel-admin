@@ -56,9 +56,9 @@
       <template v-for="(item, index) in studentFormRender">
 
         <Form-item label="学员性别" v-if="index === 8">
-          <Radio-group v-model="fdata.student.gender" v-if="gender">
+          <Radio-group v-model="fdata.student.gender">
             <Radio
-              v-for="item in gender"
+              v-for="item in dicts.gender"
               :label="item.value"
               :key="item.display_name">
               <span>{{item.display_name}}</span>
