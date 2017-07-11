@@ -321,7 +321,7 @@
           },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
-          { title: '课时状态',
+          { title: '课表状态',
             align: 'center',
             width: 80,
             render: (h, params) => h('app-dicts-filter', { props: { value: params.row.schedule_status } }),

@@ -39,8 +39,9 @@
         <span>学管师：{{currentClbum.customer_teacher}}</span>
       </p>
       <Table class="app-table" :columns="showColumns" :data="clbumInfoData.data" border></Table>
-      <app-pager :data="clbumInfoData" @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></app-pager>
-      <div slot="footer"></div>
+      <div slot="footer">
+        <Page :total="clbumInfoData.total" size="small" placement="top" show-total show-elevator show-sizer @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></Page>
+      </div>
     </Modal>
   </div>
 </template>
@@ -135,7 +136,7 @@
        */
       classShow(row) {
         this.currentClbum = row
-        this.getClubumInfo(row.id)
+        this.getClubumInfo()
       },
       // 获取班级学员信息
       getClubumInfo(pageData = this.pager.defaultPage) {

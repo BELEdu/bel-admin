@@ -128,7 +128,7 @@ export default{
           render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '产品名称', key: 'product_name', align: 'center' },
         { title: '知识点', key: 'language_points', align: 'center' },
-        { title: '课时状态',
+        { title: '课表状态',
           align: 'center',
           width: 80,
           render: (h, params) => h('app-dicts-filter', { props: { value: params.row.schedule_status } }),

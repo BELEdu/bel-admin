@@ -55,7 +55,7 @@ export default {
       likeKey: 'teacher_name',  // 默认模糊字段
       // 教师字段
       teacherColumns: [
-        { title: '教师姓名', key: 'teacher_name', align: 'center' },
+        { title: '教师姓名', key: 'username', align: 'center' },
         { title: '员工编号', key: 'user_number', align: 'center' },
         { title: '岗位性质', key: 'users_job_type', align: 'center' },
         {

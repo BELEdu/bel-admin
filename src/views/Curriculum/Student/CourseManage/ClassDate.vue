@@ -49,13 +49,17 @@
     <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
-    <!--添加|编辑|填写课时-课表弹窗-->
+    <!--添加|编辑-课表弹窗-->
     <course-modal v-model="courseModal"
                   :data="formItem"
                   :id="courseModalParam.id"
                   :status="courseModalParam.status"
                   :urlConf="urlConf"
                   @on-close="updateData"></course-modal>
+    <!--班级填写实际课时-->
+    <app-form-modal>
+
+    </app-form-modal>
   </div>
 </template>
 
@@ -161,7 +165,7 @@
           },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '知识点', key: 'language_points', align: 'center' },
-          { title: '课时状态',
+          { title: '课表状态',
             align: 'center',
             width: 80,
             render: (h, params) => h('app-dicts-filter', { props: { value: params.row.schedule_status } }),
