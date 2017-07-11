@@ -83,6 +83,7 @@ export default {
 
       form: {
         display_name: '',
+        _checkout_password: null,
       },
 
       modal: {
@@ -135,6 +136,7 @@ export default {
 
     prepareRemove(id) {
       this.currentId = id
+      this.isCreate = false
       this.openModal('remove')
     },
   },
