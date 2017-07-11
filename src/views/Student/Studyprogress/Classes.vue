@@ -142,10 +142,10 @@ export default {
           align: 'center',
           width: 300,
           render: createButton([
-            { text: '学习进度', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/progress`) },
-            { text: '编辑计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/plan`) },
+            { text: '学习进度', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/progress`), isShow: ({ row }) => row.is_history },
+            { text: '编辑计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/plan`), isShow: ({ row }) => row.is_history },
             { text: '添加计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/add`) },
-            { text: '历史计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/history`) },
+            { text: '历史计划', type: 'primary', click: row => this.$router.push(`/student/studyprogress/classes/${row.id}/history`), isShow: ({ row }) => row.is_history },
           ]),
         },
       ],

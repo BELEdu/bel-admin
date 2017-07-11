@@ -173,7 +173,7 @@ export default [
       breadcrumb: [
         { name: '学员管理' },
         { name: '学习进度' },
-        { name: '进度详情' },
+        { name: '进度详情(主组件)' },
       ],
     },
     children: [
