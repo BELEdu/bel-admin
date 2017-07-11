@@ -275,7 +275,7 @@ export default {
       }
 
 
-      console.log(data)
+      // console.log(data)
       this.$Message.info('提交成功')
 
 
