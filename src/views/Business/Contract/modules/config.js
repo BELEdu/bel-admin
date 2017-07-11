@@ -122,7 +122,7 @@ export function colConfig(that) {
       width: 200,
     },
     {
-      title: '合同类型',
+      title: '流程名称',
       key: 'contract_type',
       align: 'center',
       width: 250,
@@ -133,12 +133,17 @@ export function colConfig(that) {
       align: 'center',
     },
     {
+      title: '总课时',
+      key: 'course_total',
+      align: 'center',
+    },
+    {
       title: '合同总金额',
       key: 'money',
       align: 'center',
     },
     {
-      title: '学员',
+      title: '学员名字',
       key: 'student_name',
       align: 'center',
     },
@@ -170,6 +175,21 @@ export function colConfig(that) {
         {
           text: '查看',
           type: 'primary',
+          click: that.toCheck,
+        },
+        {
+          text: '重新提交',
+          type: 'primary',
+          click: that.toCheck,
+        },
+        {
+          text: '退费',
+          type: 'error',
+          click: that.toCheck,
+        },
+        {
+          text: '取消',
+          type: 'error',
           click: that.toCheck,
         },
       ]),
