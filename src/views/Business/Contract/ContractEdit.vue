@@ -2,22 +2,30 @@
   <main class="app-form-entire contract-create">
     <app-editor-title></app-editor-title>
     <Steps :current="process - 1" class="contract-create-step steps-fix">
-      <Step title="选择流程" content="这里是该步骤的描述信息"></Step>
-      <Step title="输入学员信息" content="这里是该步骤的描述信息"></Step>
-      <Step title="选择产品" content="这里是该步骤的描述信息"></Step>
-      <Step title="提交审批" content="这里是该步骤的描述信息"></Step>
+      <Step title="选择流程" ></Step>
+      <Step title="输入学员信息" ></Step>
+      <Step title="选择产品" ></Step>
+      <Step title="提交审批" ></Step>
     </Steps>
     <!-- 审批流程表单 -->
-    <Form :label-width="130" v-show="process === 1" ref="flowForm" :model="fdata.info" :rules="flowRules">
+    <Form :label-width="130" v-show="process === 1" ref="flowForm" :model="fdata.info" :rules="infoRules">
       <Form-item label="合同名称" prop="display_name">
         <Input placeholder="请输入合同名称" v-model="fdata.info.display_name"></Input>
       </Form-item>
       <!-- 与系统相关，先空着，传假数据 -->
-      <Form-item label="审批流程" required>
-        <Select>
-          <Option value="1">甲</Option>
-          <Option value="2">乙</Option>
-          <Option value="3">丙</Option>
+      <Form-item label="流程名称" prop="flow_id">
+        <Select v-model='fdata.info.flow_id'>
+          <Option value="1">新签流程审批</Option>
+          <Option value="2">续费流程审批</Option>
+          <Option value="3">试听流程审批</Option>
+        </Select>
+      </Form-item>
+      <!-- 合同模板 -->
+      <Form-item label="合同模板" prop="template_type">
+        <Select v-model="fdata.info.template_type">
+          <Option value="1">模板一</Option>
+          <Option value="1">模板二</Option>
+          <Option value="1">模板三</Option>
         </Select>
       </Form-item>
       <!-- 与系统相关，先空着，传假数据 -->
@@ -38,7 +46,7 @@
       </Form-item>
       <!-- 第一步过关按钮 -->
       <Form-item>
-        <Button @click="cancel()">取消</Button>
+        <Button @click="goBack()">取消</Button>
         <Button type="primary" @click="toNextForm('flowForm')">下一步</Button>
       </Form-item>
     </Form>
@@ -46,34 +54,38 @@
     <!-- 学员信息表单 -->
     <Form :label-width="130" v-show="process === 2" ref="studentForm" :model="fdata.student" :rules="studentRules">
       <template v-for="(item, index) in studentFormRender">
-        <Form-item label="学生性别" v-if="index === 9">
+
+        <Form-item label="学员性别" v-if="index === 8">
           <Radio-group v-model="fdata.student.gender" v-if="gender">
-            <Radio v-for="item in gender" :label="item.value" :key="item.display_name">
+            <Radio
+              v-for="item in gender"
+              :label="item.value"
+              :key="item.display_name">
               <span>{{item.display_name}}</span>
             </Radio>
           </Radio-group>
         </Form-item>
-  
-        <Row v-else-if="index === 6" type="flex">
-          <Col span="9">
+
+        <Row v-else-if="index === 6">
+          <Col span="10">
           <Form-item label="填写地址">
-            <Cascader :data="casdata" placeholder="请选择地址"></Cascader>
+            <app-map-cascader v-model="fdata.student.areas_code"></app-map-cascader>
           </Form-item>
           </Col>
-          <Col span="15">
+          <Col span="14" class="contract-create__student-location">
           <Form-item>
             <Input placeholder="请输入街道地址"></Input>
           </Form-item>
           </Col>
         </Row>
-  
+
         <Form-item v-else :label="item.label" :prop="item.prop">
           <Input :placeholder="item.pholder" v-model="fdata.student[item.prop]"></Input>
         </Form-item>
       </template>
-  
+
       <Form-item>
-        <Button @click="cancel()">取消</Button>
+        <Button @click="goBack()">取消</Button>
         <Button type="ghost" @click="step(-1)">上一步</Button>
         <Button type="primary" @click="toNextForm('studentForm')">下一步</Button>
       </Form-item>
@@ -86,9 +98,9 @@
         <!--<template v-for="(item, index) in fdata.product.list">-->
         <Form-item class="contract-create__product__select" label="选择产品" prop="product_id">
           <Select v-model="item.product_id">
-            <Option value="4">甲</Option>
-            <Option value="5">乙</Option>
-            <Option value="6">丙</Option>
+            <Option :value="1">甲</Option>
+            <Option :value="2">乙</Option>
+            <Option :value="3">丙</Option>
           </Select>
         </Form-item>
         <Form-item label="购买数量" prop="number">
@@ -120,7 +132,7 @@
         <Input type="textarea" :rows="6" v-model="fdata.product.note"></Input>
       </Form-item>
       <Form-item>
-        <Button @click="cancel()">取消</Button>
+        <Button @click="goBack()">取消</Button>
         <Button type="ghost" @click="step(-1)">上一步</Button>
         <Button type="primary" @click="handleSubmit('productForm')">提交</Button>
       </Form-item>
@@ -135,34 +147,40 @@
  * @author hjz
  * @version 2017-06-08
  */
+import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 // eslint-disable-next-line
 import { Http } from '@/utils'
 // eslint-disable-next-line
 import { editInit, productOrigin, unit_encode, unit_decode } from './modules/config'
 import { formRules, studentFormRender } from './modules/editConfig'
-import casdata from '../casdata'
 
 export default {
   name: 'ContractEditor',
 
-  data: () => ({
-    // "取消"按钮行为的路由对象
-    backRoute: null,
-    // 最终提交给后端的数据
-    fdata: editInit(),
-    // 提交按钮状态控制
-    loading: false,
-    // 字典数据...
-    casdata, /* 假数据, 地址字典数据 */
-    gender: null,
-    // 表单验证
-    ...formRules,
-    // 流程控制
-    process: 1,
-    // 表单渲染
-    studentFormRender,
-  }),
+  mixins: [goBack],
+
+  data() {
+    return {
+      // 最终提交给后端的数据
+      fdata: editInit(),
+      // 提交按钮状态控制
+      loading: false,
+      // 表单验证
+      ...formRules(this),
+      // 流程控制
+      process: 1,
+      // 表单渲染
+      studentFormRender,
+    }
+  },
+
+  computed: {
+    dicts() {
+      const { gender } = this.$store.state.dicts
+      return { gender }
+    },
+  },
 
   methods: {
     // 添加产品项
@@ -189,10 +207,10 @@ export default {
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       } else {
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.cancel() })
+          .then(() => { this.loading = false; this.goBack() })
       }
     },
     // 进入下个表单前先进行验证
@@ -208,7 +226,6 @@ export default {
       upValid = this.$refs.products.every((item) => {
         let ok = false
         item.validate((valid) => {
-          window.console.log(valid)
           ok = valid
         })
         return ok
@@ -220,30 +237,12 @@ export default {
       // 若上下都验证成功，提交表单数据
       if (upValid && downValid) this.submit()
     },
-    cancel() {
-      if (this.backRoute === null || this.backRoute.matched.length === 0) {
-        // 根据上级路由路径
-        this.$router.push('/business/contract')
-      } else {
-        this.$router.push(this.backRoute.fullPath)
-      }
-    },
   },
 
   created() {
-    Http.get('/dict?keys=gender')
-      .then((res) => {
-        this.gender = res.gender
-      })
-
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  beforeRouteEnter(to, from, next) {
-    // eslint-disable-next-line
-    next((vm) => { vm.backRoute = from })
   },
 }
 </script>
@@ -253,7 +252,7 @@ export default {
 @gutter-block: 8px;
 
 .contract-create-step {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
   padding-left: 50px;
 }
 
@@ -284,6 +283,16 @@ export default {
 
   &__create {
     margin-bottom: 30px;
+  }
+}
+
+.contract-create__student {
+
+  &-location {
+
+    & .ivu-form-item-content {
+      margin-left: 10px !important;
+    }
   }
 }
 

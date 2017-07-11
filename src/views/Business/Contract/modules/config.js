@@ -31,7 +31,9 @@ export function editInit() {
       // 1.1 合同名称：present|required|max:255
       display_name: '',
       // 1.2 流程类型编号:present|required
-      flow_id: 1,
+      flow_id: null,
+      // 1.3 模板名称
+      template_type: null,
       // 1.3 + 1.4 流程中涉及的审批人员编号，按顺序组成如下字符串:present|required
       auditor_ids: '1,2,3',
     },
@@ -51,17 +53,21 @@ export function editInit() {
       parent_identity_card: '',
       // 2.6 亲属关系:sometimes|string|max:32
       relation: '',
+      // 2.7 省事区三级联动
+      areas_code: [],
+      // 2.7 自定义地址
+      location: '',
       // 2.8 在读学校:sometimes|string|max:128/**/
       school: '',
-      // 2.9 学习科目:由于跟学员信息中字段有冲突，暂时不做验证
-      subject_type: '学习科目',
+      // 废除 2.9 学习科目:由于跟学员信息中字段有冲突，暂时不做验证
+      // subject_type: '学习科目',
       // 2.10 性别：sometimes|integer
-      gender: null,
+      gender: 3,
     },
     // 产品信息
     product: {
-      // 3.1 折扣:sometimes|numeric
-      discount: null,
+      // 废除 3.1 折扣:sometimes|numeric
+      // discount: null,
       // 3.2 辅导地点:sometimes|string|max:255
       location: '',
       // 3.3 审批说明:sometimes|string|max:255
@@ -180,17 +186,17 @@ export function colConfig(that) {
         {
           text: '重新提交',
           type: 'primary',
-          click: that.toCheck,
+          click: that.toRecheck,
         },
         {
           text: '退费',
           type: 'error',
-          click: that.toCheck,
+          click: that.toRefund,
         },
         {
           text: '取消',
-          type: 'error',
-          click: that.toCheck,
+          type: '',
+          click: that.toCancel,
         },
       ]),
     },

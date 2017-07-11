@@ -10,6 +10,7 @@ import * as views from '@/views'
 const BUSSINESS_HOTLINE = { name: '热线登记', link: '/business/hotline' }
 const BUSSINESS_COMMUNICATION = { name: '沟通记录', link: '/business/communication' }
 const BUSSINESS_PRODUCT = { name: '产品管理', link: '/business/product' }
+const BUSSINESS_CONTRACT = { name: '合同审批', link: '/business/contract' }
 
 export default [
   {
@@ -108,7 +109,7 @@ export default [
       uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '合同审批' },
+        BUSSINESS_CONTRACT,
         { name: '添加审批' },
       ],
     },
@@ -136,7 +137,7 @@ export default [
       uri: 'contract/audit',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '合同审批' },
+        BUSSINESS_CONTRACT,
         { name: '审批详情' },
       ],
     },
