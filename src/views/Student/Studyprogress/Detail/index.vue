@@ -50,7 +50,7 @@ export default {
       return this.$router.currentRoute.params.type
     },
     id() {
-      return this.$router.currentRoute.params.id
+      return +this.$router.currentRoute.params.id
     },
     isStudent() {
       return this.type === 'student'

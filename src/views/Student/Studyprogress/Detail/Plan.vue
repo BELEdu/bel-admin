@@ -1,13 +1,12 @@
 <template>
   <div>
+    <!--科目tabs-->
     <Tabs class="app-tabs" @on-click="tabSelect">
-        <Tab-pane label="数学" name="math"></Tab-pane>
-        <Tab-pane label="英语" name="english"></Tab-pane>
-        <Tab-pane label="语文" name="chinese"></Tab-pane>
+        <Tab-pane v-for="item in editInfo" :key="item.id" :label="`科目id：${item.subject_type}，计划id：${item.id}`"></Tab-pane>
         <Button type="primary" icon="plus" @click="addPlan" size="small" slot="extra">添加计划</Button>
     </Tabs>
 
-    <edit-plan :initialStep="4"></edit-plan>
+    <edit-plan :initialStep="4" :planId="planId" v-if="planId"></edit-plan>
 
   </div>
 </template>
@@ -40,12 +39,27 @@ export default {
     },
   },
 
+  data() {
+    return {
+      planIndex: 0,
+    }
+  },
+
+  computed: {
+    planId() {
+      if (this.editInfo.length) {
+        return this.editInfo[this.planIndex].id
+      }
+      return null
+    },
+  },
+
   methods: {
     addPlan() {
       this.$router.push(`/student/studyprogress/${this.type}/${this.id}/add`)
     },
-    tabSelect(name) {
-      this.$Message.info(`你选择了${name}`)
+    tabSelect(index) {
+      this.planIndex = index
     },
   },
 
@@ -55,6 +69,7 @@ export default {
 
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
+
     this.$route.meta.breadcrumb[1].link = `/student/studyprogress/${this.type}`
   },
 }
