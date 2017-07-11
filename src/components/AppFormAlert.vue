@@ -1,5 +1,5 @@
 <template>
-  <Form-item :label-width="fullWidth ? 0 : null">
+  <Form-item :label-width="fullWidth ? 1 : null">
     <Alert class="app-form-alert" type="error" show-icon v-if="flatErrors.length !== 0">
       <!--<Alert type="error" show-icon >-->
       {{ title }}
