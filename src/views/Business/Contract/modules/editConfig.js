@@ -53,10 +53,10 @@ export function editInit() {
       template_type: null,
       // 1.3 + 1.4 流程中涉及的审批人员编号，按顺序组成如下字符串:present|required
       authority: [
-        {
-          // 审批人id:present|required|exists:users,id|distinct
-          user_id: 22,
-        },
+        // {
+        //   // 审批人id:present|required|exists:users,id|distinct
+        //   user_id: 22,
+        // },
       ],
     },
     // 学员信息
@@ -119,10 +119,15 @@ export function formRules(that) {
         that.$rules.name,
       ],
       flow_id: [
-        that.$rules.required('流程名称', 'string', 'change'),
+        that.$rules.required('流程名称', 'number', 'change'),
       ],
       template_type: [
-        that.$rules.required('模板类型', 'string', 'change'),
+        that.$rules.required('模板类型', 'number', 'change'),
+      ],
+    },
+    authorityRules: {
+      user_id: [
+        that.$rules.required('角色选择', 'number', 'change'),
       ],
     },
     studentRules: {

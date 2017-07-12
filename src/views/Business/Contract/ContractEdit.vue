@@ -8,46 +8,56 @@
       <Step title="提交审批" ></Step>
     </Steps>
     <!-- 审批流程表单 -->
-    <Form :label-width="130" v-show="process === 1" ref="flowForm" :model="fdata.info" :rules="infoRules">
+    <Form :label-width="130" v-if="flowInfo"
+      v-show="process === 1" ref="infoForm"
+      :model="fdata.info" :rules="infoRules"
+     >
       <Form-item label="合同名称" prop="display_name">
         <Input placeholder="请输入合同名称" v-model="fdata.info.display_name"></Input>
       </Form-item>
-      <!-- 与系统相关，先空着，传假数据 -->
+      <!-- 选择流程确定合同和角色选择 -->
       <Form-item label="流程名称" prop="flow_id">
-        <Select v-model='fdata.info.flow_id'>
-          <Option value="1">新签流程审批</Option>
-          <Option value="2">续费流程审批</Option>
-          <Option value="3">试听流程审批</Option>
+        <Select v-model="fdata.info.flow_id" @on-change="changeFlow">
+          <Option
+            v-for="item in flowInfo.flow_list"
+            :value="item.id" :key="item.id"
+          >
+            {{item.display_name}}
+           </Option>
         </Select>
       </Form-item>
       <!-- 合同模板 -->
-      <Form-item label="合同模板" prop="template_type">
+      <Form-item v-if="flowInfo.flow_template_list.length"
+        label="合同模板" prop="template_type"
+      >
         <Select v-model="fdata.info.template_type">
-          <Option value="1">模板一</Option>
-          <Option value="1">模板二</Option>
-          <Option value="1">模板三</Option>
+          <Option v-for="item in flowInfo.flow_template_list"
+            :value="item.id" :key="item.id"
+            >
+            {{item.display_name}}
+           </Option>
         </Select>
       </Form-item>
-      <!-- 与系统相关，先空着，传假数据 -->
-      <Form-item label="咨询主任" required>
-        <Select>
-          <Option value="1">甲</Option>
-          <Option value="2">乙</Option>
-          <Option value="3">丙</Option>
-        </Select>
-      </Form-item>
-      <!-- 与系统相关，先空着，传假数据 -->
-      <Form-item label="校长" required>
-        <Select>
-          <Option value="1">甲</Option>
-          <Option value="2">乙</Option>
-          <Option value="3">丙</Option>
-        </Select>
-      </Form-item>
+      <!-- 流程数据 角色信息 -->
+      <Form :label-width="130" ref="authorityForm"
+        :model="fdata.info.authority[index]"
+        v-for="(item, index) in flowInfo.role_list"
+        :key="item.display_name" :rules="authorityRules"
+      >
+        <Form-item prop="user_id" :label="item.display_name">
+          <Select v-model="fdata.info.authority[index].user_id">
+            <Option v-for="user in item.users"
+              :value="user.id" :key="user.id"
+            >
+              {{user.username}}
+            </Option>
+          </Select>
+        </Form-item>
+      </Form>
       <!-- 第一步过关按钮 -->
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="toNextForm('flowForm')">下一步</Button>
+        <Button type="primary" @click="checkMulForm('infoForm', 'authorityForm')">下一步</Button>
       </Form-item>
     </Form>
     <!-- 审批流程表单end -->
@@ -94,7 +104,11 @@
     <!-- 产品信息表单 -->
     <Form :label-width="130" v-show="process === 3" ref="productForm" :model="fdata.product" :rules="productRules">
       <!-- 产品选择 -->
-      <Form class="contract-create__product" :label-width="95" v-for="(item, index) in fdata.product.list" :model="item" ref="products" :rules="productRules" inline :key="index">
+      <Form class="contract-create__product"
+        :label-width="95" :model="item" inline
+        v-for="(item, index) in fdata.product.list"
+        ref="products" :rules="productRules" :key="index"
+      >
         <!--<template v-for="(item, index) in fdata.product.list">-->
         <Form-item class="contract-create__product__select" label="选择产品" prop="product_id">
           <Select v-model="item.product_id">
@@ -151,6 +165,7 @@ import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 // eslint-disable-next-line
 import { Http } from '@/utils'
+import flow from './mixins/flow'
 import {
   editInit,
   productOrigin,
@@ -164,7 +179,7 @@ import {
 export default {
   name: 'ContractEditor',
 
-  mixins: [goBack],
+  mixins: [goBack, flow],
 
   data() {
     return {
@@ -229,13 +244,7 @@ export default {
       let downValid = false
 
       // 产品上表单验证
-      upValid = this.$refs.products.every((item) => {
-        let ok = false
-        item.validate((valid) => {
-          ok = valid
-        })
-        return ok
-      })
+      upValid = this.groupValidate('products')
 
       // 产品下表单验证
       this.$refs[name].validate((valid) => { downValid = valid })
