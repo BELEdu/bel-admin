@@ -151,9 +151,15 @@ import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 // eslint-disable-next-line
 import { Http } from '@/utils'
-// eslint-disable-next-line
-import { editInit, productOrigin, unit_encode, unit_decode } from './modules/config'
-import { formRules, studentFormRender } from './modules/editConfig'
+import {
+  editInit,
+  productOrigin,
+  unit_encode,
+  // eslint-disable-next-line
+  unit_decode,
+  formRules,
+  studentFormRender,
+} from './modules/editConfig'
 
 export default {
   name: 'ContractEditor',
@@ -171,7 +177,7 @@ export default {
       // 流程控制
       process: 1,
       // 表单渲染
-      studentFormRender,
+      ...studentFormRender(),
     }
   },
 
