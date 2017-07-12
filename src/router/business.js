@@ -101,6 +101,7 @@ export default [
       ],
     },
   },
+  // 创建合同
   {
     path: 'business/contract/edit',
     name: 'BussinessContractCreate',
@@ -114,9 +115,38 @@ export default [
       ],
     },
   },
+  // 更新合同
+  {
+    path: 'business/contract/edit/:id',
+    name: 'BussinessContractUpdate',
+    component: views.ContractEdit,
+    meta: {
+      uri: 'contract',
+      breadcrumb: [
+        { name: '业务管理' },
+        { name: '合同审批' },
+        { name: '审批详情' },
+      ],
+    },
+  },
+  // 更新退费合同
+  {
+    path: 'business/contract/refund/edit/:id',
+    name: 'BussinessContractRefundUpdate',
+    component: views.ContractRefund,
+    meta: {
+      uri: 'contract/refund',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSSINESS_CONTRACT,
+        { name: '更新审批' },
+      ],
+    },
+  },
+  // 创建退费合同
   {
     path: 'business/contract/refund/:id',
-    name: 'BussinessContractRefund',
+    name: 'BussinessContractRefundCreate',
     component: views.ContractRefund,
     meta: {
       uri: 'contract/refund',
@@ -127,20 +157,6 @@ export default [
       ],
     },
   },
-  // // 修改表单
-  // {
-  //   path: 'business/contract/edit/:id',
-  //   name: 'BussinessContractUpdate',
-  //   component: views.ContractUpdate,
-  //   meta: {
-  //     uri: 'contract',
-  //     breadcrumb: [
-  //       { name: '业务管理' },
-  //       { name: '合同审批' },
-  //       { name: '审批详情' },
-  //     ],
-  //   },
-  // },
   // 审批合同
   {
     path: 'business/contract/audit/:id',
