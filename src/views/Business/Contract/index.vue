@@ -136,9 +136,8 @@ export default {
       this.$router.push(`/business/contract/audit/${row.id}`)
     },
     // 退费
-    // eslint-disable-next-line
     toRefund(row) {
-      this.$router.push('/business/contract/refund/1')
+      this.$router.push(`/business/contract/refund/${row.id}`)
     },
   },
 

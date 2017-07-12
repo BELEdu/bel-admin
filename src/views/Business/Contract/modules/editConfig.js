@@ -29,10 +29,10 @@ export function formRules(that) {
         that.$rules.name,
       ],
       flow_id: [
-        that.$rules.required('流程名称'),
+        that.$rules.required('流程名称', 'string', 'change'),
       ],
       template_type: [
-        that.$rules.required('模板类型'),
+        that.$rules.required('模板类型', 'string', 'change'),
       ],
     },
     studentRules: {
