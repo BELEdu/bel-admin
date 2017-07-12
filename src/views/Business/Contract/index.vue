@@ -93,6 +93,13 @@
     <Table :columns="colConfig" :data="buffer.data" border></Table>
 
     <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
+
+    <!--删除提醒框-->
+    <app-warn-modal v-model="warn.show" :title="warn.title"
+      :loading="warn.loading" @on-ok="doCancel"
+    >
+      <p>取消该审批后将无法重新提交，是否确认取消？</p>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -104,6 +111,7 @@
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
+import { Http } from '@/utils'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { colConfig, searchConfig } from './modules/config'
 
@@ -117,6 +125,13 @@ export default {
       // 搜索配置
       ...searchConfig(),
       colConfig: colConfig(this),
+      // 删除警告对话框数据
+      warn: {
+        show: false,
+        title: '确认删除',
+        row: null,
+        loading: false,
+      },
     }
   },
 
@@ -138,6 +153,23 @@ export default {
     // 退费
     toRefund(row) {
       this.$router.push(`/business/contract/refund/${row.id}`)
+    },
+    // 取消某项合同前
+    toCancel(row) {
+      // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
+      this.warn.loading = false
+      this.warn.show = true
+      this.warn.row = row
+    },
+    // 确定取消某合同
+    doCancel() {
+      this.warn.loading = true
+      // 取消成功后重新请求当页数据
+      Http.post(`/contract/cancel/${this.warn.row.id}`)
+        .then(() => {
+          this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+            .then(() => { this.warn.show = false })
+        })
     },
   },
 
