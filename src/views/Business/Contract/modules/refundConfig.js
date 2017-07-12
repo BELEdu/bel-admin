@@ -32,3 +32,27 @@ export function refundInit() {
 export function unit_encode(data) {
   return data
 }
+
+// 表单验证规则
+export function formRules(that) {
+  return {
+    infoRules: {
+      flow_id: [
+        that.$rules.required('流程名称', 'number', 'change'),
+      ],
+      template_type: [
+        that.$rules.required('模板类型', 'number', 'change'),
+      ],
+    },
+    authorityRules: {
+      user_id: [
+        that.$rules.required('角色选择', 'number', 'change'),
+      ],
+    },
+    productRules: {
+      note: [
+        that.$rules.max(255),
+      ],
+    },
+  }
+}
