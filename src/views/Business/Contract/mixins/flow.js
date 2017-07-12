@@ -54,11 +54,13 @@ export default {
     // v-for Form组（动态的、数据结构相同）验证
     groupValidate(name) {
       let groupValid = true
-      this.$refs[name].forEach((item) => {
-        item.validate((valid) => {
-          if (!valid) groupValid = false
+      if (this.$refs[name]) {
+        this.$refs[name].forEach((item) => {
+          item.validate((valid) => {
+            if (!valid) groupValid = false
+          })
         })
-      })
+      }
       return groupValid
     },
     // 验证：静态表单中有动态表单
