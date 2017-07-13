@@ -6,6 +6,7 @@
 
       <Form-item label="会议时间" prop="meeting_date">
         <app-date-picker type="datetime" format="yyyy-MM-dd HH:mm" placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker>
+        <!-- <app-date-picker  placeholder="请选择会议的时间" v-model="form.meeting_date"></app-date-picker> -->
       </Form-item>
       <Form-item label="参会家长">
         <Input placeholder="请输入家长姓名，多人以 “，” 分隔" v-model="form.parent_name"></Input>
@@ -21,17 +22,15 @@
         </Select>
       </Form-item>
 
+      <Form-item label="家长满意度">
+        <Radio-group v-model="form.satisfaction">
+          <Radio v-for="item in satisfaction" :label="item.value" :key="item.display_name">{{ item.display_name }}</Radio>
+        </Radio-group>
+      </Form-item>
+
       <!--课前交流会文本框组-->
       <Form-item v-if="form.meeting_type === 1" v-for="(item, index) in form.meeting_content.slice(0,3)" :key="index" :label="item.content_tag" :prop="`meeting_content.${index}.content`" :rules="[$rules.max(500)]">
         <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
-      </Form-item>
-
-      <Form-item label="家长满意度">
-        <Radio-group v-model="form.manyi">
-          <Radio :label="1">满意</Radio>
-          <Radio :label="2">一般</Radio>
-          <Radio :label="3">不满意</Radio>
-        </Radio-group>
       </Form-item>
 
       <!--家长座谈会文本框组-->
@@ -108,7 +107,7 @@ export default {
         ],
         meeting_persons: [],
         meeting_attachment: [],
-        manyi: null,
+        satisfaction: null,
 
         datetimetest: '',
         daterangetest: [],
@@ -140,6 +139,7 @@ export default {
   computed: {
     ...mapState({
       meetingTypes: state => state.dicts.meeting_type, // 交流会类型
+      satisfaction: state => state.dicts.satisfaction, // 满意度类型
     }),
     studentId() { // 学员id
       return this.$router.currentRoute.params.studentId
