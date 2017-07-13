@@ -19,7 +19,7 @@
     <!--列表工具模块-->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2><Icon type="document-text" /> 班级列表</h2>
+      <h2><Icon type="document-text" /> 晚辅导列表</h2>
       </Col>
     </Row>
     <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" @on-sort-change="sort" border></Table>
@@ -29,16 +29,16 @@
 
 <script>
 /**
- * 课程管理 - 班级上课记录
+ * 课程管理 - 晚辅导上课记录
  * @author chenliangshan
- * @version 2017/07/01
+ * @version 2017/07/12
  */
 
 import { createButton } from '@/utils'
 import { list } from '@/mixins'
 
 export default {
-  name: 'app-class-record',
+  name: 'app-coach-record',
   mixins: [list],
   data() {
     return {
@@ -47,7 +47,7 @@ export default {
         { label: '班级名称', value: 'display_name' },
       ],
       likeKey: 'display_name',  // 默认模糊字段
-      // 班级字段
+      // 晚辅导字段
       clbumColumns: [
         { title: '班级名称',
           align: 'center',
@@ -62,8 +62,8 @@ export default {
             },
           ]) },
         { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
-        { title: '上课年级', key: 'grade_name', align: 'center' },
         { title: '产品名称', key: 'schedule_product_name', align: 'center' },
+        { title: '教师姓名', key: 'teacher_name', align: 'center' },
         { title: '班主任', key: 'belong_customer_relationships', align: 'center' },
         {
           title: '操作',
@@ -72,14 +72,14 @@ export default {
             {
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/curricularecord/class/list/${params.id}`)
+                this.$router.push(`/curriculum/curricularecord/coach/show/${params.id}`)
               },
               text: '查看',
             },
           ]),
         },
       ],
-      // 班级数据
+      // 晚辅导数据
       clbumData: {},
       // 班级弹窗-初始化状态
       clbumModal: false,
@@ -117,7 +117,7 @@ export default {
       this.currentClbum = row
       this.getClubumInfo(row.id)
     },
-    // 获取班级学员信息
+    // 获取晚辅导学员信息
     getClubumInfo(id, pageData = this.pager.defaultPage) {
       this.pager.clbumInfo = pageData
       this.$http.get(`/curriculum/student/clbumInfo.json?id=${id}&page=${pageData.page}&per_page=${pageData.per_page}`)
@@ -126,7 +126,7 @@ export default {
           this.clbumModal = true
         })
     },
-    // 获取班级数据
+    // 获取晚辅导数据
     getData(qs) {
       return this.$http.get(`/curricularecord/class/information${qs}`)
         .then((data) => {

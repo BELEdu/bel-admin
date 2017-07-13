@@ -26,7 +26,7 @@
     </Row>
 
     <!--列表数据模块-->
-    <Table class="app-table" :columns="teacherColumns" :data="teacherData.data" border></Table>
+    <Table class="app-table" :columns="teacherColumns" :data="teacherData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="teacherData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   </div>
 </template>
@@ -55,20 +55,17 @@ export default {
       likeKey: 'teacher_name',  // 默认模糊字段
       // 教师字段
       teacherColumns: [
-        { title: '教师姓名', key: 'username', align: 'center' },
-        { title: '员工编号', key: 'user_number', align: 'center' },
+        { title: '教师姓名', key: 'username', align: 'center', width: 100 },
+        { title: '员工编号', key: 'user_number', align: 'center', width: 160, sortable: 'custom' },
         { title: '岗位性质', key: 'users_job_type', align: 'center' },
-        {
-          title: '授课年级',
-          align: 'center',
-          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '授课科目', key: 'subject_type', align: 'center' },
-        { title: '学生数', key: 'student_total', align: 'center' },
-        { title: '未上课时', key: 'course_remain', align: 'center' },
-        { title: '已完成课时', key: 'course_finish', align: 'center' },
+        { title: '学生数', key: 'student_total', align: 'center', width: 80, sortable: 'custom' },
+        { title: '未上课时', key: 'course_remain', align: 'center', width: 90, sortable: 'custom' },
+        { title: '已完成课时', key: 'course_finish', align: 'center', width: 110, sortable: 'custom' },
         {
           title: '操作',
           align: 'center',
+          width: 90,
           render: createButton([
             {
               icon: 'edit',

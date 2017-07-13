@@ -46,7 +46,7 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
+    <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--添加|编辑|填写课时-课表弹窗-->
@@ -113,19 +113,15 @@ export default{
           render: (h, params) => h('span', {}, `${params.row.model_info.display_name}`),
         },
         { title: '教师姓名', key: 'teacher_name', align: 'center', width: 120 },
-        { title: '上课日期', key: 'date', align: 'center', width: 90 },
+        { title: '上课日期', key: 'date', align: 'center', width: 90, sortable: 'custom' },
         { title: '上课时段',
           align: 'center',
           width: 125,
           render: (h, params) => h('span', {}, `${params.row.start_at}-${params.row.end_at}`),
         },
-        { title: '计划课时', key: 'course_cost', align: 'center', width: 80 },
-        { title: '实际课时', key: 'fact_cost', align: 'center', width: 80 },
+        { title: '计划课时', key: 'course_cost', align: 'center', width: 90, sortable: 'custom' },
+        { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
         { title: '上课科目', key: 'subject_type', align: 'center' },
-        {
-          title: '上课年级',
-          align: 'center',
-          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '产品名称', key: 'product_name', align: 'center' },
         { title: '知识点', key: 'language_points', align: 'center' },
         { title: '课表状态',

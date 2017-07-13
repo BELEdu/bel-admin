@@ -9,22 +9,6 @@
                   @on-cancel="formCancel('form')">
     <div class="course-modal-content">
       <Form ref="form" :model="data" :rules="ruleValidate" :label-width="110">
-        <app-form-alert :errors="formErrors"></app-form-alert>
-        <Form-item label="教师名称：" prop="teacher_id">
-          <Select v-model="data.teacher_id" placeholder="请选择" :disabled="status === 'finish'">
-            <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="上课科目：" prop="subject_type">
-          <Select v-model="data.subject_type" placeholder="请选择" :disabled="status === 'finish'">
-            <Option v-for="list in courseOption.subject_type" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-          </Select>
-        </Form-item>
-        <Form-item label="上课年级：" prop="grade">
-          <Select v-model="data.grade" placeholder="请选择" :disabled="status === 'finish'">
-            <Option v-for="list in courseOption.grade" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-          </Select>
-        </Form-item>
         <Form-item label="产品名称：" prop="product_id">
           <div class="course-select">
             <Select v-model="data.product_id" placeholder="请选择" :disabled="status === 'finish'">
@@ -35,6 +19,11 @@
               </Option>
             </Select>
           </div>
+        </Form-item>
+        <Form-item label="教师名称：" prop="teacher_id">
+          <Select v-model="data.teacher_id" placeholder="请选择" :disabled="status === 'finish'">
+            <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
+          </Select>
         </Form-item>
         <Form-item label="选择课时：" prop="course_cost">
           <Select v-model="data.course_cost" placeholder="请选择" :disabled="status === 'finish'">
@@ -71,8 +60,8 @@
 <script>
   /**
    * 排课管理-添加|编辑
-   * @author    chenliangshan
-   * @update    2017/07/02
+   * @author     chenliangshan
+   * @version    2017/07/02
    */
 
   import { form } from '@/mixins'
@@ -110,18 +99,12 @@
     },
     data() {
       return {
-        title: '',
+        title: '添加学员排课',
         courseOption: {},
         courseModal: false,
         ruleValidate: {
           teacher_id: [
             this.$rules.required('教师名称', 'number', 'change'),
-          ],
-          subject_type: [
-            this.$rules.required('上课科目', 'number', 'change'),
-          ],
-          grade: [
-            this.$rules.required('上课年级', 'number', 'change'),
           ],
           product_id: [
             this.$rules.required('产品名称', 'number', 'change'),
@@ -162,16 +145,18 @@
     computed: {
       okValue() {
         const status = this.data.schedule_status
-        let statusTxt
+        let statusTxt = '确认'
+        const txt = '编辑学员排课'
         switch (status) {
           case 0:
-            statusTxt = '确定上课'
+            this.title = txt
             break
           case 1:
-            statusTxt = '完成上课'
+            this.title = txt
             break
           case 2:
             statusTxt = '确认课时'
+            this.title = '填写课时'
             break
           default:
             statusTxt = '确认'

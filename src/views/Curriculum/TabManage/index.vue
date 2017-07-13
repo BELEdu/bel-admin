@@ -12,7 +12,7 @@
 <script>
 /**
  * 切换标签 - 公用
- * @author chenliangshan
+ * @author  chenliangshan
  * @version 2017-07-01
  */
 
@@ -26,13 +26,13 @@ export default {
     }
   },
   computed: {
-    qs() {
-      return this.$parse(this.$route.query)
-    },
     tabActive() {
       this.$store.commit(GLOBAL.LOADING.HIDE)
       const pathArry = this.$route.path.split('/')
-      return pathArry[pathArry.length - 2]
+      return pathArry[pathArry.length - this.currentId]
+    },
+    currentId() {
+      return this.$route.params.id ? 2 : 1
     },
   },
   methods: {
@@ -41,9 +41,11 @@ export default {
       return this.updateRoute(name)
     },
     // 更新路由
-    updateRoute(name, qs = '') {
-      const path = this.$route.path.replace(this.tabActive, name)
-      this.$router.push(`${path}${qs}`)
+    updateRoute(name) {
+      const pathArry = this.$route.path.split('/')
+      pathArry[pathArry.length - this.currentId] = name
+      const path = pathArry.join('/')
+      this.$router.push(`${path}`)
     },
   },
 }

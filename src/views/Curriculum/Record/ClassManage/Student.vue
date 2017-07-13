@@ -25,7 +25,7 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
+    <Table class="app-table" :columns="studentColumns" :data="studentData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="studentData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--编写评价弹窗-->
@@ -91,6 +91,8 @@ export default{
           render: (h, params) => h('span', {}, params.row.model_info.display_name) },
         { title: '学员编号',
           align: 'center',
+          key: 'number',
+          sortable: 'custom',
           render: (h, params) => h('span', {}, `${params.row.model_info.number}`) },
         { title: '教师姓名', key: 'teacher_name', align: 'center', width: 120 },
         { title: '上课日期', key: 'date', align: 'center', width: 90 },

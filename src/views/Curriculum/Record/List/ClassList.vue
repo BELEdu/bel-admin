@@ -31,7 +31,7 @@
 /**
  * 课程管理 - 班级上课记录
  * @author chenliangshan
- * @version 2017/07/01
+ * @version 2017/07/13
  */
 
 import { createButton } from '@/utils'
@@ -61,10 +61,10 @@ export default {
               key: 'display_name',
             },
           ]) },
-        { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
+        { title: '上课日期', key: 'date', align: 'center', sortable: 'custom' },
+        { title: '实际课时', key: 'fact_cost', align: 'center', sortable: 'custom' },
+        { title: '上课科目', key: 'subject_type', align: 'center' },
         { title: '上课年级', key: 'grade_name', align: 'center' },
-        { title: '产品名称', key: 'schedule_product_name', align: 'center' },
-        { title: '班主任', key: 'belong_customer_relationships', align: 'center' },
         {
           title: '操作',
           align: 'center',
@@ -72,7 +72,7 @@ export default {
             {
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/curricularecord/class/list/${params.id}`)
+                this.$router.push(`/curriculum/curricularecord/class/list/show/${params.id}`)
               },
               text: '查看',
             },

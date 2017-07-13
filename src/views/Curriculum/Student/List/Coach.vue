@@ -19,7 +19,7 @@
     <!--列表工具模块-->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2><Icon type="ios-calendar" /> 班级列表</h2>
+      <h2><Icon type="ios-calendar" /> 晚辅导列表</h2>
       </Col>
       <Col>
       <Button type="primary">打印</Button>
@@ -48,15 +48,16 @@
 
 <script>
   /**
+   * 晚辅导列表
    * @author    chenliangshan
-   * @version   2017/06/28
+   * @version   2017/07/12
    */
 
   import { createButton } from '@/utils'
   import { list } from '@/mixins'
 
   export default {
-    name: 'app-curriculum-student-class',
+    name: 'app-curriculum-student-coach',
     mixins: [list],
     data() {
       return {
@@ -82,7 +83,7 @@
               },
             ]) },
           { title: '学员人数（个）', key: 'student_total', align: 'center' },
-          { title: '教师', key: 'teacher_item', align: 'center' },
+          { title: '教师姓名', key: 'teacher_item', align: 'center' },
           { title: '班主任', key: 'classes_director', align: 'center' },
           { title: '产品名称', key: 'schedule_product_name', align: 'center' },
           {
@@ -93,7 +94,7 @@
                 icon: 'edit',
                 type: 'primary',
                 click: (params) => {
-                  this.$router.push(`/curriculum/studentcurricula/class/course/${params.id}`)
+                  this.$router.push(`/curriculum/studentcurricula/coach/course/${params.id}`)
                 },
                 text: '排课管理',
               },
@@ -106,12 +107,13 @@
         clbumModal: false,
         // 班级学员信息字段
         showColumns: [
+          { title: '序号', type: 'index', align: 'center', width: '50' },
           { title: '学员名称', key: 'student_name', align: 'center' },
           { title: '学员编号', key: 'student_number', align: 'center' },
           { title: '当前年级', key: 'current_grade', align: 'center' },
-          { title: '产品子类型', key: 'product_subtype', align: 'center' },
+          { title: '产品名称', key: 'product_subtype', align: 'center' },
+          { title: '签约课时', key: 'coach_grade', align: 'center' },
           { title: '剩余课时', key: 'surplus_period', align: 'center' },
-          { title: '上课年级', key: 'coach_grade', align: 'center' },
         ],
         // 班级学员信息数据
         clbumInfoData: {},

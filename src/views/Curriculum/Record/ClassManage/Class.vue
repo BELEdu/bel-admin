@@ -20,12 +20,9 @@
       <Col>
       <h2><Icon type="document-text" /> 班级列表</h2>
       </Col>
-      <Col>
-      <Button type="primary" @click="getAppraiseInfo" v-if="classData.data">查看评价</Button>
-      </Col>
     </Row>
 
-    <Table class="app-table" :columns="classColumns" :data="classData.data" border></Table>
+    <Table class="app-table" :columns="classColumns" :data="classData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="classData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--编写评价弹窗-->
@@ -41,9 +38,9 @@
 </template>
 <script>
   /**
-   * 上课记录-班级
+   * 上课记录-班级-学员列表
    * @author  chenliangshan
-   * @update    2017/06/23
+   * @version    2017/07/13
    */
 
   import { list } from '@/mixins'
@@ -58,9 +55,8 @@
       return {
         // 搜索字段
         likeKeys: [
-          { label: '班级名称', value: 'display_name' },
-          { label: '教师姓名', value: 'teacher_name' },
-          { label: '上课科目', value: 'subject_type' },
+          { label: '学员姓名', value: 'display_name' },
+          { label: '学员编号', value: 'number' },
           { label: '产品名称', value: 'product_name' },
         ],
         likeKey: 'display_name',  // 默认模糊字段
@@ -85,69 +81,59 @@
         appraiseSingleData: [],
         // 班级字段
         classColumns: [
-          { title: '班级名称',
+          { title: '学员姓名',
             align: 'center',
-            width: 120,
+            width: 160,
             render: (h, params) => h('span', {}, params.row.model_info.display_name) },
-          { title: '班级人数（个）',
+          { title: '学员编号',
             align: 'center',
-            width: 120,
-            render: (h, params) => h('span', {}, params.row.model_info.student_total) },
-          { title: '教师姓名', key: 'teacher_name', align: 'center', width: 100 },
-          { title: '上课日期', key: 'date', align: 'center', width: 80 },
-          { title: '上课时段',
-            align: 'center',
-            width: 110,
-            render: (h, params) => h('span', {}, `${params.row.start_at}-${params.row.end_at}`),
-          },
-          { title: '计划课时', key: 'course_cost', align: 'center', width: 80 },
-          { title: '实际课时', key: 'fact_cost', align: 'center', width: 80 },
-          {
-            title: '上课科目',
-            align: 'center',
-            width: 110,
-            render: (h, params) => {
-              const grade = this.$store.state.dicts.grade
-              const name = grade.filter(item => item.value === params.row.subject_type)
-              return h('span', {}, `${name[0].display_name}`)
-            },
-          },
-          {
-            title: '上课年级',
-            align: 'center',
-            width: 110,
-            render: (h, params) => {
-              const grade = this.$store.state.dicts.grade
-              const name = grade.filter(item => item.value === params.row.grade)
-              return h('span', {}, `${name[0].display_name}`)
-            },
-          },
+            width: 160,
+            key: 'number',
+            sortable: 'custom',
+            render: (h, params) => h('span', {}, params.row.model_info.number) },
           { title: '产品名称', key: 'product_name', align: 'center' },
+          { title: '签约课时', key: 'course_total', align: 'center', width: 80 },
+          { title: '剩余课时', key: 'course_remain', align: 'center', width: 80 },
           {
             title: '操作',
             align: 'center',
-            width: 110,
+            width: 200,
             render: (h, params) => {
               const self = this
-              let txt = '写评价'
+              let txt = '未评价'
               let className = 'primary'
               if (params.row.comment_count > 0) {
                 txt = '已评价'
                 className = 'success'
               }
-              return h('Button', {
-                class: `color-${className}`,
-                props: {
-                  type: 'text',
-                  size: 'small',
-                },
-                on: {
-                  click() {
-                    // 写评价
-                    self.appraiseWrite(params)
+              return h('div', [
+                h('Button', {
+                  class: `color-${className}`,
+                  props: {
+                    type: 'text',
+                    size: 'small',
                   },
-                },
-              }, txt)
+                  on: {
+                    click() {
+                      // 写评价
+                      self.appraiseWrite(params)
+                    },
+                  },
+                }, txt),
+                h('Button', {
+                  class: 'color-primary',
+                  props: {
+                    type: 'text',
+                    size: 'small',
+                  },
+                  on: {
+                    click() {
+                      // 查看全部评价
+                      self.getAppraiseInfo(params)
+                    },
+                  },
+                }, '查看全部评价'),
+              ])
             },
           },
         ],

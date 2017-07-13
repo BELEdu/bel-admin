@@ -44,7 +44,7 @@
       <Button type="primary" @click="$router.push('/curriculum/student/timetable/2')">打印</Button>
       </Col>
     </Row>
-    <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" border></Table>
+    <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--添加课表弹窗-->
@@ -305,20 +305,15 @@
             align: 'center',
             width: 110,
             render: (h, params) => h('span', {}, `${params.row.model_info.display_name}`) },
-          { title: '上课日期', key: 'date', align: 'center', width: 100 },
+          { title: '上课日期', key: 'date', align: 'center', width: 100, sortable: 'custom' },
           { title: '上课时段',
             align: 'center',
             width: 110,
             render: (h, params) => h('span', {}, `${params.row.start_at}-${params.row.end_at}`),
           },
-          { title: '计划课时', key: 'course_cost', align: 'center', width: 110 },
-          { title: '实际课时', key: 'fact_cost', align: 'center', width: 80 },
+          { title: '计划课时', key: 'course_cost', align: 'center', width: 110, sortable: 'custom' },
+          { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
           { title: '上课科目', key: 'subject_type', align: 'center', width: 80 },
-          { title: '上课年级',
-            align: 'center',
-            width: 110,
-            render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }),
-          },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
           { title: '课表状态',

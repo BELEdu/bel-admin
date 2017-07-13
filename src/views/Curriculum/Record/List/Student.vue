@@ -24,7 +24,7 @@
     </Row>
 
     <!--列表数据模块-->
-    <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
+    <Table class="app-table" :columns="studentColumns" :data="studentData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="studentData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   </div>
 </template>
@@ -54,7 +54,7 @@ export default {
       // 学员字段
       studentColumns: [
         { title: '学员姓名', key: 'display_name', align: 'center' },
-        { title: '学员编号', key: 'number', align: 'center' },
+        { title: '学员编号', key: 'number', align: 'center', sortable: 'custom' },
         { title: '上课年级',
           align: 'center',
           render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
@@ -67,7 +67,7 @@ export default {
             {
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/record/show/${params.id}`)
+                this.$router.push(`/curriculum/curricularecord/student/show/${params.id}`)
               },
               text: '查看',
             },

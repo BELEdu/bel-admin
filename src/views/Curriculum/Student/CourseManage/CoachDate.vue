@@ -38,10 +38,9 @@
     <!--列表工具模块-->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2><Icon type="ios-calendar" /> 班级日课表</h2>
+      <h2><Icon type="ios-calendar" /> 晚辅导课表</h2>
       </Col>
       <Col>
-      <Button type="primary" @click="openCourseModal('add')">添加课表</Button>
       <Button type="primary">打印</Button>
       </Col>
     </Row>
@@ -50,31 +49,34 @@
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--添加|编辑-课表弹窗-->
-    <class-course-modal v-model="courseModal"
+    <course-modal v-model="courseModal"
                   :data="formItem"
                   :id="courseModalParam.id"
                   :status="courseModalParam.status"
                   :urlConf="urlConf"
-                  @on-close="updateData"></class-course-modal>
+                  @on-close="updateData"></course-modal>
     <!--班级填写实际课时-->
+    <app-form-modal>
+
+    </app-form-modal>
   </div>
 </template>
 
 <script>
   /**
-   * 学员排课表
-   * @author  chenliangshan
-   * @version 2017/06/28
+   * 晚辅导课表
+   * @author   chenliangshan
+   * @version  2017/07/12
    */
 
   import { list } from '@/mixins'
   import WeeklyTable from '../../Components/WeeklyTable'
-  import ClassCourseModal from '../../Components/ClassCourseModal'
+  import CourseModal from '../../Components/CourseModal'
 
   export default{
-    name: 'app-class-course',
+    name: 'app-coach-course',
     mixins: [list],
-    components: { WeeklyTable, ClassCourseModal },
+    components: { WeeklyTable, CourseModal },
     data() {
       return {
         // 搜索字段
@@ -88,8 +90,7 @@
         },
         likeKeys: [
           { label: '教师姓名', value: 'teacher_name' },
-          { label: '上课科目', value: 'subject_type' },
-          { label: '产品名称', value: 'product_name' },
+          { label: '班级名称', value: 'display_name' },
         ],
         likeKey: 'teacher_name',
         subjectType: [
@@ -148,16 +149,14 @@
             width: 130,
             sortable: 'custom',
             render: (h, params) => h('span', params.row.model_info.student_total) },
-          { title: '教师姓名', key: 'teacher_name', align: 'center', width: 100 },
-          { title: '上课日期', key: 'date', align: 'center', width: 100, sortable: 'custom' },
+          { title: '教师姓名', key: 'teacher_name', align: 'center' },
+          { title: '上课日期', key: 'date', align: 'center', sortable: 'custom' },
           { title: '上课时段',
             align: 'center',
             width: 125,
             render: (h, params) => h('span', `${params.row.start_at}-${params.row.end_at}`) },
           { title: '计划课时', key: 'course_cost', align: 'center', width: 90, sortable: 'custom' },
           { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
-          { title: '上课科目', key: 'subject_type', align: 'center' },
-          { title: '知识点', key: 'language_points', align: 'center' },
           { title: '课表状态',
             align: 'center',
             width: 80,
@@ -170,7 +169,6 @@
             render: (h, params) => {
               const self = this
               const status = params.row.schedule_status
-              const factCost = params.row.fact_cost
               if (status === 0 || status === 1) {
                 return h('div', [
                   h('Button', {
@@ -186,49 +184,22 @@
                       },
                     },
                   }, '编辑'),
-                  h('Button', {
-                    class: 'color-error',
-                    props: {
-                      type: 'text',
-                      size: 'small',
-                    },
-                    on: {
-                      click() {
-                        // 取消
-                        self.cancelCurriculum(params.row)
-                      },
-                    },
-                  }, '取消'),
-                ])
-              } else if (status === 3) {
-                // 已取消
-                return h('div', [
-                  h('span', {
-                    class: 'color-cancel',
-                  }, '已取消'),
-                ])
-              } else if (status === 2 && !factCost) {
-                // 完成上课-未填写课时
-                return h('div', [
-                  h('Button', {
-                    class: 'color-primary',
-                    props: {
-                      type: 'text',
-                      size: 'small',
-                    },
-                    on: {
-                      click() {
-                        self.openCourseModal('finish', params.row)
-                      },
-                    },
-                  }, '填写课时'),
                 ])
               }
-              // 完成上课且填写课时
+              // 完成上课
               return h('div', [
-                h('span', {
-                  class: 'color-success ',
-                }, '完成上课'),
+                h('Button', {
+                  class: 'color-primary',
+                  props: {
+                    type: 'text',
+                    size: 'small',
+                  },
+                  on: {
+                    click() {
+                      self.openCourseModal('show', params.row)
+                    },
+                  },
+                }, '查看'),
               ])
             },
           },
@@ -240,13 +211,12 @@
           option: '/courseoption/',
           edit: '/classcurricula/',
           finish: '/classcurricula/finish/',
-          info: '/curriculum/student/clbumInfo.json',
         },
       }
     },
     methods: {
       /**
-       * 获取班级日课表数据
+       * 获取晚辅导日课表数据
        * @param pageData  分页信息
        */
       getData(qs) {
@@ -269,20 +239,6 @@
         this.courseModalParam.status = type
         this.courseModalParam.id = parseInt(id, 10)
         this.courseModal = true
-      },
-      // 取消排课
-      cancelCurriculum(row) {
-        this.$Modal.confirm({
-          title: '提示',
-          content: '是否确认取消该排课？',
-          onOk: () => {
-            this.$Message.info('点击了确定')
-            this.$http.post(`/classcurricula/cancel/${row.id}`)
-              .then((result) => {
-                window.console.log(result)
-              })
-          },
-        })
       },
     },
   }

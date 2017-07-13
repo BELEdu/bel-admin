@@ -27,7 +27,7 @@
     </Row>
 
     <!--列表数据模块-->
-    <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
+    <Table class="app-table" :columns="studentColumns" :data="studentData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="studentData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
   </div>
 </template>
@@ -36,7 +36,7 @@
   /**
    * 学员排课
    * @author    chenliangshan
-   * @addTime   2017/06/28
+   * @version   2017/06/28
    */
 
 import { createButton } from '@/utils'
@@ -53,19 +53,20 @@ import { list } from '@/mixins'
           { label: '学员编号', value: 'number' },
           { label: '学管师', value: 'belong_customer_relationships' },
         ],
-        likeKey: 'display_name',  // 默认模糊字段
+        // 默认模糊字段
+        likeKey: 'display_name',
         // 学员字段
         studentColumns: [
           { title: '学员姓名', key: 'display_name', align: 'center' },
-          { title: '学员编号', key: 'number', align: 'center' },
+          { title: '学员编号', key: 'number', align: 'center', sortable: 'custom' },
           {
             title: '当前年级',
             align: 'center',
             render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
-          { title: '班主任', key: 'belong_customer_relationships', align: 'center' },
           { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
           { title: '产品名称', key: 'schedule_product_name', align: 'center' },
-          { title: '上课课时', key: 'course_total', align: 'center' },
+          { title: '签约课时', key: 'course_total', align: 'center', sortable: 'custom' },
+          { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },
           {
             title: '操作',
             align: 'center',
@@ -74,7 +75,7 @@ import { list } from '@/mixins'
                 icon: 'edit',
                 type: 'primary',
                 click: (params) => {
-                  this.$router.push(`/curriculum/student/course/${params.id}`)
+                  this.$router.push(`/curriculum/studentcurricula/student/course/${params.id}`)
                 },
                 text: '排课管理',
               },
