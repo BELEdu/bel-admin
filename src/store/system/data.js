@@ -44,30 +44,19 @@ export default {
   },
 
   actions: {
-    [SYSTEM.DATA.PERMIS.INIT]({ state, commit }) {
-      // 减少接口请求，如已有数据不再请求
-      if (state.departmentPaths.length === 0) {
-        return Http.get('/role/create')
-          .then(res => commit(SYSTEM.DATA.PERMIS.INIT, res))
-      }
-      return Promise.resolve()
+    [SYSTEM.DATA.PERMIS.INIT]({ commit }) {
+      return Http.get('/role/create')
+        .then(res => commit(SYSTEM.DATA.PERMIS.INIT, res))
     },
 
-    [SYSTEM.DATA.ROLES.INIT]({ state, commit }) {
-      // 减少接口请求，如已有数据不再请求
-      if (state.rolePaths.length === 0) {
-        return Http.get('/department_role')
-          .then(res => commit(SYSTEM.DATA.ROLES.INIT, res))
-      }
-      return Promise.resolve()
+    [SYSTEM.DATA.ROLES.INIT]({ commit }) {
+      return Http.get('/department_role')
+        .then(res => commit(SYSTEM.DATA.ROLES.INIT, res))
     },
 
-    [SYSTEM.DATA.PROCESS.INIT]({ state, commit }) {
-      if (state.process.types.length === 0) {
-        return Http.get('/process/create')
-          .then(res => commit(SYSTEM.DATA.PROCESS.INIT, res))
-      }
-      return Promise.resolve()
+    [SYSTEM.DATA.PROCESS.INIT]({ commit }) {
+      return Http.get('/process/create')
+        .then(res => commit(SYSTEM.DATA.PROCESS.INIT, res))
     },
   },
 }
