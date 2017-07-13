@@ -10,16 +10,26 @@
       </h2>
       </Col>
     </Row>
-    <Table class="app-table app-table--department" :columns="columns" :data="departments" :row-class-name="rowClassName" border></Table>
 
-    <!--弹框-->
-    <department-modal
+    <departments
+      :prepareCreate="prepareCreate"
+      :prepareUpdate="prepareUpdate"
+      :prepareRemove="prepareRemove"
+    ></departments>
+
+    <create-modal
+      v-model="modal.create"
       :item="currentItem"
-      :form="form"
-      :modal="modal"
+      :isTopLevel="isTopLevel"
+      :isXiaoqu="isXiaoqu"
       :isCreate="isCreate"
-      @closeModal="closeModal"
-    ></department-modal>
+    ></create-modal>
+    <remove-modal
+      v-model="modal.remove"
+      :item="currentItem"
+      :isTopLevel="isTopLevel"
+      :isXiaoqu="isXiaoqu"
+    ></remove-modal>
   </div>
 </template>
 
@@ -27,67 +37,23 @@
 /**
  * 系统设置 - 组织架构
  * @author lmh
- * @version 2017-06-07-07
+ * @version 2017-06-07-13 重写表格，实现折叠功能，并优化整体代码
  */
 
-import { mapState } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
-import DepartmentModal from './components/DepartmentModal'
+import Departments from './components/Departments'
+import CreateModal from './components/CreateModal'
+import RemoveModal from './components/RemoveModal'
 
 export default {
-  name: 'app-system-organization',
+  name: 'app-system-department',
 
   data() {
     return {
-      columns: [
-        { title: '部门', key: 'display_name', align: 'left' },
-        {
-          title: '操作',
-          width: 215,
-          align: 'center',
-          render: (h, params) => h('div', {
-            class: 'department-btns',
-          }, [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small',
-              },
-              on: {
-                click: () => this.prepareCreate(params.row.id),
-              },
-            }, params.row.level === 1 ? '新增校区' : '新增子部门'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small',
-              },
-              on: {
-                click: () => this.prepareUpdate(params.row.id),
-              },
-            }, '更名'),
-          ].concat(params.row.id === 1 ? [] : [h('Button', {
-            props: {
-              type: 'warning',
-              size: 'small',
-              'v-if': params.row.level !== 1,
-            },
-            on: {
-              click: () => this.prepareRemove(params.row.id),
-            },
-          }, '删除')])),
-        },
-      ],
-
-      currentId: null,
-
-      form: {
-        display_name: '',
-        _checkout_password: null,
-      },
+      currentItem: {},
 
       modal: {
-        form: false,
+        create: false,
         remove: false,
       },
 
@@ -96,53 +62,42 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      departments: state => state.system.department.list,
-    }),
+    isTopLevel() {
+      return this.currentItem.p_id === 0
+    },
 
-    currentItem() {
-      return this.departments.find(department => department.id === this.currentId) || {}
+    isXiaoqu() {
+      const { display_name } = this.currentItem
+      const hasText = display_name != null && display_name.slice(-2) === '校区'
+      // 新增时，第一级为新增校区；非新增时，名字中含有“校区”的为校区
+      return (this.isCreate && this.isTopLevel) || (!this.isCreate && hasText)
     },
   },
 
   methods: {
-    // 设置表格每一行的className
-    rowClassName(row) {
-      return `level-${row.level}`
-    },
-
-    openModal(type) {
-      this.modal[type] = true
-    },
-
-    closeModal(type) {
-      this.modal[type] = false
-    },
-
-    prepareCreate(id) {
-      this.currentId = id
+    prepareCreate(item) {
+      this.currentItem = item
       this.isCreate = true
-      this.form.display_name = ''
-      this.openModal('form')
+      this.modal.create = true
     },
 
-    prepareUpdate(id) {
-      this.currentId = id
+    prepareUpdate(item) {
+      this.currentItem = item
       this.isCreate = false
-      // 校区二字是固定后缀，不应该显示在输入框里
-      this.form.display_name = this.currentItem.display_name.replace('校区', '')
-      this.openModal('form')
+      this.modal.create = true
     },
 
-    prepareRemove(id) {
-      this.currentId = id
+    prepareRemove(item) {
+      this.currentItem = item
       this.isCreate = false
-      this.openModal('remove')
+      this.modal.remove = true
     },
   },
 
   components: {
-    DepartmentModal,
+    Departments,
+    CreateModal,
+    RemoveModal,
   },
 
   created() {
@@ -153,23 +108,3 @@ export default {
   },
 }
 </script>
-
-<style lang="less">
-// 层级缩进
-.level-padding(@n, @i: 1) when (@i =< @n) {
-  .level-@{i} {
-    td:first-child {
-      padding-left: ((@i - 1) * 2em);
-    }
-  }
-  .level-padding(@n, (@i + 1));
-}
-
-.level-padding(10);
-
-.department-btns {
-  button:not(:first-child) {
-    margin-left: 0.8em;
-  }
-}
-</style>
