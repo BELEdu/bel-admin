@@ -13,12 +13,12 @@
      >
       <Form-item label="退费合同名称">
         <span class="contract-refund__text">
-          {{contractInfo.info.display_name}}
+          {{fdata.info.display_name}}
          </span>
       </Form-item>
       <Form-item label="退费合同编号">
         <span class="contract-refund__text">
-          {{contractInfo.info.approval_number}}
+          {{fdata.info.approval_number}}
          </span>
       </Form-item>
       <!-- 选择流程确定合同和角色选择 -->
@@ -72,14 +72,14 @@
       ref="productForm" :model="fdata.product" :rules="productRules">
       <Form-item label="学员姓名">
         <span class="contract-refund__text">
-          {{contractInfo.product.student_name}}
+          {{fdata.product.student_name}}
         </span>
       </Form-item>
       <Form-item label="退费原因" prop="note">
         <Input type="textarea" :rows="5" v-model="fdata.product.note"></Input>
       </Form-item>
       <Form-item label="退费明细">
-        <Table :columns="detailConfig" :data="contractInfo.product.list" border size="small">
+        <Table :columns="detailConfig" :data="fdata.product.list" border size="small">
           <span slot="footer">
             说明：每个产品的退订金额=产品单价*（1-优惠比例）*退订数量
           </span>
@@ -87,7 +87,7 @@
       </Form-item>
       <Form-item label="退费总额">
         <span class="contract-refund__text">
-          ￥{{contractInfo.product.money}}
+          ￥{{fdata.product.money}}
          </span>
       </Form-item>
       <!-- 第二步过关按钮 -->
@@ -127,8 +127,6 @@ export default {
     return {
       // 最终提交给后端的数据
       fdata: refundInit(),
-      // 合同基本信息
-      contractInfo: {},
       // 提交按钮状态控制
       loading: false,
       // 表单验证
@@ -172,17 +170,57 @@ export default {
   },
 
   created() {
-    // 设置fdata的合同id
-    this.fdata.belong_contract_id = this.$route.query.id
+    // 新增退费合同
+    if (this.$route.meta.action === 'create') {
+      // 设置fdata的合同id
+      this.fdata.info.belong_contract_id = this.$route.query.id
 
-    // 获取合同基本信息
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => {
-        this.contractInfo = res
-        this.fdata.product.list = res.product.list
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
-      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      // 获取合同基本信息
+      this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
+        .then((res) => {
+          // 数据处理
+          const {
+            display_name,
+            approval_number,
+          } = res.info
+
+          this.fdata.info = {
+            ...this.fdata.info,
+            ...{
+              display_name,
+              approval_number,
+            },
+          }
+
+          const {
+            student_name,
+            list,
+            money,
+          } = res.product
+
+          this.fdata.product = {
+            ...this.fdata.product,
+            ...{
+              student_name,
+              list,
+              money,
+            },
+          }
+
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+          // end 数据处理
+        })
+        .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    // 更新退费合同
+    } else {
+      // 更新的数据有belong_contract_id，需要返还的时该退费合同的id
+      this.fdata.info.id = this.$route.query.id
+
+      // 获取更新合同数据
+      this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
+        .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+        .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    }
   },
 }
 </script>
