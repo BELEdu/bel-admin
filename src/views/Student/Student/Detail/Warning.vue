@@ -29,7 +29,7 @@
       :loading="loading.cancel"
       @on-ok="cancelSubmit()"
     >
-      <Form ref="formCancel" :model="formCancel"  :label-width="60">
+      <Form ref="formCancel" :model="formCancel" :label-width="60">
         ID：{{warningId}}
         <Form-item label="取消说明" >
           <Input v-model="formCancel.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入..."></Input>
@@ -53,7 +53,7 @@
     </app-form-modal>
 
     <!-- 预警信息列表 -->
-    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <!-- 分页 -->
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -105,9 +105,9 @@ export default {
       },
       // 表格配置
       columns: [
-        { title: 'ID', key: 'id', align: 'center' },
+        { title: 'ID', key: 'id', align: 'center', sortable: 'custom' },
         { title: '预警类型', key: 'warning_type', align: 'center' },
-        { title: '预警时间', key: 3, align: 'center' },
+        { title: '预警时间', key: 3, align: 'center', sortable: 'custom' },
         { title: '操作人', key: 'user_id', align: 'center' },
         { title: '操作人岗位', key: 5, align: 'center' },
         { title: '预警原因', key: 'warning_reason', align: 'center' },

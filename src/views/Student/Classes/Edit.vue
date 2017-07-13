@@ -4,16 +4,13 @@
     <Form :label-width="140" class="app-form-entire" :model="form" :rules="rules" ref="form">
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="班级名称" prop="display_name">
-        <Input placeholder="请输入班级名称" v-model="form.display_name"></Input>
+        <!--<Input placeholder="请输入班级名称" v-model="form.display_name" :disabled="isUpdate"></Input>-->
+        <Input placeholder="请输入班级名称" v-model="form.display_name" ></Input>
       </Form-item>
-      <Form-item label="班级分类" prop="classes_type">
-        <Select placeholder="请选择..." v-model="form.classes_type" :disabled="isUpdate">
+      <Form-item label="产品分类" prop="product_id">
+        <!--<Select placeholder="请选择..." v-model="form.product_id" :disabled="isUpdate">-->
+        <Select placeholder="请选择..." v-model="form.product_id">
           <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
-        </Select>
-      </Form-item>
-      <Form-item label="当前年级（要去掉）">
-        <Select placeholder="请选择..." v-model="form.current_grade">
-          <Option v-for="item in grade" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="班主任">
@@ -26,11 +23,8 @@
           <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
         </Select>
       </Form-item>
-      <!--<Form-item label="开办日期">
-        <app-date-picker placeholder="请选择开办日期" v-model="form.start_at"></app-date-picker>
-      </Form-item>-->
-      <Form-item label="开办日期（range）">
-        <Date-picker type="daterange" placeholder="请选择开办日期" v-model="range"></Date-picker>
+      <Form-item label="开班级日期">
+        <Date-picker type="daterange" placeholder="请选择开办日期" v-model="classesDate"></Date-picker>
       </Form-item>
       <!--<Form-item label="选择学员（测试）" >
           <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
@@ -38,18 +32,18 @@
           </Select>
         </Form-item>-->
       <Form-item label="设定假期">
-        <Checkbox-group >
-          <Checkbox label="1">每周一</Checkbox>
-          <Checkbox label="2">每周二</Checkbox>
-          <Checkbox label="3">每周三</Checkbox>
-          <Checkbox label="4">每周四</Checkbox>
-          <Checkbox label="5">每周五</Checkbox>
-          <Checkbox label="6">每周六</Checkbox>
-          <Checkbox label="7">每周日</Checkbox>
+        <Checkbox-group v-model="form.week">
+          <Checkbox :label="1">每周一</Checkbox>
+          <Checkbox :label="2">每周二</Checkbox>
+          <Checkbox :label="3">每周三</Checkbox>
+          <Checkbox :label="4">每周四</Checkbox>
+          <Checkbox :label="5">每周五</Checkbox>
+          <Checkbox :label="6">每周六</Checkbox>
+          <Checkbox :label="7">每周日</Checkbox>
         </Checkbox-group>
       </Form-item>
       <Form-item>
-        <Date-picker type="daterange" :options="options" placeholder="选择特定的日期" v-model="range2"></Date-picker>
+        <Date-picker type="daterange" placeholder="选择特定的日期" v-model="range2"></Date-picker>
       </Form-item>
       <Form-item label="选择学员">
         <Select v-model="form.students" placeholder="请选择学生..." multiple filterable>
@@ -77,7 +71,7 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-// import format from 'date-fns/format'
+import format from 'date-fns/format'
 import { form, goBack } from '@/mixins'
 
 // const myStudents = [
@@ -97,6 +91,11 @@ import { form, goBack } from '@/mixins'
 //   '赵10',
 // ]
 
+const specialDefault = {
+  start_at: null,
+  end_at: null,
+}
+
 export default {
   name: 'app-student-classes-edit',
 
@@ -105,14 +104,18 @@ export default {
   data() {
     return {
       form: {
-        id: '',
         display_name: '',  // 班级名称
+        product_id: null, // 产品id
+        product_type_id: 3, // 产品类型id
         classes_type: null, // 班级分类
-        current_grade: null, // 当前年级
         classes_director: null, // 班主任
         start_at: null, // 开始时间
+        end_at: null, // 结束时间
         students: [], // 班级学生列表
         teachers: [], // 班级老师列表
+        week: [], // 星期
+        special_at: [{ ...specialDefault }], // 特殊日期
+
 
         // student: [], // 班级学生列表（测试）
       },
@@ -122,23 +125,19 @@ export default {
           this.$rules.required('班级名称'),
           this.$rules.length(2, 32),
         ],
-        classes_type: [
-          this.$rules.required('班级分类', 'number', 'change'),
+        product_id: [
+          this.$rules.required('产品分类', 'number', 'change'),
         ],
       },
 
       classes_director_data: [], // 班主数据源
       classes_teacher_data: [], // 任课教师数据源
       student_data: [], // 班级学生数据源
-      // studentList: [], // 班级学生数据源（测试）
-      range: [], // 开班日期时间段
+      classesDate: [], // 开班日期（range）
+
       range2: [], // 选择特定的日期
 
-      options: {
-        disabledDate(date) {
-          return date && date.valueOf() < Date.now() - 86400000
-        },
-      },
+       // studentList: [], // 班级学生数据源（测试）
     }
   },
 
@@ -161,11 +160,11 @@ export default {
     // 提交表单
     submit() {
       // 处理日期格式
-      // this.form = {
-      //   ...this.form,
-      //   start_at: this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : null,
-      // }
-      // this.form.start_at = this.form.start_at ? format(this.form.start_at, 'YYYY-MM-DD') : ''
+      this.form = {
+        ...this.form,
+        start_at: this.classesDate ? format(this.classesDate[0], 'YYYY-MM-DD') : null,
+        end_at: this.classesDate ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
+      }
 
       // 提交时如果是修改操作
       if (this.isUpdate) {
@@ -210,12 +209,18 @@ export default {
           const {
             classes_director_data,
             student_data,
+            start_at,
+            end_at,
             ...others
           } = res
 
           this.form = { ...others }
           this.classes_director_data = classes_director_data
           this.student_data = student_data
+
+          if (start_at !== null && end_at !== null) {
+            this.classesDate = [start_at, end_at]
+          }
         })
     },
   },

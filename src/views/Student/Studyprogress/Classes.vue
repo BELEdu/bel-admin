@@ -20,7 +20,7 @@
       </Col>
     </Row>
 
-     <Table class="app-table" :columns="columns" :data="list.data" border ></Table><!--sdata-->
+     <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
@@ -31,7 +31,6 @@
       :classesData="classesData"
       :displayName="display_name"
       :studentTotal="student_total"
-      :gradeName="grade_name"
       :classesDirector="classes_director"
     >
     </classes-modal>
@@ -81,19 +80,18 @@ export default {
                 row.id,
                 row.display_name,
                 row.student_total,
-                row.grade_name,
                 row.classes_director,
               ),
               key: 'display_name',
             },
           ]),
         },
-        { title: '学员人数（个）', key: 'student_total', align: 'center' },
+        { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
         { title: '产品名称', key: '', align: 'center' },
         { title: '产品类型', key: '', align: 'center' },
         { title: '班主任', key: 'classes_director', align: 'center' },
         {
-          title: '课时',
+          title: '计划课时',
           key: 'class',
           align: 'left',
           width: '200',
@@ -172,12 +170,11 @@ export default {
   },
 
   methods: {
-    openClassesModal(id, display_name, student_total, grade_name, classes_director) {
-      // 这里到时候获取接口数据传入组件
+    openClassesModal(id, display_name, student_total, classes_director) {
+      // 这里到时候通过传入的id获取班级学员接口数据传入组件
       this.modal.classes = true
       this.display_name = display_name
       this.student_total = student_total
-      this.grade_name = grade_name
       this.classes_director = classes_director
     },
 
