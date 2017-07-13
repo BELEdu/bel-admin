@@ -81,7 +81,7 @@ export default {
         { title: '序号', type: 'index', align: 'center', width: 50 },
         { title: '角色编号', key: 'role_number', align: 'center' },
         { title: '角色名称', key: 'display_name', align: 'center' },
-        { title: '所属部门', key: 'department_id', align: 'center' },
+        { title: '所属部门', key: 'department_name', align: 'center' },
         {
           title: '角色类型',
           key: 'role_type',
