@@ -30,7 +30,52 @@ export function refundInit() {
 }
 
 export function unit_encode(data) {
-  return data
+  const tmp = { ...data }
+
+  tmp.product.list.forEach((item) => {
+    // eslint-disable-next-line
+    item.course_total = item.course_remain
+  })
+
+  delete tmp.info.approval_number
+
+  return tmp
+}
+
+export function unit_decode(res, fdata) {
+  // eslint-disable-next-line
+  let tmp = { ...fdata }
+
+  // 数据处理
+  const {
+    display_name,
+    approval_number,
+  } = res.info
+
+  tmp.info = {
+    ...fdata.info,
+    ...{
+      display_name,
+      approval_number,
+    },
+  }
+
+  const {
+    student_name,
+    list,
+    money,
+  } = res.product
+
+  tmp.product = {
+    ...fdata.product,
+    ...{
+      student_name,
+      list,
+      money,
+    },
+  }
+
+  return tmp
 }
 
 // 表单验证规则

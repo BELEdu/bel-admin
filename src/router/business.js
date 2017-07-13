@@ -136,6 +136,7 @@ export default [
     component: views.ContractRefund,
     meta: {
       uri: 'contract/refund',
+      action: 'update',
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_CONTRACT,
@@ -150,6 +151,7 @@ export default [
     component: views.ContractRefund,
     meta: {
       uri: 'contract/refund',
+      action: 'create',
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_CONTRACT,

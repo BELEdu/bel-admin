@@ -115,6 +115,7 @@ import flow from './mixins/flow'
 import {
   refundInit,
   unit_encode,
+  unit_decode,
   formRules,
  } from './modules/refundConfig'
 
@@ -135,14 +136,14 @@ export default {
       process: 1,
       // 退费明细配置
       detailConfig: [
-        { key: '1', title: '产品名称', align: 'center' },
-        { key: '2', title: '产品单价', align: 'center' },
-        { key: '3', title: '购买数量', align: 'center' },
-        { key: '4', title: '优惠比例', align: 'center' },
-        { key: '5', title: '产品总额', align: 'center' },
-        { key: '6', title: '已消耗量', align: 'center' },
-        { key: '7', title: '退订数量', align: 'center' },
-        { key: '8', title: '退订金额', align: 'center' },
+        { key: 'product_name', title: '产品名称', align: 'center' },
+        { key: 'price', title: '产品单价', align: 'center' },
+        { key: 'number', title: '购买数量', align: 'center' },
+        { key: 'discount_rate', title: '优惠比例', align: 'center' },
+        { key: 'money', title: '产品总额', align: 'center' },
+        { key: 'course_used', title: '已消耗量', align: 'center' },
+        { key: 'course_remain', title: '退订数量', align: 'center' },
+        { key: 'refund_money', title: '退订金额', align: 'center' },
       ],
     }
   },
@@ -159,9 +160,18 @@ export default {
       this.loading = true
       // 若表单数据和服务器要求不符，根据需要进行二次处理
       const fdata = unit_encode(this.fdata)
-      // 虽新增，但用到旧合同id，保存在post数据中belong_contract_id字段中
-      this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-        .then(() => { this.loading = false; this.goBack() })
+
+      // 新增退费合同
+      if (this.$route.meta.action === 'create') {
+        // 虽新增，但用到旧合同id，保存在post数据中belong_contract_id字段
+        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
+          .then(() => { this.loading = false; this.goBack() })
+      // 更新退费合同
+      } else {
+        const id = this.$route.params.id
+        this.$store.dispatch(BUSINESS.EDIT.CREATE, { id, fdata })
+          .then(() => { this.loading = false; this.goBack() })
+      }
     },
     // Form click提交表单事件handler
     handleSubmit(name) {
@@ -173,48 +183,20 @@ export default {
     // 新增退费合同
     if (this.$route.meta.action === 'create') {
       // 设置fdata的合同id
-      this.fdata.info.belong_contract_id = this.$route.query.id
+      this.fdata.info.belong_contract_id = parseInt(this.$route.params.id, 10)
 
       // 获取合同基本信息
       this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
         .then((res) => {
-          // 数据处理
-          const {
-            display_name,
-            approval_number,
-          } = res.info
-
-          this.fdata.info = {
-            ...this.fdata.info,
-            ...{
-              display_name,
-              approval_number,
-            },
-          }
-
-          const {
-            student_name,
-            list,
-            money,
-          } = res.product
-
-          this.fdata.product = {
-            ...this.fdata.product,
-            ...{
-              student_name,
-              list,
-              money,
-            },
-          }
-
+          this.fdata = unit_decode(res, this.fdata)
           this.$store.commit(GLOBAL.LOADING.HIDE)
-          // end 数据处理
         })
         .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
     // 更新退费合同
     } else {
       // 更新的数据有belong_contract_id，需要返还的时该退费合同的id
-      this.fdata.info.id = this.$route.query.id
+      this.fdata.info.id = parseInt(this.$route.params.id, 10)
 
       // 获取更新合同数据
       this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)

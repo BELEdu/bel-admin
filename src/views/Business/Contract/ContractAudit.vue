@@ -1,7 +1,7 @@
 <template>
   <main class="app-form-entire contract-detail">
     <app-editor-title></app-editor-title>
-  
+
     <Card :bordered="false" dis-hover>
       <h4 slot="title">审批进度</h4>
       <Steps class="steps-fix" :current="0">
@@ -11,7 +11,7 @@
         <Step title="" content="结束"></Step>
       </Steps>
     </Card>
-  
+
     <Card class="contract-detail__info" :bordered="false" dis-hover>
       <h4 slot="title">审批内容</h4>
       <Row type="flex" justify="space-between">
@@ -29,7 +29,7 @@
       <Table :columns="contractCol" :data="[detail]"></Table>
       <Table :columns="productCol" :data="detail.product_detail"></Table>
     </Card>
-  
+
     <Card class="contract-detail__opinion" :bordered="false" dis-hover>
       <h4 slot="title">审批意见</h4>
       <Form :model="comment" ref="comment" :rules="commentRule">
@@ -37,13 +37,13 @@
           <Input type="textarea" :rows="5" v-model="comment.text"></Input>
         </Form-item>
         <Form-item>
-          <Button type="primary" @click="submit('comment',1)" :loading="loading[1]">同意</Button>
+          <Button type="primary" @click="submit('comment',3)" :loading="loading[1]">同意</Button>
           <Button type="success">保存</Button>
-          <Button type="error" @click="submit('comment',3)" :loading="loading[3]">驳回</Button>
+          <Button type="error" @click="submit('comment',1)" :loading="loading[3]">驳回</Button>
         </Form-item>
       </Form>
     </Card>
-  
+
     <Card :bordered="false" dis-hover>
       <h4 slot="title">审批历史</h4>
       <Table :columns="hisCol" :data="detail.approval"></Table>
