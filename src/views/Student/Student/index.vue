@@ -11,8 +11,8 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.school_zone" style="width:7em;" placeholder="请选择校区" >
-          <Option v-for="school in school_list" :value="school.display_name" :key="school.display_name">{{ school.display_name }}</Option>
+        <Select v-model="query.equal.department_id" style="width:9em;" placeholder="请选择校区">
+          <Option v-for="school in school_list" :value="school.id" :key="school.id">{{ school.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -63,7 +63,7 @@
     ></manage-modal>
 
     <!-- 学员信息表格 -->
-    <Table class="app-table" :columns="columns" :data="list.data" border @on-selection-change="onSelectionChange"></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-selection-change="onSelectionChange" @on-sort-change="sort"></Table>
 
     <!-- 分页 -->
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -95,7 +95,6 @@ export default {
     return {
 
       likeKeys: [
-        { label: '校区名称', value: 'school_zone' },
         { label: '学员姓名', value: 'display_name' },
         { label: '学员编号', value: 'id' },
         { label: '在读学校', value: 'school_name' },
@@ -105,7 +104,7 @@ export default {
       likeKey: 'display_name',
       query: {
         equal: {
-          school_zone: '',
+          department_id: '',
         },
         between: {
           created_at: [],
@@ -120,22 +119,23 @@ export default {
         },
         { title: '校区', key: 'school_zone', align: 'center' },
         { title: '学员姓名', key: 'display_name', align: 'center' },
-        { title: '学员编号', key: 'id', align: 'center' },
+        { title: '学员编号', key: 'id', align: 'center', sortable: 'custom' },
         {
           title: '家长姓名',
           key: 'parent_name',
           align: 'center',
         },
-        { title: '首签日期', key: 'created_at', align: 'center' },
+        { title: '首签日期', key: 'created_at', align: 'center', width: 180, sortable: 'custom' },
         { title: '在读学校', key: 'school_name', align: 'center' },
         { title: '当前年级', key: 'current_grade', align: 'center' },
         { title: '归属咨询师', key: 'belong_counselor', align: 'center' },
         { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
-        { title: '签约课时', key: 'course_remain', align: 'center' },
+        { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         {
           title: '剩余课时',
           key: 'course_total',
           align: 'center',
+          sortable: 'custom',
           render: (h, params) => { // 剩余课时小于10的时候变红
             const { course_total } = params.row
             const className = +course_total < 10 ? 'color-error' : ''

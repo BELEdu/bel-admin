@@ -25,7 +25,7 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="list.data" border ></Table><!--sdata-->
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
@@ -80,10 +80,10 @@ export default {
         },
         { title: '当前年级', key: 'current_grade', align: 'center' },
         { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
-        { title: '签约课时', key: 'course_remain', align: 'center' },
-        { title: '剩余课时', key: 'course_remain', align: 'center' },
+        { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
+        { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         {
-          title: '课时',
+          title: '计划课时',
           key: 'class',
           align: 'left',
           width: '200',

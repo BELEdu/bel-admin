@@ -66,7 +66,7 @@
     </manage-modal>
 
     <!--班级管理表格-->
-    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <!--分页-->
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -99,8 +99,8 @@ export default {
       likeKeys: [
         { label: '班级名称', value: 'display_name' },
         { label: '班级编号', value: 'classes_number' },
-        { label: '产品名称', value: 'classes_type_name' },
-        { label: '产品类型', value: '111' },
+        { label: '产品名称', value: 'product_name' },
+        { label: '产品类型', value: 'product_type_id' },
       ],
       likeKey: 'display_name',
       query: {
@@ -114,11 +114,11 @@ export default {
       },
 
       columns: [
-        { title: '班级名称', key: 'display_name', align: 'center', width: 130 },
-        { title: '班级编号', key: 'classes_number', align: 'center', width: 100 },
-        { title: '产品名称', key: 'classes_type_name', align: 'center', width: 180 },
-        { title: '产品类型', key: '', align: 'center', width: 120 },
-        { title: '班主任', key: 'classes_director', align: 'center', width: 100 },
+        { title: '班级名称', key: 'display_name', align: 'center' },
+        { title: '班级编号', key: 'classes_number', align: 'center', sortable: 'custom' },
+        { title: '产品名称', key: 'product_name', align: 'center' },
+        { title: '产品类型', key: 'product_type_id', align: 'center' },
+        { title: '班主任', key: 'classes_director', align: 'center' },
         // {
         //   title: '教师',
         //   key: 'teacher_item',
@@ -138,9 +138,20 @@ export default {
         //   },
         // },
         { title: '教师', key: 'teacher_item', align: 'center' },
-        { title: '学员人数', key: 'student_total', align: 'center', width: 80 },
-        { title: '开班日期', key: 'start_at', align: 'center' },
-        { title: '创建日期', key: 'created_at', align: 'center' },
+        { title: '学员人数', key: 'student_total', align: 'center', sortable: 'custom' },
+        {
+          title: '开班日期',
+          key: 'start_at',
+          align: 'center',
+          width: 180,
+          sortable: 'custom',
+          render: (h, params) => {
+            const { start_at, end_at } = params.row
+            const text = start_at ? `${start_at} ~ ${end_at}` : ''
+            return h('span', text)
+          },
+        },
+        { title: '创建日期', key: 'created_at', align: 'center', width: 180, sortable: 'custom' },
         { title: '状态', key: 'status_name', align: 'center' },
         {
           title: '操作',

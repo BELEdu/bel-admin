@@ -62,7 +62,10 @@
           >
             <Input placeholder="请输入Email地址" v-model="item.email"></Input>
           </Form-item>
-          <Form-item label="家庭年总收入">
+          <Form-item label="家庭年总收入"
+           :prop="`parent.${index}.total_score`"
+           :rules="[$rules.price]"
+          >
             <Input placeholder="请输入家庭年总收入" v-model="item.total_score"></Input>
           </Form-item>
           <Form-item label="辅助联系方式">

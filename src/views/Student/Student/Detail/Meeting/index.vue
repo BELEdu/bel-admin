@@ -46,7 +46,7 @@
     </app-warn-modal>
 
     <!-- 交流会列表 -->
-    <Table class="app-table" :columns="columns" :data="list.data" border></Table>
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <!-- 分页 -->
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
@@ -89,7 +89,7 @@ export default {
 
       // 表格配置
       columns: [
-        { title: '会议时间', key: 'meeting_date', align: 'center' },
+        { title: '会议时间', key: 'meeting_date', align: 'center', sortable: 'custom' },
         { title: '会议类型', key: 'meeting_type', align: 'center' },
         { title: '参会家长', key: 'parent_name', align: 'center' },
         {
@@ -123,7 +123,7 @@ export default {
             )
           },
         },
-        { title: '家长满意度', key: '', align: 'center' },
+        { title: '家长满意度', key: 'satisfaction', align: 'center' },
         { title: '创建人', key: '', align: 'center' },
         {
           title: '操作',

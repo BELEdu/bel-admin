@@ -93,6 +93,7 @@ export default {
       step: 0,
 
       form: {
+        // 测试知识点选择器，先留着，后续可能替换成上传到后端的知识点树
         points: [],
 
         id: null, // 计划id

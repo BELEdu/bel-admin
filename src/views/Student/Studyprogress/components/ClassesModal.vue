@@ -9,7 +9,6 @@
       <b>班级：</b>{{displayName}}
       <b>学员个数：</b>{{studentTotal}}
       <b>班主任：</b>{{classesDirector}}
-      <b>当前年级：</b>{{gradeName}}
     </h3>
 
     <Table class="app-table" size="small" :columns="columns" :data="classesData" border></Table>
@@ -41,10 +40,6 @@ export default {
     },
     studentTotal: {
       type: Number,
-      required: true,
-    },
-    gradeName: {
-      type: String,
       required: true,
     },
     classesDirector: {
