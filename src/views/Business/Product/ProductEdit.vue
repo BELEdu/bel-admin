@@ -3,7 +3,7 @@
     <app-editor-title></app-editor-title>
     <Form :label-width="110" ref="form" :rules="formRules" :model="fdata">
       <Form-item label="产品名称" prop="display_name">
-        <Input placeholder="请输入流程名称" v-model="fdata.display_name"></Input>
+        <Input placeholder="请输入产品名称" v-model="fdata.display_name"></Input>
       </Form-item>
       <Form-item label="产品类型" v-if="dicts.product_type.length" prop="product_type_id">
         <Select placeholder="请选择......" v-model="fdata.product_type_id">
@@ -217,12 +217,12 @@ export default {
   }
 
   &-right {
-    border-left: 1px solid @border-color-base;    
+    border-left: 1px solid @border-color-base;
     padding-left: 20px;
     flex-grow: 1;
 
     & dt {
-      margin-left: -20px;      
+      margin-left: -20px;
       border-bottom: 1px solid @border-color-base;
       text-align: center;
     }
