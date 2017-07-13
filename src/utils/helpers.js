@@ -45,8 +45,14 @@ export const generatePaths = (data) => {
  * @author lmh
  * @param {Number} id - 要寻找的id
  * @param {Array} paths - 所有的路径数组
+ * @param {Boolean} strict - 是否严格查找，严格查找时，所查找id必须是path数组的最后一项
+ * @description 查询角色时应使用严格模式，避免错误查找到部门id，因为部门id和角色id可能相同
  */
-export const getPath = (id, paths) => {
+export const getPath = (id, paths, strict = false) => {
+  if (strict) {
+    return paths.find(path => path[path.length - 1] === id)
+  }
+
   const result = paths.find(path => path.includes(id))
   const index = result.findIndex(pathId => pathId === id)
   return result.slice(0, index + 1)

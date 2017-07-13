@@ -169,7 +169,7 @@ export default {
         .then((res) => {
           this.form = {
             ...res,
-            roles: res.roles.map(role => getPath(role.id, this.rolePaths)),
+            roles: res.roles.map(role => getPath(role.id, this.rolePaths, true)),
           }
           this.rolesInDb = [...this.form.roles]
         })
