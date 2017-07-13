@@ -57,6 +57,7 @@ export const SYSTEM = {
 
   USER: {
     INIT: 'SYSTEM.USER.INIT',
+    DELETE: 'SYSTEM.USER.DELETE',
   },
 
   PROCESS: {

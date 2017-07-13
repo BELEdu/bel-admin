@@ -48,7 +48,7 @@
 /**
  * 系统管理 - 用户管理
  * @author lmh
- * @version 2017-06-22 初步动态化
+ * @version 2017-07-13 增加删除接口
  */
 
 import { mapState } from 'vuex'
@@ -90,7 +90,7 @@ export default {
           align: 'center',
           width: 110,
           render: createButton([
-            { text: '删除', type: 'error' },
+            { text: '删除', type: 'error', click: row => this.removeUser(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/user/edit/${row.id}`) },
           ]),
         },
@@ -108,10 +108,21 @@ export default {
     getData(qs) {
       return this.$store.dispatch(SYSTEM.USER.INIT, qs)
     },
+
+    removeUser(id) {
+      this.$Modal.confirm({
+        content: '操作不可逆，确认要删除吗？',
+        onOk: () => this.$store
+          .dispatch(SYSTEM.USER.DELETE, id)
+          // 临时解决
+          .catch(() => {
+            this.$Message.error({
+              content: '操作失败',
+              duration: 10,
+            })
+          }),
+      })
+    },
   },
 }
 </script>
-
-<style>
-
-</style>
