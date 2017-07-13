@@ -23,7 +23,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: '错误提示文案',
+      default: '提交出现错误',
     },
     errors: {
       type: Object,

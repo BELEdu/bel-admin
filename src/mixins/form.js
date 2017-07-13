@@ -43,8 +43,10 @@ export default {
     errorHandler({ errors, message }) {
       if (errors) {
         this.formErrors = errors
+      } else if (message) {
+        this.formErrors = { error: [message] }
       } else {
-        this.formErrors = { error: [message, '服务端错误，请联系网站管理员或稍后重试'] }
+        this.formErrors = { error: ['服务端错误，请联系网站管理员或稍后重试'] }
       }
       this.$emit('scrollToTop')
       this.formLoading = false
