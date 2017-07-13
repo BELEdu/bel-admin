@@ -40,8 +40,11 @@
 
     <div class="text-center">
       <Button
-        type="dashed" icon="plus" class="color-primary" size="large"
-         v-show="step < 3 || step === 4" @click="$emit('addLesson')"
+        type="dashed"
+        icon="plus"
+        class="color-primary"
+        size="large"
+        v-show="step < 4 || step === 4" @click="$emit('addLesson')"
       >增加课程</Button>
     </div>
   </div>
