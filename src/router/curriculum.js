@@ -7,22 +7,37 @@
 import * as views from '@/views'
 
 const CURRICULUM_STUDENT_PATH = '/curriculum/studentcurricula'
-const CURRICULUM_STUDENT_LIST_PATH = '/curriculum/studentcurricula/list'
+const CURRICULUM_STUDENT_LIST_PATH = '/curriculum/studentcurricula/student'
 const CURRICULUM_TEACHER_PATH = '/curriculum/teachercurricula'
 const CURRICULUM_RECORD_PATH = '/curriculum/curricularecord'
+// 学员排课||教师排课
 const COURSE_MANAGE = [{
-  name: '日课表',
+  name: '课表',
   value: 'date',
 }, {
   name: '周课表',
   value: 'week',
 }]
-const RECORD_MANAGE = [{
+// 上课记录
+const RECORD_TAB = [{
   name: '学员',
   value: 'student',
 }, {
   name: '班级',
   value: 'class',
+}, {
+  name: '晚辅导',
+  value: 'coach',
+}]
+const STUDENT_TAB = [{
+  name: '学员',
+  value: 'student',
+}, {
+  name: '班级',
+  value: 'class',
+}, {
+  name: '晚辅导',
+  value: 'coach',
 }]
 
 export default [
@@ -69,7 +84,7 @@ export default [
         breadcrumb: [
           { name: '课程管理' },
           { name: '教师排课', link: CURRICULUM_TEACHER_PATH },
-          { name: '教师日课表' },
+          { name: '教师课表' },
         ],
       },
     }, {
@@ -102,6 +117,7 @@ export default [
       name: 'CurriculumStudentList',
       component: views.CurriculumStudentList,
       meta: {
+        tabName: STUDENT_TAB,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
@@ -114,19 +130,33 @@ export default [
       name: 'CurriculumStudentClassList',
       component: views.CurriculumStudentClassList,
       meta: {
+        tabName: STUDENT_TAB,
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
           { name: '班级列表' },
         ],
       },
+    },
+    {
+      path: '/curriculum/studentcurricula/coach',
+      name: 'CurriculumStudentCoachList',
+      component: views.CurriculumStudentCoachList,
+      meta: {
+        tabName: STUDENT_TAB,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
+          { name: '辅导班列表' },
+        ],
+      },
     }],
   },
   {
-    path: '/curriculum/student/course/:id',
+    path: '/curriculum/studentcurricula/student/course/:id',
     name: 'CurriculumStudentCourse',
     component: views.CurriculumStudentCourse,
-    redirect: '/curriculum/student/course/date/:id',
+    redirect: '/curriculum/studentcurricula/student/course/date/:id',
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -135,7 +165,7 @@ export default [
       ],
     },
     children: [{
-      path: '/curriculum/student/course/date/:id',
+      path: '/curriculum/studentcurricula/student/course/date/:id',
       name: 'CurriculumStudentCourseDate',
       component: views.CurriculumStudentCourseDate,
       meta: {
@@ -143,11 +173,11 @@ export default [
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
-          { name: '学员日课表' },
+          { name: '学员课表' },
         ],
       },
     }, {
-      path: '/curriculum/student/course/week/:id',
+      path: '/curriculum/studentcurricula/student/course/week/:id',
       name: 'CurriculumStudentCourseWeek',
       component: views.CurriculumStudentCourseWeek,
       meta: {
@@ -161,10 +191,10 @@ export default [
     }],
   },
   {
-    path: '/curriculum/class/course/:id',
+    path: '/curriculum/studentcurricula/class/course/:id',
     name: 'CurriculumStudentCourse',
     component: views.CurriculumStudentCourse,
-    redirect: '/curriculum/class/course/date/:id',
+    redirect: '/curriculum/studentcurricula/class/course/date/:id',
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -173,7 +203,7 @@ export default [
       ],
     },
     children: [{
-      path: '/curriculum/class/course/date/:id',
+      path: '/curriculum/studentcurricula/class/course/date/:id',
       name: 'CurriculumClassCourseDate',
       component: views.CurriculumClassCourseDate,
       meta: {
@@ -181,11 +211,11 @@ export default [
         breadcrumb: [
           { name: '课程管理' },
           { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
-          { name: '班级日课表' },
+          { name: '班级课表' },
         ],
       },
     }, {
-      path: '/curriculum/class/course/week/:id',
+      path: '/curriculum/studentcurricula/class/course/week/:id',
       name: 'CurriculumClassCourseWeek',
       component: views.CurriculumClassCourseWeek,
       meta: {
@@ -199,10 +229,48 @@ export default [
     }],
   },
   {
+    path: '/curriculum/studentcurricula/coach/course/:id',
+    name: 'CurriculumStudentCourse',
+    component: views.CurriculumStudentCourse,
+    redirect: '/curriculum/studentcurricula/coach/course/date/:id',
+    meta: {
+      breadcrumb: [
+        { name: '课程管理' },
+        { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
+        { name: '晚辅导排课表' },
+      ],
+    },
+    children: [{
+      path: '/curriculum/studentcurricula/coach/course/date/:id',
+      name: 'CurriculumCoachCourseDate',
+      component: views.CurriculumCoachCourseDate,
+      meta: {
+        tabName: COURSE_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
+          { name: '晚辅导课表' },
+        ],
+      },
+    }, {
+      path: '/curriculum/studentcurricula/coach/course/week/:id',
+      name: 'CurriculumCoachCourseWeek',
+      component: views.CurriculumCoachCourseWeek,
+      meta: {
+        tabName: COURSE_MANAGE,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '学员排课', link: CURRICULUM_STUDENT_PATH },
+          { name: '晚辅导周课表' },
+        ],
+      },
+    }],
+  },
+  {
     path: CURRICULUM_RECORD_PATH,
     name: 'CurriculumRecord',
     component: views.CurriculumRecord,
-    redirect: '/curriculum/record/student',
+    redirect: '/curriculum/curricularecord/student',
     meta: {
       breadcrumb: [
         { name: '课程管理' },
@@ -210,11 +278,11 @@ export default [
       ],
     },
     children: [{
-      path: '/curriculum/record/student',
+      path: '/curriculum/curricularecord/student',
       name: 'CurriculumRecordStudent',
       component: views.CurriculumRecordStudent,
       meta: {
-        tabName: RECORD_MANAGE,
+        tabName: RECORD_TAB,
         breadcrumb: [
           { name: '课程管理' },
           { name: '上课记录', link: CURRICULUM_RECORD_PATH },
@@ -222,21 +290,33 @@ export default [
         ],
       },
     }, {
-      path: '/curriculum/record/class',
+      path: '/curriculum/curricularecord/class',
       name: 'CurriculumRecordClass',
       component: views.CurriculumRecordClass,
       meta: {
-        tabName: RECORD_MANAGE,
+        tabName: RECORD_TAB,
         breadcrumb: [
           { name: '课程管理' },
           { name: '上课记录', link: CURRICULUM_RECORD_PATH },
           { name: '班级记录' },
         ],
       },
+    }, {
+      path: '/curriculum/curricularecord/coach',
+      name: 'CurriculumRecordCoach',
+      component: views.CurriculumRecordCoach,
+      meta: {
+        tabName: RECORD_TAB,
+        breadcrumb: [
+          { name: '课程管理' },
+          { name: '上课记录', link: CURRICULUM_RECORD_PATH },
+          { name: '晚辅导记录' },
+        ],
+      },
     }],
   },
   {
-    path: '/curriculum/record/show/:id',
+    path: '/curriculum/curricularecord/student/show/:id',
     name: 'CurriculumRecordShow',
     component: views.CurriculumRecordShow,
     meta: {
@@ -248,7 +328,19 @@ export default [
     },
   },
   {
-    path: '/curriculum/record/classShow/:id',
+    path: '/curriculum/curricularecord/class/list/:id',
+    name: 'CurriculumRecordClassList',
+    component: views.CurriculumRecordClassList,
+    meta: {
+      breadcrumb: [
+        { name: '课程管理' },
+        { name: '上课记录', link: CURRICULUM_RECORD_PATH },
+        { name: '班级' },
+      ],
+    },
+  },
+  {
+    path: '/curriculum/curricularecord/class/list/show/:id',
     name: 'CurriculumRecordClassShow',
     component: views.CurriculumRecordClassShow,
     meta: {
@@ -256,6 +348,19 @@ export default [
         { name: '课程管理' },
         { name: '上课记录', link: CURRICULUM_RECORD_PATH },
         { name: '班级' },
+        { name: '学员列表' },
+      ],
+    },
+  },
+  {
+    path: '/curriculum/curricularecord/coach/show/:id',
+    name: 'CurriculumRecordCoachShow',
+    component: views.CurriculumRecordCoachShow,
+    meta: {
+      breadcrumb: [
+        { name: '课程管理' },
+        { name: '上课记录', link: CURRICULUM_RECORD_PATH },
+        { name: '晚辅导' },
       ],
     },
   },
