@@ -36,7 +36,7 @@
         </Radio-group>
       </Form-item>
 
-      <Form-item label="部门角色">
+      <Form-item label="部门角色" prop="roles">
         <Radio-group v-model="form.default_role_id" style="display: block;">
           <div v-for="(role, index) in form.roles" :key="role.value" class="multiple-select">
             <Cascader
@@ -123,10 +123,23 @@ export default {
           this.$rules.length(2, 24),
         ],
         email: [
+          this.$rules.required('邮箱'),
           this.$rules.email,
         ],
         mobile: [
           this.$rules.mobile,
+        ],
+        roles: [
+          this.$rules.required('部门角色', 'array', 'change'),
+          {
+            validator: (rule, value, next) => {
+              if (value.filter(item => item.length).length) {
+                next()
+              } else {
+                next(new Error('部门角色不能为空'))
+              }
+            },
+          },
         ],
         password: [
           this.$rules.required('密码'),
@@ -238,6 +251,7 @@ export default {
       const data = {
         ...this.form,
         roles: this.form.roles
+          .filter(role => role.length)
           .map(role => role[role.length - 1]),
       }
 
