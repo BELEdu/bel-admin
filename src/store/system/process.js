@@ -25,8 +25,8 @@ export default {
         .then(res => commit(SYSTEM.PROCESS.INIT, res))
     },
 
-    [SYSTEM.PROCESS.DELETE]({ commit }, id) {
-      return Http.delete(`/process/${id}`)
+    [SYSTEM.PROCESS.DELETE]({ commit }, { id, CheckoutPassword }) {
+      return Http.delete(`/process/${id}`, { CheckoutPassword })
         .then(() => commit(SYSTEM.PROCESS.DELETE, id))
     },
   },

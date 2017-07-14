@@ -25,6 +25,21 @@
     <Table class="app-table" :columns="columns" :data="list.data" border></Table>
 
     <app-pager :data="list" @on-change="goTo"></app-pager>
+
+    <app-warn-modal v-model="removeModal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeRemove">
+      <div>
+        <div class="text-center">
+          此流程删除后，新建合同审批时将无法选择该流程，已提交的审批不受影响。是否继续删除？
+        </div>
+
+        <Form :model="form" :rules="rules" ref="form">
+          <app-form-alert :errors="formErrors"></app-form-alert>
+          <Form-item prop="password">
+            <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+          </Form-item>
+        </Form>
+      </div>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -32,18 +47,18 @@
 /**
  * 流程管理
  * @author lmh
- * @version 2017-07-05
+ * @version 2017-07-14
  */
 
 import { mapState } from 'vuex'
-import { list } from '@/mixins'
+import { list, remove } from '@/mixins'
 import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-process',
 
-  mixins: [list],
+  mixins: [list, remove],
 
   data() {
     return {
@@ -55,12 +70,6 @@ export default {
         { label: '申请角色', value: 'apply_role_name' },
       ],
       likeKey: 'flow_number',
-
-      form: {
-        start: '',
-        end: '',
-        keyword: '',
-      },
 
       columns: [
       { title: '序号', align: 'center', type: 'index' },
@@ -74,7 +83,7 @@ export default {
           title: '操作',
           align: 'center',
           render: createButton([
-          { text: '删除', type: 'error', click: row => this.$store.dispatch(SYSTEM.PROCESS.DELETE, row.id) },
+          { text: '删除', type: 'error', click: row => this.prepareRemove(row.id) },
           { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/process/edit/${row.id}`) },
           ]),
         },
@@ -91,6 +100,13 @@ export default {
   methods: {
     getData(qs) {
       return this.$store.dispatch(SYSTEM.PROCESS.INIT, qs)
+    },
+
+    remove() {
+      return this.$store.dispatch(SYSTEM.PROCESS.DELETE, {
+        id: this.removeId,
+        CheckoutPassword: this.CheckoutPassword,
+      })
     },
   },
 }

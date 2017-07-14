@@ -42,7 +42,7 @@
 
     <app-pager :data="list" @on-change="goTo"></app-pager>
 
-    <app-warn-modal v-model="modal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeSubmit">
+    <app-warn-modal v-model="removeModal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeRemove">
       <div>
         <div class="text-center">
           <p>该用户删除后将无法登录，账号信息将被删除。</p>
@@ -64,18 +64,18 @@
 /**
  * 系统管理 - 用户管理
  * @author lmh
- * @version 2017-07-13 增加删除接口
+ * @version 2017-07-14
  */
 
 import { mapState } from 'vuex'
-import { list, form } from '@/mixins'
+import { list, remove } from '@/mixins'
 import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-user',
 
-  mixins: [list, form],
+  mixins: [list, remove],
 
   data() {
     return {
@@ -106,22 +106,11 @@ export default {
           align: 'center',
           width: 110,
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.removeUser(row.id) },
+            { text: '删除', type: 'error', click: row => this.prepareRemove(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/user/edit/${row.id}`) },
           ]),
         },
       ],
-
-      form: {
-        password: null,
-      },
-      rules: {
-        password: [
-          this.$rules.required('密码'),
-        ],
-      },
-      removeId: null,
-      modal: false,
     }
   },
 
@@ -131,35 +120,16 @@ export default {
     }),
   },
 
-  watch: {
-    modal() {
-      this.formErrors = {}
-      this.$refs.form.resetFields()
-    },
-  },
-
   methods: {
     getData(qs) {
       return this.$store.dispatch(SYSTEM.USER.INIT, qs)
     },
 
-    removeUser(id) {
-      this.modal = true
-      this.removeId = id
-    },
-
-    submit() {
-      this.$store.dispatch(SYSTEM.USER.DELETE, {
+    remove() {
+      return this.$store.dispatch(SYSTEM.USER.DELETE, {
         id: this.removeId,
-        CheckoutPassword: this.form.password,
+        CheckoutPassword: this.CheckoutPassword,
       })
-        .then(() => {
-          this.formLoading = false
-          this.modal = false
-          this.removeId = null
-          this.$Message.info('操作成功')
-        })
-        .catch(this.errorhandler)
     },
   },
 }
