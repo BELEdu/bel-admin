@@ -34,7 +34,10 @@
       <Table :columns="productCol" :data="contractDetail.product_detail" border></Table>
     </Card>
 
-    <Card class="contract-detail__opinion" :bordered="false" dis-hover>
+    <Card v-if="contractDetail.approval_tag"
+      class="contract-detail__opinion"
+      :bordered="false" dis-hover
+    >
       <h4 slot="title">审批意见</h4>
       <Form :model="fdata" ref="commentForm" :rules="commentRule">
         <Form-item prop="comment">
