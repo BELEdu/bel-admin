@@ -110,22 +110,37 @@
         ref="products" :rules="productRules" :key="index"
       >
         <!--<template v-for="(item, index) in fdata.product.list">-->
-        <Form-item class="contract-create__product__select" label="选择产品" prop="product_id">
-          <Select v-model="item.product_id">
-            <Option :value="1">甲</Option>
-            <Option :value="2">乙</Option>
-            <Option :value="3">丙</Option>
+        <Form-item class="contract-create__product__select"
+          v-if="productList.length" label="选择产品" prop="product_id"
+        >
+          <Select v-model="item.product_id"
+            @on-change="calPrice(index)"
+          >
+            <Option v-for="item in productList"
+              :value="item.id" :key="item.id"
+            >
+              {{item.display_name}}
+            </Option>
           </Select>
         </Form-item>
         <Form-item label="购买数量" prop="number">
-          <Input-number v-model="item.number"></Input-number>
+          <Input-number v-model="item.number"
+            :min="1" @on-change="calPrice(index)"
+          ></Input-number>
         </Form-item>
         <Form-item label="优惠比例" prop="discount_rate">
-          <Input-number v-model="item.discount_rate" :min="0" :max="100"></Input-number>
+          <Input-number v-model="item.discount_rate"
+            :min="0" :max="100" @on-change="calPrice(index)"
+          ></Input-number>
         </Form-item>
-        <Form-item class="contract-create__product__delete">
-          <Button size="small" type="error" @click.stop="deleteProduct(index)">删除</Button>
-        </Form-item>
+        <div>
+          <span>合计</span>
+           <span>{{item.total}}元</span>
+          <!-- <span>{{0}}元</span> -->
+          <Button size="small" type="error"
+            @click.stop="deleteProduct(index)"
+          >删除</Button>
+        </div>
         <!--</template>-->
       </Form>
       <!-- 新增产品按钮 -->
@@ -136,8 +151,8 @@
       </Row>
       <!-- 新增产品按钮end -->
       <!-- 产品选择end -->
-      <Form-item label="优惠金额" prop="discount">
-        <Input placeholder="请输入优惠率" v-model="fdata.product.discount"></Input>
+      <Form-item label="合同金额" prop="discount">
+        <span class="contract-create__text">{{productsPrice}}元</span>
       </Form-item>
       <Form-item label="辅导地点" prop="location">
         <Input placeholder="请输入辅导地点" v-model="fdata.product.location"></Input>
@@ -193,6 +208,8 @@ export default {
       process: 1,
       // 表单渲染
       ...studentFormRender(),
+      // 后端产品列表数据
+      productList: [],
     }
   },
 
@@ -201,9 +218,28 @@ export default {
       const { gender } = this.$store.state.dicts
       return { gender }
     },
+    productsPrice() {
+      const list = this.fdata.product.list
+      return list.reduce(((acc, cv) => acc + cv.total), 0)
+    },
   },
 
   methods: {
+    calPrice(index) {
+      const target = this.fdata.product.list[index]
+      const product = this.productList
+        .find(item => item.id === target.product_id)
+
+      if (product) {
+        const price = parseInt(product.price, 10)
+        const number = target.number
+        const discount = (100 - target.discount_rate) / 100
+        const total = number * price * discount
+        target.total = Math.ceil(total)
+      } else {
+        target.total = 0
+      }
+    },
     // 添加产品项
     createProduct() {
       this.fdata.product.list.push(productOrigin())
@@ -258,13 +294,24 @@ export default {
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
+    // 请求第三步需要的产品列表
+    Http.get('/product_list?sale_status=1')
+      .then((res) => { this.productList = res })
   },
 }
 </script>
 
 <style lang="less">
 
-@gutter-block: 8px;
+@gutter-unit: 8px;
+
+.contract-create {
+
+  &__text {
+    font-size: 14px;
+  }
+}
 
 .contract-create-step {
   margin-bottom: 40px;
@@ -275,13 +322,41 @@ export default {
   margin-left: 35px !important;
   margin-bottom: 0 !important;
 
+  &>.ivu-form-item:not(:first-child) {
+    // background-color: red;
+
+    & .ivu-form-item-label {
+      padding-right: 14px;
+      width: 75px !important;
+    }
+
+    & .ivu-form-item-content {
+      margin-left: 75px !important;
+    }
+  }
+
+  &>div:last-of-type {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+    width: 139px;
+    line-height: 32px;
+    font-size: 14px;
+
+    &>button {
+      position: absolute;
+      right: 0;
+      margin-top: 4px;
+    }
+  }
+
   &__delete {
     &.ivu-form-item {
       margin: 0 !important;
     }
 
     & .ivu-form-item-content {
-      margin-left: @gutter-block !important;
+      margin-left: @gutter-unit !important;
     }
 
     & .ivu-btn {
@@ -292,7 +367,7 @@ export default {
 
   &__select {
     & .ivu-form-item-content {
-      width: 398px !important;
+      width: 345px !important;
     }
   }
 
