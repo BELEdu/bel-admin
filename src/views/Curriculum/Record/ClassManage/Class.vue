@@ -67,9 +67,6 @@
           defConf: {
             okBtn: true,
             cancelValue: '取消',
-            title: '写评价',
-            type: 'class',
-            width: 800,
           },
           config: {},
         },
@@ -167,7 +164,10 @@
        */
       appraiseWrite(params) {
         this.currentAppraiseInfo = params.row
-        let config = {}
+        const currentStudent = params.row.model_info.display_name
+        let config = {
+          title: '写评价',
+        }
         if (params.row.comment_count > 0) {
           config = {
             okBtn: false,
@@ -175,6 +175,7 @@
             title: '查看评价',
           }
         }
+        config.title = `${config.title} (${currentStudent})`
         this.singleModal.config = Object.assign({}, this.singleModal.defConf, config)
         this.appraiseSingleModal = true
       },

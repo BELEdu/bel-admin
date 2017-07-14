@@ -27,22 +27,20 @@
     </Row>
 
     <!--列表数据模块-->
-    <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" border></Table>
-    <app-pager :data="clbumData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+    <Table class="app-table" :columns="coachColumns" :data="coachData.data" border></Table>
+    <app-pager :data="coachData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
-    <!--查看班级人员信息弹窗-->
-    <Modal v-model="clbumModal" width="800">
-      <p slot="header" class="modal-header">
-        <span>班级：{{currentClbum.class_name}}</span>
-        <span>学员个数：{{currentClbum.student_count}}</span>
-        <span>班主任：{{currentClbum.head_teacher}}</span>
-        <span>学管师：{{currentClbum.customer_teacher}}</span>
-      </p>
-      <Table class="app-table" :columns="showColumns" :data="clbumInfoData.data" border></Table>
-      <div slot="footer">
-        <Page :total="clbumInfoData.total" size="small" placement="top" show-total show-elevator show-sizer @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></Page>
-      </div>
-    </Modal>
+    <!--查看辅导班人员信息弹窗-->
+    <student-list-modal v-model="coachModal"
+                        :okBtn="false"
+                        cancel-value="关闭">
+      <template slot="header">
+        <span>班级：{{coachInfoData.display_name}}</span>
+        <span>学员个数：{{coachInfoData.student_count}}</span>
+        <span>班主任：{{coachInfoData.head_teacher}}</span>
+      </template>
+      <Table class="app-table" :columns="currentCoachColumns" :data="currentCoachData.data" border></Table>
+    </student-list-modal>
   </div>
 </template>
 
@@ -50,15 +48,17 @@
   /**
    * 晚辅导列表
    * @author    chenliangshan
-   * @version   2017/07/12
+   * @version   2017/07/13
    */
 
   import { createButton } from '@/utils'
   import { list } from '@/mixins'
+  import StudentListModal from '../../Components/StudentListModal'
 
   export default {
     name: 'app-curriculum-student-coach',
     mixins: [list],
+    components: { StudentListModal },
     data() {
       return {
         // 搜索字段
@@ -69,7 +69,7 @@
         ],
         likeKey: 'display_name',  // 默认模糊字段
         // 班级字段
-        clbumColumns: [
+        coachColumns: [
           { title: '班级',
             align: 'center',
             render: createButton([
@@ -77,7 +77,7 @@
                 type: 'primary',
                 click: (params) => {
                   // 查看班级人员信息
-                  this.classShow(params)
+                  this.studentListShow(params)
                 },
                 key: 'display_name',
               },
@@ -102,78 +102,54 @@
           },
         ],
         // 班级数据
-        clbumData: {},
+        coachData: {},
         // 班级弹窗-初始化状态
-        clbumModal: false,
+        coachModal: false,
         // 班级学员信息字段
-        showColumns: [
+        currentCoachColumns: [
           { title: '序号', type: 'index', align: 'center', width: '50' },
           { title: '学员名称', key: 'student_name', align: 'center' },
           { title: '学员编号', key: 'student_number', align: 'center' },
           { title: '当前年级', key: 'current_grade', align: 'center' },
-          { title: '产品名称', key: 'product_subtype', align: 'center' },
-          { title: '签约课时', key: 'coach_grade', align: 'center' },
-          { title: '剩余课时', key: 'surplus_period', align: 'center' },
+          { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+          { title: '产品名称', key: 'product_name', align: 'center' },
+          { title: '签约课时', key: 'course_total', align: 'center' },
+          { title: '剩余课时', key: 'course_remain', align: 'center' },
         ],
         // 班级学员信息数据
-        clbumInfoData: {},
+        coachInfoData: {},
         // 当前查看的班级
-        currentClbum: {},
-        // 分页数据
-        pager: {
-          // 默认分页数据
-          defaultPage: {
-            page: 1,
-            per_page: 10,
-          },
-          // 班级学员信息分页数据
-          clbumInfo: {},
-        },
+        currentCoachData: {},
       }
     },
     methods: {
       /**
-       * 查看班级信息
+       * 查看辅导班学员信息
        * @param row  [object]   当前班级信息
        */
-      classShow(row) {
-        this.currentClbum = row
-        this.getClubumInfo()
+      studentListShow(row) {
+        this.currentCoachData = row
+        this.getCoachInfo(row.id)
       },
       // 获取班级学员信息
-      getClubumInfo(pageData = this.pager.defaultPage) {
-        this.pager.clbumInfo = pageData
-        this.$http.get(`/curriculum/student/clbumInfo.json?id=${this.currentClbum.id}&page=${pageData.page}&per_page=${pageData.per_page}`)
+      getCoachInfo(id) {
+        this.$http.get(`/curriculum/student/clbumInfo.json?id=${id}`)
           .then((data) => {
-            this.clbumInfoData = data
-            this.clbumModal = true
+            this.coachInfoData = data
+            this.coachModal = true
           })
       },
       // 获取班级数据
       getData(qs) {
         return this.$http.get(`/classcurricula${qs}`)
           .then((data) => {
-            this.clbumData = data
+            this.coachData = data
           })
-      },
-      // 根据页码获取数据
-      getPageInfo(pageId = 1) {
-        const pageInfo = Object.assign({}, this.pager.defaultPage, { page: pageId })
-        this.getClubumInfo(pageInfo)
-      },
-      // 根据每页条数获取数据
-      getPerPageInfo(perPageId = 10) {
-        const pageInfo = Object.assign({}, this.pager.defaultPage, { per_page: perPageId })
-        this.getClubumInfo(pageInfo)
       },
     },
   }
 </script>
 
-<style lang="less">
-  .modal-header {
-    span {
-      padding-right: 10px;
-    }
-  }
+<style lang="less" scoped>
+
 </style>

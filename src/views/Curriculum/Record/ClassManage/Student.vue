@@ -165,7 +165,10 @@ export default{
      */
     appraiseWrite(params) {
       this.currentAppraiseInfo = params.row
-      let config = {}
+      const currentStudent = params.row.model_info.display_name
+      let config = {
+        title: '写评价',
+      }
       if (params.row.comment_count > 0) {
         config = {
           okBtn: false,
@@ -173,21 +176,10 @@ export default{
           title: '查看评价',
         }
       }
+      config.title = `${config.title} (${currentStudent})`
       this.singleModal.config = Object.assign({}, this.singleModal.defConf, config)
       this.appraiseSingleModal = true
     },
   },
 }
 </script>
-
-<style lang="less" scoped>
-  .student-modal-content {
-    padding: 0 20px;
-    margin: 0 auto;
-  }
-  .modal-header {
-     span {
-       padding-right: 10px;
-     }
-   }
-</style>

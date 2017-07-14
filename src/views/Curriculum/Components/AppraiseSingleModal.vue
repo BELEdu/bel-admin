@@ -11,44 +11,15 @@
     <div class="appraise-content">
       <Form ref="form" :model="appraiseSingleData">
         <app-form-alert :errors="formErrors"></app-form-alert>
-        <template v-if="param.type!='class'">
-          <Form-item v-for="(item, index) in appraiseSingleData.items"
-                     :key="item"
-                     :prop="`items.${index}.comment`"
-                     :rules="{required: true, message: '评语不能为空', trigger: 'blur'}">
-              <Input v-model="item.comment" type="textarea"
-                     :autosize="{minRows: 6,maxRows: 8}"
-                     :readonly="!param.okBtn||param.readonly"
-                     :placeholder="param.placeholder"></Input>
-          </Form-item>
-        </template>
-        <template v-else>
-            <Row>
-              <Col span="12" v-for="(item, index) in appraiseSingleData.items"
-                   :key="item">
-                <Form-item v-bind:class="'appraise-li'"
-                           :prop="`items.${index}.comment`"
-                           :rules="{required: true, message: '评语不能为空', trigger: 'blur'}">
-                  <Row>
-                    <Col span="10">
-                    <label>学员姓名：</label>
-                    <span>{{item.display_name}}</span>
-                    </Col>
-                    <Col span="10">
-                    <label>学员编号：</label>
-                    <span>{{item.number}}</span>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Input v-model="item.comment" type="textarea"
-                           :autosize="{minRows: 4,maxRows: 4}"
-                           :readonly="!param.okBtn||param.readonly"
-                           :placeholder="param.placeholder"></Input>
-                  </Row>
-                </Form-item>
-              </Col>
-            </Row>
-        </template>
+        <Form-item v-for="(item, index) in appraiseSingleData.items"
+                   :key="item"
+                   :prop="`items.${index}.comment`"
+                   :rules="{required: true, message: '评语不能为空', trigger: 'blur'}">
+            <Input v-model="item.comment" type="textarea"
+                   :autosize="{minRows: 6,maxRows: 8}"
+                   :readonly="!param.okBtn||param.readonly"
+                   :placeholder="param.placeholder"></Input>
+        </Form-item>
       </Form>
     </div>
   </app-form-modal>
@@ -148,7 +119,6 @@
     computed: {
       param() {
         return Object.assign({}, {
-          type: 'student',
           width: 500,
           okBtn: true,
           cancelValue: '取消',

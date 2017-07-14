@@ -22,12 +22,20 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="classColumns" :data="classData.data" @on-sort-change="sort" border></Table>
-    <app-pager :data="classData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+    <Table class="app-table" :columns="coachColumns" :data="coachData.data" @on-sort-change="sort" border></Table>
+    <app-pager :data="coachData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--查看-->
-    <Modal v-model="coashModal"
-           @on-close="updateData"></Modal>
+    <student-list-modal v-model="coachModal"
+                        :okBtn="false"
+                        cancel-value="关闭">
+      <template slot="header">
+        <span>班级：{{currentCoachInfo.display_name}}</span>
+        <span>学员个数：{{currentCoachInfo.student_count}}</span>
+        <span>班主任：{{currentCoachInfo.head_teacher}}</span>
+      </template>
+      <Table class="app-table" :columns="currentCoachColumns" :data="currentCoachData.data" border></Table>
+    </student-list-modal>
   </div>
 </template>
 <script>
@@ -38,10 +46,12 @@
    */
 
   import { list } from '@/mixins'
+  import StudentListModal from '../../Components/StudentListModal'
 
   export default{
     name: 'app-coach-record-manage',
     mixins: [list],
+    components: { StudentListModal },
     data() {
       return {
         // 搜索字段
@@ -49,20 +59,10 @@
           { label: '班级名称', value: 'display_name' },
         ],
         likeKey: 'display_name',  // 默认模糊字段
-        // 弹窗-初始化
-        coashModal: false,
-        singleModal: {
-          defConf: {
-            okBtn: true,
-            cancelValue: '取消',
-            title: '写评价',
-            type: 'class',
-            width: 800,
-          },
-          config: {},
-        },
+        // 查看弹窗-初始化
+        coachModal: false,
         // 晚辅导字段
-        classColumns: [
+        coachColumns: [
           { title: '班级名称',
             align: 'center',
             render: (h, params) => h('span', {}, params.row.model_info.display_name) },
@@ -99,7 +99,7 @@
                 on: {
                   click() {
                     // 查看
-                    self.coashStudentShow(params)
+                    self.coachStudentShow(params)
                   },
                 },
               }, '查看')
@@ -107,14 +107,25 @@
           },
         ],
         // 班级数据
-        classData: {},
-        // 当前评价信息
-        currentAppraiseInfo: {},
-        // 分页数据-默认分页数据
-        pagerConfig: {
-          page: 1,
-          per_page: 10,
-        },
+        coachData: {},
+        // 当前查看数据
+        currentCoachInfo: {},
+        currentCoachData: {},
+        currentCoachColumns: [
+          { title: '序号', type: 'index', align: 'center', width: 50 },
+          {
+            title: '学员名称',
+            align: 'center',
+          },
+          {
+            title: '学员编号',
+            align: 'center',
+          },
+          {
+            title: '是否上课',
+            align: 'center',
+          },
+        ],
       }
     },
     methods: {
@@ -122,21 +133,16 @@
       getData(qs) {
         return this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${qs}`)
           .then((data) => {
-            this.classData = data
+            this.coachData = data
           })
-      },
-      // 获取查看所有评价
-      getAppraiseInfo() {
-        this.multModalData = this.classData.data[0]
-        this.appraiseShow = true
       },
       /**
        * 查看
        * @param params
        */
-      coashStudentShow(params) {
-        this.currentAppraiseInfo = params.row
-        this.coashModal = true
+      coachStudentShow(params) {
+        this.currentCoachInfo = params.row
+        this.coachModal = true
       },
     },
   }
@@ -153,6 +159,14 @@
   .modal-header {
     span {
       padding-right: 10px;
+    }
+  }
+  .modal-default-btn {
+    text-align: center;
+    > button {
+      + button {
+        margin-left: 16%;
+      }
     }
   }
 </style>
