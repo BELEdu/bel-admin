@@ -1,7 +1,10 @@
 <template>
   <main class="app-form-entire product-edit">
     <app-editor-title></app-editor-title>
-    <Form :label-width="110" ref="form" :rules="formRules" :model="fdata">
+    <Form class="product-edit-form"
+      :label-width="110" ref="form"
+      :rules="formRules" :model="fdata"
+    >
       <Form-item label="产品名称" prop="display_name">
         <Input placeholder="请输入产品名称" v-model="fdata.display_name"></Input>
       </Form-item>
@@ -16,11 +19,13 @@
         </Select>
         </Select>
       </Form-item>
-      <Form-item label="课程时长" prop="course_duration">
+      <Form-item label="每课时长" prop="course_duration">
         <Input placeholder="请输入课程时长" v-model="fdata.course_duration"></Input>
+        <span>分钟</span>
       </Form-item>
       <Form-item label="产品单价" prop="price">
         <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
+        <span>元</span>
       </Form-item>
       <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
@@ -192,6 +197,29 @@ export default {
 
 <style lang="less">
 @import "~vars";
+
+@gutter-unit: 6px;
+
+// ivu组件样式修改
+.product-edit-form {
+
+  &>.ivu-form-item {
+
+    // 课程时长&产品单价 样式
+    &:nth-child(4),
+    &:nth-child(5) {
+
+      & .ivu-input-wrapper {
+        width: 95% !important;
+
+        &+span {
+          margin-left: @gutter-unit;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
 
 .product-edit__areas {
   display: flex;

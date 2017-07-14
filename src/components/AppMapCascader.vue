@@ -1,7 +1,7 @@
 <template>
-  <Cascader 
+  <Cascader
     :data="mapdata" :placeholder="placeholder"
-    :value="area" @input="_changeValue"
+    :value="[]" @input="_changeValue"
    ></Cascader>
 </template>
 
@@ -34,10 +34,19 @@ export default {
     }
   },
 
+  // computed: {
+  //   area() {
+  //     return this.value.map(item => item.toString())
+  //   },
+  // },
+
   methods: {
     _changeValue(nv) {
       const value = nv.map(item => parseInt(item, 10))
       this.$emit('input', value)
+    },
+    decodeArea(data) {
+      return data.map(item => item.toString())
     },
   },
 }
