@@ -16,7 +16,7 @@
         </Input>
         <Input v-show="!isXiaoqu" v-model="form.display_name"></Input>
       </Form-item>
-      <Form-item v-if="isXiaoqu" label="请输入密码" prop="password">
+      <Form-item v-if="isCreate && isXiaoqu" label="请输入密码" prop="password">
         <Input type="password" v-model="form.password"></Input>
       </Form-item>
     </Form>
