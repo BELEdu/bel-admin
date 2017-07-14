@@ -39,7 +39,7 @@ export function productOrigin() {
     discount_rate: 0,
     // !! 单品总额，后端无用数据，作为前端展示
     // 更新合同时候会返回这个字段
-    total: 0,
+    money: 0,
   }
 }
 
@@ -107,7 +107,7 @@ export function editInit() {
           // 单品优惠比例:sometimes|numeric|between:0,100
           discount_rate: 0,
           // productOrigin中有说明
-          total: 0,
+          money: 0,
         },
       ],
     },

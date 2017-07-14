@@ -135,7 +135,7 @@
         </Form-item>
         <div>
           <span>合计</span>
-           <span>{{item.total}}元</span>
+           <span>{{item.money}}元</span>
           <!-- <span>{{0}}元</span> -->
           <Button size="small" type="error"
             @click.stop="deleteProduct(index)"
@@ -220,7 +220,7 @@ export default {
     },
     productsPrice() {
       const list = this.fdata.product.list
-      return list.reduce(((acc, cv) => acc + cv.total), 0)
+      return list.reduce(((acc, cv) => acc + cv.money), 0)
     },
   },
 
@@ -234,10 +234,10 @@ export default {
         const price = parseInt(product.price, 10)
         const number = target.number
         const discount = (100 - target.discount_rate) / 100
-        const total = number * price * discount
-        target.total = Math.ceil(total)
+        const money = number * price * discount
+        target.money = Math.ceil(money)
       } else {
-        target.total = 0
+        target.money = 0
       }
     },
     // 添加产品项
