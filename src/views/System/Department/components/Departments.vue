@@ -11,15 +11,15 @@ export default {
   name: 'app-system-department-departments',
 
   render(h) {
-    return h('div', { class: 'department-tree' }, [
+    return h('div', { class: 'tree-table' }, [
       h(
         'ul',
-        { class: 'department-tree__header' },
+        { class: 'tree-table__header' },
         [h('span', '部门'), h('span', '操作')],
       ),
       h(
         'ul',
-        { class: 'department-tree__body' },
+        { class: 'tree-table__body' },
         this.departments.map(item => this.renderItem(h, item)),
       ),
     ])
@@ -80,18 +80,18 @@ export default {
       const hasChild = children && children.length
       const height = this.calcHeight(item)
 
-      return h('li', { class: 'department-tree__level' }, [
+      return h('li', { class: 'tree-table__level' }, [
         h('div', {
-          class: 'department-tree__item',
+          class: 'tree-table__item',
         }, [
-          h('span', { class: 'department-tree__name' }, [
+          h('span', { class: 'tree-table__name' }, [
             (hasChild && item.p_id !== 0) ? h('Button', {
               props: { type: 'text', icon: height ? 'chevron-up' : 'chevron-down' },
               on: { click: () => this.toggleExpand(item.id) },
             }) : null,
             item.display_name,
           ]),
-          h('span', { class: 'department-tree__buttons' }, [this.renderButtons(h, item)]),
+          h('span', { class: 'tree-table__right', style: { width: '214px' } }, [this.renderButtons(h, item)]),
         ]),
         hasChild ?
           h('ul', {
@@ -144,7 +144,7 @@ export default {
 @item-height: 48px;
 @border: 1px solid @border-color-base;
 
-.department-tree {
+.tree-table {
   &__header {
     display: flex;
     justify-content: space-between;
@@ -178,7 +178,7 @@ export default {
   &__level {
     padding-left: 1.2em;
 
-    & .department-tree__level {
+    & .tree-table__level {
       padding-left: 2em;
     }
 
@@ -215,9 +215,8 @@ export default {
     }
   }
 
-  &__buttons {
+  &__right {
     flex: none;
-    width: 214px;
     border-left: @border;
     text-align: center;
 
