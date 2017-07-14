@@ -31,7 +31,7 @@
     padding-right: 2em;
   }
 
-  :not(.original) > input.ivu-input,
+  input.ivu-input,
   .ivu-select:not(.original) .ivu-select-selected-value,
   .ivu-select-single:not(.original) > .ivu-select-selection,
   .ivu-select:not(.original) .ivu-select-item,
@@ -39,6 +39,11 @@
   .ivu-select:not(.original) .ivu-select-placeholder {
     height: 38px !important;
     font-size: 14px !important;
+  }
+
+  .original input.ivu-input {
+    height: 32px !important;
+    font-size: 12px !important;
   }
 
   .ivu-select:not(.original) .ivu-select-selection {
@@ -98,7 +103,7 @@
     }
   }
 
-  .ivu-date-picker {
+  .ivu-date-picker:not(.original) {
     display: block;
   }
 }
