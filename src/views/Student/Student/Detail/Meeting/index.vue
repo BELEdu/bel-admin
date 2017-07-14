@@ -10,10 +10,8 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select style="width:8em;" placeholder="请选择满意度" >
-          <Option value="满意">满意</Option>
-          <Option value="一般">一般</Option>
-          <Option value="不满意">不满意</Option>
+        <Select v-model="query.equal.satisfaction" style="width:8em;" placeholder="请选择满意度" >
+          <Option v-for="item in satisfaction" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -80,7 +78,7 @@ export default {
       likeKey: 'parent_name',
       query: {
         equal: {
-          1111111: '',
+          satisfaction: null,
         },
         between: {
           meeting_date: [],
@@ -154,6 +152,7 @@ export default {
     // 使用mapState获取list
     ...mapState({
       list: state => state.student.meeting.list,
+      satisfaction: state => state.dicts.satisfaction,
     }),
 
     studentId() {
