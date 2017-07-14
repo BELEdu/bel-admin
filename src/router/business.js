@@ -13,6 +13,7 @@ const BUSSINESS_PRODUCT = { name: '产品管理', link: '/business/product' }
 const BUSSINESS_CONTRACT = { name: '合同审批', link: '/business/contract' }
 
 export default [
+  // 热线登记
   {
     path: '/business/hotline',
     name: 'BussinessHotline',
@@ -25,6 +26,7 @@ export default [
       ],
     },
   },
+  // 热线登记 新建热线
   {
     path: '/business/hotline/edit',
     name: 'BussinessHotlineCreate',
@@ -34,10 +36,11 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_HOTLINE,
-        { name: '添加热线' },
+        { name: '新建热线' },
       ],
     },
   },
+  // 热线登记 更新热线
   {
     path: '/business/hotline/edit/:id',
     name: 'BussinessHotlineUpdate',
@@ -51,6 +54,7 @@ export default [
       ],
     },
   },
+  // 沟通记录
   {
     path: 'business/communication',
     name: 'BussinessCommunication',
@@ -63,6 +67,7 @@ export default [
       ],
     },
   },
+  // 沟通记录 创建记录
   {
     path: 'business/communication/edit',
     name: 'BussinenssCommunicationCreate',
@@ -72,10 +77,11 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_COMMUNICATION,
-        { name: '添加记录' },
+        { name: '新建记录' },
       ],
     },
   },
+  // 沟通记录 更新记录
   {
     path: 'business/communication/edit/:id',
     name: 'BussinenssCommunicationUpdate',
@@ -89,6 +95,7 @@ export default [
       ],
     },
   },
+  // 合同审批
   {
     path: 'business/contract',
     name: 'BussinessContract',
@@ -101,7 +108,7 @@ export default [
       ],
     },
   },
-  // 创建合同
+  // 合同审批 新建合同
   {
     path: 'business/contract/edit',
     name: 'BussinessContractCreate',
@@ -111,11 +118,11 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_CONTRACT,
-        { name: '添加审批' },
+        { name: '新建审批' },
       ],
     },
   },
-  // 更新合同
+  // 合同审批 更新合同
   {
     path: 'business/contract/edit/:id',
     name: 'BussinessContractUpdate',
@@ -124,12 +131,12 @@ export default [
       uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
-        { name: '合同审批' },
+        BUSSINESS_CONTRACT,
         { name: '审批详情' },
       ],
     },
   },
-  // 更新退费合同
+  // 合同审批 更新退费合同
   {
     path: 'business/contract/refund/edit/:id',
     name: 'BussinessContractRefundUpdate',
@@ -144,7 +151,7 @@ export default [
       ],
     },
   },
-  // 创建退费合同
+  // 合同审批 合同退费（创建退费合同）
   {
     path: 'business/contract/refund/:id',
     name: 'BussinessContractRefundCreate',
@@ -155,11 +162,11 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_CONTRACT,
-        { name: '添加审批' },
+        { name: '新建审批' },
       ],
     },
   },
-  // 审批合同
+  // 合同审批 查看合同（审批流程）
   {
     path: 'business/contract/audit/:id',
     name: 'BussinessContractAudit',
@@ -173,6 +180,7 @@ export default [
       ],
     },
   },
+  // 产品管理
   {
     path: 'business/product',
     name: 'BussinessProduct',
@@ -185,6 +193,7 @@ export default [
       ],
     },
   },
+  // 产品管理 新建产品
   {
     path: 'business/Product/edit',
     name: 'BussinessProductCreate',
@@ -194,10 +203,11 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_PRODUCT,
-        { name: '添加产品' },
+        { name: '新建产品' },
       ],
     },
   },
+  // 产品管理 更新产品
   {
     path: 'business/Product/edit/:id',
     name: 'BussinessProductUpdate',
