@@ -70,10 +70,11 @@ class Http {
    * @param {String} uri - 请求接口
    * @returns {Promise}
    */
-  static get(uri) {
+  static get(uri, headers = {}) {
     return fetch(Http.getUri(uri), {
       headers: {
         Authorization: `Bearer ${store.state.token}`,
+        ...headers,
       },
     })
       .then(Http.updateToken)
@@ -86,12 +87,13 @@ class Http {
    * @param {Object} body - 请求所需携带参数
    * @returns {Promise}
    */
-  static post(uri, body) {
+  static post(uri, body, headers = {}) {
     return fetch(Http.getUri(uri), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${store.state.token}`,
         'Content-Type': 'application/json',
+        ...headers,
       },
       body: JSON.stringify(body),
     })
@@ -105,12 +107,13 @@ class Http {
    * @param {Object} body - 请求所需携带参数
    * @returns {Promise}
    */
-  static patch(uri, body) {
+  static patch(uri, body, headers = {}) {
     return fetch(Http.getUri(uri), {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${store.state.token}`,
         'Content-Type': 'application/json',
+        ...headers,
       },
       body: JSON.stringify(body),
     })
@@ -123,11 +126,12 @@ class Http {
    * @param {String} uri - 请求接口
    * @returns {Promise}
    */
-  static delete(uri) {
+  static delete(uri, headers = {}) {
     return fetch(Http.getUri(uri), {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${store.state.token}`,
+        ...headers,
       },
     })
       .then(Http.updateToken)
