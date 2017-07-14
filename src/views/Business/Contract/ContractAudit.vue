@@ -20,7 +20,7 @@
         <Col class="contract-detail__info-student">
         <span>校区：{{contractDetail.school_name}}</span>
         <span>学员：{{contractDetail.student_name}}</span>
-        <span>学员编号：1025422545</span>
+        <span>学员编号：{{contractDetail.student_number}}</span>
         <span>监护人：{{contractDetail.guardian_name}}</span>
         </Col>
         <Col>
