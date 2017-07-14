@@ -7,8 +7,9 @@
       <!-- 进度步进条 -->
       <Steps class="steps-fix">
         <Step v-for="(item, index) in contractDetail.authority"
-          :key="index" :status="stepStatus[index]"
-          :title="`${item.role_name} ${item.username}`"
+          :key="index" :status="stepStatus[index].status"
+          :title="stepStatus[index].title"
+          :content="`${item.role_name} ${item.username}`"
         ></Step>
       </Steps>
     </Card>
@@ -126,26 +127,36 @@ export default {
       const flow = this.contractDetail.authority
       const arr = flow.map((item) => {
         let status = ''
+        let title = ''
         switch (item.apply_status) {
           case 1:
             status = 'error'
+            title = '已驳回'
             break
           case 3:
             status = 'finish'
+            title = '已通过'
             break
           default:
             status = 'wait'
+            title = '未审批'
         }
-        return status
+        return { status, title }
       })
 
       const index = flow.findIndex(item => item.apply_status === 0)
       // 全部未审批 第一个人duty
-      if (index === 0) arr[0] = 'process'
+      if (index === 0) {
+        arr[0].status = 'process'
+        arr[0].title = '待审核'
+      }
       // 有人未审批，根据最后一个人结果判断下一个人状态
       if (index > 0 && index < arr.length - 1) {
         // 最后一个审批人同意，下一个人duty
-        if (arr[index] === 'finish') arr[index + 1] = 'process'
+        if (arr[index] === 'finish') {
+          arr[index + 1].status = 'process'
+          arr[index + 1].title = '待审核'
+        }
       }
 
       return arr
@@ -174,7 +185,7 @@ export default {
 .contract-detail {
 
   &__info {
-    margin-top: 20px !important;
+    margin-top: 15px !important;
 
     &-student {
       & span {
