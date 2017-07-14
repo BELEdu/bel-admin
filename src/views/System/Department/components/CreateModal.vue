@@ -30,13 +30,9 @@
  * @version 2017-07-13
  */
 
+import { mapState } from 'vuex'
 import { SYSTEM } from '@/store/mutationTypes'
 import { form } from '@/mixins'
-
-const formData = {
-  display_name: '',
-  _checkout_password: null,
-}
 
 export default {
   name: 'app-system-department-create',
@@ -68,12 +64,29 @@ export default {
 
   data() {
     return {
-      form: { ...formData },
+      form: {
+        display_name: '',
+        _checkout_password: null,
+      },
 
       rules: {
         display_name: [
           this.$rules.required('名称'),
           this.$rules.length(2, 16),
+          {
+            validator: (rule, value, next) => {
+              const isDuplicatedName = this.departments[0]
+                .children
+                .filter(item => item !== this.item)
+                .some(item => item.display_name.slice(0, -2) === value)
+              if (isDuplicatedName) {
+                next(new Error('校区名称不能重复'))
+              } else {
+                next()
+              }
+            },
+            trigger: 'blur',
+          },
         ],
         _checkout_password: [
           this.$rules.required('密码'),
@@ -85,6 +98,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      departments: state => state.system.department.departments,
+    }),
+
     title() {
       if (this.isTopLevel) {
         return this.isCreate ? '新增校区' : '公司更名'
@@ -121,7 +138,7 @@ export default {
         }
       } else {
         this.formErrors = {}
-        this.form = { ...formData }
+        this.$refs.form.resetFields()
       }
     },
   },

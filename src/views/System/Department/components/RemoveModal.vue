@@ -40,10 +40,6 @@
 import { SYSTEM } from '@/store/mutationTypes'
 import { form } from '@/mixins'
 
-const formData = {
-  _checkout_password: null,
-}
-
 export default {
   name: 'app-system-department-remove',
 
@@ -70,7 +66,9 @@ export default {
 
   data() {
     return {
-      form: { ...formData },
+      form: {
+        _checkout_password: null,
+      },
 
       rules: {
         _checkout_password: [
@@ -96,7 +94,7 @@ export default {
     value(value) {
       if (!value) {
         this.formErrors = {}
-        this.form = { ...formData }
+        this.$refs.form.resetFields()
       }
     },
   },
