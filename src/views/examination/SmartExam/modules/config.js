@@ -37,7 +37,7 @@ const suitColor = (status) => {
 }
 
 // 当前状态 - 根据数据生成render元素
-const currentColor = (h, params) => h(
+const currentStatus = (h, params) => h(
   'Button',
   {
     props: { type: 'ghost', size: 'small' },
@@ -49,7 +49,7 @@ const currentColor = (h, params) => h(
         class: suitColor(params.row[2].status),
         style: {
           display: 'inline-block',
-          'margin-right': '3px',
+          'margin-right': '5px',
           height: '12px',
           width: '12px',
           'border-radius': '50%',
@@ -57,7 +57,32 @@ const currentColor = (h, params) => h(
         },
       },
     ),
-    `${params.row[2].text}`,
+    h(
+      'span',
+      {
+        style: {
+          display: 'inline-block',
+          width: '40px',
+          height: '14px',
+          overflow: 'hidden',
+          'text-align': 'justify',
+          'white-space': 'normal',
+        },
+      },
+      [
+        `${params.row[2].text}`,
+        h(
+          'span',
+          {
+            style: {
+              display: 'inline-block',
+              width: '100%',
+              overflow: 'hidden',
+            },
+          },
+        ),
+      ],
+    ),
   ],
 )
 
@@ -72,7 +97,7 @@ export function colConfig(that) {
       title: '当前状态',
       key: 2,
       align: 'center',
-      render: currentColor,
+      render: currentStatus,
     },
     {
       title: '产品名称',
