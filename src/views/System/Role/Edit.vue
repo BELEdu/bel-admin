@@ -81,7 +81,6 @@ export default {
         is_student_admin: 0,
         is_student_teac: 0,
         is_student_advisory: 0,
-        menus: [],
         permissions: [],
         data_auths: [],
       },
