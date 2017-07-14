@@ -36,6 +36,8 @@ export function editInit() {
     product_type_id: null,
     // 产品子分类
     product_subtype_id: null,
+    // 学科
+    subject_item: null,
     // 课程时长
     course_duration: null,
     // 课程总数: "numeric",

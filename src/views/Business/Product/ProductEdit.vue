@@ -17,9 +17,13 @@
         <Select placeholder="请选择......" v-model="fdata.product_subtype_id">
           <Option v-for="item in sub_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
+      </Form-item>
+      <Form-item label="学科" prop="subject_item">
+        <Select placeholder="请选择......" v-model="fdata.subject_item">
+          <Option v-for="item in dicts.subject_item" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="每课时长" prop="course_duration">
+      <Form-item label="课程时长" prop="course_duration">
         <Input placeholder="请输入课程时长" v-model="fdata.course_duration"></Input>
         <span>分钟</span>
       </Form-item>
@@ -100,6 +104,9 @@ export default {
         product_type_id: [
           this.$rules.required('产品类型', 'number', 'change'),
         ],
+        subject_item: [
+          this.$rules.required('学科', 'number', 'change'),
+        ],
         course_duration: [
           this.$rules.required('课程时长'),
           { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入有效数字', trigger: 'blur' },
@@ -117,8 +124,8 @@ export default {
   computed: {
     // store字典数据
     dicts() {
-      const { product_type, product_areas, sale_status } = this.$store.state.dicts
-      return { product_type, product_areas, sale_status }
+      const { product_type, product_areas, sale_status, subject_item } = this.$store.state.dicts
+      return { product_type, product_areas, sale_status, subject_item }
     },
     // 产品子类列表
     sub_type() {
@@ -198,16 +205,15 @@ export default {
 <style lang="less">
 @import "~vars";
 
-@gutter-unit: 6px;
+@gutter-unit: 5px;
 
 // ivu组件样式修改
 .product-edit-form {
 
   &>.ivu-form-item {
 
-    // 课程时长&产品单价 样式
-    &:nth-child(4),
-    &:nth-child(5) {
+    &:nth-child(5),
+    &:nth-child(6) {
 
       & .ivu-input-wrapper {
         width: 95% !important;
