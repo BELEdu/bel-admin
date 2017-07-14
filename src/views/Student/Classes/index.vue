@@ -2,7 +2,7 @@
   <div class="student-class">
 
     <Form inline class="app-search-form">
-       <Form-item>
+      <Form-item>
         <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:6em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
@@ -10,12 +10,7 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.current_grade" style="width:9em;" placeholder="请选择年级" >
-          <Option v-for="grade in grades" :value="grade.value" :key="grade.display_name">{{ grade.display_name }}</Option>
-        </Select>
-      </Form-item>
-      <Form-item>
-        <Select  placeholder="请选择产品类型" style="width:9em;">
+        <Select v-model="query.equal.product_type_id" placeholder="请选择产品类型" style="width:9em;">
           <Option v-for="productType in productTypes" :value="productType.value" :key="productType.display_name">{{ productType.display_name }}</Option>
         </Select>
       </Form-item>
@@ -62,8 +57,7 @@
       :form="form"
       :studentData="student_data"
       @updateData="updateData"
-    >
-    </manage-modal>
+    ></manage-modal>
 
     <!--班级管理表格-->
     <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
@@ -100,12 +94,12 @@ export default {
         { label: '班级名称', value: 'display_name' },
         { label: '班级编号', value: 'classes_number' },
         { label: '产品名称', value: 'product_name' },
-        { label: '产品类型', value: 'product_type_id' },
+        { label: '班主任', value: 'classes_director_name' },
       ],
       likeKey: 'display_name',
       query: {
         equal: {
-          current_grade: null,
+          product_type_id: null,
           status: null,
         },
         between: {
@@ -118,7 +112,7 @@ export default {
         { title: '班级编号', key: 'classes_number', align: 'center', sortable: 'custom' },
         { title: '产品名称', key: 'product_name', align: 'center' },
         { title: '产品类型', key: 'product_type_id', align: 'center' },
-        { title: '班主任', key: 'classes_director', align: 'center' },
+        { title: '班主任', key: 'classes_director_name', align: 'center' },
         // {
         //   title: '教师',
         //   key: 'teacher_item',
@@ -186,7 +180,6 @@ export default {
   computed: {
     ...mapState({
       list: state => state.student.classes.list,
-      grades: state => state.dicts.grade,
       productTypes: state => state.dicts.product_type,
     }),
   },

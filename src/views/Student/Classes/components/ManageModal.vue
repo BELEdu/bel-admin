@@ -78,3 +78,7 @@ export default {
   },
 }
 </script>
+
+<style>
+@import '~vars';
+</style>
