@@ -63,7 +63,7 @@ export default {
         { label: '班级名称', value: 'display_name' },
         { label: '产品名称', value: '' },
         { label: '产品类型', value: '' },
-        { label: '班主任', value: 'classes_director' },
+        { label: '班主任', value: 'classes_director_name' },
       ],
       likeKey: 'display_name',
       query: {},
@@ -89,7 +89,7 @@ export default {
         { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
         { title: '产品名称', key: '', align: 'center' },
         { title: '产品类型', key: '', align: 'center' },
-        { title: '班主任', key: 'classes_director', align: 'center' },
+        { title: '班主任', key: 'classes_director_name', align: 'center' },
         {
           title: '计划课时',
           key: 'class',

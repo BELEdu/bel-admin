@@ -54,7 +54,7 @@ export default {
     return {
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
-        { label: '归属学管师', value: 'belong_customer_relationships' },
+        { label: '归属学管师', value: 'belong_customer_relationships_name' },
       ],
       likeKey: 'display_name',
       query: {
@@ -79,7 +79,7 @@ export default {
           },
         },
         { title: '当前年级', key: 'current_grade', align: 'center' },
-        { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '归属学管师', key: 'belong_customer_relationships_name', align: 'center' },
         { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         {
