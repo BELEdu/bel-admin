@@ -98,7 +98,7 @@ export function colConfig(that) {
     },
     {
       title: '所在地区',
-      key: 'area',
+      key: 'place_name',
       align: 'center',
     },
     {
