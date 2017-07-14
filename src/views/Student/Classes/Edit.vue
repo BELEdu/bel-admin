@@ -4,18 +4,16 @@
     <Form :label-width="140" class="app-form-entire" :model="form" :rules="rules" ref="form">
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="班级名称" prop="display_name">
-        <!--<Input placeholder="请输入班级名称" v-model="form.display_name" :disabled="isUpdate"></Input>-->
-        <Input placeholder="请输入班级名称" v-model="form.display_name" ></Input>
+        <Input placeholder="请输入班级名称" v-model="form.display_name" :disabled="isUpdate"></Input>
       </Form-item>
       <Form-item label="产品分类" prop="product_id">
-        <!--<Select placeholder="请选择..." v-model="form.product_id" :disabled="isUpdate">-->
-        <Select placeholder="请选择..." v-model="form.product_id">
-          <Option v-for="item in classes_type" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
+        <Select placeholder="请选择..." v-model="form.product_id" :disabled="isUpdate">
+          <Option v-for="item in classes_product_data" :value="item.id" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="班主任">
-        <Select placeholder="请选择..." v-model="form.classes_director">
-          <Option v-for="item in classes_director_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
+        <Select placeholder="请选择..." v-model="form.classes_director" >
+          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="教师">
@@ -26,13 +24,8 @@
       <Form-item label="开班级日期">
         <Date-picker type="daterange" placeholder="请选择开办日期" v-model="classesDate"></Date-picker>
       </Form-item>
-      <!--<Form-item label="选择学员（测试）" >
-          <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
-            <Option v-for="item in studentList" :value="item" :key="item">{{ item }}</Option>
-          </Select>
-        </Form-item>-->
-      <Form-item label="设定假期">
-        <Checkbox-group v-model="form.week">
+      <Form-item label="设定假期" v-if="isCoach">
+        <Checkbox-group v-model="form.calendar.week">
           <Checkbox :label="1">每周一</Checkbox>
           <Checkbox :label="2">每周二</Checkbox>
           <Checkbox :label="3">每周三</Checkbox>
@@ -42,14 +35,36 @@
           <Checkbox :label="7">每周日</Checkbox>
         </Checkbox-group>
       </Form-item>
-      <Form-item>
-        <Date-picker type="daterange" placeholder="选择特定的日期" v-model="range2"></Date-picker>
+
+      <Form-item class="special" v-if="isCoach">
+        <Row :gutter="16">
+          <Col span='6' v-for="(item, index) in form.calendar.special_at" :key="index">
+            <Form-item
+             :prop="`calendar.special_at.${index}.specialDate`"
+             :rules="[$rules.required(`第${index+1}个特殊假期`, 'array', 'change')]"
+            >
+              <Date-picker v-model="item.specialDate" class="original" type="daterange" :clearable="false"></Date-picker>
+            </Form-item>
+            <Button type="text" shape="circle" icon="close-round" @click="removeSpecial(index)"></Button>
+          </Col>
+          <Col span='6'>
+            <Form-item>
+              <Button type="dashed" class="special__btn" icon="plus" long @click="addSpecial">新增假期</Button>
+            </Form-item>
+          </Col>
+        </Row>
       </Form-item>
+
       <Form-item label="选择学员">
         <Select v-model="form.students" placeholder="请选择学生..." multiple filterable>
           <Option v-for="item in student_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
+      <!--<Form-item label="选择学员（测试）" >
+          <Select v-model="form.student" placeholder="请选择学生..." multiple remote filterable :remote-method="searchStudents">
+            <Option v-for="item in studentList" :value="item" :key="item">{{ item }}</Option>
+          </Select>
+        </Form-item>-->
       <Form-item>
         <Button @click="goBack()">取消</Button>
         <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
@@ -80,7 +95,6 @@ import { form, goBack } from '@/mixins'
 //   '王五',
 // ]
 
-
 // // eslint-disable-next-line
 // const allStudents = [
 //   ...myStudents,
@@ -91,9 +105,13 @@ import { form, goBack } from '@/mixins'
 //   '赵10',
 // ]
 
-const specialDefault = {
-  start_at: null,
-  end_at: null,
+// const defaultSpecial = {
+//   start_at: null,
+//   end_at: null,
+// }
+
+const defaultSpecial = {
+  specialDate: [],
 }
 
 export default {
@@ -106,17 +124,16 @@ export default {
       form: {
         display_name: '',  // 班级名称
         product_id: null, // 产品id
-        product_type_id: 3, // 产品类型id
-        classes_type: null, // 班级分类
+        product_type_id: null, // 产品类型id
         classes_director: null, // 班主任
         start_at: null, // 开始时间
         end_at: null, // 结束时间
         students: [], // 班级学生列表
         teachers: [], // 班级老师列表
-        week: [], // 星期
-        special_at: [{ ...specialDefault }], // 特殊日期
-
-
+        calendar: {
+          week: [], // 星期几
+          special_at: [], // 特殊日期（例如节假日）
+        },
         // student: [], // 班级学生列表（测试）
       },
 
@@ -130,12 +147,10 @@ export default {
         ],
       },
 
-      classes_director_data: [], // 班主数据源
+      classes_product_data: [], // 产品数据源
       classes_teacher_data: [], // 任课教师数据源
       student_data: [], // 班级学生数据源
       classesDate: [], // 开班日期（range）
-
-      range2: [], // 选择特定的日期
 
        // studentList: [], // 班级学生数据源（测试）
     }
@@ -149,6 +164,15 @@ export default {
     isUpdate() { // 判断是编辑还是新增
       return !!this.$router.currentRoute.params.id
     },
+    isCoach() { // 根据当前选的产品判断该产品是否是晚辅导
+      const product_id = this.form.product_id
+      if (product_id) {
+        return this.classes_product_data.find(
+          item => item.id === product_id,
+        ).product_type_id === 3
+      }
+      return false
+    },
   },
 
   methods: {
@@ -159,54 +183,60 @@ export default {
 
     // 提交表单
     submit() {
-      // 处理日期格式
-      this.form = {
+      const data = {
         ...this.form,
+         // 处理时间段格式
         start_at: this.classesDate ? format(this.classesDate[0], 'YYYY-MM-DD') : null,
         end_at: this.classesDate ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
+        calendar: {
+          ...this.form.calendar,
+          special_at: this.form.calendar.special_at.map(item => ({
+            start_at: format(item.specialDate[0], 'YYYY-MM-DD'),
+            end_at: format(item.specialDate[1], 'YYYY-MM-DD'),
+          })),
+        },
       }
 
-      // 提交时如果是修改操作
-      if (this.isUpdate) {
+      if (this.isUpdate) { // 提交时如果是修改操作
         this.form.id = this.$router.currentRoute.params.id
-        this.$http.patch(`/classes/${this.form.id}`, this.form)
+        this.$http.patch(`/classes/${this.form.id}`, data)
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
-      // 提交时如果是添加操作
-      if (this.isUpdate === false) {
-        this.$http.post('/classes', this.form)
+
+      if (this.isUpdate === false) { // 提交时如果是添加操作
+        this.$http.post('/classes', data)
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
     },
 
-    // 获取教师数据源
-    getTeacherData() {
+    getTeacherData() { // 获取教师数据源
       this.$http.get('/teacher_list?attr=is_student_teac')
         .then((res) => {
           this.classes_teacher_data = res
         })
     },
 
-    // 获取各个下拉菜单的数据
-    getListData() {
+    getProductData() { // 获取产品数据源
+      this.$http.get('/product_list')
+        .then((res) => {
+          this.classes_product_data = res
+        })
+    },
+
+    getListData() { //  获取班主任、班级学员的数据源
       return this.$http.get('/classes/create')
         .then((res) => {
-          //  获取班主任、班级学员的数据源
-          this.classes_director_data = res.classes_director_data
           this.student_data = res.student_data
         })
     },
 
-    // 获取当前编辑班级的数据
-    getClassData() {
-      // 从url获取编辑的id
-      const editId = this.$router.currentRoute.params.id
+    getClassData() { // 获取当前编辑班级的数据
+      const editId = this.$router.currentRoute.params.id // 从url获取编辑的id
       return this.$http.get(`/classes/${editId}`)
         .then((res) => {
-          // 将班主任、班级学员的数据源解构出来，需要提交的数据放在this.form中
-          const {
+          const { // 将班主任、班级学员的数据源解构出来，需要提交的数据放在this.form中
             classes_director_data,
             student_data,
             start_at,
@@ -214,8 +244,15 @@ export default {
             ...others
           } = res
 
-          this.form = { ...others }
-          this.classes_director_data = classes_director_data
+          this.form = {
+            ...others,
+            calendar: {
+              ...others.calendar,
+              special_at: others.calendar.special_at.map(item => ({
+                specialDate: [item.end_at, item.start_at],
+              })),
+            },
+          }
           this.student_data = student_data
 
           if (start_at !== null && end_at !== null) {
@@ -223,12 +260,21 @@ export default {
           }
         })
     },
+
+    addSpecial() {
+      this.form.calendar.special_at.push({ ...defaultSpecial })
+    },
+
+    removeSpecial(index) {
+      this.form.calendar.special_at.splice(index, 1)
+    },
   },
 
   created() {
     // 通过接口获取我的学生(测试)
     // this.studentList = myStudents
 
+    this.getProductData()
     this.getTeacherData()
 
     ; (this.isUpdate ? this.getClassData : this.getListData)()
@@ -239,4 +285,30 @@ export default {
 
 <style lang="less">
 @import '~vars';
+
+.special {
+  .ivu-icon.ivu-input-icon{
+    display: none;
+  }
+  .original input.ivu-input {
+    padding: 7px 7px;
+    // border: 1px solid #fff;
+    &:focus {
+      box-shadow: none
+    }
+  }
+  .ivu-col {
+    .ivu-form-item {
+      display: inline-block;
+      width:76%;
+      // margin-top: 15px;
+      margin-bottom: 15px;
+    }
+  }
+  &__btn.ivu-btn.ivu-btn-dashed.ivu-btn-long {
+    width: 150px;
+    margin-top: 0;
+  }
+}
+
 </style>
