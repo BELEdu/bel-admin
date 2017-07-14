@@ -13,7 +13,7 @@
           <Option v-for="item in dicts.product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="产品子类型">
+      <Form-item label="产品子类型" prop="product_subtype_id">
         <Select placeholder="请选择......" v-model="fdata.product_subtype_id">
           <Option v-for="item in sub_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
@@ -103,6 +103,9 @@ export default {
         ],
         product_type_id: [
           this.$rules.required('产品类型', 'number', 'change'),
+        ],
+        product_subtype_id: [
+          this.$rules.required('产品子类型', 'number', 'change'),
         ],
         subject_item: [
           this.$rules.required('学科', 'number', 'change'),
