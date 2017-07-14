@@ -16,8 +16,8 @@
         </Input>
         <Input v-show="!isXiaoqu" v-model="form.display_name"></Input>
       </Form-item>
-      <Form-item v-if="isXiaoqu" label="请输入密码" prop="_checkout_password">
-        <Input type="password" v-model="form._checkout_password"></Input>
+      <Form-item v-if="isXiaoqu" label="请输入密码" prop="password">
+        <Input type="password" v-model="form.password"></Input>
       </Form-item>
     </Form>
   </app-form-modal>
@@ -48,14 +48,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    isTopLevel: {
-      type: Boolean,
-      required: true,
-    },
-    isXiaoqu: {
-      type: Boolean,
-      required: true,
-    },
     isCreate: {
       type: Boolean,
       required: true,
@@ -66,7 +58,7 @@ export default {
     return {
       form: {
         display_name: '',
-        _checkout_password: null,
+        password: null,
       },
 
       rules: {
@@ -88,12 +80,10 @@ export default {
             trigger: 'blur',
           },
         ],
-        _checkout_password: [
+        password: [
           this.$rules.required('密码'),
         ],
       },
-
-      formLoading: false,
     }
   },
 
@@ -101,6 +91,17 @@ export default {
     ...mapState({
       departments: state => state.system.department.departments,
     }),
+
+    isTopLevel() {
+      return this.item.p_id === 0
+    },
+
+    isXiaoqu() {
+      const { display_name } = this.item
+      const hasText = display_name != null && display_name.slice(-2) === '校区'
+      // 新增时，第一级为新增校区；非新增时，名字中含有“校区”的为校区
+      return (this.isCreate && this.isTopLevel) || (!this.isCreate && hasText)
+    },
 
     title() {
       if (this.isTopLevel) {
@@ -159,10 +160,13 @@ export default {
 
     // 新增
     create() {
-      this.formLoading = true
+      const { display_name, password: CheckoutPassword } = this.form
       this.$store.dispatch(SYSTEM.DEPARTMENT.CREATE, {
-        ...this.data,
-        p_id: this.item.id,
+        data: {
+          display_name,
+          p_id: this.item.id,
+        },
+        CheckoutPassword,
       })
         .then(this.successHandler)
         .catch(this.errorHandler)
@@ -170,11 +174,13 @@ export default {
 
     // 更名
     update() {
-      this.formLoading = true
       const { id, p_id } = this.item
       this.$store.dispatch(SYSTEM.DEPARTMENT.UPDATE, {
         id,
-        data: { ...this.data, p_id },
+        data: {
+          display_name: this.form.display_name,
+          p_id,
+        },
       })
         .then(this.successHandler)
         .catch(this.errorHandler)

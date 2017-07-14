@@ -21,8 +21,8 @@ export default {
     },
 
     // 新增部门
-    [SYSTEM.DEPARTMENT.CREATE]({ dispatch }, data) {
-      return Http.post('/department', data)
+    [SYSTEM.DEPARTMENT.CREATE]({ dispatch }, { data, CheckoutPassword }) {
+      return Http.post('/department', data, { CheckoutPassword })
         .then(() => dispatch(SYSTEM.DEPARTMENT.INIT))
     },
 
@@ -33,8 +33,8 @@ export default {
     },
 
     // 删除部门
-    [SYSTEM.DEPARTMENT.DELETE]({ dispatch }, id) {
-      return Http.delete(`/department/${id}`)
+    [SYSTEM.DEPARTMENT.DELETE]({ dispatch }, { id, CheckoutPassword }) {
+      return Http.delete(`/department/${id}`, { CheckoutPassword })
         .then(() => dispatch(SYSTEM.DEPARTMENT.INIT))
     },
   },

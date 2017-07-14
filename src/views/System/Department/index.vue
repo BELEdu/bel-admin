@@ -11,25 +11,10 @@
       </Col>
     </Row>
 
-    <departments
-      :prepareCreate="prepareCreate"
-      :prepareUpdate="prepareUpdate"
-      :prepareRemove="prepareRemove"
-    ></departments>
+    <departments :prepareCreate="prepareCreate" :prepareUpdate="prepareUpdate" :prepareRemove="prepareRemove"></departments>
 
-    <create-modal
-      v-model="modal.create"
-      :item="currentItem"
-      :isTopLevel="isTopLevel"
-      :isXiaoqu="isXiaoqu"
-      :isCreate="isCreate"
-    ></create-modal>
-    <remove-modal
-      v-model="modal.remove"
-      :item="currentItem"
-      :isTopLevel="isTopLevel"
-      :isXiaoqu="isXiaoqu"
-    ></remove-modal>
+    <create-modal v-model="modal.create" :item="currentItem" :isCreate="isCreate"></create-modal>
+    <remove-modal v-model="modal.remove" :item="currentItem"></remove-modal>
   </div>
 </template>
 
@@ -59,19 +44,6 @@ export default {
 
       isCreate: false,
     }
-  },
-
-  computed: {
-    isTopLevel() {
-      return this.currentItem.p_id === 0
-    },
-
-    isXiaoqu() {
-      const { display_name } = this.currentItem
-      const hasText = display_name != null && display_name.slice(-2) === '校区'
-      // 新增时，第一级为新增校区；非新增时，名字中含有“校区”的为校区
-      return (this.isCreate && this.isTopLevel) || (!this.isCreate && hasText)
-    },
   },
 
   methods: {
