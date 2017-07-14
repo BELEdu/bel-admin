@@ -34,9 +34,9 @@
 /**
  * 操作权限表单组件
  * @author lmn
- * @param {Array} data - 数据权限数组
- * @param {Array} disabledIds - 角色固有权限的id，对应的勾选框将被禁用，用于修改用户权限页
- * @version 2017-06-27
+ * @param {Array} data - 操作权限数组
+ * @param {Array} value
+ * @version 2017-07-14
  */
 
 export default {
@@ -52,66 +52,41 @@ export default {
   },
 
   computed: {
-    ids() {
-      return new Set(this.value)
+    // 字典，存储每个一级或二级项目的所有子项目的id
+    // key是该一级或二级项目的id，value是所有子项目id组合成的数组
+    childrenMap() {
+      const map = {}
+
+      this.data.forEach(({ id, children }) => {
+        map[id] = children.map(item => item.id)
+
+        children.forEach((child) => {
+          // 后台数据不完善，可能存在二级项目没有children的情况，需要做个判断
+          map[child.id] = child.children ? child.children.map(item => item.id) : []
+
+          map[id] = [...map[id], ...map[child.id]]
+        })
+      })
+
+      return map
     },
   },
 
   methods: {
-    // getSelfAndDescendents方法的辅助方法，用来递归地获取后代id
-    recursiveReduce(ids, { id, children }) {
-      if (children) {
-        return [...ids, id, ...children.reduce(this.recursiveReduce, [])]
-      }
-      return [...ids, id]
-    },
-
-    /**
-     * 获取自身及所有后代项的id
-     * @param {Number} id - 自身id
-     * @param {Number} [pid] - 父级id，自身不是第一层级项目时需传此参数
-     * @returns {Number[]}
-     */
-    getSelfAndDescendents(id, pId) {
-      const data = pId ?
-        this.data.find(item => item.id === pId).children :
-        this.data
-
-      return data
-        .filter(item => item.id === id)
-        .reduce(this.recursiveReduce, [])
-    },
-
-    /**
-     * 获取所有子项目的id
-     * @description 此方法由isChildrenAllUnchecked方法调用，不应直接调用
-     * @param {Number} ppId - 只传此参数时，表示获取此id项下的子项目
-     * @param {Number} [pId] - 当此参数被传递时，表示获取此id项下的子项目，此时上一参数用来辅助获取此参数表示的项
-     * @returns {Number[]}
-     */
-    getChildren(ppId, pId) {
-      let items = this.data.find(item => item.id === ppId).children
-      if (pId) {
-        items = items.find(item => item.id === pId).children
-      }
-      return items.map(item => item.id)
-    },
-
     /**
      * 判断某项目的所有子项目是否都未被选中
-     * @param {Number[]} result - 当前被选中的所有项目的id
-     * @param {Number} ppId - 只传此参数时，表示判断此id项下的子项目
-     * @param {Number} [pId] - 当此参数被传递时，表示判断此id项下的子项目，此时上一参数用来辅助获取此参数表示的项
+     * @param {Number} id - 被判断的项目的id
+     * @param {Set<Number>} result - 当前已选中的所有项目的id
      * @returns {Boolean}
      */
-    isChildrenAllUnchecked(result, ppId, pId) {
-      const siblingIds = this.getChildren(ppId, pId)
-      return siblingIds.every(item => !result.has(item))
+    isEmpty(id, result) {
+      return this.childrenMap[id]
+        .every(item => !result.has(item))
     },
 
     // check/uncheck第一层级项目，所有后代项目应跟随此项目的状态
     change(checked, id) {
-      const ids = this.getSelfAndDescendents(id)
+      const ids = [id, ...this.childrenMap[id]]
       const result = checked ?
         this.value.concat(ids) :
         this.value.filter(item => !ids.includes(item))
@@ -121,16 +96,14 @@ export default {
     // check/uncheck第二层级项目，所有后代项目应跟随此项目的状态
     // 操作后，如果此项目的父项目下的所有子项目都处于未选中状态，应同时uncheck父项目
     change2(checked, id, pId) {
-      const ids = this.getSelfAndDescendents(id, pId)
-
+      const ids = [id, ...this.childrenMap[id]]
       let result = new Set(this.value)
+
       if (checked) {
         result = new Set([...result, ...ids, pId])
       } else {
         ids.forEach(item => result.delete(item))
-        if (this.isChildrenAllUnchecked(result, pId)) {
-          result.delete(pId)
-        }
+        if (this.isEmpty(pId, result)) result.delete(pId)
       }
 
       this.updateValue(result)
@@ -141,16 +114,13 @@ export default {
     // 上一操作后,应用同样的方式继续检查父项目的父项目是否应被uncheck
     change3(checked, id, pId, ppId) {
       let result = new Set(this.value)
+
       if (checked) {
         result = new Set([...result, id, pId, ppId])
       } else {
         result.delete(id)
-        if (this.isChildrenAllUnchecked(result, ppId, pId)) {
-          result.delete(pId)
-        }
-        if (this.isChildrenAllUnchecked(result, ppId)) {
-          result.delete(ppId)
-        }
+        if (this.isEmpty(pId, result)) result.delete(pId)
+        if (this.isEmpty(ppId, result)) result.delete(ppId)
       }
 
       this.updateValue(result)
