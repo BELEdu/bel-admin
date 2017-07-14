@@ -90,7 +90,10 @@
       </Col>
     </Row>
 
-    <Table :columns="colConfig" :data="buffer.data" border></Table>
+    <Table border
+      :columns="colConfig"
+      :data="buffer.data"
+      @on-sort-change="sort"></Table>
 
     <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
 

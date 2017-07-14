@@ -39,6 +39,8 @@ export function colConfig(that) {
       title: '审批批号',
       key: 'approval_number',
       align: 'center',
+      width: 120,
+      sortable: 'custom',
     },
     {
       title: '合同名称',
@@ -61,11 +63,14 @@ export function colConfig(that) {
       title: '总课时',
       key: 'course_total',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '合同总金额',
       key: 'money',
       align: 'center',
+      width: 115,
+      sortable: 'custom',
     },
     {
       title: '学员名字',
@@ -81,11 +86,15 @@ export function colConfig(that) {
       title: '申请时间',
       key: 'apply_time',
       align: 'center',
+      width: 110,
+      sortable: 'custom',
     },
     {
       title: '最后审批时间',
       key: 'audit_time',
       align: 'center',
+      width: 130,
+      sortable: 'custom',
     },
     {
       title: '审批进度',

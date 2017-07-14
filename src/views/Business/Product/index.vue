@@ -4,19 +4,19 @@
     <Form class="app-search-form">
       <!-- 关键字检索 -->
       <Form-item>
-        <Input 
+        <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"  
-          style="width: calc(7em + 200px);"         
+          v-model="query.like[likeKey]"
+          style="width: calc(7em + 200px);"
         >
-          <Select 
+          <Select
             v-model="likeKey"
-            slot="prepend" 
+            slot="prepend"
             style="width: 7em"
           >
-            <Option 
-              v-for="likeKey in likeKeys" 
-              :key="likeKey.value" 
+            <Option
+              v-for="likeKey in likeKeys"
+              :key="likeKey.value"
               :value="likeKey.value"
             >
               {{ likeKey.label }}
@@ -26,9 +26,9 @@
       </Form-item>
       <!-- 日期范围搜索 -->
       <Form-item>
-        <Date-picker 
-          v-model="query.between.created_at" 
-          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+        <Date-picker
+          v-model="query.between.created_at"
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="创建日期范围" style="width: 200px"
           :editable="false"
         >
@@ -36,20 +36,18 @@
       </Form-item>
       <!-- 学科搜索 -->
       <Form-item>
-        <Select 
+        <Select
           v-model="query.equal.subject_id"
-          placeholder="选择学科" 
+          placeholder="选择学科"
           style="width: 150px;"
         >
-          <Option value="1">数学</Option>
-          <Option value="2">语文</Option>
-          <Option value="3">英语</Option>
-          <!--<Option 
-            v-for="item in subject" 
+          <!-- <Option value="1">数学</Option> -->
+          <Option
+            v-for="item in dicts.subject_item"
             :value="item.value"
           >
             {{item.display_name}}
-          </Option>-->
+          </Option>
         </Select>
       </Form-item>
       <!-- 查询按钮 -->
@@ -60,7 +58,7 @@
       </Form-item>
     </Form>
     <!-- end 顶部搜索 -->
-  
+
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
       <h2 icon="">产品管理</h2>
@@ -69,10 +67,13 @@
       <Button type="primary" @click="toCreate()">添加产品</Button>
       </Col>
     </Row>
-  
+
     <!-- 列表展示 -->
-    <Table :columns="colConfig" :data="buffer.data" border></Table>
-  
+    <Table border
+      :columns="colConfig"
+      :data="buffer.data"
+      @on-sort-change="sort"></Table>
+
     <!-- 分页插件 -->
     <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
     <!--删除提醒框-->
@@ -118,6 +119,10 @@ export default {
   computed: {
     buffer() {
       return list_decode(this.$store.state.business.buffer.product)
+    },
+    dicts() {
+      const { subject_item } = this.$store.state.dicts
+      return { subject_item }
     },
   },
 

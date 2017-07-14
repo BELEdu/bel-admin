@@ -98,6 +98,7 @@ export function colConfig(that) {
       title: '产品编号',
       key: 'product_number',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '产品名称',
@@ -122,14 +123,18 @@ export function colConfig(that) {
       align: 'center',
     },
     {
-      title: '每课程时长（分钟）',
+      title: '每课时长（分钟）',
       key: 'course_duration',
       align: 'center',
+      width: 150,
+      sortable: 'custom',
     },
     {
       title: '产品单价（元）',
       key: 'price',
       align: 'center',
+      width: 140,
+      sortable: 'custom',
     },
     {
       title: '创建人',
@@ -140,6 +145,7 @@ export function colConfig(that) {
       title: '创建时间',
       key: 'created_at',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '销售状态',

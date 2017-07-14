@@ -4,19 +4,19 @@
     <Form class="app-search-form">
       <!-- 关键字检索 -->
       <Form-item>
-        <Input 
+        <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"  
-          style="width: calc(7em + 200px);"         
+          v-model="query.like[likeKey]"
+          style="width: calc(7em + 200px);"
         >
-          <Select 
+          <Select
             v-model="likeKey"
-            slot="prepend" 
+            slot="prepend"
             style="width: 7em"
           >
-            <Option 
-              v-for="likeKey in likeKeys" 
-              :key="likeKey.value" 
+            <Option
+              v-for="likeKey in likeKeys"
+              :key="likeKey.value"
               :value="likeKey.value"
             >
               {{ likeKey.label }}
@@ -26,9 +26,9 @@
       </Form-item>
       <!-- 日期范围搜索 -->
       <Form-item>
-        <Date-picker 
-          v-model="query.between.visited_at" 
-          format="yyyy-MM-dd" type="daterange" placement="bottom-start" 
+        <Date-picker
+          v-model="query.between.visited_at"
+          format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="来访日期范围" style="width: 200px"
           :editable="false"
         >
@@ -36,13 +36,13 @@
       </Form-item>
       <!-- 当前状态搜索 -->
       <Form-item>
-        <Select 
+        <Select
           v-model="query.equal.student_current_status"
-          placeholder="选择当前状态" 
+          placeholder="选择当前状态"
           style="width: 150px;"
         >
-          <Option 
-            v-for="item in student_current_status" 
+          <Option
+            v-for="item in student_current_status"
             :value="item.value"
             :key="item.value"
           >
@@ -58,7 +58,7 @@
       </Form-item>
     </Form>
     <!-- end 顶部搜索 -->
-  
+
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
       <h2 icon="">热线登记</h2>
@@ -68,11 +68,14 @@
       <Button type="primary" @click="toCreate()">添加热线</Button>
       </Col>
     </Row>
-  
-    <Table :columns="colConfig" :data="buffer.data" border></Table>
+
+    <Table border
+      :columns="colConfig"
+      :data="buffer.data"
+      @on-sort-change="sort"></Table>
     <!-- 分页插件 -->
     <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
-  
+
     <!--删除提醒框-->
     <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
       <p>删除该条记录后将无法再恢复，是否继续删除？</p>

@@ -80,6 +80,7 @@ export function colConfig(that) {
       title: '来访日期',
       key: 'visited_at',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '家长姓名',
@@ -105,6 +106,7 @@ export function colConfig(that) {
       title: '当前年级',
       key: 'grade_name',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '手机号码',
@@ -136,16 +138,19 @@ export function colConfig(that) {
       title: '签约时间',
       key: 'signed_at',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '合同金额',
       key: 'contract_total',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '回访时间',
       key: 'return_visited_at',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '操作',

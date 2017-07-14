@@ -89,13 +89,15 @@ export function colConfig(that) {
       title: '首次沟通时间',
       key: 'first_communication_at',
       align: 'center',
-      width: 110,
+      width: 130,
+      sortable: 'custom',
     },
     {
       title: '回访时间',
       key: 'return_visited_at',
       align: 'center',
       width: 110,
+      sortable: 'custom',
     },
     {
       title: '手机号码',
@@ -122,11 +124,13 @@ export function colConfig(that) {
       title: '当前年级',
       key: 'grade_name',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '年段排名',
       key: 'rank',
       align: 'center',
+      sortable: 'custom',
     },
     {
       title: '偏科',
