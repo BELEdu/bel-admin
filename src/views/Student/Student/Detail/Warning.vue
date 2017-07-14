@@ -1,14 +1,26 @@
 <template>
   <div>
-
     <!-- 搜索表单 -->
-   <Form inline class="app-search-form">
+    <Form inline class="app-search-form">
       <Form-item>
-        <Select style="width:8em;" placeholder="请选择状态" >
-          <Option value="预警中">预警中</Option>
-          <Option value="已取消">已取消</Option>
-          <Option value="取消预警">取消预警</Option>
+        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+          <Select v-model="likeKey" slot="prepend" style="width:6em;">
+            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          </Select>
+        </Input>
+     </Form-item>
+     <Form-item>
+        <Select v-model="query.equal.warning_type" style="width:9em;" placeholder="请选择预警类型">
+          <Option v-for="item in warning_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
+      </Form-item>
+      <Form-item>
+        <Select v-model="query.equal.warning_status" style="width:9em;" placeholder="请选择预警状态">
+          <Option v-for="item in warning_status" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Date-picker v-model="query.between.time" type="daterange" placeholder="请选择预警时间"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -22,35 +34,23 @@
       </Col>
     </Row>
 
-    <!-- 取消预警模态框 -->
-    <app-form-modal
-      v-model="modal.cancel"
-      title="取消预警"
-      :loading="loading.cancel"
-      @on-ok="cancelSubmit()"
-    >
-      <Form ref="formCancel" :model="formCancel" :label-width="60">
-        ID：{{warningId}}
-        <Form-item label="取消说明" >
-          <Input v-model="formCancel.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入..."></Input>
-        </Form-item>
-      </Form>
-    </app-form-modal>
-
-     <!-- 预警已解决模态框 -->
-    <app-form-modal
+    <!-- 解决预警信息组件 -->
+    <warning-ok-modal
       v-model="modal.ok"
-      title="预警已解决"
-      :loading="loading.ok"
-      @on-ok="okSubmit()"
-    >
-      <Form ref="formOk" :model="formOk" :label-width="60">
-        ID：{{warningId}}
-        <Form-item label="解决说明" >
-          <Input v-model="formOk.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入..."></Input>
-        </Form-item>
-      </Form>
-    </app-form-modal>
+      @closeWarningOkModal="modal.ok=false"
+      :warningId="warningId"
+      :warningStatus="warningStatus"
+      @updateData="updateData"
+    ></warning-ok-modal>
+
+    <!-- 取消预警信息组件 -->
+    <warning-cancel-modal
+      v-model="modal.cancel"
+      @closeWarningCancelModal="modal.cancel=false"
+      :warningId="warningId"
+      :warningStatus="warningStatus"
+      @updateData="updateData"
+    ></warning-cancel-modal>
 
     <!-- 预警信息列表 -->
     <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
@@ -71,6 +71,8 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
+import WarningOkModal from '../components/WarningOkModal'
+import WarningCancelModal from '../components/WarningCancelModal'
 
 
 export default {
@@ -80,36 +82,26 @@ export default {
 
   data() {
     return {
+      likeKeys: [
+        { label: '预警ID', value: 'id' },
+      ],
+      likeKey: 'id',
       query: {
         equal: {
-          1111111: '',
+          warning_type: '',
+          warning_status: '',
+        },
+        between: {
+          time: [],
         },
       },
-      // 取消预警表单
-      formCancel: {
-        text: '',
-      },
-      // 解决预警表单
-      formOk: {
-        text: '',
-      },
-      // 模态框配置
-      modal: {
-        cancel: false,
-        ok: false,
-      },
-      // 模态框确定按钮loading状态
-      loading: {
-        cancel: false,
-        ok: false,
-      },
-      // 表格配置
+
       columns: [
-        { title: 'ID', key: 'id', align: 'center', sortable: 'custom' },
+        { title: '预警ID', key: 'id', align: 'center', sortable: 'custom' },
         { title: '预警类型', key: 'warning_type', align: 'center' },
-        { title: '预警时间', key: 3, align: 'center', sortable: 'custom' },
+        { title: '预警时间', key: '', align: 'center', sortable: 'custom' },
         { title: '操作人', key: 'user_id', align: 'center' },
-        { title: '操作人岗位', key: 5, align: 'center' },
+        { title: '操作人岗位', key: '', align: 'center' },
         { title: '预警原因', key: 'warning_reason', align: 'center' },
         { title: '状态', key: 'warning_status', align: 'center' },
         {
@@ -118,23 +110,28 @@ export default {
           align: 'center',
           width: 160,
           render: createButton([
-            // 取消预警
-            { text: '取消预警', type: 'primary', click: row => this.warningCancel(row.id) },
-            // 已解决
-            { text: '已解决', type: 'primary', click: row => this.warningOk(row.id) },
+            { text: '取消预警', type: 'primary', click: row => this.OpenWarningCancelModal(row.id, row.warning_status) },
+            { text: '已解决', type: 'primary', click: row => this.OpenWarningOkModal(row.id, row.warning_status) },
           ]),
         },
       ],
 
-      // 预警ID
-      warningId: '',
+      // 弹窗控制
+      modal: {
+        cancel: false,
+        ok: false,
+      },
+
+      warningId: 0, // 预警Id
+      warningStatus: 0, // 预警状态
     }
   },
 
   computed: {
-    // 使用mapState获取list
     ...mapState({
       list: state => state.student.warning.list,
+      warning_status: state => state.dicts.warning_status,
+      warning_type: state => state.dicts.warning_type,
     }),
 
     studentId() {
@@ -142,47 +139,25 @@ export default {
     },
   },
 
-  methods: {
+  components: {
+    WarningOkModal,
+    WarningCancelModal,
+  },
 
-    // 取消预警
-    warningCancel(id) {
+  methods: {
+    OpenWarningOkModal(id, status) { // 打开解决预警弹窗
       this.warningId = id
-      this.modal.cancel = true
-    },
-    // 解决预警
-    warningOk(id) {
-      this.warningId = id
+      this.warning_status = status
       this.modal.ok = true
     },
-    // 取消预警表单提交
-    cancelSubmit() {
-      // 禁止连续点击
-      this.loading.cancel = true
-      // 用延时模拟请求成功
-      setTimeout(() => {
-        this.loading.cancel = false
-        this.modal.cancel = false
-        this.$Message.success('提交成功！')
-        // 重置该表单
-        this.formCancel.text = ''
-      }, 1500)
-    },
-    // 解决预警表单提交
-    okSubmit() {
-      // 禁止连续点击
-      this.loading.ok = true
-      // 用延时模拟请求成功
-      setTimeout(() => {
-        this.loading.ok = false
-        this.modal.ok = false
-        this.$Message.success('提交成功！')
-        // 重置该表单
-        this.formOk.text = ''
-      }, 1500)
+
+    OpenWarningCancelModal(id, status) { // 打开取消预警弹窗
+      this.warningId = id
+      this.warning_status = status
+      this.modal.cancel = true
     },
 
-     // 获取列表数据
-    getData(qs) {
+    getData(qs) { // 获取列表数据
       return this.$store.dispatch(STUDENT.STUDENT.WARNING.INIT, {
         id: this.studentId,
         query: qs,
@@ -193,6 +168,6 @@ export default {
 }
 </script>
 
-<style <style lang="less">
-
+<style lang="less">
+@import '~vars';
 </style>
