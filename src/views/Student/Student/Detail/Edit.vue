@@ -73,7 +73,7 @@ const defaultParent = {
   other_phone: '', // 辅助联系方式
   total_score: '', // 家庭总收入
 
-  mycity: [], // 级联测试
+  cityData: [], // 级联测试
 }
 
 const defaultSublist = {

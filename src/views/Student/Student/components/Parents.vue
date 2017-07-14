@@ -51,7 +51,7 @@
             <Input placeholder="请选择城市" v-model="item.city"></Input>
           </Form-item>
           <Form-item label="现住城市(测试)">
-            <app-map-cascader v-model="item.mycity"></app-map-cascader>
+            <app-map-cascader v-model="item.cityData"></app-map-cascader>
           </Form-item>
           <Form-item label="街道地址">
             <Input placeholder="请输入详细地址" v-model="item.address"></Input>

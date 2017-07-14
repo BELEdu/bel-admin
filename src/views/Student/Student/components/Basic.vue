@@ -57,12 +57,12 @@
 
       <Col span="11" offset="1">
         <Form-item label="归属咨询师">
-          <Select  v-model="form.sublist.belong_counselor">
+          <Select  v-model="form.belong_counselor">
             <Option v-for="item in advisoryList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="归属学管师">
-          <Select  v-model="form.sublist.belong_customer_relationships">
+          <Select  v-model="form.belong_customer_relationships">
             <Option v-for="item in adminList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
