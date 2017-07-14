@@ -192,7 +192,7 @@ export default [
   },
   {
     path: '/curriculum/studentcurricula/class/course/:id',
-    name: 'CurriculumStudentCourse',
+    name: 'CurriculumClassCourse',
     component: views.CurriculumStudentCourse,
     redirect: '/curriculum/studentcurricula/class/course/date/:id',
     meta: {
@@ -230,7 +230,7 @@ export default [
   },
   {
     path: '/curriculum/studentcurricula/coach/course/:id',
-    name: 'CurriculumStudentCourse',
+    name: 'CurriculumCoachCourse',
     component: views.CurriculumStudentCourse,
     redirect: '/curriculum/studentcurricula/coach/course/date/:id',
     meta: {
