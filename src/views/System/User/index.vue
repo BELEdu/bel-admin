@@ -41,6 +41,22 @@
     ></Table>
 
     <app-pager :data="list" @on-change="goTo"></app-pager>
+
+    <app-warn-modal v-model="modal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeSubmit">
+      <div>
+        <div class="text-center">
+          <p>该用户删除后将无法登录，账号信息将被删除。</p>
+          <p>您也可以考虑禁用该用户，禁用后用户将无法登录，但不删除任何数据。是否继续删除？</p>
+        </div>
+
+        <Form :model="form" :rules="rules" ref="form">
+          <app-form-alert :errors="formErrors"></app-form-alert>
+          <Form-item prop="password">
+            <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+          </Form-item>
+        </Form>
+      </div>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -52,14 +68,14 @@
  */
 
 import { mapState } from 'vuex'
-import { list } from '@/mixins'
+import { list, form } from '@/mixins'
 import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-user',
 
-  mixins: [list],
+  mixins: [list, form],
 
   data() {
     return {
@@ -95,6 +111,17 @@ export default {
           ]),
         },
       ],
+
+      form: {
+        password: null,
+      },
+      rules: {
+        password: [
+          this.$rules.required('密码'),
+        ],
+      },
+      removeId: null,
+      modal: false,
     }
   },
 
@@ -104,24 +131,35 @@ export default {
     }),
   },
 
+  watch: {
+    modal() {
+      this.formErrors = {}
+      this.$refs.form.resetFields()
+    },
+  },
+
   methods: {
     getData(qs) {
       return this.$store.dispatch(SYSTEM.USER.INIT, qs)
     },
 
     removeUser(id) {
-      this.$Modal.confirm({
-        content: '操作不可逆，确认要删除吗？',
-        onOk: () => this.$store
-          .dispatch(SYSTEM.USER.DELETE, id)
-          // 临时解决
-          .catch(() => {
-            this.$Message.error({
-              content: '操作失败',
-              duration: 10,
-            })
-          }),
+      this.modal = true
+      this.removeId = id
+    },
+
+    submit() {
+      this.$store.dispatch(SYSTEM.USER.DELETE, {
+        id: this.removeId,
+        CheckoutPassword: this.form.password,
       })
+        .then(() => {
+          this.formLoading = false
+          this.modal = false
+          this.removeId = null
+          this.$Message.info('操作成功')
+        })
+        .catch(this.errorhandler)
     },
   },
 }

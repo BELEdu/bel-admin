@@ -24,8 +24,8 @@ export default {
         .then(res => commit(SYSTEM.USER.INIT, res))
     },
 
-    [SYSTEM.USER.DELETE]({ commit }, id) {
-      return Http.delete(`/user/${id}`)
+    [SYSTEM.USER.DELETE]({ commit }, { id, CheckoutPassword }) {
+      return Http.delete(`/user/${id}`, { CheckoutPassword })
         .then(() => commit(SYSTEM.USER.DELETE, id))
     },
   },
