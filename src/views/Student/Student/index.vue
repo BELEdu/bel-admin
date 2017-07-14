@@ -96,10 +96,10 @@ export default {
 
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
-        { label: '学员编号', value: 'id' },
+        { label: '学员编号', value: 'number' },
         { label: '在读学校', value: 'school_name' },
-        { label: '归属咨询师', value: 'belong_counselor' },
-        { label: '归属学管师', value: 'belong_customer_relationships' },
+        { label: '归属咨询师', value: 'belong_counselor_name' },
+        { label: '归属学管师', value: 'belong_customer_relationships_name' },
       ],
       likeKey: 'display_name',
       query: {
@@ -119,7 +119,7 @@ export default {
         },
         { title: '校区', key: 'school_zone', align: 'center' },
         { title: '学员姓名', key: 'display_name', align: 'center' },
-        { title: '学员编号', key: 'id', align: 'center', sortable: 'custom' },
+        { title: '学员编号', key: 'number', align: 'center', sortable: 'custom' },
         {
           title: '家长姓名',
           key: 'parent_name',
@@ -128,8 +128,8 @@ export default {
         { title: '首签日期', key: 'created_at', align: 'center', width: 180, sortable: 'custom' },
         { title: '在读学校', key: 'school_name', align: 'center' },
         { title: '当前年级', key: 'current_grade', align: 'center' },
-        { title: '归属咨询师', key: 'belong_counselor', align: 'center' },
-        { title: '归属学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '归属咨询师', key: 'belong_counselor_name', align: 'center' },
+        { title: '归属学管师', key: 'belong_customer_relationships_name', align: 'center' },
         { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         {
           title: '剩余课时',
