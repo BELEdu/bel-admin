@@ -45,6 +45,7 @@
           <Option
             v-for="item in dicts.subject_item"
             :value="item.value"
+            :key="item.value"
           >
             {{item.display_name}}
           </Option>

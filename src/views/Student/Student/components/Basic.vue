@@ -57,17 +57,17 @@
 
       <Col span="11" offset="1">
         <Form-item label="归属咨询师">
-          <Select  v-model="form.belong_counselor">
+          <Select v-model="form.belong_counselor">
             <Option v-for="item in advisoryList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="归属学管师">
-          <Select  v-model="form.belong_customer_relationships">
+          <Select v-model="form.belong_customer_relationships">
             <Option v-for="item in adminList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
         <Form-item label="归属教师">
-          <Select  v-model="form.sublist.belong_teacher">
+          <Select v-model="form.sublist.belong_teacher">
             <Option v-for="item in teacherList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
@@ -75,10 +75,9 @@
           <Input placeholder="无" disabled></Input>
         </Form-item>
         <Form-item label="转介绍员工">
-          <Select placeholder="请选择..." v-model="form.sublist.turn_recommend_staff">
-            <Option :value="1">张三</Option>
-            <Option :value="2">李四</Option>
-            <Option :value="3">王五</Option>
+          <Select v-model="form.sublist.turn_recommend_staff">
+            <Option v-for="item in employeeList" :key="item.id" :value="item.id">{{ item.username }}</Option>
+          </Select>
           </Select>
         </Form-item>
         <Form-item label="转介绍学员">
@@ -159,6 +158,10 @@ export default {
       default: () => [],
     },
     advisoryList: {
+      type: Array,
+      default: () => [],
+    },
+    employeeList: {
       type: Array,
       default: () => [],
     },

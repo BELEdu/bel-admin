@@ -23,6 +23,7 @@
        :adminList="adminList"
        :teacherList="teacherList"
        :advisoryList="advisoryList"
+       :employeeList="employeeList"
       ></basic>
 
       <!-- 家长信息 -->
@@ -137,6 +138,7 @@ export default {
       adminList: [], // 学管师数据源
       teacherList: [], // 教师数据源
       advisoryList: [], // 咨询师数据源
+      employeeList: [], // 转介绍员工数据源
     }
   },
 
@@ -168,6 +170,11 @@ export default {
     },
 
     getListData() {
+      // 获取全部员工
+      this.$http.get('/teacher_list')
+        .then((res) => {
+          this.employeeList = res
+        })
       // 获取学管师数据源
       this.$http.get('/teacher_list?attr=is_student_admin')
         .then((res) => {
