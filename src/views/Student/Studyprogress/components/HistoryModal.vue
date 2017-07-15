@@ -2,10 +2,10 @@
   <Modal
    :value="value"
    @input="value => $emit('input', value)"
-   width="900"
+   width="1100"
    title="查看计划"
   >
-    <edit-plan :initialStep="4"></edit-plan>
+    <edit-plan :initialStep="5" :planId="planId" v-if="planId"></edit-plan>
   </Modal>
 </template>
 
@@ -25,6 +25,10 @@ export default {
     value: {
       type: Boolean,
       required: true,
+    },
+    planId: {
+      type: Number,
+      default: 0,
     },
   },
 

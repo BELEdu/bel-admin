@@ -35,6 +35,7 @@
     <history-modal
       v-model="modal.history"
       @closeClassesModal="modal.history = false"
+      :planId="planId"
     >
     </history-modal>
 
@@ -97,7 +98,7 @@ export default {
           key: 6,
           align: 'center',
           render: createButton([
-            { text: '查看', type: 'primary', click: row => this.openHistoryModal(row.model_id) },
+            { text: '查看', type: 'primary', click: row => this.openHistoryModal(row.id) },
           ]),
         },
       ],
@@ -105,6 +106,8 @@ export default {
       modal: {
         history: false,
       },
+
+      planId: null,
 
       // hdata,
     }
@@ -118,9 +121,9 @@ export default {
   },
 
   methods: {
-    openHistoryModal(id) {
+    openHistoryModal(planId) {
       this.modal.history = true
-      this.$Message.info(`编号${id}`)
+      this.planId = planId
     },
     getData(qs) {
       return this.$store.dispatch(
