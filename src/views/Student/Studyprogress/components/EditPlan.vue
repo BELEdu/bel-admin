@@ -7,8 +7,9 @@
       <Step title="安排计划"></Step>
       <Step title="提交计划"></Step>
     </Steps>
-    <app-editor-title></app-editor-title>
+
     <Form class="app-form-entire" :label-width="120" :model="form" :rules="rules" ref="form">
+
       <step-one
         v-show="step === 0 || step >= 3"
         :subjectTypes="subjectTypes"
@@ -16,6 +17,7 @@
         :teachers="teachers"
         :form="form"
         :isStudent="isStudent"
+        :isAdd="isAdd"
       ></step-one>
 
       <step-two
@@ -41,10 +43,10 @@
       ></step-three>
 
       <Form-item>
-        <Button type="ghost" size="large" @click="goBack()">取消</Button>
+        <Button type="ghost" size="large" @click="goBack()" v-show="step!==5">取消</Button>
         <Button type="ghost" size="large" @click="prevStep" v-show="step > 0 && step < 4">上一步</Button>
         <Button type="primary" size="large" @click="nextStep" v-show="step < 3">下一步</Button>
-        <Button type="primary" size="large" @click="beforeSubmit()" :loading="formLoading" v-show="step >= 3">确定</Button>
+        <Button type="primary" size="large" @click="beforeSubmit()" :loading="formLoading" v-show="step >= 3 && step!==5">确定</Button>
       </Form-item>
 
     </Form>
@@ -106,6 +108,7 @@ export default {
         teaching_objectives: '',  // 教学目标
         course: [new Course()], // 排课计划
         weakKnowledge: [], // 薄弱知识点
+        plan_knowledge: [2, 3, 4], // 已选择的知识点
       },
 
       knowledgeData: [], // 知识点数据源

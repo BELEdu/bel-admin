@@ -4,7 +4,7 @@
 
       <Col>
         <Form-item class="original" label="上课科目" :label-width="120" prop="subject_type">
-          <Select class="original" v-model="form.subject_type">
+          <Select class="original" v-model="form.subject_type" :disabled="!isAdd">
             <Option v-for="subjectType in subjectTypes" :value="subjectType.value" :key="subjectType.value">{{ subjectType.display_name }}</Option>
           </Select>
         </Form-item>
@@ -12,7 +12,7 @@
 
       <Col>
         <Form-item class="original" label="教材版本" :label-width="90" prop="teaching_version">
-          <Select class="original" v-model="form.teaching_version">
+          <Select class="original" v-model="form.teaching_version" :disabled="!isAdd">
             <Option v-for="version in versions" :value="version.value" :key="version.value">{{ version.display_name }}</Option>
           </Select>
         </Form-item>
@@ -20,7 +20,7 @@
 
       <Col>
         <Form-item class="original" label="教师" :label-width="90" prop="teacher_id">
-          <Select class="original" v-model="form.teacher_id">
+          <Select class="original" v-model="form.teacher_id" :disabled="!isAdd">
             <Option v-for="teacher in teachers" :value="teacher.id" :key="teacher.id">{{ teacher.username }}</Option>
           </Select>
         </Form-item>
@@ -69,6 +69,10 @@ export default {
       required: true,
     },
     isStudent: {
+      type: Boolean,
+      required: true,
+    },
+    isAdd: {
       type: Boolean,
       required: true,
     },
