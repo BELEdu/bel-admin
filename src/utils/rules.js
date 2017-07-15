@@ -42,10 +42,17 @@ const rules = {
     trigger: 'blur',
   }),
 
-  // 数字验证
-  number: {
-    pattern: /^[0-9]*$/,
-    message: '请输入数字',
+  // 有效数字验证（可以为0，但不能为0开头的数字比如012）
+  int: {
+    pattern: /^(0|[1-9][0-9]*)$/,
+    message: '请输入有效数字',
+    trigger: 'blur',
+  },
+
+  // 匹配正浮点数
+  float: {
+    pattern: /^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/,
+    message: '请输入有效的浮点数',
     trigger: 'blur',
   },
 
@@ -87,7 +94,7 @@ const rules = {
   // 姓名验证（中文包含少数民族如：买买提·陈奕迅·阿凡提，英文名支持由空格和·分隔开）
   name: {
     pattern: /^([\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+(·[\u4e00-\u9fa5]+)*|([a-zA-Z]+\s?)+|[a-zA-Z]+(·[a-zA-Z]+)*)$/,
-    message: '名字格式不正确',
+    message: '姓名格式不正确',
     trigger: 'blur',
   },
 
