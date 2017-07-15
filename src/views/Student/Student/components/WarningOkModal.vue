@@ -2,7 +2,7 @@
   <app-form-modal
     :value="value"
     @input="value => $emit('input', value)"
-    :title="`解决预警信息 ID:${warningId}`"
+    :title="`解决预警信息 ID：${warningId}`"
     :loading="formLoading"
     @on-ok="beforeSubmit"
     @on-cancle="closeModal"
@@ -10,7 +10,7 @@
    <Form ref="form" :model="form" :rules="rules" :label-width="70">
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="解决说明" prop="warning_reason">
-        <Input v-model="form.warning_reason" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入..."></Input>
+        <Input v-model="form.warning_reason" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入解决预警信息说明（500字以内）"></Input>
       </Form-item>
     </Form>
   </app-form-modal>

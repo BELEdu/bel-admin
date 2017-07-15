@@ -16,7 +16,7 @@
       </Form-item>
       <Form-item label="参会员工">
         <Select placeholder="请选择..." v-model="form.meeting_persons" multiple filterable>
-          <Option v-for="item in meeting_persons_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
+          <Option v-for="item in meeting_persons_data" :value="item.id" :key="item.id">{{ item.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="会议类型" prop="meeting_type">
@@ -27,7 +27,7 @@
 
       <Form-item label="家长满意度">
         <Radio-group v-model="form.satisfaction">
-          <Radio v-for="item in satisfaction" :label="item.value" :key="item.display_name">{{ item.display_name }}</Radio>
+          <Radio v-for="item in satisfaction" :label="item.value" :key="item.value">{{ item.display_name }}</Radio>
         </Radio-group>
       </Form-item>
 
@@ -55,6 +55,7 @@
         <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
       </Form-item>
 
+      <!-- 上传附件组件 -->
       <Form-item>
         <app-uploader
           action="/meeting/upload"
@@ -65,6 +66,7 @@
           :files="files"
         ></app-uploader>
       </Form-item>
+
       <Form-item>
         <Button @click="goBack()">取消</Button>
         <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
@@ -177,30 +179,21 @@ export default {
   },
 
   methods: {
-    // 获取交流会数据源（添加）
-    getListData() {
-      return this.$http.get('/meeting/create')
-        .then((res) => {
-          this.meeting_persons_data = res.meeting_persons_data
-        })
-    },
-
-    // 获取交流会详情（编辑）
-    getClassData() {
+    getClassData() { // 获取交流会详情（编辑）
       return this.$http.get(`/meeting/${this.meetingId}`)
         .then((res) => {
-          const {
-            meeting_persons_data,
-            ...others
-          } = res
-
-          this.form = { ...others }
-          this.meeting_persons_data = meeting_persons_data
+          this.form = res
         })
     },
 
-    // 图片上传成功
-    uploadSuccess(res) {
+    getMettingPersonData() { // 获取与会人员数据
+      this.$http.get('/teacher_list')
+      .then((res) => {
+        this.meeting_persons_data = res
+      })
+    },
+
+    uploadSuccess(res) { // 图片上传成功回调函数
       this.form = {
         ...this.form,
         meeting_attachment: [
@@ -210,14 +203,12 @@ export default {
       }
     },
 
-    // 图片上传失败
-    uploadError() {
+    uploadError() { // 图片上传失败回调函数
       // 这里可以的话，应该进一步细腻化，按实际的错误显示错误消息
       this.$Message.error('上传失败,请注意附件大小和格式')
     },
 
-    // 从已上传的图片列表中删除一张图片
-    uploadRemove(targetFile) {
+    uploadRemove(targetFile) { // 从已上传的图片列表中删除一张图片
       this.form = {
         ...this.form,
         meeting_attachment: this.form.meeting_attachment
@@ -230,14 +221,14 @@ export default {
         ...this.form,
         student_id: this.studentId,
       }
-      // 提交修改
-      if (this.isUpdate) {
+
+      if (this.isUpdate) { // 编辑
         this.$http.patch(`/meeting/${this.meetingId}`, data)
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
-      // 提交添加
-      if (this.isUpdate === false) {
+
+      if (this.isUpdate === false) { // 新增
         this.$http.post('/meeting', data)
           .then(this.successHandler)
           .catch(this.errorHandler)
@@ -246,12 +237,15 @@ export default {
   },
 
   created() {
-    // 判断是编辑还是添加，以此调用不同的接口
-    (this.isUpdate ? this.getClassData : this.getListData)()
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    this.getMettingPersonData() // 获取与会人员数据
 
-    // 面包屑重定位
-    this.$route.meta.breadcrumb[2].link = `/student/student/${this.studentId}/meeting`
+    if (this.isUpdate) { // 获取交流会详情数据
+      this.getClassData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
+
+    this.$route.meta.breadcrumb[2].link = `/student/student/${this.studentId}/meeting`// 面包屑重定位
   },
 
 }
