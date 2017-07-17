@@ -1,7 +1,10 @@
 <template>
   <app-form-modal class="examedit" :title="'添加试卷'" :loading="false" :value="value" :width="450" :assistClass="'color-error'" @input="toggle">
     <Form :label-width="90" class="examedit__info">
-      <Form-item label="评测发起人：">
+      <Form-item label="测试对象：">
+        <span>{{student_name}}</span>
+      </Form-item>
+      <Form-item label="测试发起人：">
         <span>{{usrname}}</span>
       </Form-item>
       <Form-item label="测试类型：">
@@ -19,6 +22,9 @@
           <Option value="3">语文</Option>
           <Option value="4">语文</Option>
         </Select>
+      </Form-item>
+      <Form-item label="测试日期：">
+        <Date-picker placeholder="请选择日期"></Date-picker>
       </Form-item>
       <Form-item label="测试时间：">
         <Time-picker placeholder="请选择时间段" format="HH:mm" type="timerange" confirm :editable="false" v-model="timedata" @on-ok="showTime"></Time-picker>
@@ -65,6 +71,7 @@ export default {
     timedata: ['02:02', '03:03'],
     // 全局store中肯定有用户信息，后期再computed中拿
     usrname: '张旭',
+    student_name: '王芳',
   }),
 
   methods: {
@@ -97,7 +104,8 @@ export default {
 
   & .ivu-form-item {
 
-    &:nth-of-type(5) {
+    &:first-child,
+    &:nth-child(2) {
       margin-bottom: 10px!important;
     }
   }
