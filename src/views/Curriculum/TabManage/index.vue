@@ -16,8 +16,6 @@
  * @version 2017-07-01
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
-
 export default {
   name: 'app-curriculum-tab-manage',
   data() {
@@ -27,7 +25,6 @@ export default {
   },
   computed: {
     tabActive() {
-      this.$store.commit(GLOBAL.LOADING.HIDE)
       const pathArry = this.$route.path.split('/')
       return pathArry[pathArry.length - this.currentId]
     },
