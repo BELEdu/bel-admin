@@ -31,7 +31,7 @@
       :classesData="classesData"
       :displayName="display_name"
       :studentTotal="student_total"
-      :classesDirector="classes_director"
+      :classesDirectorName="classes_director_name"
     >
     </classes-modal>
   </div>
@@ -48,7 +48,7 @@ import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 // import cdata from './Data/cdata'
-import csdata from './Data/csdata'
+// import csdata from './Data/csdata'
 import ClassesModal from './components/ClassesModal'
 
 export default {
@@ -80,15 +80,15 @@ export default {
                 row.id,
                 row.display_name,
                 row.student_total,
-                row.classes_director,
+                row.classes_director_name,
               ),
               key: 'display_name',
             },
           ]),
         },
         { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
-        { title: '产品名称', key: '', align: 'center' },
-        { title: '产品类型', key: '', align: 'center' },
+        { title: '产品名称', key: 'product_name', align: 'center' },
+        { title: '产品类型', key: 'product_type_id_name', align: 'center' },
         { title: '班主任', key: 'classes_director_name', align: 'center' },
         {
           title: '计划课时',
@@ -154,7 +154,7 @@ export default {
 
       // cdata,
 
-      classesData: csdata, // 班级详情假数据
+      classesData: [], // 班级详情假数据
       display_name: '', // 班级名
       student_total: 0, // 学员个数
       grade_name: '', // 当前年级
@@ -170,12 +170,16 @@ export default {
   },
 
   methods: {
-    openClassesModal(id, display_name, student_total, classes_director) {
+    openClassesModal(id, display_name, student_total, classes_director_name) {
       // 这里到时候通过传入的id获取班级学员接口数据传入组件
       this.modal.classes = true
       this.display_name = display_name
       this.student_total = student_total
-      this.classes_director = classes_director
+      this.classes_director_name = classes_director_name
+      this.$http.get(`/studentprogress/classes/${id}`)
+        .then((res) => {
+          this.classesData = res.data
+        })
     },
 
     getData(qs) {

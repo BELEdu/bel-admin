@@ -69,16 +69,17 @@ export default {
           key: 'display_name',
           align: 'center',
           render: (h, params) => {
-            const { display_name, id } = params.row
+            const { display_name, number } = params.row
             return h('Tooltip', {
+              class: 'color-primary',
               props: {
-                content: id,
+                content: number,
                 placement: 'right',
               },
             }, display_name)
           },
         },
-        { title: '当前年级', key: 'current_grade', align: 'center' },
+        { title: '当前年级', key: 'current_grade_name', align: 'center' },
         { title: '归属学管师', key: 'belong_customer_relationships_name', align: 'center' },
         { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },
