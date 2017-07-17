@@ -98,6 +98,7 @@ export function colConfig(that) {
       title: '产品编号',
       key: 'product_number',
       align: 'center',
+      width: 150,
       sortable: 'custom',
     },
     {
@@ -119,7 +120,7 @@ export function colConfig(that) {
     },
     {
       title: '学科',
-      key: 'subject_name',
+      key: 'subject_item_name',
       align: 'center',
     },
     {

@@ -3,6 +3,7 @@
  * @author hjz
  * @version 2017-06-22
  */
+// eslint-disable-next-line
 import echarts from 'echarts'
 import { createButton } from '@/utils'
 
@@ -140,6 +141,32 @@ export const buffer = [
   },
 ]
 
+// export const errorOption = {
+//   title: {
+//     text: '全员易错知识点',
+//     left: 'left',
+//   },
+//   series: {
+//     name: '易错知识点',
+//     type: 'pie',
+//     data: [
+//       { name: '倍数的特征', value: 0.21 },
+//       { name: '有理数的认知', value: 0.43 },
+//       { name: '奇数与偶数的初步认识', value: 0.51 },
+//       { name: '绝对值', value: 0.9 },
+//       { name: '整数的认识', value: 0.67 },
+//       { name: '数与式', value: 0.59 },
+//       { name: '因式分解', value: 0.86 },
+//       { name: '一元二次方程', value: 0.76 },
+//       { name: '数与式', value: 0.32 },
+//       { name: '二元一次方程', value: 0.11 },
+//       { name: '有理数', value: 0.3 },
+//     ],
+//   },
+// }
+
+
+// 已废弃，知识点柱状图展示
 export const errorOption = {
   title: {
     text: '全体学员易错知识点',
@@ -171,6 +198,7 @@ export const errorOption = {
         // color: '#fff',
       },
     },
+// eslint-disable-next-line
     data: ['倍数的特征', '有理数的认知', '奇数与偶数的初步认识', '绝对值', '整数的认识', '数与式', '因式分解', '一元二次方程', '数与式', '二元一次方程', '有理数'],
     z: 10,
   },
