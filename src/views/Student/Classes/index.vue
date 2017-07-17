@@ -111,7 +111,7 @@ export default {
         { title: '班级名称', key: 'display_name', align: 'center' },
         { title: '班级编号', key: 'classes_number', align: 'center', sortable: 'custom' },
         { title: '产品名称', key: 'product_name', align: 'center' },
-        { title: '产品类型', key: 'product_type_id', align: 'center' },
+        { title: '产品类型', key: 'product_type_id_name', align: 'center' },
         { title: '班主任', key: 'classes_director_name', align: 'center' },
         // {
         //   title: '教师',

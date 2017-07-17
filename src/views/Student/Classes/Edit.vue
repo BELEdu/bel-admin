@@ -190,10 +190,12 @@ export default {
         end_at: this.classesDate ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
         calendar: {
           ...this.form.calendar,
-          special_at: this.form.calendar.special_at.map(item => ({
+          special_at:
+          this.form.calendar.special_at ?
+          this.form.calendar.special_at.map(item => ({
             start_at: format(item.specialDate[0], 'YYYY-MM-DD'),
             end_at: format(item.specialDate[1], 'YYYY-MM-DD'),
-          })),
+          })) : null,
         },
       }
 
@@ -248,9 +250,11 @@ export default {
             ...others,
             calendar: {
               ...others.calendar,
-              special_at: others.calendar.special_at.map(item => ({
+              special_at:
+              others.calendar.special_at ?
+              others.calendar.special_at.map(item => ({
                 specialDate: [item.end_at, item.start_at],
-              })),
+              })) : null,
             },
           }
           this.student_data = student_data
