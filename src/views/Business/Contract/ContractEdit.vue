@@ -62,7 +62,9 @@
     </Form>
     <!-- 审批流程表单end -->
     <!-- 学员信息表单 -->
-    <Form :label-width="130" v-show="process === 2" ref="studentForm" :model="fdata.student" :rules="studentRules">
+    <Form :label-width="130" v-show="process === 2" ref="studentForm"
+      :model="fdata.student" :rules="studentRules"
+    >
       <template v-for="(item, index) in studentFormRender">
 
         <Form-item label="学员性别" v-if="index === 9">
@@ -78,7 +80,7 @@
 
         <Form-item label="当前年级" v-else-if="index === 8">
           <Select v-model="fdata.student.grade">
-            <Option v-for="item in dicts.grade"
+            <Option v-for="item in dicts.grade" :key="item.value"
               :value="item.value">{{item.display_name}}</Option>
           </Select>
         </Form-item>
