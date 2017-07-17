@@ -65,7 +65,7 @@
     <Form :label-width="130" v-show="process === 2" ref="studentForm" :model="fdata.student" :rules="studentRules">
       <template v-for="(item, index) in studentFormRender">
 
-        <Form-item label="学员性别" v-if="index === 8">
+        <Form-item label="学员性别" v-if="index === 9">
           <Radio-group v-model="fdata.student.gender">
             <Radio
               v-for="item in dicts.gender"
@@ -74,6 +74,13 @@
               <span>{{item.display_name}}</span>
             </Radio>
           </Radio-group>
+        </Form-item>
+
+        <Form-item label="当前年级" v-else-if="index === 8">
+          <Select v-model="fdata.student.grade">
+            <Option v-for="item in dicts.grade"
+              :value="item.value">{{item.display_name}}</Option>
+          </Select>
         </Form-item>
 
         <Row v-else-if="index === 6">
@@ -128,15 +135,17 @@
             :min="1" @on-change="calPrice(index)"
           ></Input-number>
         </Form-item>
-        <Form-item label="优惠比例" prop="discount_rate">
+        <Form-item class="contract-create__product__rate"
+          label="优惠比例" prop="discount_rate"
+        >
           <Input-number v-model="item.discount_rate"
             :min="0" :max="100" @on-change="calPrice(index)"
           ></Input-number>
         </Form-item>
+        <span>%</span>
         <div>
           <span>合计</span>
            <span>{{item.money}}元</span>
-          <!-- <span>{{0}}元</span> -->
           <Button size="small" type="error"
             @click.stop="deleteProduct(index)"
           >删除</Button>
@@ -163,6 +172,7 @@
       <Form-item>
         <Button @click="goBack()">取消</Button>
         <Button type="ghost" @click="step(-1)">上一步</Button>
+        <Button type="ghost">预览合同</Button>
         <Button type="primary" @click="handleSubmit('productForm')">提交</Button>
       </Form-item>
     </Form>
@@ -215,8 +225,8 @@ export default {
 
   computed: {
     dicts() {
-      const { gender } = this.$store.state.dicts
-      return { gender }
+      const { gender, grade } = this.$store.state.dicts
+      return { gender, grade }
     },
     productsPrice() {
       const list = this.fdata.product.list
@@ -303,6 +313,7 @@ export default {
 </script>
 
 <style lang="less">
+@import '~vars';
 
 @gutter-unit: 8px;
 
@@ -335,10 +346,16 @@ export default {
     }
   }
 
+  &>.ivu-form-item {
+    margin-left: 5px !important;
+    margin-right: 0 !important;
+  }
+
   &>div:last-of-type {
     position: relative;
     display: inline-block;
     margin-left: 10px;
+    padding-left: 10px;
     width: 139px;
     line-height: 32px;
     font-size: 14px;
@@ -369,6 +386,10 @@ export default {
     & .ivu-form-item-content {
       width: 345px !important;
     }
+  }
+
+  &__rate {
+
   }
 
   &__create {

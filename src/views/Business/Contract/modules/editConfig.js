@@ -15,9 +15,10 @@ export function studentFormRender() {
       { label: '家长身份证号', pholder: '请输入身份证号', prop: 'parent_identity_card' },
       { label: '亲属关系', pholder: '请输入亲属关系', prop: 'relation' },
       null,
-      { label: '在读学校', pholder: '请输入学校名称', prop: 'school' },
+      { label: '当前年级', pholder: '请选择当前年级', prop: 'grade' },
       // 废除
       // { label: '学习科目', pholder: '请输入学科名称', prop: 'subject_type' },
+      null,
       null,
     ],
   }
@@ -145,7 +146,7 @@ export function formRules(that) {
         that.$rules.mobile,
       ],
       parent_name: [
-        that.$rules.required('合同名称'),
+        that.$rules.required('家长姓名'),
         that.$rules.max(255),
         that.$rules.name,
       ],
