@@ -16,7 +16,12 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.created_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
+        <Select v-model="query.equal.current_grade" style="width:9em;" placeholder="请选择当前年级">
+          <Option v-for="grade in grades" :value="grade.value" :key="grade.value">{{ grade.display_name }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Date-picker v-model="query.between.original_contractor_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -105,9 +110,10 @@ export default {
       query: {
         equal: {
           department_id: '',
+          current_grade: '',
         },
         between: {
-          created_at: [],
+          original_contractor_at: [],
         },
       },
 
@@ -125,9 +131,9 @@ export default {
           key: 'parent_name',
           align: 'center',
         },
-        { title: '首签日期', key: 'created_at', align: 'center', width: 180, sortable: 'custom' },
+        { title: '首签日期', key: 'original_contractor_at', align: 'center', width: 180, sortable: 'custom' },
         { title: '在读学校', key: 'school_name', align: 'center' },
-        { title: '当前年级', key: 'current_grade', align: 'center' },
+        { title: '当前年级', key: 'current_grade_name', align: 'center' },
         { title: '归属咨询师', key: 'belong_counselor_name', align: 'center' },
         { title: '归属学管师', key: 'belong_customer_relationships_name', align: 'center' },
         { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
@@ -176,6 +182,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.student.student.list,
+      grades: state => state.dicts.grade,
     }),
   },
 

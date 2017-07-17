@@ -31,7 +31,7 @@
           </Form-item>
           <Form-item label="身份证号" required
             :prop="`parent.${index}.identity_card`"
-            :rules="[$rules.idcard]"
+            :rules="[$rules.required('家长身份证号'),$rules.idcard]"
           >
             <Input placeholder="请输入身份证号" v-model="item.identity_card"></Input>
           </Form-item>
@@ -66,7 +66,9 @@
            :prop="`parent.${index}.total_score`"
            :rules="[$rules.price]"
           >
-            <Input placeholder="请输入家庭年总收入" v-model="item.total_score"></Input>
+            <Input placeholder="请输入家庭年总收入" v-model="item.total_score">
+              <span slot="prepend">￥</span>
+            </Input>
           </Form-item>
           <Form-item label="辅助联系方式">
             <Input placeholder="请输入联系方式" v-model="item.other_phone"></Input>

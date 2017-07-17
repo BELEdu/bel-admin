@@ -72,7 +72,7 @@ const defaultParent = {
   address: '', // 街道地址
   email: '', // 家长邮箱
   other_phone: '', // 辅助联系方式
-  total_score: '', // 家庭总收入
+  total_score: 0.00, // 家庭总收入
 
   cityData: [], // 级联测试
 }
@@ -245,8 +245,11 @@ export default {
   created() {
     this.getListData()
 
-    ;(this.isUpdate ? this.getClassData : this.getCreateData)()
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    if (this.isUpdate) {
+      this.getClassData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
   },
 }
 </script>
