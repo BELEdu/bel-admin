@@ -8,7 +8,7 @@
     <h3>
       <b>班级：</b>{{displayName}}
       <b>学员个数：</b>{{studentTotal}}
-      <b>班主任：</b>{{classesDirector}}
+      <b>班主任：</b>{{classesDirectorName}}
     </h3>
 
     <Table class="app-table" size="small" :columns="columns" :data="classesData" border></Table>
@@ -42,8 +42,12 @@ export default {
       type: Number,
       required: true,
     },
-    classesDirector: {
+    classesDirectorName: {
       type: [String, Number],
+      required: true,
+    },
+    classesMemberData: {
+      type: Array,
       required: true,
     },
   },
@@ -65,10 +69,10 @@ export default {
             }, display_name)
           },
         },
-        { title: '当前年级', key: 2, align: 'center' },
-        { title: '归属学管师', key: 3, align: 'center' },
-        { title: '签约课时', key: 4, align: 'center' },
-        { title: '剩余课时', key: 5, align: 'center' },
+        { title: '当前年级', key: 'current_grade_name', align: 'center' },
+        { title: '归属学管师', key: 'belong_customer_relationships_name', align: 'center' },
+        { title: '签约课时', key: 'course_remain', align: 'center', sortable: 'custom' },
+        { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },
         {
           title: '课时',
           key: 'class',
