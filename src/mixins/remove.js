@@ -50,7 +50,7 @@ export default {
           this.formLoading = true
           this.remove()
             .then(this.successHandler)
-            .catch(this.errorhandler)
+            .catch(this.errorHandler)
         }
       })
     },
