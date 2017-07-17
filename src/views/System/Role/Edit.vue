@@ -115,8 +115,8 @@ export default {
 
   methods: {
     // 获取当前编辑项的数据
-    getDetail(id) {
-      return this.$http.get(`/role/${id}`)
+    getDetail() {
+      return this.$http.get(`/role/${this.id}`)
         .then((res) => {
           this.form = {
             ...res,
@@ -148,15 +148,8 @@ export default {
 
   created() {
     this.$store.dispatch(SYSTEM.DATA.PERMIS.INIT)
-      .then(() => {
-        if (this.id) {
-          return this.getDetail(this.id)
-        }
-        return Promise.resolve()
-      })
-      .then(() => {
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
+      .then(() => this.id && this.getDetail())
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>
