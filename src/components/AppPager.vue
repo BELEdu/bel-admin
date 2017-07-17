@@ -64,8 +64,6 @@ export default {
 @import '~vars';
 
 .app-page {
-  @info-width: 195px;
-
   position: relative;
   display: flex;
   align-items: center;
@@ -73,7 +71,7 @@ export default {
   margin-top: 30px;
 
   &__info {
-    flex-basis: @info-width;
+    margin-left: 90px;
     margin-right: auto;
 
     & > em {
@@ -84,7 +82,7 @@ export default {
 
   .ivu-page-options-sizer {
     position: absolute;
-    left: @info-width;
+    left: 0;
   }
 }
 
