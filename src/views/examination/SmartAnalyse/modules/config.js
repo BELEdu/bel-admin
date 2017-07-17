@@ -34,6 +34,7 @@ export function colConfig(that) {
       key: 5,
       align: 'center',
     },
+    // 平均分废弃
     {
       title: '平均分',
       key: 6,
@@ -141,126 +142,128 @@ export const buffer = [
   },
 ]
 
-// export const errorOption = {
-//   title: {
-//     text: '全员易错知识点',
-//     left: 'left',
-//   },
-//   series: {
-//     name: '易错知识点',
-//     type: 'pie',
-//     data: [
-//       { name: '倍数的特征', value: 0.21 },
-//       { name: '有理数的认知', value: 0.43 },
-//       { name: '奇数与偶数的初步认识', value: 0.51 },
-//       { name: '绝对值', value: 0.9 },
-//       { name: '整数的认识', value: 0.67 },
-//       { name: '数与式', value: 0.59 },
-//       { name: '因式分解', value: 0.86 },
-//       { name: '一元二次方程', value: 0.76 },
-//       { name: '数与式', value: 0.32 },
-//       { name: '二元一次方程', value: 0.11 },
-//       { name: '有理数', value: 0.3 },
-//     ],
-//   },
-// }
+export const errorOption = {
+  title: {
+    text: '全员易错知识点',
+    left: 'left',
+  },
+  tooltip: {
+    triger: 'item',
+    formatter: '{a} <br/>{b} : {c}({d}%)',
+  },
+  series: {
+    name: '易错知识点',
+    type: 'pie',
+    data: [
+      { name: '倍数的特征', value: 0.21 },
+      { name: '有理数的认知', value: 0.43 },
+      { name: '奇数与偶数的初步认识', value: 0.51 },
+      { name: '绝对值', value: 0.9 },
+      { name: '整数的认识', value: 0.67 },
+      { name: '数与式', value: 0.59 },
+      { name: '因式分解', value: 0.86 },
+      { name: '一元二次方程', value: 0.76 },
+      { name: '数与式', value: 0.32 },
+    ],
+  },
+}
 
 
 // 已废弃，知识点柱状图展示
-export const errorOption = {
-  title: {
-    text: '全体学员易错知识点',
-    left: 'center',
-  },
-  tooltip: {
+// export const errorOption = {
+//   title: {
+//     text: '全体学员易错知识点',
+//     left: 'center',
+//   },
+//   tooltip: {
 
-  },
-  xAxis: {
-    name: '知识点',
-    nameLocation: 'middle',
-    nameTextStyle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#00a8ff',
-    },
-    axisLine: {
-      show: true,
-    },
-    axisTick: {
-      show: false,
-    },
-    axisLabel: {
-      inside: true,
-      formatter(value) {
-        return value.split('').join('\n')
-      },
-      textStyle: {
-        // color: '#fff',
-      },
-    },
+//   },
+//   xAxis: {
+//     name: '知识点',
+//     nameLocation: 'middle',
+//     nameTextStyle: {
+//       fontSize: 16,
+//       fontWeight: 'bold',
+//       color: '#00a8ff',
+//     },
+//     axisLine: {
+//       show: true,
+//     },
+//     axisTick: {
+//       show: false,
+//     },
+//     axisLabel: {
+//       inside: true,
+//       formatter(value) {
+//         return value.split('').join('\n')
+//       },
+//       textStyle: {
+//         // color: '#fff',
+//       },
+//     },
 // eslint-disable-next-line
-    data: ['倍数的特征', '有理数的认知', '奇数与偶数的初步认识', '绝对值', '整数的认识', '数与式', '因式分解', '一元二次方程', '数与式', '二元一次方程', '有理数'],
-    z: 10,
-  },
-  yAxis: {
-    name: '失\n分\n率',
-    nameLocation: 'middle',
-    nameRotate: 0,
-    nameTextStyle: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      color: '#00a8ff',
-    },
-    axisLine: {
-      show: true,
-    },
-    axisTick: {
-      show: false,
-    },
-    axisLabel: {
-      show: false,
-      textStyle: {
-        color: '#999',
-      },
-    },
-    splitLine: {
-      show: false,
-    },
-  },
-  series: [
-    {
-      type: 'bar',
-      itemStyle: {
-        normal: {
-          color: new echarts.graphic.LinearGradient(
-            0, 0, 0, 1,
-            [
-              { offset: 0, color: '#83bff6' },
-              { offset: 0.5, color: '#188df0' },
-              { offset: 1, color: '#188df0' },
-            ],
-          ),
-        },
-        emphasis: {
-          color: new echarts.graphic.LinearGradient(
-            0, 0, 0, 1,
-            [
-              { offset: 0, color: '#2378f7' },
-              { offset: 0.7, color: '#2378f7' },
-              { offset: 1, color: '#83bff6' },
-            ],
-          ),
-        },
-      },
-      barCategoryGap: '40%',
-      data: [0.21, 0.43, 0.51, 0.9, 0.67, 0.59, 0.86, 0.76, 0.32, 0.11, 0.3],
-      tooltip: {
-        formatter({ name, data }) {
-          return `${name}: ${data * 100}%`
-        },
-      },
-    },
-  ],
-}
+//     data: ['倍数的特征', '有理数的认知', '奇数与偶数的初步认识', '绝对值', '整数的认识', '数与式', '因式分解', '一元二次方程', '数与式', '二元一次方程', '有理数'],
+//     z: 10,
+//   },
+//   yAxis: {
+//     name: '失\n分\n率',
+//     nameLocation: 'middle',
+//     nameRotate: 0,
+//     nameTextStyle: {
+//       fontSize: 16,
+//       fontWeight: 'bold',
+//       color: '#00a8ff',
+//     },
+//     axisLine: {
+//       show: true,
+//     },
+//     axisTick: {
+//       show: false,
+//     },
+//     axisLabel: {
+//       show: false,
+//       textStyle: {
+//         color: '#999',
+//       },
+//     },
+//     splitLine: {
+//       show: false,
+//     },
+//   },
+//   series: [
+//     {
+//       type: 'bar',
+//       itemStyle: {
+//         normal: {
+//           color: new echarts.graphic.LinearGradient(
+//             0, 0, 0, 1,
+//             [
+//               { offset: 0, color: '#83bff6' },
+//               { offset: 0.5, color: '#188df0' },
+//               { offset: 1, color: '#188df0' },
+//             ],
+//           ),
+//         },
+//         emphasis: {
+//           color: new echarts.graphic.LinearGradient(
+//             0, 0, 0, 1,
+//             [
+//               { offset: 0, color: '#2378f7' },
+//               { offset: 0.7, color: '#2378f7' },
+//               { offset: 1, color: '#83bff6' },
+//             ],
+//           ),
+//         },
+//       },
+//       barCategoryGap: '40%',
+//       data: [0.21, 0.43, 0.51, 0.9, 0.67, 0.59, 0.86, 0.76, 0.32, 0.11, 0.3],
+//       tooltip: {
+//         formatter({ name, data }) {
+//           return `${name}: ${data * 100}%`
+//         },
+//       },
+//     },
+//   ],
+// }
 
 export { errorOption as scoreOption }
