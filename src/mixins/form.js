@@ -54,7 +54,10 @@ export default {
 
     successHandler() {
       this.formLoading = false
-      this.goBack()
+      // 判断是编辑还是添加，路由最后一级时数字的为编辑
+      const id = +this.$route.path.split('/').slice(-1)[0]
+      const isEdit = id > 0
+      this.goBack(isEdit)
     },
   },
 }

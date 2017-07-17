@@ -14,19 +14,22 @@ export default {
   },
 
   methods: {
-    goBack() {
-      if (!this.from || this.from.matched.length <= 0) {
-        try {
-          const { breadcrumb } = this.$route.meta
-          const { link } = breadcrumb[breadcrumb.length - 2]
+    goBack(isEdit) {
+      try {
+        const { breadcrumb } = this.$route.meta
+        const { link } = breadcrumb[breadcrumb.length - 2]
 
+        // 本页面是进入本应用后的第一个页面（用户直接输入地址等情况）
+        const isFirstView = !this.from || this.from.matched.length <= 0
+
+        if (isFirstView || !isEdit) {
           this.$router.push(this.backRoute || link)
-        } catch (error) {
-          // eslint-disable-next-line
-          console.log(error)
+        } else {
+          this.$router.go(-1)
         }
-      } else {
-        this.$router.go(-1)
+      } catch (error) {
+        // eslint-disable-next-line
+        console.log(error)
       }
     },
   },
