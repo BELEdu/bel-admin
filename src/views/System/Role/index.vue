@@ -48,6 +48,19 @@
     ></Table>
 
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+
+    <app-warn-modal v-model="removeModal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeRemove">
+      <Form :model="form" :rules="rules" ref="form">
+        <app-form-alert :errors="formErrors"></app-form-alert>
+        <div class="text-center" style="margin: -10px 0 10px;">
+          <p>该角色的成员不为空。</p>
+          <p>删除该角色后，将导致其关联的用户不可用。是否继续删除？</p>
+        </div>
+        <Form-item prop="password">
+          <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+        </Form-item>
+      </Form>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -59,14 +72,14 @@
  */
 
 import { mapState } from 'vuex'
-import { list } from '@/mixins'
+import { list, remove } from '@/mixins'
 import { SYSTEM } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 
 export default {
   name: 'app-system-role',
 
-  mixins: [list],
+  mixins: [list, remove],
 
   data() {
     return {
@@ -93,9 +106,9 @@ export default {
           title: '操作',
           align: 'center',
           render: createButton([
-            { text: '删除', type: 'error', isShow: ({ row }) => row.role_type === 2 },
-            { text: '筛选', type: 'primary', click: this.filterByDisplayName },
-            { text: '编辑', type: 'primary', click: this.goToEdit },
+            { text: '删除', type: 'error', isShow: ({ row }) => row.role_type === 2, click: row => this.prepareRemove(row.id) },
+            // { text: '筛选角色', type: 'primary', click: this.filterByDisplayName },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/role/edit/${row.id}`) },
           ]),
         },
       ],
@@ -110,19 +123,21 @@ export default {
 
   methods: {
     // 按角色名称筛选列表
-    filterByDisplayName({ display_name }) {
-      this.query.equal = { display_name }
-      this.filter()
-    },
-
-    // 转跳到编辑页
-    goToEdit({ id }) {
-      this.$router.push(`/system/role/edit/${id}`)
-    },
+    // filterByDisplayName({ display_name }) {
+    //   this.query.equal = { display_name }
+    //   this.search()
+    // },
 
     // 获取列表数据
     getData(qs) {
       return this.$store.dispatch(SYSTEM.ROLE.INIT, qs)
+    },
+
+    remove() {
+      return this.$store.dispatch(SYSTEM.ROLE.DELETE, {
+        id: this.removeId,
+        CheckoutPassword: this.CheckoutPassword,
+      })
     },
   },
 }
