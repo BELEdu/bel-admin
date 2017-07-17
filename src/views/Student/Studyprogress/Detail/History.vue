@@ -88,7 +88,7 @@ export default {
       },
 
       columns: [
-        { title: '科目', key: 'subject_type', align: 'center' },
+        { title: '科目', key: 'subject_type_name', align: 'center' },
         { title: '计划开始时间', key: 'created_at', align: 'center' },
         { title: '计划结束时间', key: 'finished_at', align: 'center' },
         { title: '实际上课课时', key: 'course_cost', align: 'center' },

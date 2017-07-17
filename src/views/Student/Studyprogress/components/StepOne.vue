@@ -1,43 +1,48 @@
 <template>
   <div>
-    <Row class="studyprogress-flex clear" type="flex">
 
-      <Col>
-        <Form-item class="original" label="上课科目" :label-width="120" prop="subject_type">
-          <Select class="original" v-model="form.subject_type" :disabled="!isAdd">
-            <Option v-for="subjectType in subjectTypes" :value="subjectType.value" :key="subjectType.value">{{ subjectType.display_name }}</Option>
-          </Select>
-        </Form-item>
-      </Col>
+    <h3 class="studyprogress-edit__sub-title">课时情况</h3>
+    <div class="studyprogress-edit__body">
 
-      <Col>
-        <Form-item class="original" label="教材版本" :label-width="90" prop="teaching_version">
-          <Select class="original" v-model="form.teaching_version" :disabled="!isAdd">
-            <Option v-for="version in versions" :value="version.value" :key="version.value">{{ version.display_name }}</Option>
-          </Select>
-        </Form-item>
-      </Col>
+      <Row class="studyprogress-flex clear" type="flex">
 
-      <Col>
-        <Form-item class="original" label="教师" :label-width="90" prop="teacher_id">
-          <Select class="original" v-model="form.teacher_id" :disabled="!isAdd">
-            <Option v-for="teacher in teachers" :value="teacher.id" :key="teacher.id">{{ teacher.username }}</Option>
-          </Select>
-        </Form-item>
-      </Col>
-    </Row>
+        <Col>
+          <Form-item class="original" label="上课科目" :label-width="120" prop="subject_type">
+            <Select class="original" v-model="form.subject_type" :disabled="!isAdd">
+              <Option v-for="subjectType in subjectTypes" :value="subjectType.value" :key="subjectType.value">{{ subjectType.display_name }}</Option>
+            </Select>
+          </Form-item>
+        </Col>
 
-    <Form-item :label="analysisLabel">
-      <Input type="textarea" :rows="4" v-model="form.character_analysis" placeholder="请输入学员分析"></Input>
-    </Form-item>
+        <Col>
+          <Form-item class="original" label="教材版本" :label-width="90" prop="teaching_version">
+            <Select class="original" v-model="form.teaching_version" :disabled="!isAdd">
+              <Option v-for="version in versions" :value="version.value" :key="version.value">{{ version.display_name }}</Option>
+            </Select>
+          </Form-item>
+        </Col>
 
-    <Form-item label="方法或措施">
-      <Input type="textarea" :rows="4" v-model="form.methods_measures" placeholder="请输入拟采用的的方法或措施"></Input>
-    </Form-item>
+        <Col>
+          <Form-item class="original" label="教师" :label-width="90" prop="teacher_id">
+            <Select class="original" v-model="form.teacher_id" :disabled="!isAdd">
+              <Option v-for="teacher in teachers" :value="teacher.id" :key="teacher.id">{{ teacher.username }}</Option>
+            </Select>
+          </Form-item>
+        </Col>
+      </Row>
 
-    <Form-item label="教学目标">
-      <Input type="textarea" :rows="4" v-model="form.teaching_objectives" placeholder="请输入教学目标"></Input>
-    </Form-item>
+      <Form-item :label="analysisLabel">
+        <Input type="textarea" :rows="4" v-model="form.character_analysis" placeholder="请输入学员分析"></Input>
+      </Form-item>
+
+      <Form-item label="方法或措施">
+        <Input type="textarea" :rows="4" v-model="form.methods_measures" placeholder="请输入拟采用的的方法或措施"></Input>
+      </Form-item>
+
+      <Form-item label="教学目标">
+        <Input type="textarea" :rows="4" v-model="form.teaching_objectives" placeholder="请输入教学目标"></Input>
+      </Form-item>
+    </div>
   </div>
 </template>
 
@@ -87,14 +92,11 @@ export default {
 </script>
 
 <style lang="less">
+@import "~vars.less";
+// 1px dashed @border-color-base;
 .studyprogress-flex {
   .ivu-col {
     flex: 1;
-
-    // &:first-child {
-    //   flex: none;
-    //   width: 140px;
-    // }
   }
 
   .ivu-form-item-label {

@@ -17,6 +17,7 @@
       :id="id"
       :isStudent="isStudent"
       :editInfo="edit_info"
+      @endPlan="endPlan"
     ></router-view>
 
   </div>
@@ -36,7 +37,7 @@ export default {
 
   data() {
     return {
-      tabActive: '',
+      adfa: '',
       studentName: '', // 学员名称
       teacher: '', // 学管师
       classesName: '', // 班级名称
@@ -55,12 +56,16 @@ export default {
     isStudent() {
       return this.type === 'student'
     },
+    tabActive() {
+      return this.$route.path.split('/').slice(-1)[0]
+    },
   },
 
   methods: {
     tabSelect(name) {
       this.$router.push(`/student/studyprogress/${this.type}/${this.id}/${name}`)
     },
+
     getStudentInfo() {
       return this.$http.get(`/studentplan/infolist/${this.id}`)
         .then((res) => {
@@ -78,14 +83,15 @@ export default {
           this.edit_info = res.info.edit_info
         })
     },
+
+    endPlan(planId) { // 结束计划的时候在视图上移除该计划
+      this.edit_info = this.edit_info.filter(info => info.id !== planId)
+    },
   },
 
   created() {
     (this.isStudent ? this.getStudentInfo : this.getClassesInfo)()
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-
-    const pathArry = this.$route.path.split('/')
-    this.tabActive = pathArry[pathArry.length - 1]
   },
 }
 </script>

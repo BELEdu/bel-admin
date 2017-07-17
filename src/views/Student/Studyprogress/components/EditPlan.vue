@@ -47,6 +47,7 @@
         <Button type="ghost" size="large" @click="prevStep" v-show="step > 0 && step < 4">上一步</Button>
         <Button type="primary" size="large" @click="nextStep" v-show="step < 3">下一步</Button>
         <Button type="primary" size="large" @click="beforeSubmit()" :loading="formLoading" v-show="step >= 3 && step!==5">确定</Button>
+        <Button type="primary" size="large" @click="endPlan(planId)" v-show="step === 4">结束计划</Button>
       </Form-item>
 
     </Form>
@@ -92,6 +93,7 @@ export default {
 
   data() {
     return {
+      // 4代表编辑，5代表查看详情，1-3代表步骤
       step: 0,
 
       form: {
@@ -278,10 +280,7 @@ export default {
         })),
       }
 
-
-      // console.log(data)
       this.$Message.info('提交成功')
-
 
       if (this.isAdd) {
         const addApi = this.isStudent ? `/studentplan/${this.id}` : `/classesplan/${this.id}`
@@ -294,6 +293,14 @@ export default {
          .then(this.successHandler)
          .catch(this.errorHandler)
       }
+    },
+
+    endPlan(planId) { // 结束计划的时候在视图上移除该计划并跳转到历史计划列表
+      this.$http.post(`/studentplan/end/${planId}`)
+      .then(() => {
+        this.$router.push(`/student/studyprogress/${this.type}/${this.id}/history`)
+        this.$emit('endPlan', planId)
+      })
     },
   },
 
@@ -323,6 +330,12 @@ export default {
   &__sub-title {
     font-size: 14px;
     margin-bottom: 1em;
+  }
+
+  &__body {
+    border:1px dashed @border-color-base;
+    padding: 1.5em 1.5em 0;
+    margin-bottom: 2em;
   }
 }
 

@@ -2,11 +2,17 @@
   <div>
     <!--科目tabs-->
     <Tabs class="app-tabs" @on-click="tabSelect">
-        <Tab-pane v-for="item in editInfo" :key="item.id" :label="`科目id：${item.subject_type}，计划id：${item.id}`"></Tab-pane>
+        <Tab-pane label="暂时没有进行中的计划，一起去添加计划吧!" v-if="editInfo.length===0"></Tab-pane>
+        <Tab-pane v-for="item in editInfo" :key="item.id" :label="`${item.subject_type_name}，计划id：${item.id}`"></Tab-pane>
         <Button type="primary" icon="plus" @click="addPlan" size="small" slot="extra">添加计划</Button>
     </Tabs>
 
-    <edit-plan :initialStep="4" :planId="planId" v-if="planId"></edit-plan>
+    <edit-plan
+      :initialStep="4"
+      :planId="planId"
+      v-if="planId"
+      @endPlan="planId => $emit('endPlan', planId)"
+    ></edit-plan>
 
   </div>
 </template>

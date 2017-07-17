@@ -1,51 +1,54 @@
 <template>
   <div>
     <h3 class="studyprogress-edit__sub-title">课时情况</h3>
-    <transition-group class="studyprogress-lessons" name="lessons" tag="ul">
-      <li v-for="item, index in course" :key="item">
-        <div>第 <span class="color-primary">{{ index + 1 }}</span> 节课</div>
-        <Form-Item label="计划课时：" class="original" :label-width="140">
-          <Input-number
-           class="original"
-           placeholder="输入课时"
-           v-model="course[index].course_num"
-           :min="1"
-           @on-change="value => numInit(index, value)"
-          ></Input-number>
-        </Form-Item>
-        <Form-Item label="知识点：" class="original studyprogress-lessons__knowledgepoints" :label-width="0">
-          <Select
-           multiple
-           filterable
-           v-model="course[index].course_knowledge"
-           class="original"
-           placeholder="请选择知识点"
-          >
-            <Option
-              v-for="option in options"
-              :key="option"
-              :value="option.value"
-              :disabled="option.disabled"
-            >{{ option.label }}</Option>
-          </Select  >
-        </Form-Item>
-        <!--假设已经排课的属性叫a 在此div上添加 v-if="!item.a"-->
-        <div :style="{visibility: course.length > 1 ? 'visible' : 'hidden'}" v-show="step !== 3">
-          <Button type="text" class="color-error" icon="close-circled" @click="$emit('removeLesson', index)"></Button>
-          <Button type="text" class="color-primary" icon="arrow-up-c" @click="$emit('sortLesson', index, -1)"></Button>
-          <Button type="text" class="color-warning" icon="arrow-down-c" @click="$emit('sortLesson', index, 1)"></Button>
-        </div>
-      </li>
-    </transition-group>
+    <div class="studyprogress-edit__body">
 
-    <div class="text-center">
-      <Button
-        type="dashed"
-        icon="plus"
-        class="color-primary"
-        size="large"
-        v-show="step < 4 || step === 4" @click="$emit('addLesson')"
-      >增加课程</Button>
+      <transition-group class="studyprogress-lessons" name="lessons" tag="ul">
+        <li v-for="item, index in course" :key="item">
+          <div>第 <span class="color-primary">{{ index + 1 }}</span> 节课</div>
+          <Form-Item label="计划课时：" class="original" :label-width="140">
+            <Input-number
+            class="original"
+            placeholder="输入课时"
+            v-model="course[index].course_num"
+            :min="1"
+            @on-change="value => numInit(index, value)"
+            ></Input-number>
+          </Form-Item>
+          <Form-Item label="知识点：" class="original studyprogress-lessons__knowledgepoints" :label-width="0">
+            <Select
+            multiple
+            filterable
+            v-model="course[index].course_knowledge"
+            class="original"
+            placeholder="请选择知识点"
+            >
+              <Option
+                v-for="option in options"
+                :key="option"
+                :value="option.value"
+                :disabled="option.disabled"
+              >{{ option.label }}</Option>
+            </Select  >
+          </Form-Item>
+          <!--假设已经排课的属性叫a 在此div上添加 v-if="!item.a"-->
+          <div :style="{visibility: course.length > 1 ? 'visible' : 'hidden'}" v-show="step !== 3">
+            <Button type="text" class="color-error" icon="close-circled" @click="$emit('removeLesson', index)"></Button>
+            <Button type="text" class="color-primary" icon="arrow-up-c" @click="$emit('sortLesson', index, -1)"></Button>
+            <Button type="text" class="color-warning" icon="arrow-down-c" @click="$emit('sortLesson', index, 1)"></Button>
+          </div>
+        </li>
+      </transition-group>
+
+      <div class="text-center studyprogress-lessons__btn">
+        <Button
+          type="dashed"
+          icon="plus"
+          class="color-primary"
+          size="large"
+          v-show="step < 4 || step === 4" @click="$emit('addLesson')"
+        >增加课程</Button>
+      </div>
     </div>
   </div>
 </template>
@@ -131,6 +134,10 @@ export default {
 
 .studyprogress-lessons {
   margin-bottom: 20px;
+
+  &__btn{
+    margin-bottom: 2em
+  }
 
   & > li {
     display: flex;

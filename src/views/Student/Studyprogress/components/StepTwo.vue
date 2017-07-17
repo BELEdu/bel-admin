@@ -1,8 +1,9 @@
 <template>
   <div class="studyprogress-step-two">
+
     <div class="studyprogress-step-two__weak">
       <h3 class="studyprogress-edit__sub-title">薄弱知识点</h3>
-      <ul>
+      <ul class="studyprogress-edit__body">
         <li v-for="item in knowledgepoints" :key="item">{{ item }}</li>
       </ul>
     </div>
@@ -11,6 +12,7 @@
       <h3 class="studyprogress-edit__sub-title">添加知识点</h3>
       <slot></slot>
     </div>
+
   </div>
 </template>
 
@@ -39,10 +41,9 @@ export default {
 
 <style lang="less">
 @import "~vars.less";
+@border: 1px dashed @border-color-base;
 
 .studyprogress-step-two {
-  @border: 1px dashed @border-color-base;
-
   &__weak {
     margin-bottom: 40px;
     font-size: 14px;
@@ -51,8 +52,8 @@ export default {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      padding: 1em 1em 0;
-      border: @border;
+      // padding: 1em 1em 0;
+      // border: @border;
 
       & > li {
         flex: none;
@@ -63,6 +64,10 @@ export default {
         text-align: center;
       }
     }
+  }
+
+  &__tree{
+    margin-bottom: 2em;
   }
 
   .tree-header {
