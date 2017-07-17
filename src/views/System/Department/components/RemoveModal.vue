@@ -12,15 +12,14 @@
       <p>该校区/部门存在关联的子部门</p>
       <p>请先删除关联的子部门后再重试</p>
     </div>
-    <!--确认删除-->
-    <div class="text-center">
-      <p>删除校区或者部门后，将导致其关联的</p>
-      <p>角色与用户均不可用，是否继续删除？</p>
-    </div>
 
+    <!--确认删除-->
     <Form :model="form" :rules="rules" ref="form">
       <app-form-alert :errors="formErrors"></app-form-alert>
-
+      <div class="text-center" style="margin: -10px 0 10px;">
+        <p>删除校区或者部门后，将导致其关联的</p>
+        <p>角色与用户均不可用，是否继续删除？</p>
+      </div>
       <Form-item prop="password">
         <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
       </Form-item>

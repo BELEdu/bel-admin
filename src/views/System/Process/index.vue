@@ -27,18 +27,15 @@
     <app-pager :data="list" @on-change="goTo"></app-pager>
 
     <app-warn-modal v-model="removeModal" title="删除确认" action="删除" :loading="formLoading" @on-ok="beforeRemove">
-      <div>
-        <div class="text-center">
+      <Form :model="form" :rules="rules" ref="form">
+        <app-form-alert :errors="formErrors"></app-form-alert>
+        <div class="text-center" style="margin: -10px 0 10px;">
           此流程删除后，新建合同审批时将无法选择该流程，已提交的审批不受影响。是否继续删除？
         </div>
-
-        <Form :model="form" :rules="rules" ref="form">
-          <app-form-alert :errors="formErrors"></app-form-alert>
-          <Form-item prop="password">
-            <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
-          </Form-item>
-        </Form>
-      </div>
+        <Form-item prop="password">
+          <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+        </Form-item>
+      </Form>
     </app-warn-modal>
   </div>
 </template>
