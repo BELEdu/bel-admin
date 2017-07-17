@@ -11,7 +11,7 @@
         <!--面包屑导航-->
         <div class="app-content">
           <Breadcrumb class="app-creadcrumb">
-            <Breadcrumb-item v-for="item in breadcrumb" :key="item" :href="item.link">
+            <Breadcrumb-item v-for="item in breadcrumb" :key="item.name" :href="item.link">
               {{ item.name }}
             </Breadcrumb-item>
           </Breadcrumb>
