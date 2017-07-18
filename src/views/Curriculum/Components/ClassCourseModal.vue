@@ -3,54 +3,61 @@
                   :title="title"
                   :closable="false"
                   :loading="formLoading"
-                  :width="840"
+                  :width="800"
                   :ok-value="okValue"
                   @on-ok="beforeSubmit"
                   @on-cancel="formCancel('form')">
-    <Form ref="form" :model="data" :rules="ruleValidate" :label-width="data.schedule_status !== 2 ? 90 : 110">
-      <template v-if="data.schedule_status !== 2">
+    <Form ref="form" :model="formData" :rules="ruleValidate" :label-width="formData.schedule_status !== 2 ? 90 : 110">
+      <Row>
+        <Col span="8">
+        <Form-item label="班级名称：">
+          {{courseOption.class_name}}
+        </Form-item>
+        </Col>
+        <Col span="8">
+        <Form-item label="产品名称：">
+          {{courseOption.product_name}}
+        </Form-item>
+        </Col>
+        <Col span="8">
+        <Form-item label="班主任：">{{courseOption.headmaster}}</Form-item>
+        </Col>
+      </Row>
+      <template v-if="formData.schedule_status !== 2">
         <Row>
-          <Col span="8">
-          <Form-item label="产品名称：">
-            {{data.product_name}}
-          </Form-item>
-          </Col>
-          <Col span="8">
+          <Col span="12">
           <Form-item label="教师名称：" prop="teacher_id">
-            <Select v-model="data.teacher_id" placeholder="请选择">
+            <Select v-model="formData.teacher_id" placeholder="请选择">
               <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
             </Select>
           </Form-item>
           </Col>
-          <Col span="8">
-          <Form-item label="学馆师：">{{data.customer_teacher}}</Form-item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
+          <Col span="12">
           <Form-item label="选择课时：" prop="course_cost">
-            <Select v-model="data.plan_course_id" placeholder="请选择">
+            <Select v-model="formData.plan_course_id" placeholder="请选择">
               <Option v-for="list in courseOption.course_cost" :value="list.value" :key="list.value">{{list.display_name}}</Option>
             </Select>
           </Form-item>
           </Col>
-          <Col span="8">
+        </Row>
+        <Row>
+          <Col span="12">
           <Form-item label="上课日期：" prop="date">
-            <app-date-picker placeholder="选择日期" v-model="data.date"></app-date-picker>
+            <app-date-picker placeholder="选择日期" v-model="formData.date"></app-date-picker>
           </Form-item>
           </Col>
-          <Col span="8">
+          <Col span="12">
           <Form-item label="上课时段：" required>
             <Row>
               <Col span="11">
               <Form-item prop="start_at">
-                <app-time-picker placeholder="开始时间" v-model="data.start_at" format="HH:mm"></app-time-picker>
+                <app-time-picker placeholder="开始时间" v-model="formData.start_at" ref="start_at" format="HH:mm"></app-time-picker>
               </Form-item>
               </Col>
               <Col span="2" style="text-align: center">-</Col>
               <Col span="11">
               <Form-item prop="end_at">
-                <app-time-picker placeholder="结束时间" v-model="data.end_at" format="HH:mm"></app-time-picker>
+                <app-time-picker placeholder="结束时间" v-model="formData.end_at" format="HH:mm"></app-time-picker>
               </Form-item>
               </Col>
             </Row>
@@ -62,7 +69,7 @@
         <Row type="flex" justify="end">
           <Col>
           <Form-item label="实际上课课时：" prop="fact_cost">
-            <Input type="text" placeholder="请填写实际上课课时" v-model="data.fact_cost"></Input>
+            <Input type="text" placeholder="请填写实际上课课时" v-model="formData.fact_cost"></Input>
           </Form-item>
           </Col>
         </Row>
@@ -76,7 +83,7 @@
   /**
    * 班级排课管理-添加|编辑
    * @author     chenliangshan
-   * @version    2017/07/02
+   * @version    2017/07/18
    */
 
   import { form } from '@/mixins'
@@ -88,11 +95,6 @@
       value: {
         type: Boolean,
         default: false,
-      },
-      // 表单数据
-      data: {
-        type: Object,
-        default: {},
       },
       // 添加|编辑ID
       id: {
@@ -110,6 +112,7 @@
           edit: '/studentcurricula/',
           finish: '/studentcurricula/finish/',
           info: '/curriculum/student/clbumInfo.json',
+          getData: '',
         },
       },
     },
@@ -138,6 +141,16 @@
           ],
           end_at: [
             this.$rules.date('结束时间必填'),
+            this.$rules.date('请选择开始时间', {
+              refs: this.$refs,
+              min_ref: 'start_at',
+              min_required: true,
+            }),
+            this.$rules.date('请选择大于开始时间', {
+              refs: this.$refs,
+              min_ref: 'start_at',
+              is_equal: false,
+            }),
           ],
           fact_cost: [
             this.$rules.required('实际上课课时'),
@@ -230,13 +243,21 @@
         studentRadioJoin: {
           attendance: [],
         },
+        courseOptional: [],
+        formData: {
+          product_id: null,
+          teacher_id: null,
+          plan_course_id: null,
+          date: null,
+          start_at: null,
+          end_at: null,
+          student_id: parseInt(this.$route.params.id, 10),
+        },
       }
-    },
-    created() {
     },
     computed: {
       okValue() {
-        const status = this.data.schedule_status
+        const status = this.formData.schedule_status
         let statusTxt = '确认'
         const txt = '编辑学员排课'
         switch (status) {
@@ -280,26 +301,76 @@
       },
       // 获取备选数据
       getCourseOption() {
-        this.$http.get(`${this.urlConf.option}${this.$route.params.id}`)
+        this.$http.get(this.urlConf.getData)
           .then((result) => {
-            this.courseOption = result.option
+            if (this.status !== 'add') {
+              // 编辑
+              this.courseOption = result.optional
+              this.formData = { ...this.formData, ...result.info }
+            } else {
+              // 新增
+              this.formReset = true
+              this.courseOption = result
+            }
           })
       },
       // 保存|添加课表
       submit() {
-        let url
-        if (this.status === 'finish') {
-          url = `${this.urlConf.finish}`
-        } else {
-          url = `${this.urlConf.edit}`
+        let url = `${this.urlConf.edit}`
+        let httpType = 'post'
+        let msg = '成功添加课表'
+        switch (this.status) {
+          case 'add':
+            break
+          case 'edit':
+            httpType = 'patch'
+            msg = '成功更新课表'
+            break
+          case 'finish':
+            url = `${this.urlConf.finish}`
+            msg = '课时提交成功'
+            break
+          default:
         }
-        this.$http.post(`${url}${this.id}`, { ...this.data })
-          .then((result) => {
-            this.formLoading = false
-            this.$emit('on-close')
-            window.console.log(result)
+        const attendance = [
+          {
+            // 学员id
+            student_id: this.formData.student_id,
+            // 是否上课
+            is_attend: 1,
+            // 是否扣课时
+            is_valid: 1,
+          },
+        ]
+        // 数据交互
+        const httpSetData = () => {
+          this.$http[httpType](`${url}${this.id}`, { ...this.formData, attendance })
+            .then(() => {
+              const self = this
+              this.formLoading = false
+              this.$Message.success({
+                content: msg,
+                onClose() {
+                  self.courseModal = false
+                  self.formCancel('form')
+                  self.$emit('on-close')
+                },
+              })
+            })
+            .catch(error => this.errorHandler(error))
+        }
+        if (this.status === 'finish') {
+          // 完成上课填写课时
+          this.$Modal.confirm({
+            title: '提示',
+            content: '确认填写课时并完成该课表？',
+            onOk: () => {
+              httpSetData()
+            },
           })
-          .catch(error => this.errorHandler(error))
+        } else {
+          httpSetData()
+        }
       },
       // 关闭弹窗
       formCancel(name) {
@@ -311,7 +382,6 @@
       value(val) {
         this.courseModal = val
         if (val === true) {
-          this.getStudentInfo()
           this.getCourseOption()
         }
       },

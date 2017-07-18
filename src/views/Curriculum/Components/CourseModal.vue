@@ -9,6 +9,7 @@
                   @on-cancel="formCancel('form')">
     <div class="course-modal-content">
       <Form ref="form" :model="formData" :rules="ruleValidate" :label-width="110">
+        <app-form-alert :errors="formErrors"></app-form-alert>
         <Form-item label="学员姓名：">
           {{courseOption.student_name}}
         </Form-item>
@@ -59,7 +60,7 @@
   /**
    * 排课管理-添加|编辑
    * @author     chenliangshan
-   * @version    2017/07/02
+   * @version    2017/07/18
    */
 
   import { form } from '@/mixins'
@@ -87,6 +88,7 @@
           option: '/courseoption/',
           edit: '/studentcurricula/',
           finish: '/studentcurricula/finish/',
+          getData: '',
         },
       },
     },
@@ -141,6 +143,7 @@
           ],
         },
         courseOptional: [],
+        formReset: false,
         formData: {
           product_id: null,
           teacher_id: null,
@@ -178,14 +181,18 @@
     methods: {
       // 获取备选数据
       getCourseOption() {
-        let url = `/studentcurricula/create/${this.id}`
-        if (this.status !== 'add') {
-          url = `/studentcurricula/create/${this.formData.student_id}`
-        }
-        this.$http.get(url)
-          .then((result) => {
+        this.$http.get(this.urlConf.getData)
+        .then((result) => {
+          if (this.status !== 'add') {
+            // 编辑
+            this.courseOption = result.optional
+            this.formData = { ...this.formData, ...result.info }
+          } else {
+            // 新增
+            this.formReset = true
             this.courseOption = result
-          })
+          }
+        })
       },
       // 产品联动课时
       productChange(id) {
@@ -194,19 +201,33 @@
           const idx = Object.keys(productPptional).map(k => productPptional[k])
             .filter(item => item.product_id === id)[0].subject_item
           this.courseOptional = this.courseOption.course_optional[idx]
-          this.$nextTick(() => {
-            this.$refs.form.fields
-              .filter(item => item.prop === 'plan_course_id')[0].resetField()
-          })
+          if (this.formReset) {
+            this.$nextTick(() => {
+              this.$refs.form.fields
+                .filter(item => item.prop === 'plan_course_id')[0].resetField()
+            })
+          } else {
+            this.formReset = true
+          }
         }
       },
       // 保存|添加课表
       submit() {
-        let url
-        if (this.status === 'finish') {
-          url = `${this.urlConf.finish}`
-        } else {
-          url = `${this.urlConf.edit}`
+        let url = `${this.urlConf.edit}`
+        let httpType = 'post'
+        let msg = '成功添加课表'
+        switch (this.status) {
+          case 'add':
+            break
+          case 'edit':
+            httpType = 'patch'
+            msg = '成功更新课表'
+            break
+          case 'finish':
+            url = `${this.urlConf.finish}`
+            msg = '课时提交成功'
+            break
+          default:
         }
         const attendance = [
           {
@@ -218,23 +239,47 @@
             is_valid: 1,
           },
         ]
-        this.$http.post(`${url}${this.id}`, { ...this.formData, attendance })
-          .then((result) => {
-            this.formLoading = false
-            this.$emit('on-close')
-            window.console.log(result)
+        // 数据交互
+        const httpSetData = () => {
+          this.$http[httpType](`${url}${this.id}`, { ...this.formData, attendance })
+            .then(() => {
+              const self = this
+              this.formLoading = false
+              this.$Message.success({
+                content: msg,
+                onClose() {
+                  self.courseModal = false
+                  self.formCancel('form')
+                  self.$emit('on-close')
+                },
+              })
+            })
+            .catch(error => this.errorHandler(error))
+        }
+        if (this.status === 'finish') {
+          // 完成上课填写课时
+          this.$Modal.confirm({
+            title: '提示',
+            content: '确认填写课时并完成该课表？',
+            onOk: () => {
+              httpSetData()
+            },
           })
-          .catch(error => this.errorHandler(error))
+        } else {
+          httpSetData()
+        }
       },
       // 关闭弹窗
       formCancel(name = 'form') {
         this.formErrors = {}
+        this.courseOptional = []
         this.$refs[name].resetFields()
       },
     },
     watch: {
       value(val) {
         this.courseModal = val
+        this.formReset = false
         if (val) {
           this.getCourseOption()
         }

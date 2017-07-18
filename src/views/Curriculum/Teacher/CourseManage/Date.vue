@@ -83,7 +83,7 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          {{formItem.model_info.display_name}}
+                          {{formItem.instance_name}}
                         </span>
                     </div>
                   </td>
@@ -155,7 +155,7 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          张旭
+                          {{formItem.counsellor_name}}
                         </span>
                     </div>
                   </td>
@@ -301,10 +301,7 @@
         // 日课表字段
         dailyColumns: [
           { title: '教师姓名', key: 'teacher_name', align: 'center' },
-          { title: '教学对象',
-            align: 'center',
-            width: 110,
-            render: (h, params) => h('span', {}, `${params.row.model_info.display_name}`) },
+          { title: '教学对象', key: 'instance_name', align: 'center', width: 110 },
           { title: '上课日期', key: 'date', align: 'center', width: 100, sortable: 'custom' },
           { title: '上课时段',
             align: 'center',
@@ -313,9 +310,8 @@
           },
           { title: '计划课时', key: 'course_cost', align: 'center', width: 110, sortable: 'custom' },
           { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
-          { title: '上课科目', key: 'subject_type', align: 'center', width: 80 },
+          { title: '上课科目', key: 'subject_item_name', align: 'center', width: 80 },
           { title: '产品名称', key: 'product_name', align: 'center' },
-          { title: '学管师', key: 'counsellor_name', align: 'center' },
           { title: '课表状态',
             align: 'center',
             width: 80,
@@ -430,9 +426,16 @@
       // 打开编辑|添加课表弹窗
       openCourseModal(type, item) {
         this.formErrors = {}
-        this.formItem = { ...this.formItem, ...item }
         this.courseModalParam.id = item.id
         this.courseModal = true
+        this.getCourseInfo(item.id)
+      },
+      // 查看排课信息
+      getCourseInfo(id) {
+        this.$http.get(`/teachercurricula/info/${id}`)
+          .then((result) => {
+            this.formItem = result.schedule
+          })
       },
       // 取消排课
       cancelCurriculum(item) {

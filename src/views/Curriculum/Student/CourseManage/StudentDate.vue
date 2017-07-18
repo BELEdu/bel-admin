@@ -55,7 +55,7 @@
                   :id="courseModalParam.id"
                   :status="courseModalParam.status"
                   :urlConf="urlConf"
-                  @on-close="updateData"></course-modal>
+                  @on-close="updataCourseList"></course-modal>
   </div>
 </template>
 
@@ -199,6 +199,7 @@ export default{
         option: '/courseoption/',
         edit: '/studentcurricula/',
         finish: '/studentcurricula/finish/',
+        getData: '',
       },
     }
   },
@@ -213,13 +214,16 @@ export default{
     // 打开编辑|添加课表弹窗
     openCourseModal(type, item = {}) {
       let id = this.$route.params.id
+      let getUrl = `/studentcurricula/create/${id}`
       switch (type) {
         case 'add':
           break
         default :
           id = item.id
+          getUrl = `/studentcurricula/edit/${id}`
           break
       }
+      this.urlConf.getData = getUrl
       this.courseModalParam.status = type
       this.courseModalParam.id = parseInt(id, 10)
       this.courseModal = true
@@ -236,6 +240,10 @@ export default{
             })
         },
       })
+    },
+    // 添加课表之后更新列表page=1
+    updataCourseList() {
+      this.updateData('?page=1')
     },
   },
 }
