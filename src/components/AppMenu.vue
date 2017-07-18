@@ -59,7 +59,9 @@ export default {
     // Menu组件不使用router-link来转跳路由
     // 这里必须手动查看路由，以便通知Menu组件当前应该高亮的项目
     activeName() {
-      return `front${this.partials.join('.')}`
+      // 不管路由层级有多深，这里实际拼接时都只取前3层
+      // 以保证进入深层级路由时，菜单仍然能正确高亮其所属父级项目
+      return `front${this.partials.slice(0, 3).join('.')}`
     },
   },
 
