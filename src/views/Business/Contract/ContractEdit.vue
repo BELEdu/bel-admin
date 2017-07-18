@@ -67,7 +67,7 @@
     >
       <template v-for="(item, index) in studentFormRender">
 
-        <Form-item label="学员性别" v-if="index === 9">
+        <Form-item label="学员性别" v-if="index === 8">
           <Radio-group v-model="fdata.student.gender">
             <Radio
               v-for="item in dicts.gender"
@@ -78,8 +78,8 @@
           </Radio-group>
         </Form-item>
 
-        <Form-item label="当前年级" v-else-if="index === 8">
-          <Select v-model="fdata.student.grade">
+        <Form-item label="当前年级" v-else-if="index === 7">
+          <Select v-model="fdata.student.current_grade">
             <Option v-for="item in dicts.grade" :key="item.value"
               :value="item.value">{{item.display_name}}</Option>
           </Select>

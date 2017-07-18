@@ -15,7 +15,6 @@ export function studentFormRender() {
       { label: '家长身份证号', pholder: '请输入身份证号', prop: 'parent_identity_card' },
       { label: '亲属关系', pholder: '请输入亲属关系', prop: 'relation' },
       null,
-      { label: '当前年级', pholder: '请选择当前年级', prop: 'grade' },
       // 废除
       // { label: '学习科目', pholder: '请输入学科名称', prop: 'subject_type' },
       null,
@@ -66,7 +65,7 @@ export function editInit() {
     // 学员信息
     student: {
       // 学员编号，如果有则填写，没有则为null:sometimes|exists:student
-      id: 1,
+      id: null,
       // 2.1 学员姓名:present|required|string|max:255
       display_name: '',
       // 2.2 学员联系方式:sometimes|string|size:11
@@ -87,6 +86,7 @@ export function editInit() {
       school: '',
       // 废除 2.9 学习科目:由于跟学员信息中字段有冲突，暂时不做验证
       // subject_type: '学习科目',
+      current_grade: null,
       // 2.10 性别：sometimes|integer
       gender: 3,
     },
