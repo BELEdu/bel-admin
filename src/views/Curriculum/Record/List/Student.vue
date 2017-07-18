@@ -48,7 +48,7 @@ export default {
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
         { label: '学员编号', value: 'number' },
-        { label: '学管师', value: 'belong_customer_relationships' },
+        { label: '学管师', value: 'counsellor_name' },
       ],
       likeKey: 'display_name',  // 默认模糊字段
       // 学员字段
@@ -59,7 +59,7 @@ export default {
           align: 'center',
           render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
         { title: '产品名称', key: 'schedule_product_name', align: 'center' },
-        { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '学管师', key: 'counsellor_name', align: 'center' },
         {
           title: '操作',
           align: 'center',

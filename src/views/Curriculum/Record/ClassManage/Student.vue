@@ -63,7 +63,7 @@ export default{
         { label: '学员编号', value: 'number' },
         { label: '教师姓名', value: 'teacher_name' },
         { label: '上课科目', value: 'subject_type' },
-        { label: '学管师', value: 'belong_customer_relationships' },
+        { label: '学管师', value: 'counsellor_name' },
       ],
       likeKey: 'display_name',  // 默认模糊字段
       // 弹窗-初始化
@@ -106,7 +106,7 @@ export default{
           align: 'center',
           render: (h, params) => h('app-dicts-filter', { props: { value: params.row.grade, name: 'grade' } }) },
         { title: '产品名称', key: 'product_name', align: 'center' },
-        { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+        { title: '学管师', key: 'counsellor_name', align: 'center' },
         {
           title: '操作',
           align: 'center',

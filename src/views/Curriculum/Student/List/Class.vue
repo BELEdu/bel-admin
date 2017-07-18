@@ -36,7 +36,7 @@
         <span>班级：{{currentClbum.class_name}}</span>
         <span>学员个数：{{currentClbum.student_count}}</span>
         <span>班主任：{{currentClbum.head_teacher}}</span>
-        <span>学管师：{{currentClbum.belong_customer_relationships}}</span>
+        <span>学管师：{{currentClbum.counsellor_name}}</span>
       </p>
       <Table class="app-table" :columns="showColumns" :data="clbumInfoData.data" border></Table>
       <div slot="footer">

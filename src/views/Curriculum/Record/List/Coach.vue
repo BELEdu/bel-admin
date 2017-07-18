@@ -64,7 +64,7 @@ export default {
         { title: '学员人数（个）', key: 'student_total', align: 'center', sortable: 'custom' },
         { title: '产品名称', key: 'schedule_product_name', align: 'center' },
         { title: '教师姓名', key: 'teacher_name', align: 'center' },
-        { title: '班主任', key: 'belong_customer_relationships', align: 'center' },
+        { title: '班主任', key: 'counsellor_name', align: 'center' },
         {
           title: '操作',
           align: 'center',

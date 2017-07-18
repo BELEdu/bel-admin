@@ -51,7 +51,7 @@ import { list } from '@/mixins'
         likeKeys: [
           { label: '学员姓名', value: 'display_name' },
           { label: '学员编号', value: 'number' },
-          { label: '学管师', value: 'belong_customer_relationships' },
+          { label: '学管师', value: 'counsellor_name' },
         ],
         // 默认模糊字段
         likeKey: 'display_name',
@@ -59,11 +59,8 @@ import { list } from '@/mixins'
         studentColumns: [
           { title: '学员姓名', key: 'display_name', align: 'center' },
           { title: '学员编号', key: 'number', align: 'center', sortable: 'custom' },
-          {
-            title: '当前年级',
-            align: 'center',
-            render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
-          { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+          { title: '当前年级', key: 'current_grade_name', align: 'center' },
+          { title: '学管师', key: 'counsellor_name', align: 'center' },
           { title: '产品名称', key: 'schedule_product_name', align: 'center' },
           { title: '签约课时', key: 'course_total', align: 'center', sortable: 'custom' },
           { title: '剩余课时', key: 'course_remain', align: 'center', sortable: 'custom' },

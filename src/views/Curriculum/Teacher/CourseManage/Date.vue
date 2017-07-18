@@ -264,7 +264,7 @@
         likeKeys: [
           { label: '教师姓名', value: 'teacher_name' },
           { label: '教学对象', value: 'display_name' },
-          { label: '学管师', value: 'belong_customer_relationships' },
+          { label: '学管师', value: 'counsellor_name' },
         ],
         likeKey: 'teacher_name',
         subjectType: [
@@ -315,7 +315,7 @@
           { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
           { title: '上课科目', key: 'subject_type', align: 'center', width: 80 },
           { title: '产品名称', key: 'product_name', align: 'center' },
-          { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+          { title: '学管师', key: 'counsellor_name', align: 'center' },
           { title: '课表状态',
             align: 'center',
             width: 80,

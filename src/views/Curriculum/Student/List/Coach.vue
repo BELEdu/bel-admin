@@ -111,7 +111,7 @@
           { title: '学员名称', key: 'student_name', align: 'center' },
           { title: '学员编号', key: 'student_number', align: 'center' },
           { title: '当前年级', key: 'current_grade', align: 'center' },
-          { title: '学管师', key: 'belong_customer_relationships', align: 'center' },
+          { title: '学管师', key: 'counsellor_name', align: 'center' },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '签约课时', key: 'course_total', align: 'center' },
           { title: '剩余课时', key: 'course_remain', align: 'center' },

@@ -81,7 +81,7 @@ export default{
       likeKeys: [
         { label: '教师姓名', value: 'teacher_name' },
         { label: '教学对象', value: 'display_name' },
-        { label: '学管师', value: 'belong_customer_relationships' },
+        { label: '学管师', value: 'counsellor_name' },
       ],
       likeKey: 'teacher_name',
       subjectType: [
