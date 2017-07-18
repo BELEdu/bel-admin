@@ -49,21 +49,6 @@ const router = new Router({
             ],
           },
         },
-        {
-          path: '/feedback',
-          name: 'Feedback',
-          component: views.Feedback,
-          meta: {
-            breadcrumb: [
-              { name: '意见反馈' },
-            ],
-          },
-        },
-        {
-          path: '/error',
-          name: 'AccessError',
-          component: views.AccessError,
-        },
         ...business,
         ...arrange,
         ...analysis,
@@ -71,6 +56,16 @@ const router = new Router({
         ...student,
         ...examination,
         ...prepare,
+        {
+          path: '/error',
+          name: 'AccessError',
+          component: views.AccessError,
+        },
+        {
+          path: '*',
+          name: '404',
+          component: views.NotFound,
+        },
       ],
     },
   ],
@@ -78,7 +73,9 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   // 显示数据加载动画
-  store.commit(GLOBAL.LOADING.SHOW)
+  if (to.name !== '404') {
+    store.commit(GLOBAL.LOADING.SHOW)
+  }
 
   // 更换页面title
   if (to.meta.breadcrumb) {

@@ -101,3 +101,6 @@ export { default as Smartpaper } from './Prepare/Papercenter/Smartpaper'
 export { default as Smartquestion } from './Prepare/Smartquestion'
 export { default as Question } from './Prepare/Question'
 export { default as PaperPreview } from './Prepare/Question/PaperPreview'
+
+// 404页面
+export { default as NotFound } from './NotFound'
