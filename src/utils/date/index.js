@@ -103,6 +103,7 @@ export const setTime = (value, type = ':') => {
     } else {
       date.setSeconds(0)
     }
+    date.setUTCMilliseconds(0)
     return date
   }
   return value
