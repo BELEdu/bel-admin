@@ -12,20 +12,20 @@ export default [
     },
   },
   {
-    path: '/analysis/data',
-    name: 'AnalysisData',
-    component: views.AnalysisData,
+    path: '/analysis/signanalysis',
+    name: 'AnalysisSign',
+    component: views.AnalysisSign,
     meta: {
       breadcrumb: [
         { name: '统计管理' },
-        { name: '数据统计' },
+        { name: '签约统计' },
       ],
     },
   },
   {
-    path: '/analysis/lesson',
-    name: 'AnalysisLesson',
-    component: views.AnalysisLesson,
+    path: '/analysis/curricula',
+    name: 'AnalysisCurricula',
+    component: views.AnalysisCurricula,
     meta: {
       breadcrumb: [
         { name: '统计管理' },
@@ -34,7 +34,7 @@ export default [
     },
   },
   {
-    path: '/analysis/rank',
+    path: '/analysis/ranksummary',
     name: 'AnalysisRank',
     component: views.AnalysisRank,
     meta: {

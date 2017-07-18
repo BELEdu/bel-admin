@@ -44,8 +44,8 @@ export { default as CurriculumRecordCoachShow } from './Curriculum/Record/ClassM
 
 // 统计管理
 export { default as Analysis } from './Analysis'
-export { default as AnalysisData } from './Analysis/Data'
-export { default as AnalysisLesson } from './Analysis/Lesson'
+export { default as AnalysisSign } from './Analysis/Sign'
+export { default as AnalysisCurricula } from './Analysis/Curricula'
 export { default as AnalysisRank } from './Analysis/Rank'
 
 // 系统管理
