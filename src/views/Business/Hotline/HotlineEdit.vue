@@ -3,7 +3,10 @@
     <app-editor-title></app-editor-title>
     <Form :label-width="130" :rules="formRules" ref="form" :model="fdata">
       <Form-item label="来访时间" required prop="visited_at">
-        <app-date-picker placeholder="年 / 月 / 日" v-model="fdata.visited_at" formate="yyyy-MM-dd" :editable="false"></app-date-picker>
+        <app-date-picker placeholder="年 / 月 / 日"
+          v-model="fdata.visited_at"
+          formate="yyyy-MM-dd" :editable="false"
+        ></app-date-picker>
       </Form-item>
       <Form-item label="家长姓名" required prop="elder_name">
         <Input placeholder="请输入家长姓名" v-model="fdata.elder_name"></Input>
@@ -43,8 +46,11 @@
       <Form-item label="在读学校" prop="school_name">
         <Input placeholder="请输入在读学校名称" v-model="fdata.school_name"></Input>
       </Form-item>
-      <Form-item label="二次上门日期">
-        <app-date-picker placeholder="年 / 月 / 日" v-model="fdata.return_visited_at" :editable="false"></app-date-picker>
+      <Form-item label="回访时间" prop="return_visited_at">
+        <app-date-picker placeholder="年 / 月 / 日"
+          v-model="fdata.return_visited_at"
+          formate="yyyy-MM-dd" :editable="false"
+          ></app-date-picker>
       </Form-item>
       <Form-item>
         <Button @click.stop="goBack">取消</Button>
@@ -61,6 +67,7 @@
  * @version 2017-06-06
  */
 
+import { parseDate } from '@/utils/date'
 import { goBack } from '@/mixins'
 import { Http } from '@/utils'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
@@ -104,7 +111,11 @@ export default {
           this.$rules.length(2, 20),
           this.$rules.name,
         ],
+        return_visited_at: [
+          { validator: this.validateReturnAt, trigger: 'change' },
+        ],
       },
+      pickerSwitch: true,
     }
   },
 
@@ -131,6 +142,16 @@ export default {
     },
     handleSubmit(name) {
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
+    },
+    // 表单验证函数
+    validateReturnAt(rule, value, callback) {
+      if (typeof this.fdata.visited_at === 'string'
+        && value !== null) {
+        const from = parseDate(this.fdata.visited_at).valueOf()
+        const to = parseDate(this.fdata.return_visited_at).valueOf()
+        if (from > to) callback('回访时间应大于来访时间')
+      }
+      callback()
     },
   },
 
