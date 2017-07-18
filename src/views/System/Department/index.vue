@@ -74,6 +74,9 @@ export default {
 
   created() {
     this.$store.dispatch(SYSTEM.DEPARTMENT.INIT)
+      .catch(() => {
+        this.$Notice.error({ title: '无法访问数据，请稍后再试', duration: 0 })
+      })
       .then(() => {
         this.$store.commit(GLOBAL.LOADING.HIDE)
       })

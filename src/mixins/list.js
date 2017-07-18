@@ -122,6 +122,9 @@ export default {
       // 获取数据
       if (this.getData) {
         this.getData(queryString)
+          .catch(() => {
+            this.$Notice.error({ title: '无法访问数据，请稍后再试', duration: 0 })
+          })
           .then(() => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
           })
