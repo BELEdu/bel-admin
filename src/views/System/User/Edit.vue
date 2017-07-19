@@ -63,7 +63,7 @@
 
       <Form-item label="状态">
         <Radio-group v-model="form.status">
-          <Radio :label="0">禁用</Radio>
+          <Radio :label="2">禁用</Radio>
           <Radio :label="1">启用</Radio>
         </Radio-group>
       </Form-item>
