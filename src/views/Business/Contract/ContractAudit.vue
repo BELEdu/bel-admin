@@ -52,7 +52,11 @@
             @click="handleSubmit('commentForm', 1)"
             :loading="loading[1]"
           >驳回</Button>
-          <Button type="success" @click="goBack">返回</Button>
+          <Button type="success"
+            @click="goBack"
+            class="bg-cancel"
+            style="border-color: #999999;"
+          >返回</Button>
         </Form-item>
       </Form>
     </Card>
