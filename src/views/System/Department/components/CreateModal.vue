@@ -174,13 +174,9 @@ export default {
 
     // 更名
     update() {
-      const { id, p_id } = this.item
       this.$store.dispatch(SYSTEM.DEPARTMENT.UPDATE, {
-        id,
-        data: {
-          display_name: this.data.display_name,
-          p_id,
-        },
+        id: this.item.id,
+        data: { display_name: this.data.display_name },
       })
         .then(this.successHandler)
         .catch(this.errorHandler)
