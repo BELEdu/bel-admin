@@ -55,6 +55,10 @@
         <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
       </Form-item>
 
+      <Form-item label="文件大小建议">
+        <span class="upload-text">上传文件应不大于10M，格式要求为 jpg、jpeg、bmp、png、zip、doc、pdf、rar、docx、xls、xlsx、txt</span>
+      </Form-item>
+
       <!-- 上传附件组件 -->
       <Form-item>
         <app-uploader
@@ -251,6 +255,10 @@ export default {
 }
 </script>
 
-<style <style lang="less">
-
+<style lang="less">
+@import '~vars';
+.upload-text {
+  color: @subsidiary-color;
+  font-size: 14px;
+}
 </style>

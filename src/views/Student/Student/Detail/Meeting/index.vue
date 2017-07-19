@@ -192,8 +192,9 @@ export default {
 }
 </script>
 
-<style <style lang="less">
-  .attachs_space{
-    display: block
-  }
+<style lang="less">
+@import '~vars';
+.attachs_space{
+  display: block;
+}
 </style>
