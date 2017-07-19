@@ -68,13 +68,12 @@ const defaultParent = {
   identity_card: '', // 家长身份证
   is_guardian: null, // 是否监护人
   relation: '', // 亲属关系
-  city: '', // 现住城市
   address: '', // 街道地址
   email: '', // 家长邮箱
   other_phone: '', // 辅助联系方式
   total_score: 0.00, // 家庭总收入
 
-  cityData: [], // 级联测试
+  areas_code: [], // 级联测试
 }
 
 const defaultSublist = {
@@ -202,7 +201,7 @@ export default {
     },
 
     // 获取当前编辑学员的数据
-    getClassData() {
+    getStudentData() {
       return this.$http.get(`/student/${this.id}`)
         .then((res) => {
           this.form = {
@@ -246,7 +245,7 @@ export default {
     this.getListData()
 
     if (this.isUpdate) {
-      this.getClassData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      this.getStudentData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     } else {
       this.$store.commit(GLOBAL.LOADING.HIDE)
     }
