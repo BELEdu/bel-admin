@@ -46,10 +46,6 @@ export default {
       type: [String, Number],
       required: true,
     },
-    classesMemberData: {
-      type: Array,
-      required: true,
-    },
   },
 
   data() {

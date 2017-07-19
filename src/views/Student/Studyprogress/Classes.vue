@@ -157,8 +157,7 @@ export default {
       classesData: [], // 班级详情假数据
       display_name: '', // 班级名
       student_total: 0, // 学员个数
-      grade_name: '', // 当前年级
-      classes_director: '', // 班主任
+      classes_director_name: '', // 班主任
     }
   },
 

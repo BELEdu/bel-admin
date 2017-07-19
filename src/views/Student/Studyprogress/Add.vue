@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-editor-title></app-editor-title>
+    <app-editor-title>：{{name}}</app-editor-title>
     <edit-plan></edit-plan>
   </div>
 </template>
@@ -20,13 +20,19 @@ export default {
 
   data() {
     return {
-
+      name: '',
     }
   },
 
   computed: {
+    id() {
+      return +this.$router.currentRoute.params.id
+    },
     type() {
       return this.$router.currentRoute.params.type
+    },
+    isStudent() {
+      return this.type === 'student'
     },
   },
 
@@ -34,8 +40,26 @@ export default {
     EditPlan,
   },
 
+  methods: {
+    getStudentInfo() {
+      return this.$http.get(`/studentplan/infolist/${this.id}`)
+        .then((res) => {
+          this.name = res.info.display_name
+        })
+    },
+
+    getClassesInfo() {
+      return this.$http.get(`/classesplan/infolist/${this.id}`)
+        .then((res) => {
+          this.name = res.info.display_name
+        })
+    },
+  },
+
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    (this.isStudent ? this.getStudentInfo : this.getClassesInfo)()
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
     this.$route.meta.breadcrumb[1].link = `/student/studyprogress/${this.type}`
   },
 }
