@@ -13,12 +13,12 @@
       <!-- 试卷结构自定义选择 -->
       <ul>
         <li v-for="item in paperUnit" :key="item">
-          <Checkbox label="twitter" @click="two()"></Checkbox>
-          <i class="ivu-icon ivu-icon-edit" @click="one()"></i>
+          <Checkbox label="twitter" @click="one()"></Checkbox>
+          <i class="ivu-icon ivu-icon-edit" @click="two()"></i>
           <span>{{item}}</span>
         </li>
       </ul>
-      <!-- end 试卷结构自定义选择 -->      
+      <!-- end 试卷结构自定义选择 -->
     </aside>
     <!-- end 边栏配置 -->
     <!-- 试卷部分 -->
@@ -50,7 +50,7 @@
               :class="{ 'paperpreview__section--selected': sectionSelected[index-1] }"
           >
             <!-- 题型标题 -->
-            <h3 
+            <h3
                 class="paperpreview__section-title"
                 @mouseenter="titleEnter(index - 1)"
                 @mouseleave="titleLeave(index - 1)"
@@ -70,7 +70,7 @@
                 <Button size="small">上移</Button>
                 <Button size="small">下移</Button>
               </div>
-              <!-- end 标题控制条 -->              
+              <!-- end 标题控制条 -->
             </h3>
             <!-- end 题型标题 -->
             <!-- 题目列表 -->
@@ -96,6 +96,9 @@
       <!-- end 试卷内容主题 -->
     </main>
     <!-- end 试卷部分 -->
+    <!-- 试卷版面设置弹窗 -->
+    <Paper-config v-model="configSwitch"></Paper-config>
+    <!-- end 试卷版面设置弹窗 -->
   </div>
 </template>
 
@@ -107,6 +110,7 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
+import PaperConfig from './components/PaperConfig'
 
 export default {
 
@@ -143,6 +147,8 @@ export default {
     ],
     // section-title hover时候section显示边框
     sectionSelected: [false, false, false],
+    // 试卷配置弹窗开关
+    configSwitch: false,
   }),
 
   methods: {
@@ -150,7 +156,7 @@ export default {
       window.console.log('one')
     },
     two() {
-      window.console.log('two')
+      this.configSwitch = true
     },
     titleEnter(index) {
       this.$set(this.sectionSelected, index, true)
@@ -158,6 +164,10 @@ export default {
     titleLeave(index) {
       this.$set(this.sectionSelected, index, false)
     },
+  },
+
+  components: {
+    PaperConfig,
   },
 
   created() {
@@ -220,8 +230,8 @@ export default {
 .paperpreview {
   display: flex;
   width: 1160px;
-  align-items: flex-start; 
-  
+  align-items: flex-start;
+
   // 边栏配置
   &>aside {
     margin-right: @gutter-block;
@@ -230,8 +240,8 @@ export default {
     padding: @padding;
     width: 200px;
     font-size: @mid-font;
-    flex-shrink: 0; 
-    
+    flex-shrink: 0;
+
     // 试卷结构自定义选择
     &>ul {
       margin-top: 10px;
@@ -244,8 +254,8 @@ export default {
         }
       }
     }
-  } 
-  
+  }
+
   // 试卷部分
   &>main {
     position: relative;
@@ -253,8 +263,8 @@ export default {
     border-radius: @bd-radius;
     padding: @padding;
     min-height: 603px;
-    flex-grow: 1; 
-    
+    flex-grow: 1;
+
     // 装订线
     &>aside {
       position: absolute;
@@ -274,8 +284,8 @@ export default {
 // 试卷内容
 .paperpreview__content {
   margin-left: 100px;
-  padding-left: @padding; 
-  
+  padding-left: @padding;
+
   // 试卷头部
   &>header {
     padding-top: 10px;
@@ -329,8 +339,8 @@ export default {
   &-title {
     position: relative;
     display: flex;
-    padding: @padding; 
-    cursor: pointer;  
+    padding: @padding;
+    cursor: pointer;
 
     & span {
       display: inline-block;
@@ -380,7 +390,7 @@ export default {
 
 // 题目列表
 .paperpreview__topics {
-  // 
+  //
 }
 
 // 题目
