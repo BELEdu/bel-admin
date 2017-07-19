@@ -160,7 +160,7 @@ export default {
 
     // 新增
     create() {
-      const { display_name, password: CheckoutPassword } = this.form
+      const { display_name, password: CheckoutPassword } = this.data
       this.$store.dispatch(SYSTEM.DEPARTMENT.CREATE, {
         data: {
           display_name,
@@ -178,7 +178,7 @@ export default {
       this.$store.dispatch(SYSTEM.DEPARTMENT.UPDATE, {
         id,
         data: {
-          display_name: this.form.display_name,
+          display_name: this.data.display_name,
           p_id,
         },
       })
