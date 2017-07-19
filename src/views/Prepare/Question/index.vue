@@ -117,19 +117,19 @@
       <div class="question__help">
         <div>
           <h4>排序</h4>
-          <a 
+          <a
             :class="{ selected: helpType === 1 }"
             @click="helpFliter(1)"
           >
             综合排序
           </a>
-          <a 
+          <a
             :class="{ selected: helpType === 2 }"
             @click="helpFliter(2)"
           >
             难度系数
           </a>
-          <a 
+          <a
             :class="{ selected: helpType === 3 }"
             @click="helpFliter(3)"
           >
@@ -147,6 +147,8 @@
           <div>
             <Button size="small" type="primary">加入试卷</Button>
             <Button size="small" type="primary">查看解析</Button>
+            <Button size="small" type="primary">收藏题目</Button>
+            <Button size="small" type="primary">换题</Button>
             <span>难度系数：
               <span>1.00-0.86</span>
             </span>
@@ -533,8 +535,8 @@ export default {
 
   & .ivu-tabs-tabpane {
     padding: 8px;
-  } 
-  
+  }
+
   // 注释：全部&个人知识点，V2.0保留功能
   // & .ivu-tree{
   //   &>ul>li>span {
@@ -567,7 +569,7 @@ export default {
       &>div>span {
         float: left;
       }
-      
+
       &>div>span {
         height: 40px;
       }
