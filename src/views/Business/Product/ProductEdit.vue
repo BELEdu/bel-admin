@@ -27,9 +27,12 @@
         <Input placeholder="请输入课程时长" v-model="fdata.course_duration"></Input>
         <span>分钟</span>
       </Form-item>
-      <Form-item label="产品单价" prop="price">
+      <Form-item label="产品总价" prop="price">
         <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
         <span>元</span>
+      </Form-item>
+      <Form-item label="课时数量" prop="course_total">
+        <Input placeholder="请输入课程数量" v-model="fdata.course_total"></Input>
       </Form-item>
       <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
@@ -113,6 +116,11 @@ export default {
         course_duration: [
           this.$rules.required('课程时长'),
           { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入有效数字', trigger: 'blur' },
+        ],
+        course_total: [
+          this.$rules.required('课程数量'),
+          this.$rules.int,
+          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '数量应该大于1', trigger: 'blur' },
         ],
         price: [
           this.$rules.required('产品单价'),

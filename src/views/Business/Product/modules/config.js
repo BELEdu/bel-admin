@@ -13,6 +13,10 @@ export function unit_encode(data) {
     ectype.course_duration = parseFloat(ectype.course_duration, 10)
   }
 
+  if (parseInt(ectype.course_total, 10)) {
+    ectype.course_total = parseFloat(ectype.course_total, 10)
+  }
+
   if (parseFloat(ectype.price)) {
     ectype.price = parseFloat(ectype.price)
   }
@@ -24,6 +28,7 @@ export function unit_decode(res) {
   const data = res
 
   data.course_duration = data.course_duration.toString()
+  data.course_total = data.course_total.toString()
 
   return data
 }
@@ -41,7 +46,7 @@ export function editInit() {
     // 课程时长
     course_duration: null,
     // 课程总数: "numeric",
-    // course_total: null,
+    course_total: null,
     // "numeric",
     price: null,
     // 销售状态: "字典表: sale_status",
@@ -123,15 +128,23 @@ export function colConfig(that) {
       key: 'subject_item_name',
       align: 'center',
     },
+    // 17.07.19废弃，换成课程总数
+    // {
+    //   title: '每课时长（分钟）',
+    //   key: 'course_duration',
+    //   align: 'center',
+    //   width: 150,
+    //   sortable: 'custom',
+    // },
     {
-      title: '每课时长（分钟）',
-      key: 'course_duration',
+      title: '课时数量（个）',
+      key: 'course_total',
       align: 'center',
       width: 150,
       sortable: 'custom',
     },
     {
-      title: '产品单价（元）',
+      title: '产品总价（元）',
       key: 'price',
       align: 'center',
       width: 140,
