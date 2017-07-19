@@ -33,6 +33,7 @@
       </Form-item>
       <Form-item label="课时数量" prop="course_total">
         <Input placeholder="请输入课程数量" v-model="fdata.course_total"></Input>
+        <span>个</span>
       </Form-item>
       <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
@@ -224,7 +225,8 @@ export default {
   &>.ivu-form-item {
 
     &:nth-child(5),
-    &:nth-child(6) {
+    &:nth-child(6),
+    &:nth-child(7), {
 
       & .ivu-input-wrapper {
         width: 95% !important;
