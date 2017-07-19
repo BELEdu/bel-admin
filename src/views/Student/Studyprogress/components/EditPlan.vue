@@ -280,8 +280,6 @@ export default {
         })),
       }
 
-      this.$Message.info('提交成功')
-
       if (this.isAdd) {
         const addApi = this.isStudent ? `/studentplan/${this.id}` : `/classesplan/${this.id}`
         this.$http.post(addApi, data)

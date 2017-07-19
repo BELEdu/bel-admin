@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!--科目tabs-->
+
     <Tabs class="app-tabs" @on-click="tabSelect">
         <Tab-pane label="暂时没有进行中的计划，一起去添加计划吧!" v-if="editInfo.length===0"></Tab-pane>
         <Tab-pane v-for="item in editInfo" :key="item.id" :label="`${item.subject_type_name}，计划id：${item.id}`"></Tab-pane>

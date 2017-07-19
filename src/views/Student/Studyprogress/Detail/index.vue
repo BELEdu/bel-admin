@@ -5,10 +5,10 @@
       <Tab-pane label="学习计划" name="plan"></Tab-pane>
       <Tab-pane label="历史计划" name="history"></Tab-pane>
       <div slot="extra">
-        <Tag type="dot" color="blue" v-if="isStudent"><b>学员姓名</b>： {{studentName}} </Tag>
-        <Tag type="dot" color="yellow" v-if="isStudent"><b>学管师</b>： {{teacher}} </Tag>
-        <Tag type="dot" color="blue" v-if="!isStudent"><b> 班级 </b>： {{classesName}} </Tag>
-        <Tag type="dot" color="yellow" v-if="!isStudent"><b>班主任</b>： {{classes_director}} </Tag>
+        <Tag type="dot" color="blue" v-if="isStudent"><b>学员姓名</b>： {{display_name}} </Tag>
+        <Tag type="dot" color="yellow" v-if="isStudent"><b>学员编号</b>： {{number}} </Tag>
+        <Tag type="dot" color="blue" v-if="!isStudent"><b> 班级名称</b>： {{display_name}} </Tag>
+        <Tag type="dot" color="yellow" v-if="!isStudent"><b>班级编号</b>： {{number}} </Tag>
       </div>
     </Tabs>
 
@@ -38,10 +38,8 @@ export default {
   data() {
     return {
       adfa: '',
-      studentName: '', // 学员名称
-      teacher: '', // 学管师
-      classesName: '', // 班级名称
-      classes_director: '', // 班主任
+      display_name: '', // 学员或班级名称
+      number: '', // 学管师或班主任
       edit_info: [], // 科目切换
     }
   },
@@ -69,8 +67,8 @@ export default {
     getStudentInfo() {
       return this.$http.get(`/studentplan/infolist/${this.id}`)
         .then((res) => {
-          this.studentName = res.info.display_name
-          this.teacher = res.info.belong_customer_relationships
+          this.display_name = res.info.display_name
+          this.number = res.info.number
           this.edit_info = res.info.edit_info
         })
     },
@@ -78,8 +76,8 @@ export default {
     getClassesInfo() {
       return this.$http.get(`/classesplan/infolist/${this.id}`)
         .then((res) => {
-          this.classesName = res.info.display_name
-          this.classes_director = res.info.classes_director
+          this.display_name = res.info.display_name
+          this.number = res.info.number
           this.edit_info = res.info.edit_info
         })
     },
