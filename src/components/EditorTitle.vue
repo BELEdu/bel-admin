@@ -1,6 +1,7 @@
 <template>
   <h1 class="app-form-header">
-    {{title}}</h1>
+    {{title}}<slot></slot>
+  </h1>
 </template>
 
 <script>
