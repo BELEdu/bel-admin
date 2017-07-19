@@ -3,9 +3,7 @@
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
       <h2>
-        <svg class="svg-icon" viewBox="0 0 1024 1024" width="14px" height="14px" style="transform:translateY(-2px);">
-          <path d="M320 0h384v256H320zM880 448H544V384h-64v64h-384v192h64V512h320v128h64V512h320v128h64V448h-48zM0 768h256v256H0zM384 768h256v256H384zM768 768h256v256h-256z"></path>
-        </svg>
+        <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="14" height="14"><path d="M320 0h384v256H320zm560 448H544v-64h-64v64H96v192h64V512h320v128h64V512h320v128h64V448h-48zM0 768h256v256H0zm384 0h256v256H384zm384 0h256v256H768z"/></svg>
         组织架构
       </h2>
       </Col>
