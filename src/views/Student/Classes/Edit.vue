@@ -21,7 +21,7 @@
           <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
         </Select>
       </Form-item>
-      <Form-item label="开班级日期">
+      <Form-item label="开办日期">
         <Date-picker type="daterange" placeholder="请选择开办日期" v-model="classesDate"></Date-picker>
       </Form-item>
       <Form-item label="设定假期" v-if="isCoach">
@@ -186,8 +186,8 @@ export default {
       const data = {
         ...this.form,
          // 处理时间段格式
-        start_at: this.classesDate ? format(this.classesDate[0], 'YYYY-MM-DD') : null,
-        end_at: this.classesDate ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
+        start_at: this.classesDate.length > 0 ? format(this.classesDate[0], 'YYYY-MM-DD') : null,
+        end_at: this.classesDate.length > 0 ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
         calendar: {
           ...this.form.calendar,
           special_at:
