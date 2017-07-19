@@ -33,19 +33,20 @@
     </div>
 
     <!--修改密码弹出框-->
-    <app-form-modal v-model="modal" title="修改密码" :loading="formLoading">
-      <Form class="app-header__edit-password" :model="form" :label-width="80">
+    <app-form-modal v-model="modal" title="修改密码" :loading="formLoading" @on-ok="beforeSubmit" :maskClosable="true">
+      <Form class="app-header__edit-password" ref="form" :model="form" :rules="rules" :label-width="90">
+        <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
         <Form-item label="用户名">
           <span>{{ user.username }}</span>
         </Form-item>
-        <Form-item label="原密码">
-          <Input type="password" v-model="form.p1"></Input>
+        <Form-item label="原密码" prop="old_password">
+          <Input type="password" v-model="form.old_password"></Input>
         </Form-item>
-        <Form-item label="新密码">
-          <Input type="password" v-model="form.p2"></Input>
+        <Form-item label="新密码" prop="new_password">
+          <Input type="password" v-model="form.new_password"></Input>
         </Form-item>
-        <Form-item label="重复新密码">
-          <Input type="password" v-model="form.p3"></Input>
+        <Form-item label="重复新密码" prop="new_password_again">
+          <Input type="password" v-model="form.new_password_again"></Input>
         </Form-item>
       </Form>
     </app-form-modal>
@@ -61,23 +62,59 @@
 
 import { mapState, mapGetters } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
+import { form } from '@/mixins'
 
 export default {
   name: 'app-header',
 
-  data: () => ({
-    modal: false,
-    form: {
-      p1: '',
-      p2: '',
-      p3: '',
-    },
-    formLoading: false,
-  }),
+  mixins: [form],
+
+  data() {
+    return {
+      modal: false,
+
+      form: {
+        old_password: '',
+        new_password: '',
+        new_password_again: '',
+      },
+
+      rules: {
+        old_password: [
+          this.$rules.required('密码'),
+          this.$rules.length(6, 32),
+        ],
+        new_password: [
+          this.$rules.required('密码'),
+          this.$rules.length(6, 32),
+        ],
+        new_password_again: [
+          this.$rules.required('密码'),
+          {
+            validator: (rule, value, next) => {
+              if (value === this.form.new_password) {
+                next()
+              } else {
+                next(new Error('两次密码不一致'))
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
+      },
+    }
+  },
 
   computed: {
     ...mapState(['user']),
     ...mapGetters(['currentRole', 'otherRoles']),
+  },
+
+  watch: {
+    modal() {
+      this.formErrors = {}
+      this.$refs.form.resetFields()
+    },
   },
 
   methods: {
@@ -99,9 +136,20 @@ export default {
       }
     },
 
-    // 修改密码
+    // 弹出修改密码
     editPassword() {
       this.modal = true
+    },
+
+    // 修改密码
+    submit() {
+      this.$http.patch('/auth/change_password', this.form)
+        .then(() => {
+          this.modal = false
+          this.formLoading = false
+          this.$Message.info('操作成功')
+        })
+        .catch(this.errorHandler)
     },
 
     // 登出
@@ -126,7 +174,7 @@ export default {
   background-color: #fff;
 
   &__edit-password {
-    width: 350px;
+    width: 400px;
     margin: 0 auto;
   }
 }
