@@ -156,7 +156,7 @@ export default {
           align: 'center',
           width: 200,
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
+            { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
             { text: '交流会', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/meeting/edit`) },
           ]),
