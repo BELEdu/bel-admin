@@ -135,7 +135,7 @@ export default {
     }),
 
     studentId() {
-      return this.$router.currentRoute.params.studentId
+      return +this.$router.currentRoute.params.studentId
     },
   },
 

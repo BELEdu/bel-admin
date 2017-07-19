@@ -88,7 +88,7 @@ export default {
       // 表格配置
       columns: [
         { title: '会议时间', key: 'meeting_date', align: 'center', sortable: 'custom' },
-        { title: '会议类型', key: 'meeting_type', align: 'center' },
+        { title: '会议类型', key: 'meeting_type_name', align: 'center' },
         { title: '参会家长', key: 'parent_name', align: 'center' },
         {
           title: '参会员工',
@@ -121,8 +121,8 @@ export default {
             )
           },
         },
-        { title: '家长满意度', key: 'satisfaction', align: 'center' },
-        { title: '创建人', key: '', align: 'center' },
+        { title: '家长满意度', key: 'satisfaction_name', align: 'center' },
+        { title: '创建人', key: 'user_name', align: 'center' },
         {
           title: '操作',
           key: 13,
@@ -156,7 +156,7 @@ export default {
     }),
 
     studentId() {
-      return this.$router.currentRoute.params.studentId
+      return +this.$router.currentRoute.params.studentId
     },
   },
 
