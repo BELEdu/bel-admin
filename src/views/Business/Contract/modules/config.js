@@ -50,7 +50,7 @@ export function colConfig(that) {
     },
     {
       title: '流程名称',
-      key: 'contract_type',
+      key: 'flow_name',
       align: 'center',
       width: 250,
     },
@@ -98,8 +98,8 @@ export function colConfig(that) {
     },
     {
       title: '审批进度',
-      key: '10',
-      align: 'audit_progress',
+      key: 'audit_process',
+      align: 'center',
     },
     {
       title: '操作',
