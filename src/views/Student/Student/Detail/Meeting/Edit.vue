@@ -31,28 +31,40 @@
         </Radio-group>
       </Form-item>
 
-      <!--课前交流会文本框组-->
-      <Form-item
-        v-if="form.meeting_type === 1"
-        v-for="(item, index) in form.meeting_content.slice(0,3)"
-        :key="index"
-        :label="item.content_tag"
-        :prop="`meeting_content.${index}.content`"
-        :rules="[$rules.max(500)]"
-      >
-        <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
+      <Form-item v-if="form.meeting_type === 1" :label="form.meeting_content[0].content_tag" :prop="`meeting_content[0].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[0].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[0].placeholder}`"></Input>
       </Form-item>
 
-      <!--家长座谈会文本框组-->
-      <Form-item
-        v-if="form.meeting_type === 3"
-        v-for="(item, index) in form.meeting_content.slice(3,7)"
-        :key="index"
-        :label="item.content_tag"
-        :prop="`meeting_content.${index+3}.content`"
-        :rules="[$rules.max(500)]"
-      >
-        <Input type="textarea" v-model="item.content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`请填写${item.content_tag}（最多500个字符）`"></Input>
+      <Form-item v-if="form.meeting_type === 2 || form.meeting_type === 3" :label="form.meeting_content[3].content_tag" :prop="`meeting_content31].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[3].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[3].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 1 || form.meeting_type === 2" :label="form.meeting_content[1].content_tag" :prop="`meeting_content[1].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[1].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[1].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 1" :label="form.meeting_content[2].content_tag" :prop="`meeting_content[2].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[2].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[2].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 2" :label="form.meeting_content[4].content_tag" :prop="`meeting_content[4].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[4].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[4].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 2" :label="form.meeting_content[4].content_tag" :prop="`meeting_content[4].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[4].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[4].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 3" :label="form.meeting_content[5].content_tag" :prop="`meeting_content[5].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[5].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[5].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 3" :label="form.meeting_content[6].content_tag" :prop="`meeting_content[6].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[6].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[6].placeholder}`"></Input>
+      </Form-item>
+
+      <Form-item v-if="form.meeting_type === 3" :label="form.meeting_content[7].content_tag" :prop="`meeting_content[7].content`" :rules="[$rules.max(500)]">
+        <Input type="textarea" v-model="form.meeting_content[7].content" :autosize="{minRows: 4,maxRows: 8}" :placeholder="`${form.meeting_content[7].placeholder}`"></Input>
       </Form-item>
 
       <Form-item label="文件大小建议">
@@ -108,30 +120,42 @@ export default {
         meeting_content: [
           {
             content_tag: '学科水平',
+            placeholder: '学员基本信息及学科水平介绍（咨询师）',
             content: '',
           },
           {
             content_tag: '沟通交流情况',
+            placeholder: '沟通交流（学管师）',
             content: '',
           },
           {
             content_tag: '备课建议',
+            placeholder: '第一次备课上课的注意事项及建议',
             content: '',
           },
           {
             content_tag: '近期学情',
+            placeholder: '近期学员学情小结（进步、不足）',
+            content: '',
+          },
+          {
+            content_tag: '解决的问题',
+            placeholder: '本次会议解决的主要问题',
             content: '',
           },
           {
             content_tag: '需要提升的地方',
+            placeholder: '需要提升的地方',
             content: '',
           },
           {
             content_tag: '家长意见与要求',
+            placeholder: '家长意见与要求',
             content: '',
           },
           {
             content_tag: '本次会议结果',
+            placeholder: '本次会议结果',
             content: '',
           },
         ],
@@ -153,6 +177,7 @@ export default {
           this.$rules.required('会议类型', 'number', 'change'),
         ],
       },
+
     }
   },
 
@@ -161,6 +186,11 @@ export default {
       meetingTypes: state => state.dicts.meeting_type, // 交流会类型
       satisfaction: state => state.dicts.satisfaction, // 满意度类型
     }),
+
+    // type() {
+    //   sdfsaadsadf
+    // },
+
     studentId() { // 学员id
       return this.$router.currentRoute.params.studentId
     },
