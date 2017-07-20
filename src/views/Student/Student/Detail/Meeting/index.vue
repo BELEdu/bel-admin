@@ -114,7 +114,7 @@ export default {
                 class: 'attachs_space',
                 attrs: {
                   title: name,
-                  href: `https://oa-api.caihonggou.com${url}`,
+                  href: `https://oa-statics.caihonggou.com${url}`,
                   target: '_blank',
                 },
               }, name)),
