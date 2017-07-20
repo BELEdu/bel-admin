@@ -150,7 +150,7 @@ export default {
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '删除', type: 'error', isShow: ({ row }) => row.status_name === '未开班', click: row => this.openDeleteModal(row.id) },
+            { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id) },
             { text: '管理', type: 'primary', click: row => this.openManageModal(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/classes/edit/${row.id}`) },
           ]),
