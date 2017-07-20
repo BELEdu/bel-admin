@@ -128,7 +128,7 @@ export default {
 
     updateValue(value) {
       // value可能是Set，需要转化为数组
-      this.$emit('input', Array.from(value))
+      this.$emit('input', [...value])
     },
   },
 }

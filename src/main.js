@@ -5,7 +5,6 @@ import 'core-js/modules/es6.array.fill' // 测试
 import 'core-js/modules/es6.array.find'
 import 'core-js/modules/es6.array.find-index'
 import 'core-js/modules/es7.array.includes'
-import 'core-js/modules/es6.array.from'
 import 'core-js/modules/es6.set'
 
 import '@/utils/placeholders' // 使ie9兼容placeholder属性
