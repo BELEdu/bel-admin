@@ -4,7 +4,7 @@
     <div class="studyprogress-edit__body">
 
       <transition-group class="studyprogress-lessons" name="lessons" tag="ul">
-        <li v-for="item, index in course" :key="item">
+        <li v-for="item, index in course" :key="index">
           <div>第 <span class="color-primary">{{ index + 1 }}</span> 节课</div>
           <Form-Item label="计划课时：" class="original" :label-width="140">
             <Input-number
@@ -24,15 +24,15 @@
             placeholder="请选择知识点"
             >
               <Option
-                v-for="option in options"
-                :key="option"
+                v-for="(option, index) in options"
+                :key="index"
                 :value="option.value"
                 :disabled="option.disabled"
               >{{ option.label }}</Option>
             </Select  >
           </Form-Item>
-          <!--假设已经排课的属性叫a 在此div上添加 v-if="!item.a"-->
           <div :style="{visibility: course.length > 1 ? 'visible' : 'hidden'}" v-show="step !== 3">
+          <!-- <div :style="{visibility: course.length > 1 && course[index].course_status === 0? 'visible' : 'hidden'}" v-show="step !== 3"> -->
             <Button type="text" class="color-error" icon="close-circled" @click="$emit('removeLesson', index)"></Button>
             <Button type="text" class="color-primary" icon="arrow-up-c" @click="$emit('sortLesson', index, -1)"></Button>
             <Button type="text" class="color-warning" icon="arrow-down-c" @click="$emit('sortLesson', index, 1)"></Button>

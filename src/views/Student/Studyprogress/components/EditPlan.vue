@@ -10,6 +10,8 @@
 
     <Form class="app-form-entire" :label-width="120" :model="form" :rules="rules" ref="form">
 
+      <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
+
       <step-one
         v-show="step === 0 || step >= 3"
         :subjectTypes="subjectTypes"
@@ -227,15 +229,22 @@ export default {
     },
 
     removeLesson(index) {
-      this.form.course.splice(index, 1)
+      const thisCourse = this.form.course[index]
+      if (thisCourse.course_status === 0) {
+        this.form.course.splice(index, 1)
+      } else {
+        this.$Message.warning('该节课已经排课，无法删除')
+      }
     },
 
     sortLesson(index, order) { // 等待接口返回是否可编辑状态时再改动
-      // const siblingCourse = this.form.course[index + order]
-      // if (!siblingCourse.a) {
-      const course = this.form.course.splice(index, 1)[0]
-      this.form.course.splice(index + order, 0, course)
-      // }
+      const siblingCourse = this.form.course[index + order]
+      if (siblingCourse.course_status === 0) {
+        const course = this.form.course.splice(index, 1)[0]
+        this.form.course.splice(index + order, 0, course)
+      } else {
+        this.$Message.warning('该节课已经排课，无法移动')
+      }
     },
 
     getEditData() { // 获取编辑数据
