@@ -51,11 +51,10 @@
 
     <!--添加|编辑-课表弹窗-->
     <class-course-modal v-model="courseModal"
-                  :data="formItem"
                   :id="courseModalParam.id"
                   :status="courseModalParam.status"
                   :urlConf="urlConf"
-                  @on-close="updateData"></class-course-modal>
+                  @on-close="updataCourseList"></class-course-modal>
     <!--班级填写实际课时-->
   </div>
 </template>
@@ -139,15 +138,8 @@
         },
         // 日课表字段
         dailyColumns: [
-          { title: '班级名称',
-            align: 'center',
-            render: (h, params) => h('span', params.row.model_info.display_name) },
-          { title: '学员人数（个）',
-            align: 'center',
-            key: 'student_total',
-            width: 130,
-            sortable: 'custom',
-            render: (h, params) => h('span', params.row.model_info.student_total) },
+          { title: '班级名称', key: 'class_name', align: 'center' },
+          { title: '学员人数（个）', key: 'student_total', align: 'center', width: 130, sortable: 'custom' },
           { title: '教师姓名', key: 'teacher_name', align: 'center', width: 100 },
           { title: '上课日期', key: 'date', align: 'center', width: 100, sortable: 'custom' },
           { title: '上课时段',
@@ -156,7 +148,7 @@
             render: (h, params) => h('span', `${params.row.start_at}-${params.row.end_at}`) },
           { title: '计划课时', key: 'course_cost', align: 'center', width: 90, sortable: 'custom' },
           { title: '实际课时', key: 'fact_cost', align: 'center', width: 90, sortable: 'custom' },
-          { title: '上课科目', key: 'subject_type', align: 'center' },
+          { title: '上课科目', key: 'subject_item_name', align: 'center' },
           { title: '知识点', key: 'language_points', align: 'center' },
           { title: '课表状态',
             align: 'center',
@@ -241,6 +233,7 @@
           edit: '/classcurricula/',
           finish: '/classcurricula/finish/',
           info: '/curriculum/student/clbumInfo.json',
+          getData: '',
         },
       }
     },
@@ -258,14 +251,16 @@
       // 打开编辑|添加课表弹窗
       openCourseModal(type, item = {}) {
         let id = this.$route.params.id
+        let getUrl = `/classcurricula/create/${id}`
         switch (type) {
           case 'add':
             break
           default :
             id = item.id
-            this.formItem = { ...this.formItem, ...item }
+            getUrl = `/classcurricula/edit/${id}`
             break
         }
+        this.urlConf.getData = getUrl
         this.courseModalParam.status = type
         this.courseModalParam.id = parseInt(id, 10)
         this.courseModal = true
@@ -283,6 +278,10 @@
               })
           },
         })
+      },
+      // 添加课表之后更新列表page=1
+      updataCourseList() {
+        this.updateData('?page=1')
       },
     },
   }

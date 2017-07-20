@@ -33,6 +33,8 @@
     <!--查看评价弹窗-->
     <appraise-mult-modal v-model="appraiseShow"
                          :config="multModalConfig"
+                         :header="modalHeader"
+                         :id="multModalData.student_id"
                          :data="multModalData"></appraise-mult-modal>
   </div>
 </template>
@@ -71,23 +73,18 @@
           config: {},
         },
         multModalConfig: {},
-        multModalData: {},
+        multModalData: {
+          schedule_id: parseInt(this.$route.params.id, 10),
+          student_id: null,
+        },
         // 查看所有评价
         appraiseData: {},
         // 编写|查看单项评价
         appraiseSingleData: [],
         // 班级字段
         classColumns: [
-          { title: '学员姓名',
-            align: 'center',
-            width: 160,
-            render: (h, params) => h('span', {}, params.row.model_info.display_name) },
-          { title: '学员编号',
-            align: 'center',
-            width: 160,
-            key: 'number',
-            sortable: 'custom',
-            render: (h, params) => h('span', {}, params.row.model_info.number) },
+          { title: '学员姓名', key: 'display_name', align: 'center', width: 160 },
+          { title: '学员编号', align: 'center', width: 160, key: 'number', sortable: 'custom' },
           { title: '产品名称', key: 'product_name', align: 'center' },
           { title: '签约课时', key: 'course_total', align: 'center', width: 80 },
           { title: '剩余课时', key: 'course_remain', align: 'center', width: 80 },
@@ -99,7 +96,7 @@
               const self = this
               let txt = '未评价'
               let className = 'primary'
-              if (params.row.comment_count > 0) {
+              if (params.row.comment_tag) {
                 txt = '已评价'
                 className = 'success'
               }
@@ -137,25 +134,32 @@
         // 班级数据
         classData: {},
         // 当前评价信息
-        currentAppraiseInfo: {},
-        // 分页数据-默认分页数据
-        pagerConfig: {
-          page: 1,
-          per_page: 10,
+        currentAppraiseInfo: {
+          schedule_id: parseInt(this.$route.params.id, 10),
+          student_id: null,
         },
+        modalHeader: [],
       }
     },
     methods: {
       // 获取班级上课记录
       getData(qs) {
-        return this.$http.get(`/curricularecord/student/index/${this.$route.params.id}${qs}`)
+        return this.$http.get(`/curricularecord/schedule/${this.multModalData.schedule_id}/comment${qs}`)
           .then((data) => {
             this.classData = data
           })
       },
       // 获取查看所有评价
-      getAppraiseInfo() {
-        this.multModalData = this.classData.data[0]
+      getAppraiseInfo(params) {
+        this.multModalData = {
+          ...this.multModalData,
+          ...params.row,
+          student_id: params.row.id,
+        }
+        this.modalHeader = [
+          { label: '学员姓名', value: this.multModalData.display_name },
+        ]
+        this.multModalConfig.getInfoUrl = `/curricularecord/history/${this.multModalData.student_id}/class/${this.$route.params.classId}`
         this.appraiseShow = true
       },
       /**
@@ -163,19 +167,23 @@
        * @param params
        */
       appraiseWrite(params) {
-        this.currentAppraiseInfo = params.row
-        const currentStudent = params.row.model_info.display_name
+        this.currentAppraiseInfo = {
+          ...this.currentAppraiseInfo,
+          ...params.row,
+          student_id: params.row.id,
+        }
+        const currentStudent = params.row.display_name
         let config = {
           title: '写评价',
         }
-        if (params.row.comment_count > 0) {
+        if (params.row.comment_tag) {
           config = {
             okBtn: false,
             cancelValue: '关闭',
             title: '查看评价',
           }
         }
-        config.title = `${config.title} (${currentStudent})`
+        config.title = `${config.title} (学员姓名：${currentStudent})`
         this.singleModal.config = Object.assign({}, this.singleModal.defConf, config)
         this.appraiseSingleModal = true
       },

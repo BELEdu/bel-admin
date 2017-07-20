@@ -24,6 +24,7 @@
     </Row>
     <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="clbumData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+    <class-student-modal v-model="classModal" :id="currentClbum.id"></class-student-modal>
   </div>
 </template>
 
@@ -31,15 +32,17 @@
 /**
  * 课程管理 - 班级上课记录
  * @author chenliangshan
- * @version 2017/07/13
+ * @version 2017/07/20
  */
 
 import { createButton } from '@/utils'
 import { list } from '@/mixins'
+import ClassStudentModal from '../../Components/ClassStudentModal'
 
 export default {
   name: 'app-class-record',
   mixins: [list],
+  components: { ClassStudentModal },
   data() {
     return {
       // 搜索字段
@@ -58,13 +61,13 @@ export default {
                 // 查看班级人员信息
                 this.classShow(params)
               },
-              key: 'display_name',
+              key: 'class_name',
             },
           ]) },
         { title: '上课日期', key: 'date', align: 'center', sortable: 'custom' },
         { title: '实际课时', key: 'fact_cost', align: 'center', sortable: 'custom' },
-        { title: '上课科目', key: 'subject_type', align: 'center' },
-        { title: '上课年级', key: 'grade_name', align: 'center' },
+        { title: '上课科目', key: 'subject_item_name', align: 'center' },
+        { title: '上课年级', key: 'current_grade_name', align: 'center' },
         {
           title: '操作',
           align: 'center',
@@ -72,7 +75,7 @@ export default {
             {
               type: 'primary',
               click: (params) => {
-                this.$router.push(`/curriculum/curricularecord/class/list/show/${params.id}`)
+                this.$router.push(`${this.$route.path}/list/${params.id}`)
               },
               text: '查看',
             },
@@ -82,30 +85,9 @@ export default {
       // 班级数据
       clbumData: {},
       // 班级弹窗-初始化状态
-      clbumModal: false,
-      // 班级学员信息字段
-      showColumns: [
-        { title: '学员名称', key: 'student_name', align: 'center' },
-        { title: '学员编号', key: 'student_number', align: 'center' },
-        { title: '当前年级', key: 'current_grade', align: 'center' },
-        { title: '产品子类型', key: 'product_subtype', align: 'center' },
-        { title: '剩余课时', key: 'surplus_period', align: 'center' },
-        { title: '上课年级', key: 'coach_grade', align: 'center' },
-      ],
-      // 班级学员信息数据
-      clbumInfoData: {},
+      classModal: false,
       // 当前查看的班级
       currentClbum: {},
-      // 分页数据
-      pager: {
-        // 默认分页数据
-        defaultPage: {
-          page: 1,
-          per_page: 10,
-        },
-        // 班级学员信息分页数据
-        clbumInfo: {},
-      },
     }
   },
   methods: {
@@ -115,33 +97,14 @@ export default {
      */
     classShow(row) {
       this.currentClbum = row
-      this.getClubumInfo(row.id)
-    },
-    // 获取班级学员信息
-    getClubumInfo(id, pageData = this.pager.defaultPage) {
-      this.pager.clbumInfo = pageData
-      this.$http.get(`/curriculum/student/clbumInfo.json?id=${id}&page=${pageData.page}&per_page=${pageData.per_page}`)
-        .then((data) => {
-          this.clbumInfoData = data
-          this.clbumModal = true
-        })
+      this.classModal = true
     },
     // 获取班级数据
     getData(qs) {
-      return this.$http.get(`/curricularecord/class/information${qs}`)
+      return this.$http.get(`/curricularecord/class/index/${this.$route.params.id}${qs}`)
         .then((data) => {
           this.clbumData = data
         })
-    },
-    // 根据页码获取数据
-    getPageInfo(pageId = 1) {
-      const pageInfo = Object.assign({}, this.pager.defaultPage, { page: pageId })
-      this.getClubumInfo(this.currentClbum.id, pageInfo)
-    },
-    // 根据每页条数获取数据
-    getPerPageInfo(perPageId = 10) {
-      const pageInfo = Object.assign({}, this.pager.defaultPage, { per_page: perPageId })
-      this.getClubumInfo(this.currentClbum.id, pageInfo)
     },
   },
 }

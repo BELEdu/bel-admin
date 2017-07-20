@@ -9,7 +9,7 @@
                   @on-cancel="formCancel('form')">
     <div class="course-modal-content">
       <Form ref="form" :model="formData" :rules="ruleValidate" :label-width="110">
-        <app-form-alert :errors="formErrors"></app-form-alert>
+        <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
         <Form-item label="学员姓名：">
           {{courseOption.student_name}}
         </Form-item>
@@ -109,7 +109,7 @@
           ],
           date: [
             this.$rules.date('日期必填', {
-              trigger: 'blur',
+              trigger: 'change',
             }),
           ],
           start_at: [

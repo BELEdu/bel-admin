@@ -8,6 +8,7 @@
                   @on-ok="beforeSubmit"
                   @on-cancel="formCancel('form')">
     <Form ref="form" :model="formData" :rules="ruleValidate" :label-width="formData.schedule_status !== 2 ? 90 : 110">
+      <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
       <Row>
         <Col span="8">
         <Form-item label="班级名称：">
@@ -23,49 +24,47 @@
         <Form-item label="班主任：">{{courseOption.headmaster}}</Form-item>
         </Col>
       </Row>
-      <template v-if="formData.schedule_status !== 2">
-        <Row>
-          <Col span="12">
-          <Form-item label="教师名称：" prop="teacher_id">
-            <Select v-model="formData.teacher_id" placeholder="请选择">
-              <Option v-for="list in courseOption.teacher_id" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          </Col>
-          <Col span="12">
-          <Form-item label="选择课时：" prop="course_cost">
-            <Select v-model="formData.plan_course_id" placeholder="请选择">
-              <Option v-for="list in courseOption.course_cost" :value="list.value" :key="list.value">{{list.display_name}}</Option>
-            </Select>
-          </Form-item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-          <Form-item label="上课日期：" prop="date">
-            <app-date-picker placeholder="选择日期" v-model="formData.date"></app-date-picker>
-          </Form-item>
-          </Col>
-          <Col span="12">
-          <Form-item label="上课时段：" required>
-            <Row>
-              <Col span="11">
-              <Form-item prop="start_at">
-                <app-time-picker placeholder="开始时间" v-model="formData.start_at" ref="start_at" format="HH:mm"></app-time-picker>
-              </Form-item>
-              </Col>
-              <Col span="2" style="text-align: center">-</Col>
-              <Col span="11">
-              <Form-item prop="end_at">
-                <app-time-picker placeholder="结束时间" v-model="formData.end_at" format="HH:mm"></app-time-picker>
-              </Form-item>
-              </Col>
-            </Row>
-          </Form-item>
-          </Col>
-        </Row>
-      </template>
-      <template v-else>
+      <Row>
+        <Col span="12">
+        <Form-item label="教师名称：" prop="teacher_id">
+          <Select v-model="formData.teacher_id" placeholder="请选择" :disabled="status === 'finish'">
+            <Option v-for="list in courseOption.teacher_optional" :value="list.teacher_id" :key="list.teacher_id">{{list.display_name}}</Option>
+          </Select>
+        </Form-item>
+        </Col>
+        <Col span="12">
+        <Form-item label="选择课时：" prop="plan_course_id">
+          <Select v-model="formData.plan_course_id" placeholder="请选择" :disabled="status === 'finish'">
+            <Option v-for="list in courseOptional" :value="list.plan_course_id" :key="list.plan_course_id">{{list.display_name}}</Option>
+          </Select>
+        </Form-item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="12">
+        <Form-item label="上课日期：" prop="date">
+          <app-date-picker placeholder="选择日期" v-model="formData.date" :disabled="status === 'finish'"></app-date-picker>
+        </Form-item>
+        </Col>
+        <Col span="12">
+        <Form-item label="上课时段：" required>
+          <Row>
+            <Col span="11">
+            <Form-item prop="start_at">
+              <app-time-picker placeholder="开始时间" v-model="formData.start_at" :disabled="status === 'finish'" ref="start_at" format="HH:mm"></app-time-picker>
+            </Form-item>
+            </Col>
+            <Col span="2" style="text-align: center">-</Col>
+            <Col span="11">
+            <Form-item prop="end_at">
+              <app-time-picker placeholder="结束时间" v-model="formData.end_at" :disabled="status === 'finish'" format="HH:mm"></app-time-picker>
+            </Form-item>
+            </Col>
+          </Row>
+        </Form-item>
+        </Col>
+      </Row>
+      <template v-if="status === 'finish'">
         <Row type="flex" justify="end">
           <Col>
           <Form-item label="实际上课课时：" prop="fact_cost">
@@ -74,7 +73,7 @@
           </Col>
         </Row>
       </template>
-      <Table class="app-table" :columns="studentColumns" :data="studentData.data" border></Table>
+      <Table class="app-table" :columns="studentColumns" :data="courseOption.student_optional" border></Table>
       </Form>
   </app-form-modal>
 </template>
@@ -128,7 +127,7 @@
           product_id: [
             this.$rules.required('产品名称', 'number', 'change'),
           ],
-          course_cost: [
+          plan_course_id: [
             this.$rules.required('课时', 'number', 'change'),
           ],
           date: [
@@ -173,14 +172,7 @@
             width: 50,
             align: 'center',
           },
-          { title: '学员姓名',
-            align: 'center',
-            render: (h, params) => h('span', params.row.student_name) },
-          { title: '上课日期', key: 'date', align: 'center', width: 100 },
-          { title: '上课时段',
-            align: 'center',
-            width: 125,
-            render: (h, params) => h('span', `${params.row.start_at}-${params.row.end_at}`) },
+          { title: '学员姓名', key: 'display_name', align: 'center' },
           { title: '签约课时', key: 'course_total', align: 'center', width: 90 },
           { title: '剩余课时', key: 'course_remain', align: 'center', width: 90 },
           { title: '是否上课',
@@ -243,7 +235,6 @@
         studentRadioJoin: {
           attendance: [],
         },
-        courseOptional: [],
         formData: {
           product_id: null,
           teacher_id: null,
@@ -251,16 +242,15 @@
           date: null,
           start_at: null,
           end_at: null,
-          student_id: parseInt(this.$route.params.id, 10),
+          class_id: parseInt(this.$route.params.id, 10),
         },
       }
     },
     computed: {
       okValue() {
-        const status = this.formData.schedule_status
         let statusTxt = '确认'
         const txt = '编辑学员排课'
-        switch (status) {
+        switch (this.status) {
           case 0:
             this.title = txt
             break
@@ -277,27 +267,21 @@
         }
         return statusTxt
       },
+      courseOptional() {
+        return this.courseOption.course_optional ? this.courseOption.course_optional[0] : []
+      },
     },
     methods: {
       // 获取上课参加情况 || 上课计算课时情况
       getJoinDeductVal(data) {
         if (data && data.length) {
-          const join = []
-          data.map(item => join.push({
-            student_id: item.student_id,
-            is_attend: item.is_attend,
-            is_valid: item.is_valid,
-          }))
-          this.studentRadioJoin.attendance = join
+          this.studentRadioJoin.attendance =
+            data.map(({ student_id, is_attend, is_valid }) => ({
+              student_id,
+              is_attend,
+              is_valid,
+            }))
         }
-      },
-      // 班级学员数据
-      getStudentInfo() {
-        this.$http.get(`${this.urlConf.info}`)
-          .then((result) => {
-            this.studentData = result
-            this.getJoinDeductVal(result.data)
-          })
       },
       // 获取备选数据
       getCourseOption() {
@@ -305,12 +289,23 @@
           .then((result) => {
             if (this.status !== 'add') {
               // 编辑
+              const info = [result.info]
+                .map(({ attendance, ...item }) => ({ ...item }))[0]
               this.courseOption = result.optional
-              this.formData = { ...this.formData, ...result.info }
+              this.formData = { ...this.formData, ...info }
+              this.studentRadioJoin.attendance = result.info.attendance
             } else {
               // 新增
+              const info = [result]
+                .map(({ course_optional, student_optional, teacher_optional, ...item }) =>
+                  ({ ...item }))[0]
               this.formReset = true
               this.courseOption = result
+              this.formData = { ...this.formData, ...info }
+              this.courseOption.student_optional =
+                this.courseOption.student_optional.map(list =>
+                  Object.assign({}, list, { student_id: list.id, is_attend: 1, is_valid: 1 }))
+              this.getJoinDeductVal(this.courseOption.student_optional)
             }
           })
       },
@@ -332,19 +327,9 @@
             break
           default:
         }
-        const attendance = [
-          {
-            // 学员id
-            student_id: this.formData.student_id,
-            // 是否上课
-            is_attend: 1,
-            // 是否扣课时
-            is_valid: 1,
-          },
-        ]
         // 数据交互
         const httpSetData = () => {
-          this.$http[httpType](`${url}${this.id}`, { ...this.formData, attendance })
+          this.$http[httpType](`${url}${this.id}`, { ...this.formData, ...this.studentRadioJoin })
             .then(() => {
               const self = this
               this.formLoading = false

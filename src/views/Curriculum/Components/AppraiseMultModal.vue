@@ -3,44 +3,52 @@
          :loading="false"
          :width="800">
     <p slot="header" class="modal-header">
-      <span>学员姓名：{{data.model_info.display_name}}</span>
-      <span>学管师：{{data.teacher_name}}</span>
+      <span v-for="list in header">{{list.label}}：{{list.value}}</span>
     </p>
-    <ul class="student-appraise">
-      <li v-for="item in appraiseMultData.data">
-        <Row>
-          <Col span="8">
+
+    <template v-if="appraiseMultData.data && appraiseMultData.data.length">
+      <ul class="student-appraise">
+        <li v-for="item in appraiseMultData.data">
+          <Row>
+            <Col span="8">
             <label class="title">上课日期：</label>
             <span>{{item.schedule.date}}</span>
-          </Col>
-          <Col span="8">
+            </Col>
+            <Col span="8">
             <label class="title">上课时段：</label>
             <span>{{item.schedule.start_at}}-{{item.schedule.end_at}}</span>
-          </Col>
-          <Col span="8">
+            </Col>
+            <Col span="8">
             <label class="title">实际上课课时：</label>
             <span>{{item.schedule.fact_cost}}</span>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="8">
+            </Col>
+          </Row>
+          <Row>
+            <Col span="8">
             <label class="title">教师姓名：</label>
             <span>{{item.schedule.teacher_name}}</span>
-          </Col>
-          <Col span="8">
+            </Col>
+            <Col span="8">
             <label class="title">上课科目：</label>
             <span>{{getGrade(item.schedule.subject_type)}}</span>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="24">
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
             <Input v-model="item.comment" type="textarea" :autosize="{minRows: 4,maxRows: 6}" readonly></Input>
-          </Col>
-        </Row>
-      </li>
-    </ul>
+            </Col>
+          </Row>
+        </li>
+      </ul>
+    </template>
+    <template v-else>
+      <Row type="flex" justify="center">
+        <Col>暂无评价记录</Col>
+      </Row>
+    </template>
+
     <div slot="footer">
-      <Page :total="appraiseMultData.total" size="small" placement="top" show-total show-elevator show-sizer @on-change="getPageData" @on-page-size-change="getPerPageData"></Page>
+      <Page v-if="appraiseMultData.total" :total="appraiseMultData.total" size="small" placement="top" show-total show-elevator show-sizer @on-change="getPageData" @on-page-size-change="getPerPageData"></Page>
     </div>
   </Modal>
 </template>
@@ -65,10 +73,16 @@
         type: Object,
         default: {},
       },
+      // 查看学员ID
+      id: [Number, String],
       // 所选项数据
       data: {
         type: Object,
         default: {},
+      },
+      header: {
+        type: Array,
+        default: [],
       },
     },
     data() {
@@ -86,7 +100,7 @@
     methods: {
       // 获取该学员的所有评价内容
       getAppraise(pageData = this.pagerConfig) {
-        this.$http.get(`/curricularecord/show_list/${this.data.id}?page=${pageData.page}&per_page=${pageData.per_page}`)
+        this.$http.get(`${this.config.getInfoUrl}?page=${pageData.page}&per_page=${pageData.per_page}`)
           .then((data) => {
             this.appraiseMultData = data
           })

@@ -31,33 +31,24 @@
     <app-pager :data="clbumData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--查看班级人员信息弹窗-->
-    <Modal v-model="clbumModal" width="800">
-      <p slot="header" class="modal-header">
-        <span>班级：{{currentClbum.class_name}}</span>
-        <span>学员个数：{{currentClbum.student_count}}</span>
-        <span>班主任：{{currentClbum.head_teacher}}</span>
-        <span>学管师：{{currentClbum.counsellor_name}}</span>
-      </p>
-      <Table class="app-table" :columns="showColumns" :data="clbumInfoData.data" border></Table>
-      <div slot="footer">
-        <Page :total="clbumInfoData.total" size="small" placement="top" show-total show-elevator show-sizer @on-change="getPageInfo" @on-page-size-change="getPerPageInfo"></Page>
-      </div>
-    </Modal>
+    <class-student-modal v-model="classModal" :id="this.currentClbum.id"></class-student-modal>
   </div>
 </template>
 
 <script>
   /**
    * @author    chenliangshan
-   * @version   2017/06/28
+   * @version   2017/07/20
    */
 
   import { createButton } from '@/utils'
   import { list } from '@/mixins'
+  import ClassStudentModal from '../../Components/ClassStudentModal'
 
   export default {
     name: 'app-curriculum-student-class',
     mixins: [list],
+    components: { ClassStudentModal },
     data() {
       return {
         // 搜索字段
@@ -83,8 +74,8 @@
             ]) },
           { title: '学员人数（个）', key: 'student_total', align: 'center' },
           { title: '教师', key: 'teacher_item', align: 'center' },
-          { title: '班主任', key: 'classes_director', align: 'center' },
-          { title: '产品名称', key: 'schedule_product_name', align: 'center' },
+          { title: '班主任', key: 'headmaster', align: 'center' },
+          { title: '产品名称', key: 'product_name', align: 'center' },
           {
             title: '操作',
             align: 'center',
@@ -104,29 +95,10 @@
         clbumData: {},
         // 班级弹窗-初始化状态
         clbumModal: false,
-        // 班级学员信息字段
-        showColumns: [
-          { title: '学员名称', key: 'student_name', align: 'center' },
-          { title: '学员编号', key: 'student_number', align: 'center' },
-          { title: '当前年级', key: 'current_grade', align: 'center' },
-          { title: '产品子类型', key: 'product_subtype', align: 'center' },
-          { title: '剩余课时', key: 'surplus_period', align: 'center' },
-          { title: '上课年级', key: 'coach_grade', align: 'center' },
-        ],
-        // 班级学员信息数据
-        clbumInfoData: {},
         // 当前查看的班级
         currentClbum: {},
-        // 分页数据
-        pager: {
-          // 默认分页数据
-          defaultPage: {
-            page: 1,
-            per_page: 10,
-          },
-          // 班级学员信息分页数据
-          clbumInfo: {},
-        },
+        // 班级学员信息弹窗
+        classModal: false,
       }
     },
     methods: {
@@ -136,16 +108,7 @@
        */
       classShow(row) {
         this.currentClbum = row
-        this.getClubumInfo()
-      },
-      // 获取班级学员信息
-      getClubumInfo(pageData = this.pager.defaultPage) {
-        this.pager.clbumInfo = pageData
-        this.$http.get(`/curriculum/student/clbumInfo.json?id=${this.currentClbum.id}&page=${pageData.page}&per_page=${pageData.per_page}`)
-          .then((data) => {
-            this.clbumInfoData = data
-            this.clbumModal = true
-          })
+        this.classModal = true
       },
       // 获取班级数据
       getData(qs) {
@@ -153,16 +116,6 @@
           .then((data) => {
             this.clbumData = data
           })
-      },
-      // 根据页码获取数据
-      getPageInfo(pageId = 1) {
-        const pageInfo = Object.assign({}, this.pager.defaultPage, { page: pageId })
-        this.getClubumInfo(pageInfo)
-      },
-      // 根据每页条数获取数据
-      getPerPageInfo(perPageId = 10) {
-        const pageInfo = Object.assign({}, this.pager.defaultPage, { per_page: perPageId })
-        this.getClubumInfo(pageInfo)
       },
     },
   }

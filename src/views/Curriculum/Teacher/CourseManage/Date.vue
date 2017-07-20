@@ -47,28 +47,28 @@
     <Table class="app-table" :columns="dailyColumns" :data="dailyData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="dailyData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
-    <!--添加课表弹窗-->
+    <!--查看||编辑课表弹窗-->
     <app-form-modal v-model="courseModal"
                     title="排课情况"
                     :closable="false"
                     :loading="false"
-                    :width="800"
+                    :width="860"
                     :cancel-value="courseModalParam.cancelValue"
                     :ok-value="courseModalParam.okValue"
                     :ok-btn="courseModalParam.okBtn"
                     @on-ok="submit">
-      <app-form-alert :errors="formErrors"></app-form-alert>
+      <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
       <div class="teacher-modal-content">
         <div class="app-table ivu-table-wrapper">
           <div class="ivu-table ivu-table-border">
             <div class="ivu-table-body">
               <table cellspacing="0" cellpadding="0" border="0" width="100%">
                 <colgroup>
+                  <col width="90">
                   <col>
+                  <col width="90">
                   <col>
-                  <col>
-                  <col>
-                  <col>
+                  <col width="90">
                   <col>
                 </colgroup>
                 <tbody class="ivu-table-tbody">
@@ -97,21 +97,21 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          {{formItem.subject_type}}
+                          {{formItem.subject_item_name}}
                         </span>
                     </div>
                   </td>
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          <strong>上课年级</strong>
+                          <strong>排课人</strong>
                         </span>
                     </div>
                   </td>
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          <app-dicts-filter :value="formItem.grade" name="grade"></app-dicts-filter>
+                          {{formItem.username}}
                         </span>
                     </div>
                   </td>
@@ -141,26 +141,10 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          {{formItem.start_at}}-{{formItem.end_at}}
+                          {{formItem.start_at}} - {{formItem.end_at}}
                         </span>
                     </div>
                   </td>
-                  <td class="ivu-table-column-center">
-                    <div class="ivu-table-cell">
-                        <span>
-                          <strong>排课人</strong>
-                        </span>
-                    </div>
-                  </td>
-                  <td class="ivu-table-column-center">
-                    <div class="ivu-table-cell">
-                        <span>
-                          {{formItem.counsellor_name}}
-                        </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="ivu-table-row">
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
@@ -171,10 +155,12 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          第 1 节
+                          {{formItem.plan_course_number}}
                         </span>
                     </div>
                   </td>
+                </tr>
+                <tr class="ivu-table-row">
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
@@ -185,8 +171,18 @@
                   <td class="ivu-table-column-center">
                     <div class="ivu-table-cell">
                         <span>
-                          {{formItem.course_cost}}
+                          {{formItem.fact_cost}}
                         </span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                      <span></span>
+                    </div>
+                  </td>
+                  <td class="ivu-table-column-center">
+                    <div class="ivu-table-cell">
+                      <span></span>
                     </div>
                   </td>
                   <td class="ivu-table-column-center">
@@ -239,12 +235,14 @@
 <script>
   /**
    * 教师排课-日课表
-   * @author  chenliangshan
-   * @update    2017/07/01
+   * @author    chenliangshan
+   * @version   2017/07/01
    */
 
   import { list } from '@/mixins'
   import WeeklyTable from '../../Components/WeeklyTable'
+
+  const server_msg = '服务端错误，请联系网站管理员或稍后重试'
 
   export default{
     name: 'app-teacher-course-date',
@@ -290,13 +288,14 @@
         formErrors: {},
         // 弹窗数据
         formItem: {
-          model_info: {},
-          subject_type: null,
-          grade: null,
           date: null,
-          start_at: null,
           end_at: null,
-          course_cost: null,
+          fact_cost: null,
+          instance_name: null,
+          plan_course_number: null,
+          start_at: null,
+          subject_item_name: null,
+          username: null,
         },
         // 日课表字段
         dailyColumns: [
@@ -428,13 +427,13 @@
         this.formErrors = {}
         this.courseModalParam.id = item.id
         this.courseModal = true
-        this.getCourseInfo(item.id)
+        this.getCourseInfo(item)
       },
       // 查看排课信息
-      getCourseInfo(id) {
-        this.$http.get(`/teachercurricula/info/${id}`)
+      getCourseInfo(item) {
+        this.$http.get(`/teachercurricula/show/${item.id}`)
           .then((result) => {
-            this.formItem = result.schedule
+            this.formItem = { ...result, schedule_status: item.schedule_status }
           })
       },
       // 取消排课
@@ -447,9 +446,11 @@
               .then(() => {
                 this.$Message.success('该排课成功取消')
               })
-          },
-          onCancel: () => {
-            // this.$Message.info('点击了取消')
+              .catch((errors) => {
+                this.$Notice.error({
+                  desc: errors.message || server_msg,
+                })
+              })
           },
         })
       },
@@ -514,7 +515,7 @@
         if (errors) {
           this.formErrors = errors
         } else {
-          this.formErrors = { error: [message, '服务端错误，请联系网站管理员或稍后重试'] }
+          this.formErrors = { error: [message || server_msg] }
         }
       },
     },

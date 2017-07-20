@@ -5,19 +5,19 @@
         <template v-if="isClass">
           <p>
             <label>班级名称：</label>
-            <span>{{currentDate.model_info.display_name}}</span>
+            <span>{{currentDate.model.display_name}}</span>
           </p>
         </template>
         <template v-else>
           <p>
             <label>学员姓名：</label>
-            <span>{{currentDate.model_info.display_name}}</span>
+            <span>{{currentDate.model.display_name}}</span>
           </p>
         </template>
 
         <p>
           <label>上课年级：</label>
-          <span><app-dicts-filter :value="currentDate.grade" name="grade"></app-dicts-filter></span>
+          <span>{{currentDate.current_grade_name}}</span>
         </p>
         <p>
           <label>产品名称：</label>
@@ -29,7 +29,7 @@
         </p>
         <p>
           <label>上课科目：</label>
-          <span>{{currentDate.subject_type_name}}</span>
+          <span>{{currentDate.subject_item_name}}</span>
         </p>
         <p>
           <label>计划课时：</label>
@@ -87,13 +87,13 @@
             <ul class="weekly-ul clearfix">
               <template v-for="(list, key) in weeklyData.week">
                 <li class="li-head" v-if="key == 0">
-                  <div class="morning" :style="{height: morningHight}">
+                  <div class="morning" :style="{height: morningHight}" v-if="weeklyData.count.morning>0">
                     <span>上午</span>
                   </div>
-                  <div class="afternoon" :style="{height: afternoonHight}">
+                  <div class="afternoon" :style="{height: afternoonHight}" v-if="weeklyData.count.afternoon>0">
                     <span>下午</span>
                   </div>
-                  <div class="evening" :style="{height: eveningHight}">
+                  <div class="evening" :style="{height: eveningHight}" v-if="weeklyData.count.evening>0">
                     <span>晚上</span>
                   </div>
                 </li>
@@ -108,7 +108,7 @@
                           </Row>
                           <Row>
                             <Col span="12">
-                            {{item.subject_type_name}}
+                            {{item.subject_item_name}}
                             </Col>
                             <Col span="12">
                             {{item.teacher_name}}</Col>
@@ -162,13 +162,13 @@
         morningHight: '',
         afternoonHight: '',
         eveningHight: '',
-        currentDate: {},
+        currentDate: {
+          model: {},
+        },
+        weeklyData: this.data,
       }
     },
     computed: {
-      weeklyData() {
-        return this.data
-      },
       isClass() {
         const pathArry = this.$route.path.split('/')
         return pathArry[pathArry.length - 4] === 'teachercurricula' || pathArry[pathArry.length - 4] === 'class'
@@ -202,21 +202,17 @@
       },
       // 设置默认展示
       getCurrentDate() {
-        const data = this.data.week.map((item) => {
-          const course = item.course
-          if (course) {
-            if (course.morning.length) {
-              return course.morning[0]
-            } else if (course.afternoon.length) {
-              return course.afternoon[0]
-            } else if (course.evening.length) {
-              return course.evening[0]
-            }
-          }
-          return []
-        })
+        const count = this.data.count
+        this.data.count.morning = count.morning < 2 ? 2 : count.morning
+        this.data.count.afternoon = count.afternoon < 2 ? 2 : count.afternoon
+        this.data.count.evening = count.evening < 2 ? 2 : count.evening
+        const data = this.data.week
+          .map(item => item.course)
+          .map(item => Object.keys(item).reduce((result, prop) =>
+            [...result, ...item[prop]], []))
+          .reduce((result, item) => [...result, ...item], [])
         if (data.length) {
-          this.currentDate = data[0]
+          this.currentDate = { ...this.currentDate, ...data[0] }
           this.isActive = data[0].id
         }
       },
@@ -242,9 +238,13 @@
       },
     },
     watch: {
-      data() {
-        this.getCurrentDate()
-        this.getRef()
+      data: {
+        handler(val) {
+          this.weeklyData = val
+          this.getCurrentDate()
+          this.getRef()
+        },
+        deep: true,
       },
     },
   }
@@ -372,11 +372,11 @@
               span {
                 width: 20px;
                 display: block;
-                line-height: 50px;
+                line-height: 38px;
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                margin-top: -50px;
+                margin-top: -38px;
                 margin-left: -10px;
               }
             }

@@ -53,16 +53,15 @@ export default {
       likeKey: 'display_name',  // 默认模糊字段
       // 学员字段
       studentColumns: [
-        { title: '学员姓名', key: 'display_name', align: 'center' },
-        { title: '学员编号', key: 'number', align: 'center', sortable: 'custom' },
-        { title: '上课年级',
-          align: 'center',
-          render: (h, params) => h('app-dicts-filter', { props: { value: params.row.current_grade, name: 'grade' } }) },
+        { title: '学员姓名', key: 'display_name', align: 'center', width: 160 },
+        { title: '学员编号', key: 'number', align: 'center', width: 180, sortable: 'custom' },
+        { title: '上课年级', key: 'current_grade_name', align: 'center' },
         { title: '产品名称', key: 'schedule_product_name', align: 'center' },
         { title: '学管师', key: 'counsellor_name', align: 'center' },
         {
           title: '操作',
           align: 'center',
+          width: 100,
           render: createButton([
             {
               type: 'primary',

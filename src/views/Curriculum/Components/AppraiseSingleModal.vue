@@ -9,13 +9,12 @@
                   @on-ok="beforeSubmit"
                   @on-cancel="formCancel('form')">
     <div class="appraise-content">
-      <Form ref="form" :model="appraiseSingleData">
-        <app-form-alert :errors="formErrors"></app-form-alert>
-        <Form-item v-for="(item, index) in appraiseSingleData.items"
-                   :key="item"
-                   :prop="`items.${index}.comment`"
+      <Form ref="form" :model="formData">
+        <app-form-alert :errors="formErrors" v-if="!isEmpty(formErrors)"></app-form-alert>
+        <Form-item prop="comment"
                    :rules="{required: true, message: '评语不能为空', trigger: 'blur'}">
-            <Input v-model="item.comment" type="textarea"
+            <Input v-model="formData.comment"
+                   type="textarea"
                    :autosize="{minRows: 6,maxRows: 8}"
                    :readonly="!param.okBtn||param.readonly"
                    :placeholder="param.placeholder"></Input>
@@ -29,10 +28,11 @@
   /**
    * 学员|班级-单项评价弹窗
    * @author  chenliangshan
-   * @update  2017/07/04
+   * @version  2017/07/19
    */
 
   import { form } from '@/mixins'
+  import { isEmpty } from 'lodash'
 
   export default{
     name: 'appraise-single-modal',
@@ -54,46 +54,48 @@
         required: true,
         default: {},
       },
+      // 当前学员ID
+      id: [Number, String],
     },
     data() {
       return {
         visible: this.value,
         // 评价内容数据
-        appraiseSingleData: {
-          items: [],
+        formData: {
+          comment: null,
         },
       }
     },
     methods: {
+      // 判断对象是否为空
+      isEmpty(val) {
+        return isEmpty(val)
+      },
       // 获取评价内容
       getAppraise() {
         if (this.data.comment_count > 0) {
           // 查看评价
           this.getAppraiseInfo()
-        } else {
-          // 编写评价
-          this.getAppraiseStudentInfo()
         }
-      },
-      // 获取单项编写评价参数-学员信息
-      getAppraiseStudentInfo() {
-        this.$http.get(`/curricularecord/create/${this.data.model_id}`)
-          .then((data) => {
-            this.appraiseSingleData.items = data.map(list => Object.assign({}, list, { comment: '' }))
-          })
       },
       // 查看评价内容
       getAppraiseInfo() {
-        this.$http.get(`/curricularecord/show/${this.data.model_id}`)
+        this.$http.get(`/curricularecord/show/${this.data.id}`)
           .then((data) => {
-            this.appraiseSingleData.items = data.schedule_comments
+            this.formData = { ...this.formData, ...data }
+          })
+          .catch(() => {
+            this.$Notice.error({
+              title: '学员评价信息获取失败',
+            })
           })
       },
       // 提交编写评价
       submit() {
         const body = {
-          schedule_id: this.data.id,
-          comment: this.appraiseSingleData.items,
+          student_id: this.data.student_id,
+          schedule_id: this.data.schedule_id,
+          ...this.formData,
         }
         const self = this
         this.$http.post(`/curricularecord/store/${body.schedule_id}`, body)
