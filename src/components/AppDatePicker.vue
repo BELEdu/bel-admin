@@ -15,7 +15,7 @@
   /**
    * 日期选择器
    * @author    chenliangshan
-   * @addTime   2017/06/30
+   * @version   2017/07/20
    */
 
   import { formatDate } from '@/utils/date'
@@ -67,9 +67,18 @@
     created() {
       this.dateVal = this.value
     },
+    computed: {
+      formItem() {
+        let parent = this.$parent
+        while (parent.$options.name !== 'FormItem') {
+          parent = parent.$parent
+        }
+        return parent
+      },
+    },
     methods: {
-      onChange() {
-        this.$emit('on-change')
+      onChange(val) {
+        this.$emit('on-change', val)
       },
       onOpenChange() {
         this.$emit('on-open-change')
@@ -100,11 +109,15 @@
         this.dateVal = val
       },
       dateVal(val) {
+        let date = val
         if (val) {
           this.dateFormat(val)
+        } else if (!this.formItem.prop) {
+          date = null
         } else {
-          this.$emit('input', null)
+          date = ''
         }
+        this.$emit('input', date)
       },
     },
   }
