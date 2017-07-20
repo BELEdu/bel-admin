@@ -328,7 +328,7 @@ export default [
     },
   },
   {
-    path: '/curriculum/curricularecord/class/list/:id',
+    path: '/curriculum/curricularecord/class/:id',
     name: 'CurriculumRecordClassList',
     component: views.CurriculumRecordClassList,
     meta: {
@@ -340,7 +340,7 @@ export default [
     },
   },
   {
-    path: '/curriculum/curricularecord/class/list/show/:id',
+    path: '/curriculum/curricularecord/class/:classId/list/:id',
     name: 'CurriculumRecordClassShow',
     component: views.CurriculumRecordClassShow,
     meta: {
