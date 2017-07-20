@@ -78,7 +78,6 @@ const defaultParent = {
 
 const defaultSublist = {
   birth_at: null, // 出生日期
-  belong_teacher: null, // 归属教师
   turn_recommend_staff: null, // 转介绍员工
   turn_recommend_student: null, // 转介绍学员
   customer_resource: '', // 客户资源所在地
@@ -107,9 +106,9 @@ export default {
         subject_type: null, // 文理科
         is_repeat: null, // 是否复读
         user_id: '', // 初始建档人（仅可读）
-
         belong_counselor: null, // 归属咨询师
         belong_customer_relationships: null, // 归属学管师
+        belong_teacher: null, // 归属教师
         is_vip: null, // vip
         student_current_status: null, // 学生当前状态
         original_contractor_id: '', // 初始签约人（仅可读）

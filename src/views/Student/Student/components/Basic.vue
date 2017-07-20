@@ -67,7 +67,7 @@
           </Select>
         </Form-item>
         <Form-item label="归属教师">
-          <Select v-model="form.sublist.belong_teacher">
+          <Select v-model="form.belong_teacher">
             <Option v-for="item in teacherList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
         </Form-item>
