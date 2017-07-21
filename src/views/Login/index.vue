@@ -5,14 +5,13 @@
         <h1>欢迎登录精英教育OA管理系统</h1>
       </header>
 
-      <div class="login-box__body">
-        <Alert class="login-box__alert" type="error" show-icon v-show="formError">
-          {{ formError }}
-        </Alert>
+      <Form class="login-box__body" :model="form" :rules="rules" :label-width="60" ref="form">
+        <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
 
         <div class="login-box__body__content clearfix" @keyup.enter="handleSubmit">
           <img class="login-box__logo" :src="require('@/assets/logo.png')" alt="">
-          <Form class="login-box__form" :model="form" :rules="rules" :label-width="60" ref="form">
+
+          <div class="login-box__form">
             <Form-item label="用户名" prop="username">
               <Input v-model="form.username"></Input>
             </Form-item>
@@ -20,11 +19,11 @@
               <Input type="password" v-model="form.password"></Input>
             </Form-item>
             <Form-item>
-              <Button type="primary" @click="handleSubmit" :loading="formLoading" long>登陆</Button>
+              <Button type="primary" @click="beforeSubmit" :loading="formLoading" long>登陆</Button>
             </Form-item>
-          </Form>
+          </div>
         </div>
-      </div>
+      </Form>
     </div>
   </div>
 </template>
@@ -33,14 +32,17 @@
 /**
  * 登陆页
  * @author lmh
- * @version 2017-06-06
+ * @version 2017-07-21
  */
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
+import { form } from '@/mixins'
 
 export default {
-  name: 'app-index',
+  name: 'app-login',
+
+  mixins: [form],
 
   data() {
     return {
@@ -59,12 +61,6 @@ export default {
           this.$rules.required('密码'),
         ],
       },
-
-      // 后台返回的表单提交错误
-      formError: '',
-
-      // 表单是否正在提交
-      formLoading: false,
     }
   },
 
@@ -73,31 +69,15 @@ export default {
   },
 
   methods: {
-    handleSubmit() {
-      this.formError = ''
-
-      // 验证表单，通过后才允许提交
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          this.login()
-        }
-      })
-    },
-
     // 用户登录
-    login() {
-      this.formLoading = true
-
+    submit() {
       this.$store.dispatch(GLOBAL.LOGIN, this.form)
         .then(() => {
           // 若登录成功，通知父组件连接socket，并转跳到首页
           this.$emit('login')
           this.$router.push('/index')
         })
-        .catch(({ message }) => {
-          this.formError = message
-          this.formLoading = false
-        })
+        .catch(this.errorHandler)
     },
   },
 
