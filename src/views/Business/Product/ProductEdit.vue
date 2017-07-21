@@ -31,10 +31,11 @@
         <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
         <span>元</span>
       </Form-item>
-      <Form-item label="课时数量" prop="course_total">
+      <!-- 17.07.21 废弃 -->
+      <!-- <Form-item label="课时数量" prop="course_total">
         <Input placeholder="请输入课程数量" v-model="fdata.course_total"></Input>
         <span>个</span>
-      </Form-item>
+      </Form-item> -->
       <Form-item label="销售状态">
         <Radio-group v-model="fdata.sale_status">
           <Radio v-for="item in dicts.sale_status" :label="item.value" :key="item.display_name">
