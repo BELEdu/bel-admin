@@ -136,9 +136,9 @@ export default {
     // 重新提交操作
     toRecheck(row) {
       if (row.refund_tag) {
-        this.$router.push(`business/contract/refund/edit/${row.id}`)
+        this.$router.push(`/business/contract/refund/edit/${row.id}`)
       } else {
-        this.$router.push(`business/contract/edit/${row.id}`)
+        this.$router.push(`/business/contract/edit/${row.id}`)
       }
     },
     // 退费
