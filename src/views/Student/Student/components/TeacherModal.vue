@@ -9,8 +9,8 @@
   >
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>
-      <Form-item label="分配给" prop="teacher_id">
-        <Select v-model="form.teacher_id" placeholder="请选择...">
+      <Form-item label="分配给" prop="teachers">
+        <Select v-model="form.teachers" placeholder="请选择老师..." filterable multiple>
           <Option v-for="teacher in teachers" :key="teacher.id" :value="teacher.id">{{ teacher.username }}</Option>
         </Select>
       </Form-item>
@@ -28,7 +28,7 @@
 /**
  * 学员分配教师组件
  * @author  zhoumenglin
- * @version 2017-06-28
+ * @version 2017-07-21
  */
 
 import { form } from '@/mixins'
@@ -50,15 +50,15 @@ export default {
   data() {
     return {
       form: {
-        teacher_id: null,
-        send_type: null,
+        teachers: [], // 教师多选
+        send_type: null, // 发送类型
       },
 
       teachers: [],
 
       rules: {
-        teacher_id: [
-          this.$rules.required('分配教师', 'number'),
+        teachers: [
+          this.$rules.required('分配教师', 'array', 'change'),
         ],
         send_type: [
           this.$rules.required('通知方式', 'number'),

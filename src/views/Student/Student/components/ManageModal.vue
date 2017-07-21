@@ -9,8 +9,8 @@
   >
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>
-      <Form-item label="分配给" prop="manage_id">
-        <Select v-model="form.manage_id" placeholder="请选择...">
+      <Form-item label="分配给" prop="relationships">
+        <Select v-model="form.relationships" placeholder="请选择学管师...">
           <Option v-for="manage in manages" :key="manage.id" :value="manage.id">{{ manage.username }}</Option>
         </Select>
       </Form-item>
@@ -28,7 +28,7 @@
 /**
  * 学员分配教师组件
  * @author  zhoumenglin
- * @version 2017-07-10
+ * @version 2017-07-21
  */
 
 import { form } from '@/mixins'
@@ -50,14 +50,14 @@ export default {
   data() {
     return {
       form: {
-        teacher_id: null,
-        send_type: null,
+        relationships: null, // 学管师
+        send_type: null, // 发送类型
       },
 
       manages: [],
 
       rules: {
-        manage_id: [
+        relationships: [
           this.$rules.required('分配学管师', 'number'),
         ],
         send_type: [
@@ -70,7 +70,7 @@ export default {
   methods: {
     submit() {
       // 等分配学管师接口替换
-      this.$http.post('/student/do_assign_manage', {
+      this.$http.post('/student/do_assign_relationships', {
         ...this.form,
         student_item: this.studentItem,
       })
@@ -85,7 +85,7 @@ export default {
     },
 
     closeModal() {
-      this.$emit('closeTeacherModal')
+      this.$emit('closeManageModal')
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false

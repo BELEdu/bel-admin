@@ -108,7 +108,7 @@ export default {
         user_id: '', // 初始建档人（仅可读）
         belong_counselor: null, // 归属咨询师
         belong_customer_relationships: null, // 归属学管师
-        belong_teacher: null, // 归属教师
+        teachers: [], // 归属教师
         is_vip: null, // vip
         student_current_status: null, // 学生当前状态
         original_contractor_id: '', // 初始签约人（仅可读）
