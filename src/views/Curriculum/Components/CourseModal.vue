@@ -50,7 +50,7 @@
         <Form-item label="实际上课课时：" prop="fact_cost" v-if="formData.schedule_status === 2">
           <Input type="text" placeholder="请填写课时" v-model="formData.fact_cost"></Input>
         </Form-item>
-        <Form-item label="学馆师：">{{courseOption.counsellor_name}}</Form-item>
+        <Form-item label="学管师：">{{courseOption.counsellor_name}}</Form-item>
       </Form>
     </div>
   </app-form-modal>
