@@ -136,13 +136,14 @@ export function colConfig(that) {
     //   width: 150,
     //   sortable: 'custom',
     // },
-    {
-      title: '课时数量（个）',
-      key: 'course_total',
-      align: 'center',
-      width: 150,
-      sortable: 'custom',
-    },
+    // 再次废弃
+    // {
+    //   title: '课时数量（个）',
+    //   key: 'course_total',
+    //   align: 'center',
+    //   width: 150,
+    //   sortable: 'custom',
+    // },
     {
       title: '产品总价（元）',
       key: 'price',
