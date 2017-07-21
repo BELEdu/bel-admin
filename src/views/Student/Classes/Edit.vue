@@ -79,9 +79,7 @@
 /**
  * 班级管理 - 班级信息 - 编辑班级
  * @author zml
- * @version 2017-06-13
- * @version 2017-06-15
- * @version 2017-06-21
+ * @version 2017-07-20
  */
 
 import { mapState } from 'vuex'

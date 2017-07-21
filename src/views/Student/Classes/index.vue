@@ -72,7 +72,7 @@
 /**
  * 学员管理 - 班级管理
  * @author zml
- * @version 2017-06-20
+ * @version 2017-07-20
  */
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
