@@ -8,17 +8,17 @@
       </Form-item>
       <Form-item label="产品分类" prop="product_id">
         <Select placeholder="请选择..." v-model="form.product_id" :disabled="isUpdate">
-          <Option v-for="item in classes_product_data" :value="item.id" :key="item.display_name">{{ item.display_name }}</Option>
+          <Option v-for="item in classes_product_data" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item label="班主任">
         <Select placeholder="请选择..." v-model="form.classes_director" >
-          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
+          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.id">{{ item.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="教师">
         <Select placeholder="请选择老师..." v-model="form.teachers" filterable multiple>
-          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.username">{{ item.username }}</Option>
+          <Option v-for="item in classes_teacher_data" :value="item.id" :key="item.id">{{ item.username }}</Option>
         </Select>
       </Form-item>
       <Form-item label="开办日期">
@@ -57,7 +57,7 @@
 
       <Form-item label="选择学员">
         <Select v-model="form.students" placeholder="请选择学生..." multiple filterable>
-          <Option v-for="item in student_data" :value="item.value" :key="item.display_name">{{ item.display_name }}</Option>
+          <Option v-for="item in student_data" :value="item.value" :key="item.value">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <!--<Form-item label="选择学员（测试）" >
@@ -225,10 +225,10 @@ export default {
         })
     },
 
-    getListData() { //  获取班主任、班级学员的数据源
-      return this.$http.get('/classes/create')
+    getStudentData() { // 获取学生列表数据源
+      this.$http.get('/student/student_source')
         .then((res) => {
-          this.student_data = res.student_data
+          this.student_data = res
         })
     },
 
@@ -238,7 +238,6 @@ export default {
         .then((res) => {
           const { // 将班主任、班级学员的数据源解构出来，需要提交的数据放在this.form中
             classes_director_data,
-            student_data,
             start_at,
             end_at,
             ...others
@@ -255,7 +254,6 @@ export default {
               })) : null,
             },
           }
-          this.student_data = student_data
 
           if (start_at !== null && end_at !== null) {
             this.classesDate = [start_at, end_at]
@@ -278,9 +276,13 @@ export default {
 
     this.getProductData()
     this.getTeacherData()
+    this.getStudentData()
 
-    ; (this.isUpdate ? this.getClassData : this.getListData)()
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    if (this.isUpdate) {
+      this.getClassData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
   },
 }
 </script>

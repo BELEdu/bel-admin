@@ -78,13 +78,10 @@
           <Select v-model="form.sublist.turn_recommend_staff">
             <Option v-for="item in employeeList" :key="item.id" :value="item.id">{{ item.username }}</Option>
           </Select>
-          </Select>
         </Form-item>
         <Form-item label="转介绍学员">
           <Select placeholder="请选择..." v-model="form.sublist.turn_recommend_student">
-            <Option :value="1">张三</Option>
-            <Option :value="2">李四</Option>
-            <Option :value="3">王五</Option>
+            <Option v-for="item in studentList" :key="item.value" :value="item.value">{{ item.display_name }}</Option>
           </Select>
         </Form-item>
         <Form-item label="VIP">
@@ -162,6 +159,10 @@ export default {
       default: () => [],
     },
     employeeList: {
+      type: Array,
+      default: () => [],
+    },
+    studentList: {
       type: Array,
       default: () => [],
     },

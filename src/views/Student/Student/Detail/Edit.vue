@@ -24,6 +24,7 @@
        :teacherList="teacherList"
        :advisoryList="advisoryList"
        :employeeList="employeeList"
+       :studentList="studentList"
       ></basic>
 
       <!-- 家长信息 -->
@@ -137,6 +138,7 @@ export default {
       teacherList: [], // 教师数据源
       advisoryList: [], // 咨询师数据源
       employeeList: [], // 转介绍员工数据源
+      studentList: [], // 转介绍学员数据源
     }
   },
 
@@ -190,17 +192,14 @@ export default {
         })
     },
 
-    // 添加操作时候获取的数据
-    getCreateData() {
-      return this.$http.get('/student/create')
+    getStudentSource() { // 获取学生列表数据源
+      this.$http.get('/student/student_source')
         .then((res) => {
-          // eslint-disable-next-line
-          console.log(res)
+          this.studentList = res
         })
     },
 
-    // 获取当前编辑学员的数据
-    getStudentData() {
+    getStudentData() { // 获取当前编辑学员的数据
       return this.$http.get(`/student/${this.id}`)
         .then((res) => {
           this.form = {
@@ -242,6 +241,8 @@ export default {
 
   created() {
     this.getListData()
+
+    this.getStudentSource()
 
     if (this.isUpdate) {
       this.getStudentData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
