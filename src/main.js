@@ -1,13 +1,13 @@
 // polyfills
-import 'core-js/modules/es6.promise'
-import 'core-js/modules/es6.string.includes'
-import 'core-js/modules/es6.array.fill' // 测试
-import 'core-js/modules/es6.array.find'
-import 'core-js/modules/es6.array.find-index'
-import 'core-js/modules/es7.array.includes'
-import 'core-js/modules/es6.set'
+import 'core-js/es6/promise'
+import 'core-js/es6/set'
+import 'core-js/es6/array'
+import 'core-js/es7/array'
+import 'core-js/es6/string'
+import 'core-js/es7/string'
 
-import '@/utils/placeholders' // 使ie9兼容placeholder属性
+// 使ie9兼容placeholder属性
+import '@/utils/placeholders'
 
 // 全局样式
 import '@/styles/global.less'
