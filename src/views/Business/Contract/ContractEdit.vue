@@ -49,7 +49,7 @@
             <Option v-for="user in item.users"
               :value="user.id" :key="user.id"
             >
-              {{user.username}}
+              {{user.realname}}
             </Option>
           </Select>
         </Form-item>
