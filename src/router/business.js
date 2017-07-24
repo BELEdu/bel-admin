@@ -128,7 +128,7 @@ export default [
     name: 'BussinessContractUpdate',
     component: views.ContractEdit,
     meta: {
-      uri: 'contract',
+      uri: 'contract/edit',
       breadcrumb: [
         { name: '业务管理' },
         BUSSINESS_CONTRACT,
