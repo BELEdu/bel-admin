@@ -74,7 +74,7 @@ export default {
         { label: '角色名称', value: 'display_name' },
         { label: '所属部门', value: 'department_id' },
       ],
-      likeKey: 'display_name',
+      likeKey: 'role_number',
 
       columns: [
         { title: '序号', type: 'index', align: 'center', width: 50 },
