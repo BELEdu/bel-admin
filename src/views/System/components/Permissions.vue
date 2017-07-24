@@ -194,6 +194,28 @@ export default {
 }
 
 // 兼容ie
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	.permission-table {
+    &__items {
+      display: inline-block;
+      width: calc(~"100% - 8em");
+      vertical-align: middle;
+      margin-right: -4px;
+    }
+
+    &__sub-items {
+      display: inline-block;
+      width: calc(~"100% - 9em");
+      vertical-align: middle;
+      margin-right: -4px;
+
+      & > dd {
+        float: left;
+      }
+    }
+  }
+}
+
 .ie {
   .permission-table {
     dl {
