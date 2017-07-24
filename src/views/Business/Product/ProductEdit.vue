@@ -28,7 +28,7 @@
         <span>分钟</span>
       </Form-item>
       <Form-item label="产品总价" prop="price">
-        <Input placeholder="请输入产品单价" v-model="fdata.price"></Input>
+        <Input placeholder="请输入产品总价" v-model="fdata.price"></Input>
         <span>元</span>
       </Form-item>
       <!-- 17.07.21 废弃 -->
