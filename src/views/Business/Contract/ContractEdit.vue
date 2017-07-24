@@ -197,7 +197,6 @@ import {
   editInit,
   productOrigin,
   unit_encode,
-  // eslint-disable-next-line
   unit_decode,
   formRules,
   studentFormRender,
@@ -275,6 +274,7 @@ export default {
       // 判断新增还是修改
       if (this.$route.params.id) {
         const id = this.$route.params.id
+        this.fdata.info.id = id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
           .then(() => { this.loading = false; this.goBack() })
       } else {
@@ -304,8 +304,15 @@ export default {
 
   created() {
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
-      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      .then((res) => {
+        // fdata之后选择下拉框才重组authority
+        this.isDealAuthority = false
+        this.fdata = unit_decode(res)
+        this.$store.commit(GLOBAL.LOADING.HIDE)
+      })
+      .catch(() => {
+        this.$store.commit(GLOBAL.LOADING.HIDE)
+      })
 
     // 请求第三步需要的产品列表
     Http.get('/product_list?sale_status=1')

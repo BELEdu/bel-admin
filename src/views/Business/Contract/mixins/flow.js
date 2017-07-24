@@ -5,7 +5,7 @@
  * @description flow中囊括了流程名称、合同模板、参与角色的信息
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+// import { GLOBAL } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 
 export default {
@@ -13,30 +13,28 @@ export default {
   data: () => ({
     // 流程数据
     flowInfo: null,
+    // 是否重构fdata的authority
+    isDealAuthority: true,
   }),
 
   methods: {
-    // 选择流程名称时根据流程id更改url？flow_id=value
+    // flow_id改变时，通过select触发
     changeFlow(value) {
-      this.$router.push({
-        path: this.$route.path,
-        query: {
-          flow_id: value,
-        },
-      })
+      // this.$store.commit(GLOBAL.LOADING.SHOW)
+      this.reqFlowInfo(value)
     },
     // 请求flowInfo
-    reqFlowInfo(route) {
+    reqFlowInfo(flow_id) {
       // 更新flowInfo，主要是合同模板和角色信息
       const baseUrl = '/contract/create'
-      const queryFlow = route.query.flow_id
-        ? `?flow_id=${route.query.flow_id}`
-        : ''
+      const queryFlow = flow_id ? `?flow_id=${flow_id}` : ''
 
       return Http.get(`${baseUrl}${queryFlow}`)
         .then((res) => {
           this.flowInfo = this.decodeFlowList(res)
-          this.dealRoleKey()
+          if (this.isDealAuthority) this.dealRoleKey()
+          this.isDealAuthority = true
+          // this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
     // 普通合同和退费合同流程数据互斥需要过滤
@@ -45,11 +43,11 @@ export default {
       let list = null
 
       // 普通合同过滤退费合同流程
-      if (this.$route.meta.uri === 'contract') {
-        list = tmp.flow_list.filter(item => item.flow_type_id !== 4)
+      if (this.$route.meta.uri === 'contract/refund') {
+        list = tmp.flow_list.filter(item => item.flow_type_id === 4)
       // 退费合同过滤普通合同流程
       } else {
-        list = tmp.flow_list.filter(item => item.flow_type_id === 4)
+        list = tmp.flow_list.filter(item => item.flow_type_id !== 4)
       }
 
       tmp.flow_list = list
@@ -87,17 +85,11 @@ export default {
     },
   },
 
-  created() {
-    // 请求合同流程数据集合
-    this.reqFlowInfo(this.$route)
-  },
-
-  beforeRouteUpdate(to, from, next) {
-    // 选择流程名称后一起url变化，重新请求flowInfo
-    this.reqFlowInfo(to)
-      .then(() => {
-        next()
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
+  beforeRouteEnter(to, from, next) {
+    Http.get('/contract/create')
+      .then(res => next((vm) => {
+        // eslint-disable-next-line
+        vm.flowInfo = vm.decodeFlowList(res)
+      }))
   },
 }

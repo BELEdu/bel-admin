@@ -201,6 +201,7 @@ export default {
       // 获取更新合同数据
       this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
         .then((res) => {
+          this.isDealAuthority = false
           this.fdata = unit_decode(res)
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })

@@ -23,6 +23,16 @@ export function studentFormRender() {
   }
 }
 
+// 编辑页 - update数据预处理
+export function unit_decode(res) {
+  const tmp = { ...res }
+  tmp.product.list.forEach((item) => {
+    // eslint-disable-next-line
+    item.discount_rate = parseInt(item.discount_rate, 10)
+  })
+  return tmp
+}
+
 // 编辑页 - 表单数据提交后端前的处理函数
 export function unit_encode(data) {
   return data
