@@ -19,7 +19,7 @@ export default {
   props: {
     value: {
       type: Array,
-      require: true,
+      // required: true,
     },
     placeholder: {
       type: String,
@@ -36,7 +36,7 @@ export default {
   computed: {
     area() {
       let arr = []
-      if (this.value.length) {
+      if (this.value && this.value.length) {
         arr = this.value.map(item => item.toString())
       }
       return arr
