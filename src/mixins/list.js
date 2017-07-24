@@ -95,8 +95,19 @@ export default {
 
     // 跳页
     goTo(page) {
-      this.query = { ...this.query, page }
-      this.updateData()
+      // 因为like的值直接绑定在query对象上，导致用户即使没有按下“搜索”按钮，跳页时，已经输入的关键字也会被带入url参数里
+      // 比较好的解决办法是把like移除query对象，只在“搜索”时才手动并入query
+      // 但由于这需要改动所有调用了此mixin的方法，为了不做破坏性改动，这里用了一种稍微不是那么好的解决方式
+      // 跳页时不再使用query对象，而是直接从地址栏拿search串，改变其中的page参数即可
+      let { search } = location
+      if (search.includes('page')) {
+        search = search.replace(/(page=)\d+/, `$1${page}`)
+      } else if (search) {
+        search += `&page=${page}`
+      } else {
+        search += `?page=${page}`
+      }
+      this.updateData(search)
     },
 
     // 排序
@@ -110,6 +121,8 @@ export default {
 
     // 点击搜索按钮
     search() {
+      // 每次搜索，应该重新回到第一页
+      this.query = { ...this.query, page: 1 }
       this.updateData()
     },
 
