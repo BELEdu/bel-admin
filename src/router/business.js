@@ -142,7 +142,7 @@ export default [
     name: 'BussinessContractRefundUpdate',
     component: views.ContractRefund,
     meta: {
-      uri: 'contract/refund',
+      uri: 'contract/refund/edit',
       action: 'update',
       breadcrumb: [
         { name: '业务管理' },
