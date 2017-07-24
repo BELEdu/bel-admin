@@ -120,6 +120,10 @@ export default {
       this.$router.push(`${path}${queryString}`)
 
       // 获取数据
+      this.fetchData(queryString)
+    },
+
+    fetchData(queryString) {
       if (this.getData) {
         this.getData(queryString)
           .catch(() => {
@@ -161,5 +165,11 @@ export default {
 
 
     this.updateData(queryString)
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    const queryString = this.stringify(to.query)
+    this.fetchData(queryString)
+    next()
   },
 }
