@@ -200,7 +200,10 @@ export default {
 
       // 获取更新合同数据
       this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-        .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+        .then((res) => {
+          this.fdata = unit_decode(res)
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
         .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     }
   },
