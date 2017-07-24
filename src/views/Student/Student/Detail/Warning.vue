@@ -99,8 +99,8 @@ export default {
       columns: [
         { title: '预警ID', key: 'id', align: 'center', sortable: 'custom' },
         { title: '预警类型', key: 'warning_type', align: 'center' },
-        { title: '预警时间', key: '', align: 'center', sortable: 'custom' },
-        { title: '操作人', key: 'user_name ', align: 'center' },
+        { title: '预警时间', key: 'created_at', align: 'center', sortable: 'custom' },
+        { title: '操作人', key: 'user_name', align: 'center' },
         { title: '操作人岗位', key: '', align: 'center' },
         { title: '预警原因', key: 'warning_reason', align: 'center' },
         { title: '状态', key: 'warning_status', align: 'center' },
