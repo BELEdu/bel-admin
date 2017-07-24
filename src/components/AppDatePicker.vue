@@ -6,10 +6,14 @@
                :disabled="disabled"
                :readonly="readonly"
                :editable="editable"
+               :open="$attrs.open"
+               :confirm="$attrs.confirm"
                @on-change="onChange"
                @on-open-change="onOpenChange"
                @on-ok="onOk"
-               @on-clear="onClear"></Date-picker>
+               @on-clear="onClear">
+    <slot></slot>
+  </Date-picker>
 </template>
 <script>
   /**
