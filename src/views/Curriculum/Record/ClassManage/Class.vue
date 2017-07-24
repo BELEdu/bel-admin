@@ -26,12 +26,12 @@
     <app-pager :data="classData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--编写评价弹窗-->
-    <appraise-single-modal v-model="appraiseSingleModal"
+    <appraise-single-modal :show.sync="appraiseSingleShow"
                            :config="singleModal.config"
                            :data="currentAppraiseInfo"
                            @on-close="updateData"></appraise-single-modal>
     <!--查看评价弹窗-->
-    <appraise-mult-modal v-model="appraiseShow"
+    <appraise-mult-modal :show.sync="appraiseShow"
                          :config="multModalConfig"
                          :header="modalHeader"
                          :id="multModalData.student_id"
@@ -63,7 +63,7 @@
         ],
         likeKey: 'display_name',  // 默认模糊字段
         // 弹窗-初始化
-        appraiseSingleModal: false,
+        appraiseSingleShow: false,
         appraiseShow: false,
         singleModal: {
           defConf: {
@@ -185,7 +185,7 @@
         }
         config.title = `${config.title} (学员姓名：${currentStudent})`
         this.singleModal.config = Object.assign({}, this.singleModal.defConf, config)
-        this.appraiseSingleModal = true
+        this.appraiseSingleShow = true
       },
     },
   }

@@ -39,7 +39,7 @@
     mixins: [form],
     props: {
       // 弹窗状态
-      value: {
+      show: {
         type: Boolean,
         required: true,
       },
@@ -59,7 +59,7 @@
     },
     data() {
       return {
-        visible: this.value,
+        visible: this.show,
         // 评价内容数据
         formData: {
           comment: null,
@@ -131,12 +131,12 @@
       },
     },
     watch: {
-      value(val) {
+      show(val) {
         this.visible = val
       },
       visible(val) {
         if (val === false) {
-          this.$emit('input', false)
+          this.$emit('update:show', false)
         } else {
           this.getAppraise()
         }

@@ -64,7 +64,7 @@
     name: 'appraise-mult-modal',
     props: {
       // 弹窗状态
-      value: {
+      show: {
         type: Boolean,
         default: false,
       },
@@ -94,7 +94,7 @@
           page: 1,
           per_page: 10,
         },
-        visible: this.value,
+        visible: this.show,
       }
     },
     methods: {
@@ -127,12 +127,12 @@
       },
     },
     watch: {
-      value(val) {
+      show(val) {
         this.visible = val
       },
       visible(val) {
         if (val === false) {
-          this.$emit('input', false)
+          this.$emit('update:show', false)
         } else {
           this.getAppraise({ page: 1, per_page: 10 })
         }
