@@ -24,13 +24,15 @@ export function editInit() {
 export function encode(data) {
   /* 之前没用app-date-pick自行处理数据，此处先留着 */
 
-  const ectype = { ...data }
+  // const ectype = { ...data }
 
-  if (ectype.return_visited_at === '') {
-    ectype.return_visited_at = null
-  }
+  // if (ectype.return_visited_at === '') {
+  //   ectype.return_visited_at = null
+  // }
 
-  return ectype
+  // return ectype
+
+  return data
 }
 
 // 搜索配置
