@@ -79,6 +79,13 @@
         }
         return parent
       },
+      form() {
+        let parent = this.$parent
+        while (parent.$options.name !== 'iForm') {
+          parent = parent.$parent
+        }
+        return parent
+      },
     },
     methods: {
       onChange(val) {
@@ -93,6 +100,11 @@
       onClear() {
         this.$emit('on-clear')
       },
+      // 获取字段是否必填
+      getFormRequired(prop) {
+        const rules = this.form.rules ? this.form.rules[prop] : []
+        return rules.map(item => item.required).indexOf(true) > -1
+      },
       // 日期格式转换
       dateFormat(val) {
         let date = val || ''
@@ -104,7 +116,7 @@
           }
           // 初始周期结束
           if (!this.cycle) this.cycle = 1
-        } else if (!this.formItem.prop) {
+        } else if (!this.formItem.prop || !this.getFormRequired(this.formItem.prop)) {
           date = null
         } else {
           date = ''
