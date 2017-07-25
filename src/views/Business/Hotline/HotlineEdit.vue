@@ -87,7 +87,9 @@ export default {
       // 咨询师数据
       advisories: null,
       formRules: {
-        visited_at: [this.$rules.required('来访时间')],
+        visited_at: [
+          this.$rules.required('来访时间', 'string', 'change'),
+        ],
         elder_name: [
           this.$rules.required('家长姓名'),
           this.$rules.length(2, 10),
@@ -146,7 +148,7 @@ export default {
     // 表单验证函数
     validateReturnAt(rule, value, callback) {
       if (typeof this.fdata.visited_at === 'string'
-        && value !== null) {
+        && value !== '') {
         const from = parseDate(this.fdata.visited_at).valueOf()
         const to = parseDate(this.fdata.return_visited_at).valueOf()
         if (from > to) callback('回访时间应大于来访时间')

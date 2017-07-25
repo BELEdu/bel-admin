@@ -24,27 +24,13 @@ export function editInit() {
 export function encode(data) {
   /* 之前没用app-date-pick自行处理数据，此处先留着 */
 
-  // // eslint-disable-next-line
-  // let ectype = { ...data }
-  // // visited_at 处理首次时间
-  // if (typeof ectype.visited_at === 'object' && ectype.visited_at !== null) {
-  //   ectype.visited_at = ectype.visited_at.toJSON().slice(0, 10)
-  // }
-  // if (ectype.visited_at === '' || ectype.visited_at === '0000-00-00') {
-  //   ectype.visited_at = null
-  // }
-  // // return_visited_at 处理回访时间
-  // if (typeof ectype.return_visited_at === 'object' && ectype.return_visited_at !== null) {
-  //   ectype.return_visited_at = ectype.return_visited_at.toJSON().slice(0, 10)
-  // }
-  // if (ectype.return_visited_at === '' || ectype.return_visited_at === '0000-00-00') {
-  //   ectype.return_visited_at = null
-  // }
-  // // 地址map编码
+  const ectype = { ...data }
 
-  // return ectype
+  if (ectype.return_visited_at === '') {
+    ectype.return_visited_at = null
+  }
 
-  return data
+  return ectype
 }
 
 // 搜索配置
