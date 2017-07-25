@@ -158,18 +158,23 @@ export default {
     submit() {
       // 开启按钮loadding
       this.loading = true
-      // 若表单数据和服务器要求不符，根据需要进行二次处理
-      const fdata = unit_encode(this.fdata)
 
       // 新增退费合同
       if (this.$route.meta.action === 'create') {
         // 虽新增，但用到旧合同id，保存在post数据中belong_contract_id字段
+
+        // 若表单数据和服务器要求不符，根据需要进行二次处理
+        const fdata = unit_encode(this.fdata)
+
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
           .then(() => { this.loading = false; this.goBack() })
       // 更新退费合同
       } else {
         const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, { id, fdata })
+        // 更新不用处理course_total = course_remain
+        const fdata = this.fdata
+
+        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
           .then(() => { this.loading = false; this.goBack() })
       }
     },
@@ -202,7 +207,18 @@ export default {
       this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
         .then((res) => {
           this.isDealAuthority = false
-          this.fdata = unit_decode(res)
+          // 将请求回来的数据和原始fdata合并
+          // 原始fdata有提交必须的id，同时也为了扩展而不在res上直接操作
+          this.fdata = {
+            info: {
+              ...this.fdata.info,
+              ...res.info,
+            },
+            product: {
+              ...this.fdata.product,
+              ...res.product,
+            },
+          }
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })
         .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
