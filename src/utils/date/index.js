@@ -136,3 +136,18 @@ export const nextWeek = (value = initTimeDate(), format) => {
   src.setDate(src.getDate() + 7)
   return getDateRange(src, format)
 };
+
+export const isEqualDateStr = (dateStr1, dateStr2, separator = '-') => {
+  let dateArr1 = dateStr1.split(separator)
+  let dateArr2 = dateStr2.split(separator)
+  if (parseInt(dateArr1[0], 10) !== parseInt(dateArr2[0], 10)) {
+    return false
+  }
+  if (parseInt(dateArr1[1], 10) !== parseInt(dateArr2[1], 10)) {
+    return false
+  }
+  if (parseInt(dateArr1[2], 10) !== parseInt(dateArr2[2], 10)) {
+    return false
+  }
+  return true
+};

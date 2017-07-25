@@ -40,12 +40,13 @@ const router = new Router({
       component: views.Main,
       children: [
         {
-          path: '/index',
+          path: '/index/tongjitu',
           name: 'Index',
           component: views.Home,
           meta: {
             breadcrumb: [
               { name: '我的首页' },
+              { name: '统计图' },
             ],
           },
         },
