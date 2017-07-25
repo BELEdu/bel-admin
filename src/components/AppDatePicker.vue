@@ -104,8 +104,12 @@
           }
           // 初始周期结束
           if (!this.cycle) this.cycle = 1
+        } else if (!this.formItem.prop) {
+          date = null
+        } else {
+          date = ''
         }
-        this.$emit('input', date || null)
+        this.$emit('input', date)
       },
     },
     watch: {
@@ -113,15 +117,7 @@
         this.dateVal = val
       },
       dateVal(val) {
-        let date = val
-        if (val) {
-          this.dateFormat(val)
-        } else if (!this.formItem.prop) {
-          date = null
-        } else {
-          date = ''
-        }
-        this.$emit('input', date)
+        this.dateFormat(val)
       },
     },
   }
