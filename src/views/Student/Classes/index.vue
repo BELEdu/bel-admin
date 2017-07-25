@@ -189,15 +189,9 @@ export default {
     openManageModal(id) { // 打开班级学员管理模态框
       this.modal.manage = true
       this.classId = id
-      this.$http.get(`/classes/${id}`)
+      this.$http.get('/student/student_source')
         .then((res) => {
-          const {
-            student_data,
-            ...others
-          } = res
-
-          this.form = { ...others }
-          this.student_data = student_data
+          this.student_data = res
         })
     },
 
