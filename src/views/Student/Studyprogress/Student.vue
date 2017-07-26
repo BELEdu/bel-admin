@@ -140,8 +140,6 @@ export default {
           ]),
         },
       ],
-       // 表格数据
-      // sdata,
     }
   },
 
