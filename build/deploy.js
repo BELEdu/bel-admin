@@ -19,7 +19,11 @@ const LARAVEL_PATH = path.resolve(__dirname, '../../oa.laravel')
 const ASSETS_PATH = path.join(DIST_PATH, assetsSubDirectory)
 const PUBLIC_PATH = path.join(LARAVEL_PATH, 'public', assetsSubDirectory)
 console.log('copying assets...')
-fs.copySync(ASSETS_PATH, PUBLIC_PATH)
+ // 复制前先清空laravel中的相关文件夹
+fs.emptyDir(PUBLIC_PATH)
+  .then(() => {
+    fs.copySync(ASSETS_PATH, PUBLIC_PATH)
+  })
 
 // 复制dist中的html文件到laravel中的模板文件夹中
 const HMTL_PATH = path.join(DIST_PATH, 'index.html')
