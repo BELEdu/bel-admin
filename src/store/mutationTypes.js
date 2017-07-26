@@ -114,4 +114,10 @@ export const STUDENT = {
       },
     },
   },
+
+  KNOWLEDGEPOINT: {// 学员知识点
+    INIT: 'STUDENT.KNOWLEDGEPOINT.INIT',
+  },
+
+
 }

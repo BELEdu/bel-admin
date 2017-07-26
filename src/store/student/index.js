@@ -11,6 +11,7 @@ import classes from './classes'
 import meeting from './meeting'
 import warning from './warning'
 import studyprogress from './studyprogress'
+import knowledgepoint from './knowledgepoint'
 
 export default {
   modules: {
@@ -19,5 +20,6 @@ export default {
     meeting,
     warning,
     studyprogress,
+    knowledgepoint,
   },
 }
