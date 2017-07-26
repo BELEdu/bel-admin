@@ -50,7 +50,7 @@ export default {
         { label: '学员编号', value: 'number' },
         { label: '学管师', value: 'counsellor_name' },
       ],
-      likeKey: 'display_name',  // 默认模糊字段
+      likeKey: 'display_name', // 默认模糊字段
       // 学员字段
       studentColumns: [
         { title: '学员姓名', key: 'display_name', align: 'center', width: 160 },

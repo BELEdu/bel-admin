@@ -52,7 +52,7 @@ export default {
         { label: '员工编号', value: 'number' },
         { label: '授课科目', value: 'subject_type' },
       ],
-      likeKey: 'teacher_name',  // 默认模糊字段
+      likeKey: 'teacher_name', // 默认模糊字段
       // 教师字段
       teacherColumns: [
         { title: '教师姓名', key: 'realname', align: 'center', width: 100 },

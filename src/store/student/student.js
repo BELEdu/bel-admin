@@ -34,7 +34,7 @@ export default {
           commit(STUDENT.STUDENT.INIT, res)
         })
     },
-     // 删除学员接口
+    // 删除学员接口
     [STUDENT.STUDENT.DELETE]({ commit }, id) {
       return Http.delete(`/student/${id}`)
         .then(() => {

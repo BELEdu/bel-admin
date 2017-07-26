@@ -49,7 +49,7 @@ export default {
       likeKeys: [
         { label: '班级名称', value: 'display_name' },
       ],
-      likeKey: 'display_name',  // 默认模糊字段
+      likeKey: 'display_name', // 默认模糊字段
       // 班级字段
       clbumColumns: [
         { title: '班级名称',

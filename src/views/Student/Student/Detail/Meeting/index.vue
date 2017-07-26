@@ -181,11 +181,11 @@ export default {
       // 禁止连续点击
       this.loading.delete = true
       this.$store.dispatch(STUDENT.STUDENT.MEETING.DELETE, meetingId)
-      .then(() => {
-        this.loading.delete = false
-        this.modal.delete = false
-        this.$Message.warning('删除成功！')
-      })
+        .then(() => {
+          this.loading.delete = false
+          this.modal.delete = false
+          this.$Message.warning('删除成功！')
+        })
     },
   },
 

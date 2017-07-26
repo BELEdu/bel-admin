@@ -120,7 +120,7 @@ export default {
   data() {
     return {
       form: {
-        display_name: '',  // 班级名称
+        display_name: '', // 班级名称
         product_id: null, // 产品id
         product_type_id: null, // 产品类型id
         classes_director: null, // 班主任
@@ -150,7 +150,7 @@ export default {
       student_data: [], // 班级学生数据源
       classesDate: [], // 开班日期（range）
 
-       // studentList: [], // 班级学生数据源（测试）
+      // studentList: [], // 班级学生数据源（测试）
     }
   },
 
@@ -183,17 +183,17 @@ export default {
     submit() {
       const data = {
         ...this.form,
-         // 处理时间段格式
+        // 处理时间段格式
         start_at: this.classesDate.length > 0 ? format(this.classesDate[0], 'YYYY-MM-DD') : null,
         end_at: this.classesDate.length > 0 ? format(this.classesDate[1], 'YYYY-MM-DD') : null,
         calendar: {
           ...this.form.calendar,
           special_at:
           this.form.calendar.special_at ?
-          this.form.calendar.special_at.map(item => ({
-            start_at: format(item.specialDate[0], 'YYYY-MM-DD'),
-            end_at: format(item.specialDate[1], 'YYYY-MM-DD'),
-          })) : null,
+            this.form.calendar.special_at.map(item => ({
+              start_at: format(item.specialDate[0], 'YYYY-MM-DD'),
+              end_at: format(item.specialDate[1], 'YYYY-MM-DD'),
+            })) : null,
         },
       }
 
@@ -249,9 +249,9 @@ export default {
               ...others.calendar,
               special_at:
               others.calendar.special_at ?
-              others.calendar.special_at.map(item => ({
-                specialDate: [item.end_at, item.start_at],
-              })) : null,
+                others.calendar.special_at.map(item => ({
+                  specialDate: [item.end_at, item.start_at],
+                })) : null,
             },
           }
 

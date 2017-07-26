@@ -94,9 +94,9 @@ export default {
 
   created() {
     this.$http.get('/teacher_list?attr=is_student_admin')
-    .then((res) => {
-      this.manages = res
-    })
+      .then((res) => {
+        this.manages = res
+      })
   },
 }
 </script>

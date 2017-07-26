@@ -69,19 +69,19 @@ export default {
       likeKey: 'flow_number',
 
       columns: [
-      { title: '序号', align: 'center', type: 'index' },
-      { title: '流程编号', key: 'flow_number', align: 'center' },
-      { title: '流程名称', key: 'display_name', align: 'center' },
-      { title: '所属部门', key: 'department_name', align: 'center' },
-      { title: '流程类型', key: 'flow_type_name', align: 'center' },
-      { title: '申请角色', key: 'apply_role_name', align: 'center' },
-      { title: '创建类型', key: 'flow_create_type_name', align: 'center' },
+        { title: '序号', align: 'center', type: 'index' },
+        { title: '流程编号', key: 'flow_number', align: 'center' },
+        { title: '流程名称', key: 'display_name', align: 'center' },
+        { title: '所属部门', key: 'department_name', align: 'center' },
+        { title: '流程类型', key: 'flow_type_name', align: 'center' },
+        { title: '申请角色', key: 'apply_role_name', align: 'center' },
+        { title: '创建类型', key: 'flow_create_type_name', align: 'center' },
         {
           title: '操作',
           align: 'center',
           render: createButton([
-          { text: '删除', type: 'error', click: row => this.prepareRemove(row.id) },
-          { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/process/edit/${row.id}`) },
+            { text: '删除', type: 'error', click: row => this.prepareRemove(row.id) },
+            { text: '编辑', type: 'primary', click: row => this.$router.push(`/system/process/edit/${row.id}`) },
           ]),
         },
       ],

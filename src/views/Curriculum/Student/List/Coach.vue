@@ -67,7 +67,7 @@
           { label: '班主任', value: 'classes_director' },
           { label: '产品名称', value: 'schedule_product_name' },
         ],
-        likeKey: 'display_name',  // 默认模糊字段
+        likeKey: 'display_name', // 默认模糊字段
         // 班级字段
         coachColumns: [
           { title: '班级',

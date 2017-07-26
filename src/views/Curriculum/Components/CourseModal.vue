@@ -182,17 +182,17 @@
       // 获取备选数据
       getCourseOption() {
         this.$http.get(this.urlConf.getData)
-        .then((result) => {
-          if (this.status !== 'add') {
+          .then((result) => {
+            if (this.status !== 'add') {
             // 编辑
-            this.courseOption = result.optional
-            this.formData = { ...this.formData, ...result.info }
-          } else {
+              this.courseOption = result.optional
+              this.formData = { ...this.formData, ...result.info }
+            } else {
             // 新增
-            this.formReset = true
-            this.courseOption = result
-          }
-        })
+              this.formReset = true
+              this.courseOption = result
+            }
+          })
       },
       // 产品联动课时
       productChange(id) {

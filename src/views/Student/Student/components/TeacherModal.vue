@@ -94,9 +94,9 @@ export default {
   created() {
     // this.$http.get('/student/assign_teacher')
     this.$http.get('/teacher_list?attr=is_student_teac')
-    .then((res) => {
-      this.teachers = res
-    })
+      .then((res) => {
+        this.teachers = res
+      })
   },
 }
 </script>

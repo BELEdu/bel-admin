@@ -62,7 +62,7 @@ export default {
           current_grade: null,
         },
       },
-       // 表格配置
+      // 表格配置
       columns: [
         {
           title: '学员姓名',
@@ -91,7 +91,7 @@ export default {
           render: (h, params) => {
             const { plan_course_cost_total, plan_course_total } = params.row
             const text = `计划总课时：${plan_course_total}`
-             // eslint-disable-next-line
+            // eslint-disable-next-line
             const percent = plan_course_total === 0 ? 0 : Math.round(plan_course_cost_total / plan_course_total * 100)
             // const percent = Math.round(point_now / point_total *10000)/100 //保留小数点后两位
             return h('div', [
@@ -113,7 +113,7 @@ export default {
           render: (h, params) => {
             const { plan_knowledge_cost_total, plan_knowledge_total } = params.row
             const text = `总知识点：${plan_knowledge_total}个`
-             // eslint-disable-next-line
+            // eslint-disable-next-line
             const percent = plan_knowledge_total === 0 ? 0 : Math.round(plan_knowledge_cost_total / plan_knowledge_total * 100)
             // const percent = Math.round(point_now / point_total *10000)/100 //保留小数点后两位
             return h('div', [

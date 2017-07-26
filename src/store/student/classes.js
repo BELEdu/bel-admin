@@ -36,7 +36,7 @@ export default {
           commit(STUDENT.CLASSES.INIT, res)
         })
     },
-     // 删除班级接口
+    // 删除班级接口
     [STUDENT.CLASSES.DELETE]({ commit }, id) {
       return Http.delete(`/classes/${id}`)
         .then(() => {

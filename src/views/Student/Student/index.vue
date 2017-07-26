@@ -225,11 +225,11 @@ export default {
       this.studentId = id
       this.loading.delete = true
       this.$store.dispatch(STUDENT.STUDENT.DELETE, id)
-      .then(() => {
-        this.loading.delete = false
-        this.modal.delete = false
-        this.$Message.warning('删除成功！')
-      })
+        .then(() => {
+          this.loading.delete = false
+          this.modal.delete = false
+          this.$Message.warning('删除成功！')
+        })
     },
 
     getSchoolList() { // 获取校区列表

@@ -26,9 +26,9 @@ export default {
     // 预警信息列表接口(传入学生id和query)
     [STUDENT.STUDENT.WARNING.INIT]({ commit }, { id, query = '' }) {
       return Http.get(`/studentwarning/${id}${query}`)
-       .then((res) => {
-         commit(STUDENT.STUDENT.WARNING.INIT, res)
-       })
+        .then((res) => {
+          commit(STUDENT.STUDENT.WARNING.INIT, res)
+        })
     },
   },
 }

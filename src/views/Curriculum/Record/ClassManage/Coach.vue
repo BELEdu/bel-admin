@@ -58,7 +58,7 @@
         likeKeys: [
           { label: '班级名称', value: 'display_name' },
         ],
-        likeKey: 'display_name',  // 默认模糊字段
+        likeKey: 'display_name', // 默认模糊字段
         // 查看弹窗-初始化
         coachModal: false,
         // 晚辅导字段

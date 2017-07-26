@@ -109,7 +109,7 @@ export default {
         teacher_id: null, // 教师id
         character_analysis: '', // 学员分析
         methods_measures: '', // 拟采用的方法或措施
-        teaching_objectives: '',  // 教学目标
+        teaching_objectives: '', // 教学目标
         course: [new Course()], // 排课计划
         weakKnowledge: [], // 薄弱知识点
         plan_knowledge: [1, 2, 3, 4, 5], // 已选择的知识点
@@ -275,9 +275,9 @@ export default {
 
     getTeacherData() { // 获取教师数据
       this.$http.get('/teacher_list?attr=is_student_teac')
-      .then((res) => {
-        this.teachers = res
-      })
+        .then((res) => {
+          this.teachers = res
+        })
     },
 
     submit() {
@@ -292,22 +292,22 @@ export default {
       if (this.isAdd) {
         const addApi = this.isStudent ? `/studentplan/${this.id}` : `/classesplan/${this.id}`
         this.$http.post(addApi, data)
-         .then(this.successHandler)
-         .catch(this.errorHandler)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
       } else {
         const editApi = this.isStudent ? `/studentplan/${data.id}` : `/classesplan/${data.id}`
         this.$http.patch(editApi, data)
-         .then(this.successHandler)
-         .catch(this.errorHandler)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
       }
     },
 
     endPlan(planId) { // 结束计划的时候在视图上移除该计划并跳转到历史计划列表
       this.$http.post(`/studentplan/end/${planId}`)
-      .then(() => {
-        this.$router.push(`/student/studyprogress/${this.type}/${this.id}/history`)
-        this.$emit('endPlan', planId)
-      })
+        .then(() => {
+          this.$router.push(`/student/studyprogress/${this.type}/${this.id}/history`)
+          this.$emit('endPlan', planId)
+        })
     },
   },
 

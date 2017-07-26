@@ -31,9 +31,9 @@ export default {
     // 交流会列表接口(传入学生id和query)
     [STUDENT.STUDENT.MEETING.INIT]({ commit }, { id, query = '' }) {
       return Http.get(`/studentmeeting/${id}${query}`)
-       .then((res) => {
-         commit(STUDENT.STUDENT.MEETING.INIT, res)
-       })
+        .then((res) => {
+          commit(STUDENT.STUDENT.MEETING.INIT, res)
+        })
     },
     // 删除交流会接口
     [STUDENT.STUDENT.MEETING.DELETE]({ commit }, id) {

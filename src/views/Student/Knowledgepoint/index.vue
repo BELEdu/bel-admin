@@ -57,7 +57,7 @@ export default {
      return {
 
        likeKeys: [
-        { label: '学员姓名', value: 'display_name' },
+         { label: '学员姓名', value: 'display_name' },
        ],
        likeKey: 'display_name',
        query: {
@@ -139,8 +139,8 @@ export default {
            align: 'center',
            width: 140,
            render: createButton([
-            { text: '详情', type: 'primary', click: row => this.$router.push(`/student/knowledgepoint/${row.id}`) },
-            { text: '知识点', type: 'warning' },
+             { text: '详情', type: 'primary', click: row => this.$router.push(`/student/knowledgepoint/${row.id}`) },
+             { text: '知识点', type: 'warning' },
            ]),
          },
        ],
@@ -150,7 +150,7 @@ export default {
    },
 
    computed: {
-    // 使用mapState获取list
+     // 使用mapState获取list
      ...mapState({
        list: state => state.student.knowledgepoint.list,
        grades: state => state.dicts.grade,

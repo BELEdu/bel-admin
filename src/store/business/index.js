@@ -19,7 +19,7 @@ export default {
   },
 
   actions: {
-    [BUSINESS.SETURI]({ state, commit }, to) {
+    [BUSINESS.SETURI]({ commit }, to) {
       commit(BUSINESS.SETURI, to.meta.uri)
     },
     // index 初始化
@@ -34,7 +34,7 @@ export default {
       return Http.get(`/${state.uri}${query}`)
         .then(res => commit(BUSINESS.PAGE.INIT, { res, uri: to.meta.uri }))
     },
-    [BUSINESS.EDIT.INIT]({ state, commit }, to) {
+    [BUSINESS.EDIT.INIT]({ commit }, to) {
       const id = to.params.id
       const uri = to.meta.uri
       commit(BUSINESS.SETURI, uri)
@@ -44,12 +44,12 @@ export default {
       return Promise.reject()
     },
     // 编辑页面 提交添加信息
-    [BUSINESS.EDIT.CREATE]({ state, commit }, payload) {
+    [BUSINESS.EDIT.CREATE]({ state }, payload) {
       // 提交成功后回到index组件
       return Http.post(`/${state.uri}`, payload)
     },
     // 编辑页面 提交修改信息
-    [BUSINESS.EDIT.UPDATE]({ state, commit }, { id, fdata }) {
+    [BUSINESS.EDIT.UPDATE]({ state }, { id, fdata }) {
       // 提交成功后回到index组件
       return Http.patch(`/${state.uri}/${id}`, fdata)
     },

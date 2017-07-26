@@ -205,11 +205,11 @@ export default {
       this.loading.delete = true
       // 班级id用来请求删除接口
       this.$store.dispatch(STUDENT.CLASSES.DELETE, id)
-      .then(() => {
-        this.loading.delete = false
-        this.modal.delete = false
-        this.$Message.warning('删除成功！')
-      })
+        .then(() => {
+          this.loading.delete = false
+          this.modal.delete = false
+          this.$Message.warning('删除成功！')
+        })
     },
 
     getData(qs) { // 根据接口和loaction.search（query）获取数据

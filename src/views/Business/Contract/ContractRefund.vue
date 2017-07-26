@@ -117,7 +117,7 @@ import {
   unit_encode,
   unit_decode,
   formRules,
- } from './modules/refundConfig'
+} from './modules/refundConfig'
 
 export default {
   name: 'ContractRefund',
