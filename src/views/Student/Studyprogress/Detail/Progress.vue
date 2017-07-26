@@ -1,10 +1,9 @@
 <template>
   <div>
 
-    <Tabs class="app-tabs" @on-click="subjectSelect">
-      <Tab-pane label="数学" name="math"></Tab-pane>
-      <Tab-pane label="英语" name="english"></Tab-pane>
-      <Tab-pane label="语文" name="chinese"></Tab-pane>
+    <Tabs class="app-tabs" @on-click="tabSelect">
+        <Tab-pane label="暂时没有进行中的学习进度" v-if="editInfo.length===0"></Tab-pane>
+        <Tab-pane v-for="item in editInfo" :key="item.id" :label="`${item.subject_type_name}，计划id：${item.id}`"></Tab-pane>
     </Tabs>
 
     <Steps :current="1">
@@ -14,15 +13,16 @@
         <Step title="待进行" content="第10节课"></Step>
     </Steps>
 
-    <Tabs class="app-tabs" @on-click="tabSelect">
-      <Tab-pane label="高中" name="high"></Tab-pane>
-      <Tab-pane label="初中" name="middle"></Tab-pane>
-      <Tab-pane label="小学" name="primary"></Tab-pane>
-    </Tabs>
+    <!-- 学习进度表格组件 -->
+    <progress-table :planId="planId" v-if="planId"></progress-table>
+
+    <Row class="app-content-header" type="flex" justify="space-between">
+      <Col>
+        <h2>测试数据（旧版本原型）</h2>
+      </Col>
+    </Row>
 
     <Table class="app-table point-table" :columns="columns" :data="ddata" border></Table>
-
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
 
   </div>
 </template>
@@ -34,8 +34,8 @@
  * @version 2017-07-04
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import ddata from '../Data/ddata'
+import ProgressTable from '../components/ProgressTable'
 
 export default {
   name: 'app-student-studyprogress-detail-progress',
@@ -47,6 +47,10 @@ export default {
     },
     id: {
       type: [Number, String],
+      required: true,
+    },
+    editInfo: {
+      type: Array,
       required: true,
     },
   },
@@ -106,23 +110,32 @@ export default {
         },
       ],
 
-      ddata,
+      ddata, // 知识点假数据
 
-      pager: undefined,
+      planIndex: 0,
     }
   },
 
-  methods: {
-    subjectSelect(name) {
-      this.$Message.info(`你选择了${name}`)
+  components: {
+    ProgressTable,
+  },
+
+  computed: {
+    planId() {
+      if (this.editInfo.length) {
+        return this.editInfo[this.planIndex].id
+      }
+      return null
     },
-    tabSelect(name) {
-      this.$Message.info(`你选择了${name}`)
+  },
+
+  methods: {
+    tabSelect(index) {
+      this.planIndex = index
     },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
     this.$route.meta.breadcrumb[1].link = `/student/studyprogress/${this.type}`
   },
 }

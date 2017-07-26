@@ -59,7 +59,7 @@
 <script>
 /**
  * 学员管理 - 学习进度 - 创建/编辑计划
- * @author lmh
+ * @author zml|lmh
  * @version 2017-06-29
  */
 
@@ -112,7 +112,7 @@ export default {
         teaching_objectives: '',  // 教学目标
         course: [new Course()], // 排课计划
         weakKnowledge: [], // 薄弱知识点
-        plan_knowledge: [2, 3, 4], // 已选择的知识点
+        plan_knowledge: [1, 2, 3, 4, 5], // 已选择的知识点
       },
 
       knowledgeData: [], // 知识点数据源
