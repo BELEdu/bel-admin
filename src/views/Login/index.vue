@@ -19,7 +19,7 @@
               <Input type="password" v-model="form.password"></Input>
             </Form-item>
             <Form-item>
-              <Button type="primary" @click="beforeSubmit" :loading="formLoading" long>登陆</Button>
+              <Button type="primary" @click="beforeSubmit" :loading="formLoading" long>登录</Button>
             </Form-item>
           </div>
         </div>
