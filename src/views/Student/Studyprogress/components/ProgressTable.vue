@@ -93,7 +93,7 @@ export default {
 
   created() {
     this.getProgressData()
-    .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
 }
