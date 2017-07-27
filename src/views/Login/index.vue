@@ -8,7 +8,7 @@
       <Form class="login-box__body" :model="form" :rules="rules" :label-width="60" ref="form">
         <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
 
-        <div class="login-box__body__content clearfix" @keyup.enter="handleSubmit">
+        <div class="login-box__body__content clearfix" @keyup.enter="beforeSubmit">
           <img class="login-box__logo" :src="require('@/assets/logo.png')" alt="">
 
           <div class="login-box__form">
