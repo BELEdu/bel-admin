@@ -46,7 +46,6 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import fdata from './fdata'
 
 export default {
    name: 'app-student-knowledgepoint',
@@ -58,6 +57,7 @@ export default {
 
        likeKeys: [
          { label: '学员姓名', value: 'display_name' },
+         { label: '学号', value: 'number' },
        ],
        likeKey: 'display_name',
        query: {
@@ -144,8 +144,7 @@ export default {
            ]),
          },
        ],
-       // 表格数据
-       fdata,
+
      }
    },
 
