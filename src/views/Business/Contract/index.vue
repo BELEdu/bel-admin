@@ -75,11 +75,19 @@
       :data="buffer.data"
       @on-sort-change="sort"></Table>
 
-    <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
+    <app-pager
+      :data="buffer"
+      @on-change="goTo"
+      @on-page-size-change="pageSizeChange"
+    ></app-pager>
 
     <!--删除提醒框-->
-    <app-warn-modal v-model="warn.show" :title="warn.title"
-      :loading="warn.loading" @on-ok="doCancel"
+    <app-warn-modal
+      v-model="warn.show"
+      :title="warn.title"
+      :loading="warn.loading"
+      action="确认取消"
+      @on-ok="doCancel"
     >
       <p>取消该审批后将无法重新提交，是否确认取消？</p>
     </app-warn-modal>
@@ -111,7 +119,7 @@ export default {
       // 删除警告对话框数据
       warn: {
         show: false,
-        title: '确认删除',
+        title: '确认取消合同',
         row: null,
         loading: false,
       },
