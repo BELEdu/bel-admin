@@ -57,21 +57,6 @@ export default {
 
   data() {
     return {
-      //  科目列表
-      subjects: [
-        {
-          label: '英语',
-          name: 'english',
-        },
-        {
-          label: '数学',
-          name: 'math',
-        },
-        {
-          label: '语文',
-          name: 'chinese',
-        },
-      ],
 
       columns: [
         { title: '知识点', key: 1, align: 'center' },
