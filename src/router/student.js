@@ -229,7 +229,7 @@ export default [
     },
   },
   {
-    path: '/student/knowledgepoint/:studentId',
+    path: '/student/knowledgepoint/:id',
     name: 'StudentKnowledgepointDetail',
     component: views.StudentKnowledgepointDetail,
     meta: {
