@@ -97,9 +97,9 @@ export default {
       if (this.planId) {
         const api = `/studentprogress/infoknowledge/${this.planId}`
         return this.$http.get(api)
-        .then((res) => {
-          this.data = res.plan_knowledge_pivot
-        })
+          .then((res) => {
+            this.data = res.plan_knowledge_pivot
+          })
       }
       return false
     },
@@ -107,8 +107,8 @@ export default {
 
   created() {
     this.getStudentInfo()
-    .then(this.getProgressData)
-    .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      .then(this.getProgressData)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
 }
