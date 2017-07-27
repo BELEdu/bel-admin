@@ -104,6 +104,7 @@ export default [
       ],
     },
   },
+  // 题库列表
   {
     path: '/prepare/question',
     name: 'PrepareQuestion',
@@ -115,6 +116,20 @@ export default [
       ],
     },
   },
+  // 题库列表 题目解析
+  {
+    path: '/prepare/question/analysis/:id',
+    name: 'PrepareQuestionAnalysis',
+    component: views.QuestionAnalysis,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '题库列表' },
+        { name: '题目解析' },
+      ],
+    },
+  },
+  // 题库列表 试卷预览
   {
     path: '/prepare/question/paperpreview',
     name: 'PrepareQuestionPaperpreview',

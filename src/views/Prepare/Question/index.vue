@@ -146,7 +146,12 @@
           <div style="height: 100px;"></div>
           <div>
             <Button size="small" type="primary">加入试卷</Button>
-            <Button size="small" type="primary">查看解析</Button>
+            <Button
+              size="small"
+              type="primary"
+              @click="toAnalysis">
+              查看解析
+            </Button>
             <Button size="small" type="primary">收藏题目</Button>
             <Button size="small" type="primary">换题</Button>
             <span>难度系数：
@@ -298,6 +303,10 @@ export default {
     },
     helpFliter(index) {
       this.helpType = index
+    },
+    // 跳转题目解析
+    toAnalysis() {
+      this.$router.push('/prepare/question/analysis/1')
     },
     // 进入预览试卷
     previewPaper() {
