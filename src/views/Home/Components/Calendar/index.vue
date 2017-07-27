@@ -32,7 +32,7 @@
    */
 
   import { formatDate, parseDate } from '@/utils/date'
-  import i18n from './Calendar/i18n'
+  import i18n from './i18n'
 
   export default {
     name: 'calendar',

@@ -19,7 +19,7 @@
           <p slot="title">
             {{item.title}}
           </p>
-          <data-module :type="item.name" :data="item"></data-module>
+          <data-module v-if="visibleModule" :type="item.name" :data="item"></data-module>
         </Card>
       </div>
     </waterfall-slot>
@@ -50,18 +50,22 @@
     },
     data() {
       return {
-        blockHeight: [400, 250, 400, 360, 560],
+        blockHeight: [400, 250, 400, 360, 560, 420, 500, 350, 400, 600, 460, 450, 480],
         moduleWidth: 100,
-        moduleHeight: 100,
+        visibleModule: false,
       }
     },
+    mounted() {
+      this.setWH()
+    },
     methods: {
+      setWH() {
+        const width = this.$refs.waterfall.$el.clientWidth
+        this.moduleWidth = width / 2
+      },
       reflowed() {
-        this.$nextTick(() => {
-          const width = this.$refs.waterfall.$el.clientWidth
-          this.moduleWidth = width / 2
-          this.moduleHeight = 100
-        })
+        this.visibleModule = true
+        this.setWH()
       },
     },
   }
@@ -71,6 +75,21 @@
     padding: 2px;
     .ivu-card {
       background-color: #eee;
+      position: relative;
+      padding-top: 51px;
+      .ivu-card-head {
+        width: 100%;
+        position: absolute;
+        top: 0;
+      }
+      .ivu-card-body {
+        width: 100%;
+        height: 100%;
+        >div {
+          width: 100%;
+          height: 100%;
+        }
+      }
     }
   }
 </style>
