@@ -2,7 +2,7 @@
   <div class="home-data-module">
     <!--本月签约-->
     <template v-if="$attrs.type==='contract'">
-      <home-echart :data="contractData"></home-echart>
+      <app-echarts :set-option="contractData"></app-echarts>
     </template>
     <!--预警-->
     <template v-if="$attrs.type==='warning'">
@@ -10,7 +10,7 @@
     </template>
     <!--本月签约课时收入-->
     <template v-if="$attrs.type==='income'">
-      <home-echart :data="incomeData"></home-echart>
+      <app-echarts :set-option="incomeData"></app-echarts>
     </template>
     <!--我的审批-->
     <template v-if="$attrs.type==='approval'">
@@ -36,11 +36,11 @@
     </template>
     <!--本月签约课时收入占比-->
     <template v-if="$attrs.type==='incomeCompared'">
-      <home-echart :data="incomeComparedData"></home-echart>
+      <app-echarts :set-option="incomeComparedData"></app-echarts>
     </template>
     <!--本月各校区签约金额占比-->
     <template v-if="$attrs.type==='amountCompared'">
-      <home-echart :data="amountComparedData"></home-echart>
+      <app-echarts :set-option="amountComparedData"></app-echarts>
     </template>
     <!--我的测试管理-->
     <template v-if="$attrs.type==='testManager'">我的测试管理</template>
@@ -52,7 +52,7 @@
     <template v-if="$attrs.type==='myClass'">我的班级</template>
     <!--本月耗课-->
     <template v-if="$attrs.type==='tookPeriod'">
-      <home-echart :data="tookPeriodData"></home-echart>
+      <app-echarts :set-option="tookPeriodData"></app-echarts>
     </template>
     <!--本月耗课排行-->
     <template v-if="$attrs.type==='tookPeriodSort'"></template>
@@ -68,12 +68,11 @@
   /*eslint-disable*/
 
   import { isEmpty } from 'lodash'
-  import HomeEchart from './Contract'
   import HomeCalendar from './Calendar'
 
   export default {
     name: 'data-module',
-    components: { HomeEchart, HomeCalendar },
+    components: { HomeCalendar },
     data() {
       return {
         courseData: [
@@ -294,77 +293,34 @@
           ]
         },
         amountComparedData: {
-          tooltip: {
-            trigger: 'axis',
-            formatter:"{b} 日 <br/>{a0} : {c0} 元  <br/> {a1} : {c1} 元 <br/> {a2} : {c2} 元 <br/> {a3} : {c3} 个 ",
-            axisPointer: {
-              type: 'cross',
-              crossStyle: {
-                color: '#999'
-              }
-            }
+          tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} 元 ({d}%)"
           },
           legend: {
-            data:['一对一耗课金额','小班耗课金额','晚辅导耗课金额','耗课课时数']
+            x : 'center',
+            y : 'bottom',
+            data:['思明校区','杏林校区','湖里校区','翔安校区','集美校区','同安校区','漳州校区','泉州校区']
           },
-          xAxis: [
-            {
-              type: 'category',
-              data:
+          calculable : true,
+          series : [
 
-                ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'],
-              axisPointer: {
-                type: 'shadow'
-              }
-            }
-          ],
-          yAxis: [
             {
-              type: 'value',
-              name: '金额',
-              min: 0,
-              max: 300000,
-              interval: 50000,
-              axisLabel: {
-                formatter: '{value} 元'
-              }
-            },
-            {
-              type: 'value',
-              name: '课时',
-              min: 0,
-              max: 300,
-              interval: 50,
-              axisLabel: {
-                formatter: '{value} 个'
-              }
-            }
-          ],
-          series: [
-            {
-              name:'一对一耗课金额',
-              type:'bar',
-              stack:'签约',
-              data:[20000, 30000,10000, 20000, 10000,70000,65000,15000,80000,90000,4000,50000,55000,65000,75000,30000,50000,35000,55000,60000,70000,80000]
-            },
-            {
-              name:'小班耗课金额',
-              type:'bar',
-              stack:'签约',
-              data:[30000, 2000, 50000, 30000, 60000,50000,60000,120000,60000,40000,110000,50000,30000,30000,10000,60000,70000,80000,60000,30000,40000,25000]
-            },
-            {
-              name:'晚辅导耗课金额',
-              type:'bar',
-              stack:'签约',
-              data:[2000, 20000, 4000, 2000, 3000,10000,5000,6000,7000,8000,8000,9000,10000,10000,10000,10000,8000,7000,7000,7000,8000,8000]
-            },
-            {
-              name:'耗课课时数',
-              type:'line',
-              stack: '总量',
-              yAxisIndex: 1,
-              data:[120, 132, 101, 134, 90, 230, 220,230,200,190,205,180,150,170,180,190,185,200,150,160,177,155]
+              name:'签约金额',
+              type:'pie',
+              radius : [30, 110],
+              center : ['50%', '50%'],
+              roseType : 'area',
+              data:[
+                {value:57889, name:'思明校区'},
+                {value:5000, name:'杏林校区'},
+                {value:15000, name:'湖里校区'},
+                {value:55056, name:'翔安校区'},
+                {value:100506, name:'集美校区'},
+                {value:55889, name:'同安校区'},
+                {value:23000, name:'漳州校区'},
+                {value:14449, name:'泉州校区'}
+              ]
             }
           ]
         },
