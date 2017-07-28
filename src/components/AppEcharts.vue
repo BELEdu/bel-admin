@@ -46,7 +46,7 @@
       },
       delayTime: {
         type: Number,
-        default: 500,
+        default: 300,
       },
     },
 
@@ -66,7 +66,7 @@
       this.init()
     },
     beforeDestroy() {
-      window.removeEventListener('resize', this.chart.resize)
+      window.removeEventListener('resize', debounce(this.resize, this.delayTime))
       if (this.char) {
         // 销毁图表实例
         this.chart.dispose()
@@ -78,7 +78,11 @@
         this.chart = echarts.init(document.getElementById(this.id))
         this.chart.setOption(this.setOptions)
         // 图表响应大小的关键,重绘
-        window.addEventListener('resize', debounce(this.chart.resize, this.delayTime))
+        window.addEventListener('resize', debounce(this.resize, this.delayTime))
+      },
+      // 重绘图表
+      resize() {
+        this.chart.resize()
       },
     },
   }
