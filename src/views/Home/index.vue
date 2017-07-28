@@ -3,7 +3,7 @@
     <div class="home-header home-block">
       <Row>
         <Col>
-        <Card shadow>
+        <Card>
           <Row type="flex" justify="center" align="middle">
             <Col span="4">
             <div class="home-header__campus">
@@ -150,14 +150,19 @@
 
 <style lang="less">
   @import "~vars";
+  @import "~mixin";
+
   .home-block {
     padding: 2px;
     .ivu-card {
-      background-color: #eee;
+      background-color: #fff;
     }
   }
   .home-header {
     margin-bottom: 20px;
+    .ivu-card-body {
+      .clearfix();
+    }
     &__campus {
       text-align: center;
       &-name {

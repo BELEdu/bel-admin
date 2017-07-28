@@ -15,7 +15,7 @@
       :class="className+'-solt'"
     >
       <div class="waterfall-module waterfall-block" :index="index" :style="{height: blockHeight[index]+'px'}">
-        <Card shadow style="height: 100%">
+        <Card style="height: 100%">
           <p slot="title">
             {{item.title}}
           </p>
@@ -74,7 +74,7 @@
   .waterfall-block {
     padding: 2px;
     .ivu-card {
-      background-color: #eee;
+      background-color: #fff;
       position: relative;
       padding-top: 51px;
       .ivu-card-head {

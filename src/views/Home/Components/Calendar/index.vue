@@ -37,7 +37,7 @@
   export default {
     name: 'calendar',
     data() {
-      const date = this.date ? new Date(this.date) : new Date()
+      const date = this.date ? new Date(this.date) : new Date().setDate(1)
       return {
         i18n,
         curDate: {
@@ -64,7 +64,7 @@
     },
     computed: {
       dayList() {
-        const firstDay = new Date(`${this.curDate.curYear}-${this.curDate.curMonth + 1}-01`)
+        const firstDay = new Date(`${this.curDate.curYear}-${(this.curDate.curMonth + 1).toString().padStart(2, '0')}-01`)
         const startTimestamp = firstDay - (1000 * 60 * 60 * 24 * (firstDay.getDay() - 1))
         let item
         let status
@@ -87,7 +87,7 @@
         return formatDate(new Date())
       },
       curYearMonth() {
-        const tempDate = Date.parse(new Date(`${this.curDate.curYear}-${this.curDate.curMonth + 1}-01`))
+        const tempDate = Date.parse(new Date(`${this.curDate.curYear}-${(this.curDate.curMonth + 1).toString().padStart(2, '0')}-01`))
         return formatDate(tempDate, this.i18n[this.calendar.locale].format)
       },
       customColor() {
