@@ -33,6 +33,7 @@
    */
 
   import { Waterfall, WaterfallSlot } from 'vue-waterfall'
+  import { debounce } from 'lodash'
   import DataModule from './DataModule'
 
   export default {
@@ -53,19 +54,29 @@
         blockHeight: [400, 250, 400, 360, 560, 420, 500, 350, 400, 600, 460, 450, 480],
         moduleWidth: 100,
         visibleModule: false,
+        delayTime: 10,
+        waterfallDom: null,
       }
     },
+    created() {
+      window.addEventListener('resize', debounce(this.setWH, this.delayTime))
+    },
     mounted() {
+      this.waterfallDom = this.$refs.waterfall.$el
       this.setWH()
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', debounce(this.setWH, this.delayTime))
     },
     methods: {
       setWH() {
-        const width = this.$refs.waterfall.$el.clientWidth
-        this.moduleWidth = width / 2
+        this.moduleWidth = this.waterfallDom.clientWidth / 2
       },
       reflowed() {
-        this.visibleModule = true
-        this.setWH()
+        if (!this.visibleModule) {
+          this.setWH()
+          this.visibleModule = true
+        }
       },
     },
   }
