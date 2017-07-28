@@ -16,27 +16,15 @@ import '@/styles/global.less'
 import Vue from 'vue'
 import iView from 'iview'
 import { Acl, Http, Rules } from '@/utils'
-import * as components from '@/components'
+import rbDog from '@/components'
 import App from './App'
 import router from './router'
 import store from './store'
 
-// 注册全局组件
-Vue.component('app-editor-title', components.EditorTitle)
-Vue.component('app-pager', components.AppPager)
-Vue.component('app-form-modal', components.AppFormModal)
-Vue.component('app-warn-modal', components.AppWarnModal)
-Vue.component('app-form-alert', components.AppFormAlert)
-Vue.component('app-dicts-filter', components.AppDictsFilter)
-Vue.component('app-uploader', components.AppUploader)
-Vue.component('app-knowledge-tree', components.AppKnowledgeTree)
-Vue.component('app-date-picker', components.AppDatePicker)
-Vue.component('app-time-picker', components.AppTimePicker)
-Vue.component('app-map-cascader', components.AppMapCascader)
-
 // 注册插件
 Vue
   .use(iView)
+  .use(rbDog)
   .use(Acl)
   .use(Http)
   .use(Rules)
