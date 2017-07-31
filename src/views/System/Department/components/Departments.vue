@@ -15,7 +15,7 @@ export default {
       h(
         'ul',
         { class: 'tree-table__header' },
-        [h('span', '部门'), h('span', '操作')],
+        [h('div', '部门'), h('div', '操作')],
       ),
       h(
         'ul',
@@ -84,17 +84,18 @@ export default {
         h('div', {
           class: 'tree-table__item',
         }, [
-          h('span', { class: 'tree-table__name' }, [
+          h('div', { class: 'tree-table__name' }, [
             (hasChild && item.p_id !== 0) ? h('Button', {
               props: { type: 'text', icon: height ? 'chevron-up' : 'chevron-down' },
               on: { click: () => this.toggleExpand(item.id) },
             }) : null,
             item.display_name,
           ]),
-          h('span', { class: 'tree-table__right', style: { width: '214px' } }, [this.renderButtons(h, item)]),
+          h('div', { class: 'tree-table__right', style: { width: '214px' } }, [this.renderButtons(h, item)]),
         ]),
         hasChild ?
           h('ul', {
+            class: height ? 'tree-list--visible' : 'tree-list--hidden',
             style: { height, opacity: height ? 1 : 0 },
           }, children.map(child => this.renderItem(h, child))) :
           null,
@@ -153,7 +154,7 @@ export default {
     background-color: #f8f8f9;
     font-weight: bold;
 
-    & > span {
+    & > div {
       text-align: center;
       line-height: 40px;
 
@@ -194,7 +195,7 @@ export default {
     height: @item-height;
     line-height: @item-height - 1px;
 
-    &::after {
+    &::before {
       content: "";
       position: absolute;
       right: 0;
@@ -222,6 +223,52 @@ export default {
 
     & > button:not(:first-child) {
       margin-left: 0.8em;
+    }
+  }
+}
+
+.ie .tree-table {
+  &__header {
+    & > div {
+      float: left;
+
+      &:first-child {
+        width: calc(~"100% - 214px");
+      }
+    }
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+  }
+
+  &__item {
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+  }
+
+  &__name {
+    float: left;
+  }
+
+  &__right {
+    float: right;
+  }
+
+  &__level {
+    & > ul {
+      &.tree-list--visible {
+        overflow: visible;
+      }
+
+      &.tree-list--hidden {
+        overflow: hidden;
+      }
     }
   }
 }
