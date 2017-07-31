@@ -166,11 +166,13 @@ export default {
       }
     },
     areasChosed(nv) {
-      if (nv.length === this.school_list.length) {
-        this.allareas = true
-      } else {
-        this.allareas = false
+      let all = false
+      if (nv.length > 0) {
+        // 校区有可能删除或者更新，而fdata.product_areas不会
+        // 所以拿校区到fdata中比对
+        all = this.school_list.every(item => nv.includes(item.id))
       }
+      this.allareas = all
     },
   },
 
