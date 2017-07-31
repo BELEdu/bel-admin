@@ -23,7 +23,7 @@
         <span>学员编号：{{contractDetail.student_number}}</span>
         <span>监护人：{{contractDetail.guardian_name}}</span>
         </Col>
-        <Col>
+        <Col class="contract-detail__info-preview">
         <Button type="primary" size="small">下载合同</Button>
         <Button type="primary" size="small">预览合同</Button>
         </Col>
@@ -219,6 +219,18 @@ export default {
 
     & button {
       margin-top: 0 !important;
+    }
+  }
+}
+
+.ie {
+  & .contract-detail {
+    &__info-student {
+      float: left;
+    }
+
+    &__info-preview {
+      text-align: right;
     }
   }
 }
