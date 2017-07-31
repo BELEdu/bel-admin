@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-editor-title>：{{name}}</app-editor-title>
+    <app-editor-title>添加计划：{{name}}</app-editor-title>
     <edit-plan></edit-plan>
   </div>
 </template>
