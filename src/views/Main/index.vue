@@ -87,13 +87,13 @@ export default {
 </script>
 
 <style lang="less">
-.app-main--loading {
-  overflow-y: hidden;
-  margin-right: 15px;
-}
-
 .ivu-spin {
-  background-color: transparent;
+  position: fixed;
+  // 200px为侧边栏宽度，60px为顶栏高度
+  width: calc(~"100% - 200px");
+  top: 60px;
+  left: 200px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .spin-icon {
@@ -126,14 +126,6 @@ export default {
   to {
     opacity: 1;
     transform: rotate(360deg);
-  }
-}
-
-// ie9不支持css动画，spin组件不应该显示出来
-// 若要在ie9下也显示加载动画，应该使用gif或svg动画？
-.ie {
-  .ivu-spin {
-    display: none !important;
   }
 }
 </style>
