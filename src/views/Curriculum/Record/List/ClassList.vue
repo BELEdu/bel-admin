@@ -24,7 +24,7 @@
     </Row>
     <Table class="app-table" :columns="clbumColumns" :data="clbumData.data" @on-sort-change="sort" border></Table>
     <app-pager :data="clbumData" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
-    <class-student-modal v-model="classModal" :id="currentClbum.id"></class-student-modal>
+    <class-student-modal v-model="classModal" :id="currentClbum.class_id"></class-student-modal>
   </div>
 </template>
 
@@ -96,7 +96,7 @@ export default {
      * @param row  [object]   当前班级信息
      */
     classShow(row) {
-      this.currentClbum = row
+      this.currentClbum = { ...row, class_id: this.$route.params.id }
       this.classModal = true
     },
     // 获取班级数据
