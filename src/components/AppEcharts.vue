@@ -46,7 +46,7 @@
       },
       delayTime: {
         type: Number,
-        default: 300,
+        default: 500,
       },
     },
 
@@ -60,13 +60,16 @@
       setOptions() {
         return this.setOption
       },
+      resize() {
+        return debounce(this.chartResize, this.delayTime)
+      },
     },
     mounted() {
       // 初始化图表
       this.init()
     },
     beforeDestroy() {
-      window.removeEventListener('resize', debounce(this.resize, this.delayTime))
+      window.removeEventListener('resize', this.resize)
       if (this.char) {
         // 销毁图表实例
         this.chart.dispose()
@@ -78,10 +81,10 @@
         this.chart = echarts.init(document.getElementById(this.id))
         this.chart.setOption(this.setOptions)
         // 图表响应大小的关键,重绘
-        window.addEventListener('resize', debounce(this.resize, this.delayTime))
+        window.addEventListener('resize', this.resize)
       },
       // 重绘图表
-      resize() {
+      chartResize() {
         this.chart.resize()
       },
     },
