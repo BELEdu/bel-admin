@@ -10,6 +10,16 @@
       </div>
     </Tabs>
 
+    <!-- 饼图 -->
+    <Row>
+      <Col span="12">
+        <app-echarts :set-option="weekKnowledgeData" height="500px"></app-echarts>
+      </Col>
+      <Col span="12">
+        <app-echarts :set-option="strongKnowledgeData" height="500px"></app-echarts>
+      </Col>
+    </Row>
+
     <!-- 表格组件 -->
     <Table size="small" class="app-table point-table" :columns="columns" :data="data" border></Table>
 
@@ -58,6 +68,82 @@ export default {
         { title: '最新掌握情况', key: 'new_status_name', align: 'center' },
         { title: '测试情况', key: 'test_number', align: 'center' },
       ],
+
+      // echarts图表配置
+      weekKnowledgeData: {
+        title: {
+          text: '综合薄弱知识点TOP5',
+          subtext: '数据支撑',
+          x: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}：{c}（{d}%）',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['奥数的认识', '绝对值', '公约数与倍数', '整数的认识', '倍数的特征'],
+        },
+        series: {
+          name: '错题数',
+          type: 'pie',
+          radius: '55%',
+          center: ['50%', '60%'],
+          data: [
+            { value: 20, name: '奥数的认识' },
+            { value: 15, name: '绝对值' },
+            { value: 30, name: '公约数与倍数' },
+            { value: 18, name: '整数的认识' },
+            { value: 33, name: '倍数的特征' },
+          ],
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
+
+      // echarts图表配置
+      strongKnowledgeData: {
+        title: {
+          text: '综合最强知识点TOP5',
+          subtext: '数据支撑',
+          x: 'center',
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}：{c}（{d}%）',
+        },
+        legend: {
+          orient: 'vertical',
+          left: 'left',
+          data: ['奥数的认识', '绝对值', '公约数与倍数', '整数的认识', '倍数的特征'],
+        },
+        series: {
+          name: '正确数',
+          type: 'pie',
+          radius: '55%',
+          center: ['50%', '60%'],
+          data: [
+            { value: 10, name: '奥数的认识' },
+            { value: 25, name: '绝对值' },
+            { value: 13, name: '公约数与倍数' },
+            { value: 28, name: '整数的认识' },
+            { value: 33, name: '倍数的特征' },
+          ],
+        },
+        itemStyle: {
+          emphasis: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        },
+      },
     }
   },
 
