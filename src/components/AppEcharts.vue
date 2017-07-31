@@ -18,6 +18,7 @@
       return {
         // 保存地图初始化的实例
         chart: '',
+        resize: null,
       }
     },
     props: {
@@ -60,9 +61,6 @@
       setOptions() {
         return this.setOption
       },
-      resize() {
-        return debounce(this.chartResize, this.delayTime)
-      },
     },
     mounted() {
       // 初始化图表
@@ -80,6 +78,7 @@
       init() {
         this.chart = echarts.init(document.getElementById(this.id))
         this.chart.setOption(this.setOptions)
+        this.resize = debounce(this.chartResize, this.delayTime)
         // 图表响应大小的关键,重绘
         window.addEventListener('resize', this.resize)
       },
