@@ -16,6 +16,11 @@
           <Table stripe :columns="columns1" :data="data1"></Table>
         </rank-card>
       </li>
+      <li class="analysis-rank__item">
+        <rank-card title="本月沟通记录排名" icon="android-checkbox-outline">
+          <Table stripe :columns="columns1" :data="data1"></Table>
+        </rank-card>
+      </li>
     </ul>
   </div>
 </template>
@@ -67,11 +72,31 @@ export default {
 .analysis-rank {
   &__list {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 
   &__item {
-    flex-basis: 32%;
+    flex-basis: 49%;
+    margin-bottom: 35px;
+  }
+}
+
+.ie {
+  .analysis-rank {
+    &__list {
+      overflow: hidden;
+    }
+
+    &__item {
+      width: 49%;
+      float: left;
+
+      &:first-child,
+      &:first-child + li + li {
+        margin-right: 2%;
+      }
+    }
   }
 }
 </style>
