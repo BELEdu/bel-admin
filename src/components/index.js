@@ -1,4 +1,4 @@
-import EditorTitle from './EditorTitle'
+import AppEditorTitle from './AppEditorTitle'
 import AppPager from './AppPager'
 import AppFormModal from './AppFormModal'
 import AppWarnModal from './AppWarnModal'
@@ -12,7 +12,7 @@ import AppMapCascader from './AppMapCascader'
 import AppEcharts from './AppEcharts'
 
 const rbdog = {
-  EditorTitle,
+  AppEditorTitle,
   AppPager,
   AppFormModal,
   AppWarnModal,

@@ -11,7 +11,7 @@
  * @version 2017-06-07
  */
 export default {
-  name: 'edit-title',
+  name: 'app-edit-title',
 
   computed: {
     title() {
