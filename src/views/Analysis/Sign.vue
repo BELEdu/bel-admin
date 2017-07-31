@@ -2,7 +2,7 @@
   <div class="analysis-data">
     <Tabs class="app-tabs" type="card">
       <Tab-pane label="图形报表" name="graph">
-        <div>
+        <div class="graph-container">
           <Table class="app-table" :columns="columns" :data="data" border></Table>
 
           <chart-card title="课时情况" :chart="chartCapita" @on-change="changeChart">
@@ -167,3 +167,12 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+// iview tabs布局在ie10下有bug
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .graph-container {
+    width: calc(~"100% - 16px");
+  }
+}
+</style>
