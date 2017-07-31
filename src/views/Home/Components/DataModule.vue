@@ -6,7 +6,11 @@
     </template>
     <!--预警-->
     <template v-if="$attrs.type==='warning'">
-      预警
+      <Table height="113"
+             size="small"
+             stripe
+             :columns="warning.columns"
+             :data="warning.data"></Table>
     </template>
     <!--本月签约课时收入-->
     <template v-if="$attrs.type==='income'">
@@ -14,7 +18,11 @@
     </template>
     <!--我的审批-->
     <template v-if="$attrs.type==='approval'">
-      审批
+      <Table height="273"
+             size="small"
+             stripe
+             :columns="approval.columns"
+             :data="approval.data"></Table>
     </template>
     <!--我的排课表-->
     <template v-if="$attrs.type==='course'">
@@ -43,11 +51,23 @@
       <app-echarts :set-option="amountComparedData"></app-echarts>
     </template>
     <!--我的测试管理-->
-    <template v-if="$attrs.type==='testManager'">我的测试管理</template>
+    <template v-if="$attrs.type==='testManager'">
+      <Table height="233"
+             size="small"
+             stripe
+             :columns="testManager.columns"
+             :data="testManager.data"></Table>
+    </template>
     <!--本月签约排行-->
     <template v-if="$attrs.type==='contractSort'">本月签约排行</template>
     <!--我的学员-->
-    <template v-if="$attrs.type==='myStudent'">我的学员</template>
+    <template v-if="$attrs.type==='myStudent'">
+      <Table height="293"
+             size="small"
+             stripe
+             :columns="student.columns"
+             :data="student.data"></Table>
+    </template>
     <!--我的班级-->
     <template v-if="$attrs.type==='myClass'">我的班级</template>
     <!--本月耗课-->
@@ -69,12 +89,14 @@
 
   import { isEmpty } from 'lodash'
   import HomeCalendar from './Calendar'
+  import { createButton } from '@/utils'
 
   export default {
     name: 'data-module',
     components: { HomeCalendar },
     data() {
       return {
+        // 我的教师课表
         courseData: [
           {
             type: 1,
@@ -107,6 +129,7 @@
             end_at: '10:50',
             display_name: 'test14',
           }],
+        // 本月签约
         contractData: {
           tooltip: {
             trigger: 'axis',
@@ -179,10 +202,8 @@
             },
           ],
         },
+        // 本月签约课时收入
         incomeData: {
-          title: {
-            text: '本月签约课时收入'
-          },
           tooltip : {
             trigger: 'axis',
             axisPointer: {
@@ -239,6 +260,7 @@
 
           ]
         },
+        // 本月签约课时收入占比
         incomeComparedData: {
           tooltip: {
             trigger: 'item',
@@ -292,6 +314,7 @@
             }
           ]
         },
+        // 本月各校区签约金额占比
         amountComparedData: {
           tooltip : {
             trigger: 'item',
@@ -324,6 +347,7 @@
             }
           ]
         },
+        // 本月耗课
         tookPeriodData: {
           tooltip: {
             trigger: 'axis',
@@ -397,6 +421,324 @@
             }
           ]
         },
+        // 预警
+        warning: {
+          columns: [
+            { title: '学员姓名', align: 'center', key: 'student_name' },
+            { title: '预警类型', align: 'center', key: 'warning_type' },
+            { title: '预警日期', align: 'center', key: 'created_at' },
+            { title: '预警原因', align: 'center', key: 'warning_reason' },
+            { title: '状态', align: 'center', key: 'warning_status_name' },
+            { title: '处理',
+              align: 'center',
+              render: createButton([
+                {
+                  type: 'primary',
+                  click: (params) => {
+                    this.$router.push(`/student/student/${params.student_id}/warning`)
+                  },
+                  text: '详情',
+                },
+              ]),
+            },
+          ],
+          data: [
+            {
+              created_at: null,
+              id: 1,
+              student_id: 35,
+              student_name: 'test',
+              user_id: 36,
+              user_name: "多角色用户",
+              warning_reason: "faf",
+              warning_status: 0,
+              warning_status_name: "预警中",
+              warning_type: 1,
+              warning_type_name: "退费"
+            }, {
+              created_at: null,
+              id: 1,
+              student_id: 35,
+              student_name: 'test',
+              user_id: 36,
+              user_name: "多角色用户",
+              warning_reason: "faf",
+              warning_status: 0,
+              warning_status_name: "预警中",
+              warning_type: 1,
+              warning_type_name: "退费"
+            }, {
+              created_at: null,
+              id: 1,
+              student_id: 35,
+              student_name: 'test',
+              user_id: 36,
+              user_name: "多角色用户",
+              warning_reason: "faf",
+              warning_status: 0,
+              warning_status_name: "预警中",
+              warning_type: 1,
+              warning_type_name: "退费"
+            },
+          ]
+        },
+        // 我的审批
+        approval: {
+          columns: [
+            { title: '', align: 'center', key: 'product_name' },
+            { title: '学员姓名', align: 'center', key: 'student_name' },
+            { title: '合同总金额', align: 'center', key: 'money' },
+            { title: '总课时', align: 'center', key: 'course_total' },
+            { title: '申请人', align: 'center', key: 'username' },
+            { title: '',
+              align: 'center',
+              render: createButton([
+                {
+                  type: 'primary',
+                  click: (params) => {
+                    this.$router.push(`/business/contract/audit/${params.id}`)
+                  },
+                  text: '查看',
+                },
+              ]),
+            },
+          ],
+          data: [
+            {
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },{
+              apply_time: "2017-07-27 05:58",
+              approval_number: "AP0000000035",
+              audit_process: "光鱼校区咨询部主任待审批",
+              audit_time: "",
+              course_total: 5,
+              display_name: "发的",
+              flow_name: "新签合同审批",
+              id: 35,
+              money: "5700.00",
+              operation: {update: false, cancel: false, refund: false, approval: false},
+              product_name: "沙发上",
+              refund_tag: false,
+              student_name: "三大法师",
+              username: "咨询师一",
+            },
+          ],
+        },
+        // 我的审批
+        testManager: {
+          columns: [
+            { title: '测试对象', align: 'center', key: 'student_name' },
+            { title: '测试类型', align: 'center', key: 'test_type' },
+            { title: '测评试卷', align: 'center', key: 'test_title' },
+            { title: '测评时间', align: 'center', key: 'date' },
+            { title: '',
+              align: 'center',
+              render: createButton([
+                {
+                  type: 'primary',
+                  click: (params) => {
+                    this.$router.push(`/examination/smartexam/${params.id}`)
+                  },
+                  text: '查看',
+                },
+              ]),
+            },
+          ],
+          data: [
+            {
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },{
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },{
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },{
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },{
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },{
+              id: 1,
+              student_id: 10,
+              student_name: '王芳',
+              test_type: '语文小册',
+              test_title: '2017年6月15日语文',
+              date: '2017-06-06',
+            },
+          ],
+        },
+        // 我的学员
+        student: {
+          columns: [
+            { title: '学员姓名', align: 'center', key: 'student_name' },
+            { title: '剩余课时',
+              align: 'center',
+              render: (h, params) => {
+                const remain = params.row.course_remain
+                return h('span', [
+                  h('span', {
+                    // 课时小于10显示预警样式
+                    class: remain < 10 ? 'warning-color' : '',
+                  }, remain),
+                  h('span', ` / ${params.row.course_total}`)
+                ])
+              }
+            },
+            { title: '学习进度',
+              align: 'center',
+              render: (h, params) => {
+                const done = (params.row.course_total - params.row.course_remain) / params.row.course_total * 100
+                return h('i-circle', {
+                  props: {
+                    size: 48,
+                    percent: done,
+                  },
+                }, `${done.toFixed(2)}%`)
+              },
+            },
+            { title: '',
+              align: 'center',
+              render: createButton([
+                {
+                  type: 'primary',
+                  click: (params) => {
+                    this.$router.push(`/student/studyprogress/student/${params.id}/progress`)
+                  },
+                  text: '查看',
+                },
+              ]),
+            },
+          ],
+          data: [
+            {
+              id: 4,
+              student_name: '李园园',
+              course_remain: 1,
+              course_total: 6,
+            },{
+              id: 4,
+              student_name: '李一',
+              course_remain: 3,
+              course_total: 10,
+            },{
+              id: 4,
+              student_name: '李三',
+              course_remain: 10,
+              course_total: 18,
+            },
+          ],
+        },
       }
     },
     methods: {
@@ -422,6 +764,7 @@
   }
 </script>
 <style lang="less">
+  @import "~vars";
   .home-data-module {
     .sub-module {
       width: 100%;
@@ -433,5 +776,8 @@
     .ivu-icon {
       padding: 4px;
     }
+  }
+  .warning-color {
+    color: @error-color
   }
 </style>

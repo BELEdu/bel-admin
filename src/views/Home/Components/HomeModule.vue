@@ -1,29 +1,29 @@
 <template>
   <waterfall
-    :line-gap="moduleWidth"
-    :watch="data"
-    @reflowed="reflowed"
-    ref="waterfall"
-    :class="className"
-  >
-    <waterfall-slot
-      v-for="(item, index) in data"
-      :width="moduleWidth"
-      :height="blockHeight[index]"
-      :order="index"
-      :key="index"
-      :class="className+'-solt'"
+      :line-gap="moduleWidth"
+      :watch="data"
+      @reflowed="reflowed"
+      ref="waterfall"
+      :class="className"
     >
-      <div class="waterfall-module waterfall-block" :index="index" :style="{height: blockHeight[index]+'px'}">
-        <Card style="height: 100%">
-          <p slot="title">
-            {{item.title}}
-          </p>
-          <data-module v-if="visibleModule" :type="item.name" :data="item"></data-module>
-        </Card>
-      </div>
-    </waterfall-slot>
-  </waterfall>
+      <waterfall-slot
+        v-for="(item, index) in data"
+        :width="moduleWidth"
+        :height="blockHeight[index]"
+        :order="index"
+        :key="index"
+        :class="className+'-solt'"
+      >
+        <div class="waterfall-module waterfall-block" :index="index" :style="{height: blockHeight[index]+'px'}">
+          <Card style="height: 100%">
+            <p slot="title">
+              {{item.title}}
+            </p>
+            <data-module v-if="visibleModule" :type="item.name" :data="item"></data-module>
+          </Card>
+        </div>
+      </waterfall-slot>
+    </waterfall>
 </template>
 <script>
   /**
@@ -51,22 +51,27 @@
     },
     data() {
       return {
-        blockHeight: [400, 250, 400, 360, 560, 420, 500, 350, 400, 600, 460, 450, 480],
+        blockHeight: [400, 220, 380, 360, 560, 420, 340, 420, 400, 600, 460, 450, 480],
         moduleWidth: 100,
         visibleModule: false,
-        delayTime: 10,
+        delayTime: 100,
         waterfallDom: null,
       }
     },
     created() {
-      window.addEventListener('resize', debounce(this.setWH, this.delayTime))
+      window.addEventListener('resize', this.resize)
     },
     mounted() {
       this.waterfallDom = this.$refs.waterfall.$el
       this.setWH()
     },
     beforeDestroy() {
-      window.removeEventListener('resize', debounce(this.setWH, this.delayTime))
+      window.removeEventListener('resize', this.resize)
+    },
+    computed: {
+      resize() {
+        return debounce(this.setWH, this.delayTime)
+      },
     },
     methods: {
       setWH() {

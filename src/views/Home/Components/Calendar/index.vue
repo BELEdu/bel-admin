@@ -1,14 +1,5 @@
 <template>
   <div class="cal-wrapper">
-    <div class="cal-header">
-      <div class="cal-header-left" @click="preMonth">
-        <div class="arrow-left icon">&nbsp</div>
-      </div>
-      <div class="cal-header-title">{{curYearMonth}}</div>
-      <div class="cal-header-right" @click="nextMonth">
-        <div class="arrow-right icon">&nbsp</div>
-      </div>
-    </div>
     <div class="cal-body">
       <div class="weeks clearfix">
         <span v-for="dayName in i18n[calendar.locale].dayNames" class="item">{{dayName}}</span>
@@ -19,6 +10,15 @@
             {{date.status ? date.date.split('-')[2] : '&nbsp'}}</p>
           <slot :showEvents="date"></slot>
         </div>
+      </div>
+    </div>
+    <div class="cal-header">
+      <div class="cal-header-left" @click="preMonth">
+        <div class="arrow-left icon">&nbsp</div>
+      </div>
+      <div class="cal-header-title">{{curYearMonth}}</div>
+      <div class="cal-header-right" @click="nextMonth">
+        <div class="arrow-right icon">&nbsp</div>
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@
   export default {
     name: 'calendar',
     data() {
-      const date = this.date ? new Date(this.date) : new Date().setDate(1)
+      const date = new Date(this.date !== '' ? new Date(this.date) : new Date().setDate(1))
       return {
         i18n,
         curDate: {
@@ -123,10 +123,7 @@
   }
 </script>
 <style lang="less">
-  @base-orange: #f29543;
-  @white: #ffffff;
-  @gray: #e0e0e0;
-  @gray-dark: #b1b1b1;
+  @import "~vars";
   @large-padding: 15px;
   @small-padding: 10px;
   @icon-border-size: 1px;
@@ -159,6 +156,11 @@
         cursor: pointer;
         user-select: none;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        &:hover {
+          .icon:before {
+            border-color: @link-hover-color;
+          }
+        }
       }
     }
     .cal-body {
@@ -189,42 +191,6 @@
             position: relative;
             z-index: 3;
           }
-          &.event {
-            cursor: pointer;
-          }
-          &.selected-day {
-            .is-event {
-              background-color: @base-orange;
-            }
-          }
-          .is-event {
-            content: '';
-            border: 1px solid @base-orange;
-            background-color: #fff;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            z-index: 1;
-            margin-left: -18px;
-            margin-top: -19px;
-          }
-          .is-today {
-            content: '';
-            background-color: @base-orange;
-            border-radius: 50%;
-            opacity: .8;
-            width: 12px;
-            height: 4px;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            z-index: 2;
-            margin-left: -6px;
-            margin-top: 8px;
-          }
         }
       }
     }
@@ -243,8 +209,8 @@
     top: 0;
     width: 10px;
     height: 10px;
-    border-top: solid @icon-border-size currentColor;
-    border-right: solid @icon-border-size currentColor;
+    border-top: solid @icon-border-size #333;
+    border-right: solid @icon-border-size #333;
     -webkit-transform: rotate(-135deg);
     transform: rotate(-135deg);
   }
@@ -256,8 +222,8 @@
     top: 0;
     width: 10px;
     height: 10px;
-    border-top: solid @icon-border-size currentColor;
-    border-right: solid @icon-border-size currentColor;
+    border-top: solid @icon-border-size #333;
+    border-right: solid @icon-border-size #333;
     -webkit-transform: rotate(45deg);
     transform: rotate(45deg);
   }
