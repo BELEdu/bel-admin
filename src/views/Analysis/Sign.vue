@@ -1,6 +1,6 @@
 <template>
   <div class="analysis-data">
-    <Tabs class="app-tabs" type="card">
+    <Tabs class="app-tabs" type="card" :animated="false">
       <Tab-pane label="图形报表" name="graph">
         <div class="graph-container">
           <Table class="app-table" :columns="columns" :data="data" border></Table>
@@ -167,12 +167,3 @@ export default {
   },
 }
 </script>
-
-<style lang="less">
-// iview tabs布局在ie10下有bug
-@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-  .graph-container {
-    width: calc(~"100% - 16px");
-  }
-}
-</style>
