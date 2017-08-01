@@ -22,7 +22,7 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.start_at" type="daterange" placeholder="请选择开班日期"></Date-picker>
+        <Date-picker v-model="query.between.start_at" type="daterange" placeholder="请选择开办日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -131,7 +131,7 @@ export default {
         { title: '教师', key: 'teacher_item', align: 'center' },
         { title: '学员人数', key: 'student_total', align: 'center', sortable: 'custom' },
         {
-          title: '开班日期',
+          title: '开办日期',
           key: 'start_at',
           align: 'center',
           width: 180,
