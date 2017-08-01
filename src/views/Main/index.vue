@@ -87,13 +87,13 @@ export default {
 </script>
 
 <style lang="less">
+.app-main--loading {
+  overflow-y: hidden;
+  margin-right: 15px;
+}
+
 .ivu-spin {
-  position: fixed;
-  // 200px为侧边栏宽度，60px为顶栏高度
-  width: calc(~"100% - 200px");
-  top: 60px;
-  left: 200px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: transparent
 }
 
 .spin-icon {
@@ -126,6 +126,22 @@ export default {
   to {
     opacity: 1;
     transform: rotate(360deg);
+  }
+}
+
+// 防止ie下iview的表格出现滚动条
+// 也许不是最好做法，可以考虑直接禁用滚动overflow: hidden;
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .app-main--loading {
+    margin-right: 16px;
+  }
+}
+
+// TODO:因为不支持css动画，ie9下没有loading提示
+.ie {
+  .app-main--loading {
+    overflow-y: visible;
+    margin-right: 0;
   }
 }
 </style>
