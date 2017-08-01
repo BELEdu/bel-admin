@@ -33,7 +33,7 @@
    */
 
   import { Waterfall, WaterfallSlot } from 'vue-waterfall'
-  import { debounce } from 'lodash'
+  import { debounce, isNumber } from 'lodash'
   import { broadcast } from '@/mixins'
   import DataModule from './DataModule'
 
@@ -56,32 +56,36 @@
         blockHeight: [400, 220, 380, 360, 560, 420, 340, 420, 400, 600, 460, 450, 480],
         moduleWidth: 100,
         visibleModule: false,
-        delayTime: 200,
+        delayTime: 300,
         waterfallDom: null,
         resize: null,
       }
     },
     created() {
-      this.resize = debounce(this.setWidth, this.delayTime)
+      this.resize = debounce(this.setWidth, this.delayTime, { leading: true, trailing: true })
       window.addEventListener('resize', this.resize)
     },
     mounted() {
       this.waterfallDom = this.$refs.waterfall.$el
-      this.resize()
+      // 17为滚动条占用宽度
+      this.setWidth(17)
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.resize)
     },
     methods: {
-      setWidth() {
+      setWidth(w) {
+        // width防止初始化前布局问题
+        const width = isNumber(w) ? w : 0
         this.$nextTick(() => {
           const Dom = this.waterfallDom
-          this.moduleWidth = Dom.offsetWidth / 2
+          this.moduleWidth = (Dom.offsetWidth - width) / 2
         })
       },
       reflowed() {
         this.$nextTick(() => {
           if (!this.visibleModule) {
+            this.setWidth()
             this.visibleModule = true
           }
           // 重新计算Table组件宽度
