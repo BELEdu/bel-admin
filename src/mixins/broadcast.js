@@ -6,7 +6,7 @@
 
 /**
   * @param {String} componentName - 目标组件的name属性
-  、@param {String} eventName - 广播事件名称
+  * @param {String} eventName - 广播事件名称
   * @param {Array} params - 广播事件参数
   */
 function broadcast(componentName, eventName, ...params) {
