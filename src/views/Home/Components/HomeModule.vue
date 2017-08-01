@@ -19,7 +19,7 @@
             <p slot="title">
               {{item.title}}
             </p>
-            <data-module v-if="visibleModule" :type="item.name" :data="item"></data-module>
+            <data-module v-if="visibleModule" :width="moduleWidth" :type="item.name" :data="item"></data-module>
           </Card>
         </div>
       </waterfall-slot>
@@ -34,10 +34,12 @@
 
   import { Waterfall, WaterfallSlot } from 'vue-waterfall'
   import { debounce } from 'lodash'
+  import { broadcast } from '@/mixins'
   import DataModule from './DataModule'
 
   export default {
     name: 'home-module',
+    mixins: [broadcast],
     components: { Waterfall, WaterfallSlot, DataModule },
     props: {
       data: {
@@ -54,34 +56,39 @@
         blockHeight: [400, 220, 380, 360, 560, 420, 340, 420, 400, 600, 460, 450, 480],
         moduleWidth: 100,
         visibleModule: false,
-        delayTime: 100,
+        delayTime: 200,
         waterfallDom: null,
+        resize: null,
       }
     },
     created() {
+      this.resize = debounce(this.setWidth, this.delayTime)
       window.addEventListener('resize', this.resize)
     },
     mounted() {
       this.waterfallDom = this.$refs.waterfall.$el
-      this.setWH()
+      this.resize()
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.resize)
     },
-    computed: {
-      resize() {
-        return debounce(this.setWH, this.delayTime)
-      },
-    },
     methods: {
-      setWH() {
-        this.moduleWidth = this.waterfallDom.clientWidth / 2
+      setWidth() {
+        this.$nextTick(() => {
+          const Dom = this.waterfallDom
+          this.moduleWidth = Dom.offsetWidth / 2
+        })
       },
       reflowed() {
-        if (!this.visibleModule) {
-          this.setWH()
-          this.visibleModule = true
-        }
+        this.$nextTick(() => {
+          if (!this.visibleModule) {
+            this.visibleModule = true
+          }
+          // 重新计算Table组件宽度
+          this.broadcast('Table', 'on-visible-change', true)
+          // 重绘AppEcharts图表
+          this.broadcast('app-echarts', 'on-resize-change', true)
+        })
       },
     },
   }
@@ -101,10 +108,6 @@
       .ivu-card-body {
         width: 100%;
         height: 100%;
-        >div {
-          width: 100%;
-          height: 100%;
-        }
       }
     }
   }

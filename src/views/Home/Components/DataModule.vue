@@ -766,7 +766,7 @@
 <style lang="less">
   @import "~vars";
   .home-data-module {
-    .sub-module {
+    &, .sub-module {
       width: 100%;
       height: 100%;
     }
