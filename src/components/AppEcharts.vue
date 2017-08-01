@@ -83,7 +83,7 @@
       init() {
         this.chart = echarts.init(document.getElementById(this.id))
         this.chart.setOption(this.setOptions)
-        this.resize = debounce(this.chartResize, this.delayTime)
+        this.resize = debounce(this.chartResize, this.delayTime, { leading: true, trailing: true })
         // 图表响应大小的关键,重绘
         window.addEventListener('resize', this.resize)
       },
