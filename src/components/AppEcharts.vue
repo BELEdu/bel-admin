@@ -47,7 +47,7 @@
       },
       delayTime: {
         type: Number,
-        default: 500,
+        default: 300,
       },
     },
 
@@ -65,6 +65,11 @@
     mounted() {
       // 初始化图表
       this.init()
+      this.$on('on-resize-change', (val) => {
+        if (val) {
+          this.chartResize()
+        }
+      })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.resize)
