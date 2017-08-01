@@ -128,6 +128,10 @@ export default {
 
     window.onresize = throttle(refresh, 100)
   },
+
+  destroyed() {
+    window.onresize = null
+  },
 }
 </script>
 
