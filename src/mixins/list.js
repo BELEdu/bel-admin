@@ -31,6 +31,8 @@ export default {
     subStringify(type, subQuery) {
       return Object.entries(subQuery).reduce((result, [key, value]) => {
         if (type === 'between') {
+          if (value.length <= 0) return result
+
           const betweenQs = value
             .filter(item => item)
             .map(item => `${type}[${key}][]=${format(item, 'YYYY-MM-DD')}`)
