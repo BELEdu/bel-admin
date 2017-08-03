@@ -101,7 +101,6 @@
    * @version 2017/07/21
    */
 
-  import { GLOBAL } from '@/store/mutationTypes'
   import HomeModule from './Components/HomeModule'
 
   export default {
@@ -133,9 +132,6 @@
           ],
         },
       }
-    },
-    created() {
-      this.$store.commit(GLOBAL.LOADING.HIDE)
     },
     methods: {
       // 切换校区

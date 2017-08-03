@@ -1,5 +1,6 @@
 <template>
   <waterfall
+      :auto-resize="false"
       :line-gap="moduleWidth"
       :watch="data"
       @reflowed="reflowed"
@@ -35,6 +36,7 @@
   import { Waterfall, WaterfallSlot } from 'vue-waterfall'
   import { debounce, isNumber } from 'lodash'
   import { broadcast } from '@/mixins'
+  import { GLOBAL } from '@/store/mutationTypes'
   import DataModule from './DataModule'
 
   export default {
@@ -53,25 +55,24 @@
     },
     data() {
       return {
-        blockHeight: [400, 220, 380, 360, 560, 420, 340, 420, 400, 600, 460, 450, 480],
+        blockHeight: [400, 220, 380, 360, 560, 420, 340, 460, 400, 600, 460, 450, 600],
         moduleWidth: 100,
         visibleModule: false,
-        delayTime: 300,
+        delayTime: 200,
         waterfallDom: null,
-        resize: null,
+        resize: debounce(this.setWidth, this.delayTime,
+          { leading: true, trailing: false }),
       }
     },
     created() {
-      this.resize = debounce(this.setWidth, this.delayTime, { leading: true, trailing: true })
-      window.addEventListener('resize', this.resize)
+      window.addEventListener('resize', this.resize, true)
     },
     mounted() {
       this.waterfallDom = this.$refs.waterfall.$el
-      // 17为滚动条占用宽度
-      this.setWidth(17)
+      this.setWidth()
     },
     beforeDestroy() {
-      window.removeEventListener('resize', this.resize)
+      window.removeEventListener('resize', this.resize, true)
     },
     methods: {
       setWidth(w) {
@@ -87,6 +88,7 @@
           if (!this.visibleModule) {
             this.setWidth()
             this.visibleModule = true
+            this.$store.commit(GLOBAL.LOADING.HIDE)
           }
           // 重新计算Table组件宽度
           this.broadcast('Table', 'on-visible-change', true)
