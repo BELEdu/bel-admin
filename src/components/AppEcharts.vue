@@ -14,14 +14,11 @@
 
   export default {
     name: 'app-echarts',
-    data() {
-      return {
-        // 保存地图初始化的实例
-        chart: '',
-        resize: null,
-      }
-    },
     props: {
+      autoResize: {
+        type: Boolean,
+        default: true,
+      },
       id: {
         type: String,
         default() {
@@ -50,7 +47,13 @@
         default: 300,
       },
     },
-
+    data() {
+      return {
+        // 保存地图初始化的实例
+        chart: '',
+        resize: debounce(this.chartResize, this.delayTime, { leading: false, trailing: true }),
+      }
+    },
     computed: {
       style() {
         return {
@@ -72,7 +75,7 @@
       })
     },
     beforeDestroy() {
-      window.removeEventListener('resize', this.resize)
+      this.autoResizeHandler(false)
       if (this.char) {
         // 销毁图表实例
         this.chart.dispose()
@@ -83,13 +86,23 @@
       init() {
         this.chart = echarts.init(document.getElementById(this.id))
         this.chart.setOption(this.setOptions)
-        this.resize = debounce(this.chartResize, this.delayTime, { leading: true, trailing: true })
-        // 图表响应大小的关键,重绘
-        window.addEventListener('resize', this.resize)
+        this.autoResizeHandler(this.autoResize)
       },
       // 重绘图表
       chartResize() {
         this.chart.resize()
+      },
+      autoResizeHandler(autoResize) {
+        if (autoResize === false || !this.autoResize) {
+          window.removeEventListener('resize', this.resize, false)
+        } else {
+          window.addEventListener('resize', this.resize, false)
+        }
+      },
+    },
+    watch: {
+      autoResize(val) {
+        this.autoResizeHandler(val)
       },
     },
   }
