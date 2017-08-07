@@ -118,7 +118,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 * 路由组件太过复杂而需要拆分时，拆分出来的组件若与应用内的其它部分无关，应放置在路由组件自身目录下的components文件夹中
 * 请给每一个组件设置`name`属性，属性名应使用*kebab-case*风格，两至三个单词最佳；全局性质的组件可使用`app-`前缀命名
 * 组件接受`props`时，鼓励用对象的形式为`props`做类型检测、设置是否必传及默认值等
-* 请按照`name`、`props`、`data`、`computed`、`watch`、`methods`、生命周期方法这样的顺序定义组件（具体的顺序可进一步商榷，但务必遵守）
+* 请按照`name`、`mixins`、`components`、`props`、`data`、`computed`、`watch`、`methods`、`beforeCreate`、`created`、`beforeMount`、`mounted`、`beforeDestory`、`destroied`、路由钩子这样的顺序定义组件（具体的顺序可进一步商榷，但务必遵守）
 * `store`中有一个`loading`状态用来指示页面上是否有数据请求正在进行，进入每个路由页时，这个状态都会被自动设置为`true`，请在接口请求成功或失败后使用`this.$store.commit(GLOBAL.LOADING.HIDE)`将之改为false；若该页面不需要进行数据请求，请直接在`created`中执行前述语句
 * 一般来说，数据类型的状态都应放置在全局`store`之中；视图状态可放置在组件自身的`data`中
 
