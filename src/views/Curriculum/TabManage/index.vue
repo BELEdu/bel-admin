@@ -41,8 +41,7 @@ export default {
     updateRoute(name) {
       const pathArry = this.$route.path.split('/')
       pathArry[pathArry.length - this.currentId] = name
-      const path = pathArry.join('/')
-      this.$router.push(`${path}`)
+      this.$router.push(`${pathArry.join('/')}`)
     },
   },
 }

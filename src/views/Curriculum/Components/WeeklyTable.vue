@@ -153,7 +153,9 @@
     props: {
       data: {
         type: Object,
-        default: {},
+        default() {
+          return {}
+        },
       },
     },
     data() {
@@ -172,6 +174,16 @@
       isClass() {
         const pathArry = this.$route.path.split('/')
         return pathArry[pathArry.length - 4] === 'teachercurricula' || pathArry[pathArry.length - 4] === 'class'
+      },
+    },
+    watch: {
+      data: {
+        handler(val) {
+          this.weeklyData = val
+          this.getCurrentDate()
+          this.getRef()
+        },
+        deep: true,
       },
     },
     methods: {
@@ -235,16 +247,6 @@
         if (!isEmpty(this.data)) {
           this.$emit('on-next')
         }
-      },
-    },
-    watch: {
-      data: {
-        handler(val) {
-          this.weeklyData = val
-          this.getCurrentDate()
-          this.getRef()
-        },
-        deep: true,
       },
     },
   }

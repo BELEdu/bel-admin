@@ -34,8 +34,7 @@
     <appraise-mult-modal :show.sync="appraiseShow"
                          :config="multModalConfig"
                          :header="modalHeader"
-                         :id="multModalData.student_id"
-                         :data="multModalData"></appraise-mult-modal>
+                         :id="multModalData.student_id"></appraise-mult-modal>
   </div>
 </template>
 <script>

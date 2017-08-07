@@ -262,6 +262,20 @@
         }],
       }
     },
+    watch: {
+      value(val) {
+        this.visible = val
+        if (val) {
+          this.knowledgeModal = false
+          this.getCourseInfo()
+        }
+      },
+      visible(val) {
+        if (val === false) {
+          this.$emit('input', false)
+        }
+      },
+    },
     methods: {
       // 查看排课信息
       getCourseInfo() {
@@ -344,20 +358,6 @@
       commonCallBack() {
         this.visible = false
         this.formErrors = {}
-      },
-    },
-    watch: {
-      value(val) {
-        this.visible = val
-        if (val) {
-          this.knowledgeModal = false
-          this.getCourseInfo()
-        }
-      },
-      visible(val) {
-        if (val === false) {
-          this.$emit('input', false)
-        }
       },
     },
   }

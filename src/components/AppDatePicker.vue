@@ -28,7 +28,7 @@
     name: 'app-date-picker',
     data() {
       return {
-        dateVal: null,
+        dateVal: this.value,
         cycle: 0,
       }
     },
@@ -68,9 +68,6 @@
         default: false,
       },
     },
-    created() {
-      this.dateVal = this.value
-    },
     computed: {
       formItem() {
         let parent = this.$parent
@@ -85,6 +82,14 @@
           parent = parent.$parent
         }
         return parent
+      },
+    },
+    watch: {
+      value(val) {
+        this.dateVal = val
+      },
+      dateVal(val) {
+        this.dateFormat(val)
       },
     },
     methods: {
@@ -122,14 +127,6 @@
           date = ''
         }
         this.$emit('input', date)
-      },
-    },
-    watch: {
-      value(val) {
-        this.dateVal = val
-      },
-      dateVal(val) {
-        this.dateFormat(val)
       },
     },
   }

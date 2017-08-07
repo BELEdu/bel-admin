@@ -26,11 +26,18 @@
         className: '',
       }
     },
-    mounted() {
-      this.dictsFilter(this.value)
+    computed: {
+      dicts() {
+        return this.$store.state.dicts
+      },
     },
-    update() {
-      this.dictsFilter(this.value)
+    watch: {
+      value(val) {
+        this.dictsFilter(val)
+      },
+      dicts() {
+        this.dictsFilter()
+      },
     },
     methods: {
       dictsFilter(status = this.value) {
@@ -70,18 +77,11 @@
         return `${defStyle}-${styleName}`
       },
     },
-    computed: {
-      dicts() {
-        return this.$store.state.dicts
-      },
+    mounted() {
+      this.dictsFilter(this.value)
     },
-    watch: {
-      value(val) {
-        this.dictsFilter(val)
-      },
-      dicts() {
-        this.dictsFilter()
-      },
+    update() {
+      this.dictsFilter(this.value)
     },
   }
 </script>

@@ -76,7 +76,7 @@
       // 添加|编辑ID
       id: {
         type: Number,
-        default: null,
+        required: true,
       },
       status: {
         type: String,
@@ -113,19 +113,25 @@
             }),
           ],
           start_at: [
-            this.$rules.date('开始时间必填'),
+            this.$rules.date('开始时间必填', {
+              trigger: 'change',
+            }),
           ],
           end_at: [
-            this.$rules.date('结束时间必填'),
+            this.$rules.date('结束时间必填', {
+              trigger: 'change',
+            }),
             this.$rules.date('请选择开始时间', {
               refs: this.$refs,
               min_ref: 'start_at',
               min_required: true,
+              trigger: 'change',
             }),
             this.$rules.date('请选择大于开始时间', {
               refs: this.$refs,
               min_ref: 'start_at',
               is_equal: false,
+              trigger: 'change',
             }),
           ],
           fact_cost: [
@@ -176,6 +182,20 @@
             break
         }
         return statusTxt
+      },
+    },
+    watch: {
+      value(val) {
+        this.courseModal = val
+        this.formReset = false
+        if (val) {
+          this.getCourseOption()
+        }
+      },
+      courseModal(val) {
+        if (val === false) {
+          this.$emit('input', val)
+        }
       },
     },
     methods: {
@@ -274,20 +294,6 @@
         this.formErrors = {}
         this.courseOptional = []
         this.$refs[name].resetFields()
-      },
-    },
-    watch: {
-      value(val) {
-        this.courseModal = val
-        this.formReset = false
-        if (val) {
-          this.getCourseOption()
-        }
-      },
-      courseModal(val) {
-        if (val === false) {
-          this.$emit('input', val)
-        }
       },
     },
   }

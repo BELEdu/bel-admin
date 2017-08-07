@@ -41,7 +41,7 @@
       // 弹窗状态
       show: {
         type: Boolean,
-        required: true,
+        default: false,
       },
       // 弹窗配置参数
       config: {
@@ -52,7 +52,6 @@
       data: {
         type: Object,
         required: true,
-        default: {},
       },
       // 当前学员ID
       id: [Number, String],
@@ -65,6 +64,30 @@
           comment: null,
         },
       }
+    },
+    computed: {
+      param() {
+        return Object.assign({}, {
+          width: 500,
+          okBtn: true,
+          cancelValue: '取消',
+          title: '写评价',
+          readonly: false,
+          placeholder: '请输入评价内容',
+        }, this.config)
+      },
+    },
+    watch: {
+      show(val) {
+        this.visible = val
+      },
+      visible(val) {
+        if (val === false) {
+          this.$emit('update:show', false)
+        } else {
+          this.getAppraise()
+        }
+      },
     },
     methods: {
       // 判断对象是否为空
@@ -116,30 +139,6 @@
       formCancel(name) {
         this.formErrors = {}
         this.$refs[name].resetFields()
-      },
-    },
-    computed: {
-      param() {
-        return Object.assign({}, {
-          width: 500,
-          okBtn: true,
-          cancelValue: '取消',
-          title: '写评价',
-          readonly: false,
-          placeholder: '请输入评价内容',
-        }, this.config)
-      },
-    },
-    watch: {
-      show(val) {
-        this.visible = val
-      },
-      visible(val) {
-        if (val === false) {
-          this.$emit('update:show', false)
-        } else {
-          this.getAppraise()
-        }
       },
     },
   }

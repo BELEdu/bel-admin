@@ -20,7 +20,7 @@
             <p slot="title">
               {{item.title}}
             </p>
-            <data-module v-if="visibleModule" :width="moduleWidth" :type="item.name" :data="item"></data-module>
+            <data-module v-if="visibleModule" :type="item.name" :data="item"></data-module>
           </Card>
         </div>
       </waterfall-slot>
@@ -64,16 +64,6 @@
           { leading: true, trailing: false }),
       }
     },
-    created() {
-      window.addEventListener('resize', this.resize, true)
-    },
-    mounted() {
-      this.waterfallDom = this.$refs.waterfall.$el
-      this.setWidth()
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.resize, true)
-    },
     methods: {
       setWidth(w) {
         // width防止初始化前布局问题
@@ -96,6 +86,16 @@
           this.broadcast('app-echarts', 'on-resize-change', true)
         })
       },
+    },
+    created() {
+      window.addEventListener('resize', this.resize, true)
+    },
+    mounted() {
+      this.waterfallDom = this.$refs.waterfall.$el
+      this.setWidth()
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.resize, true)
     },
   }
 </script>

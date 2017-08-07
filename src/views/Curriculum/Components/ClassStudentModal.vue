@@ -58,6 +58,18 @@
         },
       }
     },
+    watch: {
+      value(val) {
+        this.visible = val
+      },
+      visible(val) {
+        if (val === false) {
+          this.$emit('input', false)
+        } else {
+          this.getClubumInfo()
+        }
+      },
+    },
     methods: {
       // 获取班级学员信息
       getClubumInfo(pageData = this.pager.defaultPage) {
@@ -76,18 +88,6 @@
       getPerPageInfo(perPageId = 10) {
         const pageInfo = Object.assign({}, this.pager.defaultPage, { per_page: perPageId })
         this.getClubumInfo(pageInfo)
-      },
-    },
-    watch: {
-      value(val) {
-        this.visible = val
-      },
-      visible(val) {
-        if (val === false) {
-          this.$emit('input', false)
-        } else {
-          this.getClubumInfo()
-        }
       },
     },
   }

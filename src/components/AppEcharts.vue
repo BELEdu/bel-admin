@@ -38,9 +38,7 @@
       },
       setOption: {
         type: Object,
-        default() {
-          return null
-        },
+        required: true,
       },
       delayTime: {
         type: Number,
@@ -65,21 +63,10 @@
         return this.setOption
       },
     },
-    mounted() {
-      // 初始化图表
-      this.init()
-      this.$on('on-resize-change', (val) => {
-        if (val) {
-          this.chartResize()
-        }
-      })
-    },
-    beforeDestroy() {
-      this.autoResizeHandler(false)
-      if (this.char) {
-        // 销毁图表实例
-        this.chart.dispose()
-      }
+    watch: {
+      autoResize(val) {
+        this.autoResizeHandler(val)
+      },
     },
     methods: {
       // 初始化图表
@@ -100,10 +87,21 @@
         }
       },
     },
-    watch: {
-      autoResize(val) {
-        this.autoResizeHandler(val)
-      },
+    mounted() {
+      // 初始化图表
+      this.init()
+      this.$on('on-resize-change', (val) => {
+        if (val) {
+          this.chartResize()
+        }
+      })
+    },
+    beforeDestroy() {
+      this.autoResizeHandler(false)
+      if (this.char) {
+        // 销毁图表实例
+        this.chart.dispose()
+      }
     },
   }
 </script>

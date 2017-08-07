@@ -75,13 +75,9 @@
       },
       // 查看学员ID
       id: [Number, String],
-      // 所选项数据
-      data: {
-        type: Object,
-        default: {},
-      },
       header: {
         type: Array,
+        required: true,
         default: [],
       },
     },
@@ -96,6 +92,18 @@
         },
         visible: this.show,
       }
+    },
+    watch: {
+      show(val) {
+        this.visible = val
+      },
+      visible(val) {
+        if (val === false) {
+          this.$emit('update:show', false)
+        } else {
+          this.getAppraise({ page: 1, per_page: 10 })
+        }
+      },
     },
     methods: {
       // 获取该学员的所有评价内容
@@ -124,18 +132,6 @@
       // 获取科目
       getGrade(id) {
         return this.$store.state.dicts.grade.filter(item => item.value === id)[0].display_name
-      },
-    },
-    watch: {
-      show(val) {
-        this.visible = val
-      },
-      visible(val) {
-        if (val === false) {
-          this.$emit('update:show', false)
-        } else {
-          this.getAppraise({ page: 1, per_page: 10 })
-        }
       },
     },
   }

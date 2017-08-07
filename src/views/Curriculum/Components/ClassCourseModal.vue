@@ -98,7 +98,7 @@
       // 添加|编辑ID
       id: {
         type: Number,
-        default: null,
+        required: true,
       },
       status: {
         type: String,
@@ -271,6 +271,19 @@
         return this.courseOption.course_optional ? this.courseOption.course_optional[0] : []
       },
     },
+    watch: {
+      value(val) {
+        this.courseModal = val
+        if (val === true) {
+          this.getCourseOption()
+        }
+      },
+      courseModal(val) {
+        if (val === false) {
+          this.$emit('input', val)
+        }
+      },
+    },
     methods: {
       // 获取上课参加情况 || 上课计算课时情况
       getJoinDeductVal(data) {
@@ -361,19 +374,6 @@
       formCancel(name) {
         this.formErrors = {}
         this.$refs[name].resetFields()
-      },
-    },
-    watch: {
-      value(val) {
-        this.courseModal = val
-        if (val === true) {
-          this.getCourseOption()
-        }
-      },
-      courseModal(val) {
-        if (val === false) {
-          this.$emit('input', val)
-        }
       },
     },
   }

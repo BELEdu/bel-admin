@@ -24,7 +24,7 @@
     name: 'app-time-picker',
     data() {
       return {
-        timeVal: null,
+        timeVal: this.value,
       }
     },
     props: {
@@ -63,8 +63,17 @@
         default: false,
       },
     },
-    created() {
-      this.timeVal = this.value
+    watch: {
+      value(val) {
+        this.timeVal = val
+      },
+      timeVal(val) {
+        if (val) {
+          this.timeFormat(val)
+        } else {
+          this.$emit('input', null)
+        }
+      },
     },
     methods: {
       onChange() {
@@ -91,18 +100,6 @@
           }
         }
         this.$emit('input', time || null)
-      },
-    },
-    watch: {
-      value(val) {
-        this.timeVal = val
-      },
-      timeVal(val) {
-        if (val) {
-          this.timeFormat(val)
-        } else {
-          this.$emit('input', null)
-        }
       },
     },
   }

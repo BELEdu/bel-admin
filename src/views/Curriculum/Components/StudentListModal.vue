@@ -59,16 +59,6 @@
         visible: this.value,
       }
     },
-    methods: {
-      ok() {
-        this.$emit('on-ok')
-      },
-
-      cancel() {
-        this.$emit('input', false)
-        this.$emit('on-cancel')
-      },
-    },
     watch: {
       value(val) {
         this.visible = val
@@ -77,6 +67,16 @@
         if (val === false) {
           this.$emit('input', val)
         }
+      },
+    },
+    methods: {
+      ok() {
+        this.$emit('on-ok')
+      },
+
+      cancel() {
+        this.$emit('input', false)
+        this.$emit('on-cancel')
       },
     },
   }

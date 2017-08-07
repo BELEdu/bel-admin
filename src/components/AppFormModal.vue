@@ -93,6 +93,16 @@ export default {
       visible: this.value,
     }
   },
+  watch: {
+    value(val) {
+      this.visible = val
+    },
+    visible(val) {
+      if (val === false) {
+        this.$emit('input', false)
+      }
+    },
+  },
   methods: {
     ok() {
       this.$emit('on-ok')
@@ -105,16 +115,6 @@ export default {
 
     assist() {
       this.$emit('on-assist')
-    },
-  },
-  watch: {
-    value(val) {
-      this.visible = val
-    },
-    visible(val) {
-      if (val === false) {
-        this.$emit('input', false)
-      }
     },
   },
 }
