@@ -1,3 +1,5 @@
+@import "~mixin";
+
 // 字体颜色
 .color-primary {
   color: @primary-color !important;
@@ -79,11 +81,7 @@
 
 /*清除浮动*/
 .clearfix {
-  &::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
+  .clearfix();
 }
 
 /*浮动*/

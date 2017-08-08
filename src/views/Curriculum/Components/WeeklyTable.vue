@@ -255,11 +255,6 @@
 <style lang="less">
   @import "~vars";
 
-  @finish: #66bae5;
-  @verify: #e5bb79;
-  @confirm: #e47fa9;
-  @cancel: #ccc;
-
   .weekly-table {
     position: relative;
     min-height: 550px;
@@ -325,16 +320,16 @@
             left: 10px;
           }
           &.finish::before {
-            background-color: #66bae5;
+            background-color: @primary-color;
           }
           &.verify::before {
-            background-color: #e5bb79;
+            background-color: @warning-color;
           }
           &.confirm::before {
-            background-color: #e47fa9;
+            background-color: @success-color;
           }
           &.cancel::before {
-            background-color: #ccc;
+            background-color: @cancel-color;
           }
         }
       }
@@ -389,16 +384,16 @@
             border-bottom: 1px solid #d7dde4;
             box-sizing: border-box;
             &.finish {
-              background-color: @finish;
+              background-color: @primary-color;
             }
             &.verify {
-              background-color: @verify;
+              background-color: @warning-color;
             }
             &.confirm {
-              background-color: @confirm;
+              background-color: @success-color;
             }
             &.cancel {
-              background-color: @cancel;
+              background-color: @cancel-color;
             }
             .weekly-course {
               color: #fff;
@@ -431,22 +426,22 @@
         }
         &.finish {
           .weekly-course {
-            background-color: @finish;
+            background-color: @primary-color;
           }
         }
         &.verify {
           .weekly-course {
-            background-color: @verify;
+            background-color: @warning-color;
           }
         }
         &.confirm {
           .weekly-course {
-            background-color: @confirm;
+            background-color: @success-color;
           }
         }
         &.cancel {
           .weekly-course{
-            background-color: @cancel;
+            background-color: @cancel-color;
           }
         }
       }

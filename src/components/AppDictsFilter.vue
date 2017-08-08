@@ -87,18 +87,20 @@
 </script>
 
 <style lang="less">
+  @import "~vars";
+
   .schedule {
     &-combo {
-      color: #e47fa9;
+      color: @success-color;
     }
     &-verify {
-      color: #e5bb79;
+      color: @warning-color;
     }
     &-finish {
-      color: #66bae5;
+      color: @primary-color;
     }
     &-cancel {
-      color: #cccccc;
+      color: @cancel-color;
     }
   }
 </style>

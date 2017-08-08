@@ -127,12 +127,6 @@
   @large-padding: 15px;
   @small-padding: 10px;
   @icon-border-size: 1px;
-  .clearfix::after {
-    content: "";
-    display: block;
-    clear: both;
-  }
-
   .cal-wrapper {
     .cal-header {
       position: relative;
