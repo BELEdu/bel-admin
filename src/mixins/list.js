@@ -103,7 +103,7 @@ export default {
       // 跳页时不再使用query对象，而是直接从地址栏拿search串，改变其中的page参数即可
       let { search } = location
       if (search.includes('page')) {
-        search = search.replace(/(page=)\d+/, `$1${page}`)
+        search = search.replace(/([^_]page=)\d+/, `$1${page}`)
       } else if (search) {
         search += `&page=${page}`
       } else {
