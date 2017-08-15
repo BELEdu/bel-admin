@@ -3,19 +3,19 @@
     <!-- 搜索表单 -->
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:7em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.satisfaction" style="width:8em;" placeholder="请选择满意度" >
+        <Select v-model="query[`equal[satisfaction]`]" style="width:8em;" placeholder="请选择满意度" >
           <Option v-for="item in satisfaction" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.meeting_date" format="yyyy-MM-dd" type="daterange" placeholder="请选择会议时间日期"></Date-picker>
+        <Date-picker v-model="query[`between[meeting_date]`]" format="yyyy-MM-dd" type="daterange" placeholder="请选择会议时间日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -71,18 +71,13 @@ export default {
 
   data() {
     return {
-
       likeKeys: [
         { label: '家长姓名', value: 'parent_name' },
       ],
       likeKey: 'parent_name',
       query: {
-        equal: {
-          satisfaction: null,
-        },
-        between: {
-          meeting_date: [],
-        },
+        'equal[satisfaction]': null,
+        'between[meeting_date]': [],
       },
 
       // 表格配置

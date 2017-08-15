@@ -6,7 +6,7 @@
       <Form-item>
         <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"
+          v-model="likeValue"
           style="width: calc(7em + 200px);"
         >
           <Select
@@ -27,7 +27,7 @@
       <!-- 日期范围搜索 -->
       <Form-item>
         <Date-picker
-          v-model="query.between.apply_time"
+          v-model="query['between[apply_time]']"
           format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="申请日期范围" style="width: 200px"
           :editable="false"

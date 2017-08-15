@@ -3,14 +3,14 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:7em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.subject_type" style="width:8em;" placeholder="请选择科目" >
+        <Select v-model="query[`equal[subject_type]`]" style="width:8em;" placeholder="请选择科目" >
           <Option value="语文" >语文</Option>
           <Option value="数学" >数学</Option>
           <Option value="英语" >英语</Option>
@@ -82,9 +82,7 @@ export default {
       ],
       likeKey: 'subject_type',
       query: {
-        equal: {
-          subject_type: null,
-        },
+        'equal[subject_type]': null,
       },
 
       columns: [

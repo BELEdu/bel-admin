@@ -3,14 +3,14 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:7em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.current_grade" style="width:8em;" placeholder="请选择年级" >
+        <Select v-model="query[`equal[current_grade]`]" style="width:8em;" placeholder="请选择年级" >
           <Option v-for="grade in grades" :value="grade.value" :key="grade.display_name">{{ grade.display_name }}</Option>
         </Select>
       </Form-item>
@@ -58,10 +58,9 @@ export default {
       ],
       likeKey: 'display_name',
       query: {
-        equal: {
-          current_grade: null,
-        },
+        'equal[current_grade]': null,
       },
+
       // 表格配置
       columns: [
         {

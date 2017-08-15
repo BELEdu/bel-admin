@@ -68,16 +68,10 @@ export function searchConfig() {
     likeKey: 'student_name',
     query: {
       // 时间段搜索
-      between: {
-        first_communication_at: [],
-      },
+      'between[first_communication_at]': [],
       // 特殊字段搜索
-      equal: {
-        // 当前状态
-        student_current_status: null,
-        // 类型
-        communication_type: null,
-      },
+      'equal[student_current_status]': null, // 当前状态
+      'equal[communication_type]': null, // 类型
     },
   }
 }

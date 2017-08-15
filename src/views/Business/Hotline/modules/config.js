@@ -51,13 +51,9 @@ export function searchConfig() {
     likeKey: 'student_name',
     query: {
       // 时间段搜索
-      between: {
-        visited_at: [],
-      },
+      'between[visited_at]': [],
       // 特殊字段搜索
-      equal: {
-        student_current_status: null,
-      },
+      'equal[student_current_status]': null,
     },
   }
 }

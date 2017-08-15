@@ -80,7 +80,8 @@ export default {
     successHandler() {
       this.closeModal()
       this.$Message.info('提交成功！')
-      this.$emit('updateData')
+      // 这里或许可以不走接口请求
+      this.$emit('update')
     },
 
     closeModal() {

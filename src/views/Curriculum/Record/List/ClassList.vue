@@ -3,7 +3,7 @@
     <!--条件查询模块-->
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
         <Select v-model="likeKey" slot="prepend" style="width:6em">
           <Option v-for="likeKey in likeKeys"
                   :key="likeKey.value"
@@ -41,8 +41,11 @@ import ClassStudentModal from '../../Components/ClassStudentModal'
 
 export default {
   name: 'app-class-record',
+
   mixins: [list],
+
   components: { ClassStudentModal },
+
   data() {
     return {
       // 搜索字段
@@ -90,6 +93,7 @@ export default {
       currentClbum: {},
     }
   },
+
   methods: {
     /**
      * 查看班级信息

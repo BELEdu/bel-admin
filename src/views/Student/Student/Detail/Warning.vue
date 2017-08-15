@@ -3,24 +3,24 @@
     <!-- 搜索表单 -->
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:6em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
      </Form-item>
      <Form-item>
-        <Select v-model="query.equal.warning_type" style="width:9em;" placeholder="请选择预警类型">
+        <Select v-model="query['equal[warning_type]']" style="width:9em;" placeholder="请选择预警类型">
           <Option v-for="item in warning_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.warning_status" style="width:9em;" placeholder="请选择预警状态">
+        <Select v-model="query['equal[warning_status]']" style="width:9em;" placeholder="请选择预警状态">
           <Option v-for="item in warning_status" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.time" type="daterange" placeholder="请选择预警时间"></Date-picker>
+        <Date-picker v-model="query['between[time]']" type="daterange" placeholder="请选择预警时间"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -40,7 +40,7 @@
       @closeWarningOkModal="modal.ok=false"
       :warningId="warningId"
       :warningStatus="warningStatus"
-      @updateData="updateData"
+      @update="update"
     ></warning-ok-modal>
 
     <!-- 取消预警信息组件 -->
@@ -49,7 +49,7 @@
       @closeWarningCancelModal="modal.cancel=false"
       :warningId="warningId"
       :warningStatus="warningStatus"
-      @updateData="updateData"
+      @update="update"
     ></warning-cancel-modal>
 
     <!-- 预警信息列表 -->
@@ -87,13 +87,9 @@ export default {
       ],
       likeKey: 'id',
       query: {
-        equal: {
-          warning_type: '',
-          warning_status: '',
-        },
-        between: {
-          time: [],
-        },
+        'equal[warning_type]': '',
+        'equal[warning_status]': '',
+        'between[time]': [],
       },
 
       columns: [

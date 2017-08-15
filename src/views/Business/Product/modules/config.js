@@ -85,13 +85,9 @@ export function searchConfig() {
     likeKey: 'product_number',
     query: {
       // 时间段搜索
-      between: {
-        created_at: [],
-      },
+      'between[created_at]': [],
       // 特殊字段搜索
-      equal: {
-        subject_id: null,
-      },
+      'equal[subject_id]': null,
     },
   }
 }

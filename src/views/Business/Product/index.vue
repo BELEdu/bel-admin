@@ -6,7 +6,7 @@
       <Form-item>
         <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"
+          v-model="likeValue"
           style="width: calc(7em + 200px);"
         >
           <Select
@@ -27,7 +27,7 @@
       <!-- 日期范围搜索 -->
       <Form-item>
         <Date-picker
-          v-model="query.between.created_at"
+          v-model="query['between[created_at]']"
           format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="创建日期范围" style="width: 200px"
           :editable="false"
@@ -37,7 +37,7 @@
       <!-- 学科搜索 -->
       <Form-item>
         <Select
-          v-model="query.equal.subject_id"
+          v-model="query['equal[subject_id]']"
           placeholder="选择学科"
           style="width: 150px;"
         >

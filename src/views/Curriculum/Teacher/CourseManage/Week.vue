@@ -2,12 +2,10 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Date-picker v-model="weekStartDate"
-                     @on-change="dateChange"
-                     placeholder="请选择时间"></Date-picker>
+        <Date-picker v-model="baseDate" placeholder="请选择时间"></Date-picker>
       </Form-item>
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键词">
+        <Input v-model="likeValue" placeholder="请输入关键词">
         <Select v-model="likeKey" slot="prepend" style="width:6em">
           <Option v-for="likeKey in likeKeys"
                   :key="likeKey.value"
@@ -16,7 +14,7 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.subject_id">
+        <Select v-model="query['equal[subject_id]']">
           <Option value="">全部</Option>
           <Option v-for="list in subjectType"
                   :key="list.value"
@@ -24,7 +22,7 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.schedule_status">
+        <Select v-model="query['equal[schedule_status]']">
           <Option value="">全部</Option>
           <Option value="0">待确认</Option>
           <Option value="1">已排定</Option>
@@ -60,24 +58,17 @@
    */
 
   import { list } from '@/mixins'
-  import { getDateRange, prevWeek, nextWeek } from '@/utils/date'
+  import week from '../../mixins/week'
   import WeeklyTable from '../../Components/WeeklyTable'
 
   export default{
     name: 'app-teacher-course-week',
-    mixins: [list],
+
+    mixins: [list, week],
+
     components: { WeeklyTable },
     data() {
       return {
-        // 搜索字段
-        query: {
-          between: {
-            created_at: [],
-          },
-          equal: {
-            schedule_status: '',
-          },
-        },
         likeKeys: [
           { label: '教师姓名', value: 'teacher_name' },
           { label: '教学对象', value: 'display_name' },
@@ -97,12 +88,7 @@
         weeklyData: {},
       }
     },
-    computed: {
-      // 显示周期间开始日期
-      weekStartDate() {
-        return this.$route.query['between[created_at][]'] ? this.$route.query['between[created_at][]'][0] : ''
-      },
-    },
+
     methods: {
       // 获取教师周课表数据
       getData(qs) {
@@ -110,21 +96,6 @@
           .then((data) => {
             this.weeklyData = data
           })
-      },
-      // 监听日期变化
-      dateChange(val) {
-        // 设置指定日期所在周里开始与结束日期
-        this.query.between.created_at = getDateRange(val)
-      },
-      // 查看上一周课表
-      getPrevWeek() {
-        this.query.between.created_at = prevWeek(this.query.between.created_at[0])
-        this.updateData()
-      },
-      // 查看上一周课表
-      getNextWeek() {
-        this.query.between.created_at = nextWeek(this.query.between.created_at[0])
-        this.updateData()
       },
     },
   }

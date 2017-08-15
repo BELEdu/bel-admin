@@ -4,24 +4,24 @@
     <!-- 搜索表单 -->
     <Form inline class="app-search-form">
        <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:7em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.department_id" style="width:9em;" placeholder="请选择校区">
+        <Select v-model="query['equal[department_id]']" style="width:9em;" placeholder="请选择校区">
           <Option v-for="school in school_list" :value="school.id" :key="school.id">{{ school.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.current_grade" style="width:9em;" placeholder="请选择当前年级">
+        <Select v-model="query['equal[current_grade]']" style="width:9em;" placeholder="请选择当前年级">
           <Option v-for="grade in grades" :value="grade.value" :key="grade.value">{{ grade.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.original_contractor_at" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
+        <Date-picker v-model="query['between[original_contractor_at]']" format="yyyy-MM-dd" type="daterange" placeholder="请选择首签日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -56,7 +56,7 @@
       v-model="modal.teacher"
       @closeTeacherModal="modal.teacher = false"
       :studentItem="studentItem"
-      :updateData="updateData"
+       @update="fetchData"
     ></teacher-modal>
 
     <!-- 分配学管师组件 -->
@@ -64,7 +64,7 @@
       v-model="modal.manage"
       @closeManageModal="modal.manage = false"
       :studentItem="studentItem"
-      :updateData="updateData"
+      @update="fetchData"
     ></manage-modal>
 
     <!-- 学员信息表格 -->
@@ -98,7 +98,6 @@ export default {
 
   data() {
     return {
-
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
         { label: '学员编号', value: 'number' },
@@ -108,13 +107,9 @@ export default {
       ],
       likeKey: 'display_name',
       query: {
-        equal: {
-          department_id: '',
-          current_grade: '',
-        },
-        between: {
-          original_contractor_at: [],
-        },
+        'equal[department_id]': '',
+        'equal[current_grade]': '',
+        'between[original_contractor_at]': [],
       },
 
       columns: [

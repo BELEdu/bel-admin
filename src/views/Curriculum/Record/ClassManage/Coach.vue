@@ -2,7 +2,7 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
         <Select v-model="likeKey" slot="prepend" style="width:6em">
           <Option v-for="likeKey in likeKeys"
                   :key="likeKey.value"
@@ -50,8 +50,11 @@
 
   export default{
     name: 'app-coach-record-manage',
+
     mixins: [list],
+
     components: { StudentListModal },
+
     data() {
       return {
         // 搜索字段
@@ -128,6 +131,7 @@
         ],
       }
     },
+
     methods: {
       // 获取班级上课记录
       getData(qs) {

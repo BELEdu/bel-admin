@@ -20,127 +20,133 @@ import format from 'date-fns/format'
 export default {
   data() {
     return {
-      query: {
-        order: {},
-        like: {},
-      },
+      query: {},
+      likeValue: '',
     }
   },
 
-  methods: {
-    subStringify(type, subQuery) {
-      return Object.entries(subQuery).reduce((result, [key, value]) => {
-        if (type === 'between') {
-          if (value.length <= 0) return result
+  computed: {
+    routeQuery() {
+      return Object.keys(this.query)
+        .reduce((result, key) => {
+          const value = this.query[key]
 
-          const betweenQs = value
-            .filter(item => item)
-            .map(item => `${type}[${key}][]=${format(item, 'YYYY-MM-DD')}`)
-            .join('&')
-          return `${result}${betweenQs}&`
-        } else if (value) {
-          return `${result}${type}[${key}]=${value}&`
-        }
-        return result
-      }, '')
-    },
-
-    // 将query对象解析为合法的url参数字符串
-    stringify(query) {
-      const queryString = Object
-        .entries(query)
-        .reduce((result, [type, subQuery]) => {
-          // $route.query中的值
-          if (typeof subQuery !== 'object') {
-            // 碰到between字段时，必须把type字符串最后的[0]/[1]去掉
-            return `${result}${type.replace(/\[\d\]$/, '')}=${subQuery}&`
-          } else if (type.includes('between[')) {
-            // $route中的值有点奇葩，between有的情况下会是一个数组
-            return `${result}${type}=${subQuery[0]}&${type}=${subQuery[1]}&`
-          }
-          return `${result}${this.subStringify(type, subQuery)}`
-        }, '')
-        .replace(/^&+/, '')
-        .replace(/&+$/, '')
-
-      return queryString ? `?${queryString}` : ''
-    },
-
-    // 把url参数字符串解析为query对象
-    parse(str) {
-      return str
-        .split('&')
-        /* eslint-disable no-param-reassign */
-        .reduce((result, item) => {
-          const matches = item.match(/(\w+)\[(\w+)\](\[\])?=(.*)/)
-
-          if (matches) {
-            const [, type, key, isArray, value] = matches
-            if (!result[type]) result[type] = {}
-            if (isArray) {
-              if (!result[type][key]) result[type][key] = []
-              result[type][key].push(value)
-            } else {
-              result[type][key] = +value || value
-            }
+          // 无值时不处理
+          if (value == null || value.length === 0) {
+            return result
           }
 
-          return result
+          // 处理between查询的值
+          if (typeof value === 'object') {
+            const [startDate, endDate] = value
+            const start = format(startDate, 'YYYY-MM-DD')
+            const end = format(endDate, 'YYYY-MM-DD')
+            return { ...result, [key]: [start, end] }
+          }
+
+          return { ...result, [key]: value }
         }, {})
+    },
+  },
+
+  watch: {
+    likeKey() {
+      this.likeValue = ''
+    },
+  },
+
+  methods: {
+    parse(query) {
+      return Object.keys(query)
+        .reduce((result, key) => {
+          const value = query[key]
+
+          // between查询必须做特殊处理
+          if (typeof value === 'object') {
+            const [start, end] = value
+            return `${result}&${key}[]=${start}&${key}[]=${end}`
+          }
+
+          return `${result}&${key}=${value}`
+        }, '')
+        .replace(/^&/, '?')
+    },
+
+    // 刷新页面时，根据$route.query设置this.query的值，以便视图上正确反应当前的搜索条件
+    mapRouteToQuery() {
+      const copy = { ...this.$route.query }
+      delete copy.page
+      delete copy.per_page
+      const likeKey = this.getLikeKey(copy)
+      if (likeKey) {
+        this.likeValue = copy[likeKey]
+        delete copy[likeKey]
+      }
+      this.query = {
+        ...this.query,
+        ...copy,
+      }
+    },
+
+    getLikeKey(query) {
+      return Object.keys(query).find(key => key.includes('like['))
+    },
+
+    push(query, isSearch) {
+      const copy = { ...this.$route.query }
+
+      // 如果是搜索按钮触发的，需要处理like查询
+      if (isSearch) {
+        // 清理已经存在的like查询
+        const likeKey = this.getLikeKey(copy)
+        if (likeKey) {
+          delete copy[likeKey]
+        }
+        // 如果当前likeValue有值，插入新的like查询
+        if (this.likeValue) {
+          copy[`like[${this.likeKey}]`] = this.likeValue
+        }
+      }
+
+      this.$router.push({
+        query: {
+          ...copy,
+          ...query,
+        },
+      })
     },
 
     // 更改每页条数
     pageSizeChange(per_page) {
-      this.query = { ...this.query, per_page, page: 1 }
-      this.updateData()
+      this.push({
+        per_page,
+        page: 1,
+      })
     },
 
     // 跳页
     goTo(page) {
-      // 因为like的值直接绑定在query对象上，导致用户即使没有按下“搜索”按钮，跳页时，已经输入的关键字也会被带入url参数里
-      // 比较好的解决办法是把like移除query对象，只在“搜索”时才手动并入query
-      // 但由于这需要改动所有调用了此mixin的方法，为了不做破坏性改动，这里用了一种稍微不是那么好的解决方式
-      // 跳页时不再使用query对象，而是直接从地址栏拿search串，改变其中的page参数即可
-      let { search } = location
-      if (search.includes('page')) {
-        search = search.replace(/([^_]page=)\d+/, `$1${page}`)
-      } else if (search) {
-        search += `&page=${page}`
-      } else {
-        search += `?page=${page}`
-      }
-      this.updateData(search)
+      this.push({ page })
     },
 
     // 排序
     sort({ key, order }) {
-      this.query = {
-        ...this.query,
-        order: { [key]: order },
-      }
-      this.updateData()
+      this.push({
+        [`order[${key}]`]: order,
+      })
     },
 
-    // 点击搜索按钮
+    // 每次搜索，应该重新回到第一页
     search() {
-      // 每次搜索，应该重新回到第一页
-      this.query = { ...this.query, page: 1 }
-      this.updateData()
+      this.push({
+        ...this.routeQuery,
+        page: 1,
+      }, true)
     },
 
-    // 根据改变后query重新获取列表
-    updateData(queryString = this.stringify(this.query)) {
-      // 更新路由，路由地址的参数应与请求接口的参数同步
-      const { path } = this.$route
-      this.$router.push(`${path}${queryString}`)
-
-      // 获取数据
-      this.fetchData(queryString)
-    },
-
-    fetchData(queryString) {
+    fetchData(query = this.$route.query) {
       if (this.getData) {
-        this.getData(queryString)
+        this.getData(this.parse(query))
           .catch(() => {
             this.$Notice.error({ title: '无法访问数据，请稍后再试', duration: 0 })
           })
@@ -151,40 +157,13 @@ export default {
     },
   },
 
-  watch: {
-    // 每次改变模糊搜索的字段后，模糊搜索的值清空
-    likeKey() {
-      this.query = {
-        ...this.query,
-        like: {},
-      }
-    },
-  },
-
   created() {
-    const queryString = this.stringify(this.$route.query)
-
-    // 把url参数解析回对象，以便表单的值正确地显示
-    const parsed = this.parse(queryString)
-    if (parsed.like) {
-      const likeKeys = Object.keys(parsed.like)
-      if (likeKeys.length) this.likeKey = likeKeys[0]
-    }
-
-    // 改变likeKeys后，对应watch方法会把query中的like清空
-    // 因此必须在watch方法调用后再给query赋值
-    // 由于watch是异步的，这里使用setTimeout来保证执行顺序
-    setTimeout(() => {
-      this.query = { ...this.query, ...parsed }
-    })
-
-
-    this.updateData(queryString)
+    this.mapRouteToQuery()
+    this.fetchData()
   },
 
   beforeRouteUpdate(to, from, next) {
-    const queryString = this.stringify(to.query)
-    this.fetchData(queryString)
+    this.fetchData(to.query)
     next()
   },
 }

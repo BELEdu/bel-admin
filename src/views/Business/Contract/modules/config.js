@@ -20,9 +20,7 @@ export function searchConfig() {
     likeKey: 'student_name',
     query: {
       // 时间段搜索
-      between: {
-        apply_time: [],
-      },
+      'between[apply_time]': [],
       // 特殊字段搜索
       // equal: {
       //   subject_id: null,

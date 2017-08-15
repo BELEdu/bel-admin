@@ -3,26 +3,26 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:6em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.product_type_id" placeholder="请选择产品类型" style="width:9em;">
+        <Select v-model="query[`equal[product_type_id]`]" placeholder="请选择产品类型" style="width:9em;">
           <Option v-for="productType in productTypes" :value="productType.value" :key="productType.display_name">{{ productType.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.status" placeholder="请选择状态" style="width:9em;">
+        <Select v-model="query[`equal[status]`]" placeholder="请选择状态" style="width:9em;">
           <Option :value="1">未开班</Option>
           <Option :value="2">开班中</Option>
           <Option :value="3">已结束</Option>
         </Select>
       </Form-item>
       <Form-item>
-        <Date-picker v-model="query.between.start_at" type="daterange" placeholder="请选择开办日期"></Date-picker>
+        <Date-picker v-model="query[`between[start_at]`]" type="daterange" placeholder="请选择开办日期"></Date-picker>
       </Form-item>
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -56,7 +56,7 @@
       @closeManageModal="modal.manage=false"
       :form="form"
       :studentData="student_data"
-      @updateData="updateData"
+      @update="fetchData"
     ></manage-modal>
 
     <!--班级管理表格-->
@@ -95,13 +95,9 @@ export default {
       ],
       likeKey: 'display_name',
       query: {
-        equal: {
-          product_type_id: null,
-          status: null,
-        },
-        between: {
-          start_at: [],
-        },
+        'equal[product_type_id]': null,
+        'equal[status]': null,
+        'between[start_at]': [],
       },
 
       columns: [

@@ -3,7 +3,7 @@
     <!--条件查询模块-->
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
         <Select v-model="likeKey" slot="prepend" style="width:6em">
           <Option v-for="likeKey in likeKeys"
                   :key="likeKey.value"
@@ -41,7 +41,9 @@ import { list } from '@/mixins'
 
 export default {
   name: 'app-student-record',
+
   mixins: [list],
+
   data() {
     return {
       // 搜索字段
@@ -77,6 +79,7 @@ export default {
       studentData: {},
     }
   },
+
   methods: {
     // 获取学员数据
     getData(qs) {

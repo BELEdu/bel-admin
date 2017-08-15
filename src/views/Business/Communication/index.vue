@@ -6,7 +6,7 @@
       <Form-item>
         <Input
           placeholder="搜索关键字"
-          v-model="query.like[likeKey]"
+          v-model="likeValue"
           style="width: calc(7em + 200px);"
         >
           <Select
@@ -27,7 +27,7 @@
       <!-- 日期范围搜索 -->
       <Form-item>
         <Date-picker
-          v-model="query.between.first_communication_at"
+          v-model="query['between[first_communication_at]']"
           format="yyyy-MM-dd" type="daterange" placement="bottom-start"
           placeholder="首次沟通日期范围" style="width: 200px"
           :editable="false"
@@ -37,7 +37,7 @@
       <!-- 选择当前状态 -->
       <Form-item>
         <Select
-          v-model="query.equal.student_current_status"
+          v-model="query['equal[student_current_status]']"
           placeholder="选择当前状态"
           style="width: 150px;"
         >
@@ -53,7 +53,7 @@
       <!-- 选择类型 -->
       <Form-item>
         <Select
-          v-model="query.equal.communication_type"
+          v-model="query['equal[communication_type]']"
           placeholder="选择类型"
           style="width: 150px;"
         >

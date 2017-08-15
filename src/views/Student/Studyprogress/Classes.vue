@@ -3,7 +3,7 @@
 
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:7em;">
             <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
           </Select>
@@ -58,7 +58,6 @@ export default {
 
   data() {
     return {
-
       likeKeys: [
         { label: '班级名称', value: 'display_name' },
         { label: '产品名称', value: '' },
@@ -66,7 +65,6 @@ export default {
         { label: '班主任', value: 'classes_director_name' },
       ],
       likeKey: 'display_name',
-      query: {},
 
       columns: [
         {

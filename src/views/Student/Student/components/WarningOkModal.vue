@@ -73,7 +73,7 @@ export default {
     successHandler() {
       this.closeModal()
       this.$Message.info('提交成功！')
-      this.$emit('updateData')
+      this.$emit('update')
     },
 
     closeModal() {

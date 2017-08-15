@@ -2,10 +2,10 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Date-picker v-model="query.between.created_at" type="daterange" placeholder="请选择时间期间"></Date-picker>
+        <Date-picker v-model="query['between[created_at]']" type="daterange" placeholder="请选择时间期间"></Date-picker>
       </Form-item>
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键词">
+        <Input v-model="likeValue" placeholder="请输入关键词">
           <Select v-model="likeKey" slot="prepend" style="width:6em">
             <Option v-for="likeKey in likeKeys"
                     :key="likeKey.value"
@@ -14,7 +14,7 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.subject_id">
+        <Select v-model="query['equal[subject_id]']">
           <Option value="">全部</Option>
           <Option v-for="list in subjectType"
                   :key="list.value"
@@ -22,7 +22,7 @@
         </Select>
       </Form-item>
       <Form-item>
-        <Select v-model="query.equal.schedule_status">
+        <Select v-model="query['equal[schedule_status]']">
           <Option value="">全部</Option>
           <Option value="0">待确认</Option>
           <Option value="1">已排定</Option>
@@ -78,12 +78,9 @@ export default{
     return {
       // 搜索字段
       query: {
-        between: {
-          created_at: [],
-        },
-        equal: {
-          schedule_status: '',
-        },
+        'between[created_at]': [],
+        'equal[subject_id]': '',
+        'equal[schedule_status]': '',
       },
       likeKeys: [
         { label: '教师姓名', value: 'teacher_name' },
@@ -243,7 +240,11 @@ export default{
     },
     // 添加课表之后更新列表page=1
     updataCourseList() {
-      this.updateData('?page=1')
+      this.$router.push({
+        query: { page: 1 },
+      })
+      this.fetchData()
+      // this.updateData('?page=1')
     },
   },
 }

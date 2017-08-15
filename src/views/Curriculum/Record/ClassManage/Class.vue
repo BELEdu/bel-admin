@@ -2,7 +2,7 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Input v-model="query.like[likeKey]" placeholder="请输入关键字">
+        <Input v-model="likeValue" placeholder="请输入关键字">
         <Select v-model="likeKey" slot="prepend" style="width:6em">
           <Option v-for="likeKey in likeKeys"
                   :key="likeKey.value"
@@ -29,7 +29,7 @@
     <appraise-single-modal :show.sync="appraiseSingleShow"
                            :config="singleModal.config"
                            :data="currentAppraiseInfo"
-                           @on-close="updateData"></appraise-single-modal>
+                           @on-close="fetchData"></appraise-single-modal>
     <!--查看评价弹窗-->
     <appraise-mult-modal :show.sync="appraiseShow"
                          :config="multModalConfig"
@@ -50,8 +50,11 @@
 
   export default{
     name: 'app-student-record-manage',
+
     mixins: [list],
+
     components: { AppraiseSingleModal, AppraiseMultModal },
+
     data() {
       return {
         // 搜索字段
@@ -140,6 +143,7 @@
         modalHeader: [],
       }
     },
+
     methods: {
       // 获取班级上课记录
       getData(qs) {
