@@ -109,46 +109,9 @@ export const setTime = (value, type = ':') => {
   return value
 };
 
-// 卢：以下方法可能不再需要了，暂且注释，过后可删除
-// export const getDateRange = (value = initTimeDate(), format) => {
-//   let src = value
-//   if (typeof value === 'string') {
-//     src = new Date(value)
-//   }
-//   const day = src.getDay()
-//   const date = src.getDate()
-//   return [formatDate(src.setDate(date - day), format), formatDate(src.setDate(date + (6 - day)), format)]
-// };
-
-// export const prevWeek = (value = initTimeDate(), format) => {
-//   let src = value
-//   if (typeof value === 'string') {
-//     src = new Date(value)
-//   }
-//   src.setDate(src.getDate() - 7)
-//   return getDateRange(src, format)
-// };
-
-// export const nextWeek = (value = initTimeDate(), format) => {
-//   let src = value
-//   if (typeof value === 'string') {
-//     src = new Date(value)
-//   }
-//   src.setDate(src.getDate() + 7)
-//   return getDateRange(src, format)
-// };
-
 export const isEqualDateStr = (dateStr1, dateStr2, separator = '-') => {
-  let dateArr1 = dateStr1.split(separator)
-  let dateArr2 = dateStr2.split(separator)
-  if (parseInt(dateArr1[0], 10) !== parseInt(dateArr2[0], 10)) {
-    return false
-  }
-  if (parseInt(dateArr1[1], 10) !== parseInt(dateArr2[1], 10)) {
-    return false
-  }
-  if (parseInt(dateArr1[2], 10) !== parseInt(dateArr2[2], 10)) {
-    return false
-  }
-  return true
+  const [year1, month1, day1] = dateStr1.split(separator)
+  const [year2, month2, day2] = dateStr2.split(separator)
+
+  return +year1 === +year2 && +month1 === +month2 && +day1 === +day2
 };
