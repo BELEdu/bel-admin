@@ -5,6 +5,12 @@ export { default as Curriculum } from './Curriculum'
 export { default as Feedback } from './Feedback'
 export { default as AccessError } from './AccessError'
 
+// 题库中心
+export { default as QuestionKnowledge } from './Question/Knowledge'
+export { default as QuestionChapter } from './Question/Chapter'
+export { default as QuestionQuestion } from './Question/Question'
+export { default as QuestionPaper } from './Question/Paper'
+
 // 业务管理
 export { default as Hotline } from './Business/Hotline'
 export { default as HotlineEdit } from './Business/Hotline/HotlineEdit'

@@ -18,6 +18,7 @@ import system from './system'
 import student from './student'
 import examination from './examination'
 import prepare from './prepare'
+import question from './question'
 
 Vue.use(Router)
 
@@ -57,6 +58,7 @@ const router = new Router({
         ...student,
         ...examination,
         ...prepare,
+        ...question,
         {
           path: '/error',
           name: 'AccessError',
