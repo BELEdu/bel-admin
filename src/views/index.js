@@ -11,6 +11,9 @@ export { default as QuestionChapter } from './Question/Chapter'
 export { default as QuestionQuestion } from './Question/Question'
 export { default as QuestionPaper } from './Question/Paper'
 
+// 算法中心
+export { default as AlgorithmKnowledge } from './Algorithm/Knowledge/'
+
 // 业务管理
 export { default as Hotline } from './Business/Hotline'
 export { default as HotlineEdit } from './Business/Hotline/HotlineEdit'
