@@ -13,6 +13,7 @@ export { default as QuestionPaper } from './Question/Paper'
 
 // 算法中心
 export { default as AlgorithmKnowledge } from './Algorithm/Knowledge/'
+export { default as AlgorithmKnowledgeInfo } from './Algorithm/Knowledge/Info'
 
 // 业务管理
 export { default as Hotline } from './Business/Hotline'
