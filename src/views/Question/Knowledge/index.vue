@@ -68,12 +68,14 @@
     <div class="app-content-topbar">
       <h2>知识点列表</h2>
       <Button
+        @click="toBulkEdit"
         type="primary"
       >
         批量编辑知识点
       </Button>
       <Button
         type='primary'
+        @click="activateStructureEdition"
       >
         编辑知识点结构
       </Button>
@@ -135,6 +137,17 @@
         </Form-item>
       </Form>
     </Modal>
+
+    <Modal
+      class="question-knowledge__structure"
+      v-model="structureEditionModal.active"
+      title="编辑知识点"
+    >
+      <v-structure-editor
+        keyword="知识点"
+       >
+      </v-structure-editor>
+    </Modal>
   </div>
 </template>
 
@@ -148,11 +161,16 @@
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import list from '@/mixins/list'
+import vStructureEditor from './components/StructureEditor'
 
 export default {
   name: 'question-knowledge',
 
   mixins: [list],
+
+  components: {
+    vStructureEditor,
+  },
 
   data() {
     return {
@@ -247,10 +265,16 @@ export default {
         confirmLoading: false,
         errorReasons: {},
       },
+
+      structureEditionModal: {
+        active: false,
+      },
     }
   },
 
   methods: {
+    /* 编辑知识点 */
+
     activateKnowledgeEdition() {
       this.knowledgeEditionModal.active = true
     },
@@ -261,6 +285,18 @@ export default {
         confirmLoading: false,
         errorReasons: {},
       }
+    },
+
+    /* 编辑知识点结构 */
+
+    activateStructureEdition() {
+      this.structureEditionModal.active = true
+    },
+
+    /* 去批量编辑知识点 */
+
+    toBulkEdit() {
+      this.$router.push('/question/knowledge/edition')
     },
   },
 
@@ -279,6 +315,13 @@ export default {
 
   .ivu-input-number {
     width: 140px !important;
+  }
+}
+
+.question-knowledge__structure {
+
+  .ivu-modal-footer {
+    display: none;
   }
 }
 </style>

@@ -7,6 +7,7 @@ export { default as AccessError } from './AccessError'
 
 // 题库中心
 export { default as QuestionKnowledge } from './Question/Knowledge'
+export { default as QuestionKnowledgeEdition } from './Question/Knowledge/Edition'
 export { default as QuestionChapter } from './Question/Chapter'
 export { default as QuestionQuestion } from './Question/Question'
 export { default as QuestionPaper } from './Question/Paper'

@@ -10,6 +10,10 @@ const QUESTION_KNOWLEDGE = {
   name: '知识点',
   link: '/question/knowledge',
 }
+const QUESTION_KNOWLEDGE_EDITION = {
+  name: '编辑知识点',
+  link: '/question/knowledge/edition',
+}
 const QUESTION_CHAPTER = {
   name: '章节',
   link: '/question/chapter',
@@ -33,6 +37,18 @@ export default [
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_KNOWLEDGE,
+      ],
+    },
+  },
+  {
+    path: QUESTION_KNOWLEDGE_EDITION.link,
+    name: 'QuestionKnowledgeEdtition',
+    component: views.QuestionKnowledgeEdition,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_KNOWLEDGE,
+        QUESTION_KNOWLEDGE_EDITION,
       ],
     },
   },
