@@ -189,7 +189,7 @@ export default {
       /* 某知识点详情列表 */
 
       infoModal: {
-        active: true,
+        active: false,
       },
 
       infoColConfig: [

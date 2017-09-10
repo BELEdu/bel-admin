@@ -10,6 +10,7 @@
         >
           <Option
             v-for="item in subject"
+            :key="item.value"
             :value="item.value"
           >
             {{item.display_name}}
@@ -159,7 +160,7 @@ export default {
   methods: {
     // eslint-disable-next-line
     toCheck(row) {
-      this.$router.push('/algorithm/knowledge/detail')
+      this.$router.push('/algorithm/knowledge/info')
     },
   },
 
