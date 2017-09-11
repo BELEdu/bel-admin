@@ -143,10 +143,10 @@
       v-model="structureEditionModal.active"
       title="编辑知识点"
     >
-      <v-structure-editor
+      <v-tree-structure
         keyword="知识点"
        >
-      </v-structure-editor>
+      </v-tree-structure>
     </Modal>
   </div>
 </template>
@@ -161,7 +161,7 @@
 import { GLOBAL } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import list from '@/mixins/list'
-import vStructureEditor from './components/StructureEditor'
+import vTreeStructure from '../components/TreeStructure'
 
 export default {
   name: 'question-knowledge',
@@ -169,7 +169,7 @@ export default {
   mixins: [list],
 
   components: {
-    vStructureEditor,
+    vTreeStructure,
   },
 
   data() {
