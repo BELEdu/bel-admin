@@ -126,7 +126,7 @@ export default {
       this.formLoading = false
       this.$refs.form.resetFields()
       this.formErrors = {}
-      this.$Message.info('添加成功！')
+      this.$Message.success('添加成功！')
     },
 
     openDeleteModal(id, name) { // 打开删除确认模态框
@@ -169,7 +169,7 @@ export default {
 @import '~vars';
 .label-modal {
   .ivu-table-small td {
-      height: 35px;
+      height: 36px;
   }
   .app-table th .ivu-table-cell, .app-table td .ivu-table-cell {
     padding: 4px 12px;
