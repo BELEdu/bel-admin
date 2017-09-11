@@ -118,6 +118,11 @@ export const STUDENT = {
   KNOWLEDGEPOINT: {// 学员知识点
     INIT: 'STUDENT.KNOWLEDGEPOINT.INIT',
   },
+}
 
-
+// 管理收藏标签
+export const LABEL = {
+  INIT: 'LABEL.INIT',
+  CREATE: 'LABEL.CREATE',
+  DELETE: 'LABEL.DELETE',
 }

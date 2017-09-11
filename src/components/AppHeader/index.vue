@@ -26,6 +26,7 @@
           </a>
           <Dropdown-menu slot="list">
             <Dropdown-item name="editPassword">修改密码</Dropdown-item>
+            <Dropdown-item name="userLabel">管理收藏标签</Dropdown-item>
             <Dropdown-item name="logout">退出</Dropdown-item>
           </Dropdown-menu>
         </Dropdown>
@@ -50,6 +51,13 @@
         </Form-item>
       </Form>
     </app-form-modal>
+
+    <!--管理收藏标签弹出框-->
+    <label-modal
+      v-model="labelModal"
+      @closeLabelModal="labelModal = false"
+    ></label-modal>
+
   </header>
 </template>
 
@@ -63,11 +71,16 @@
 import { mapState, mapGetters } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form } from '@/mixins'
+import LabelModal from './components/LabelModal'
 
 export default {
   name: 'app-header',
 
   mixins: [form],
+
+  components: {
+    LabelModal,
+  },
 
   data() {
     return {
@@ -102,6 +115,8 @@ export default {
           },
         ],
       },
+
+      labelModal: false,
     }
   },
 
@@ -150,6 +165,11 @@ export default {
           this.$Message.info('操作成功')
         })
         .catch(this.errorHandler)
+    },
+
+    // 弹出管理收藏标签
+    userLabel() {
+      this.labelModal = true
     },
 
     // 登出
