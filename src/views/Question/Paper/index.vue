@@ -53,7 +53,6 @@
 
     <!-- 上方条件过滤 -->
     <v-advance-search
-      :label="['学科', '状态', '难度']"
       :data="advanceConditions"
     ></v-advance-search>
 
@@ -127,48 +126,57 @@ export default {
     /* --- 上方高级搜索数据 --- */
 
     advanceConditions: {
-      grade_range_subject: [
-        {
-          value: 1,
-          display_name: '初中数学',
-        },
-        {
-          value: 3,
-          display_name: '初中物理',
-        },
-      ],
-      question_status: [
-        {
-          value: 1,
-          display_name: '草稿',
-        },
-        {
-          value: 2,
-          display_name: '待审核',
-        },
-      ],
-      difficulty: [
-        {
-          value: 1,
-          display_name: '困难（0.26-0.40）',
-        },
-        {
-          value: 2,
-          display_name: '较难（0.26-0.40）',
-        },
-        {
-          value: 3,
-          display_name: '中等（0.26-0.40）',
-        },
-        {
-          value: 4,
-          display_name: '较易（0.26-0.40）',
-        },
-        {
-          value: 5,
-          display_name: '容易（0.26-0.40）',
-        },
-      ],
+      grade_range_subject: {
+        label: '学科',
+        data: [
+          {
+            value: 1,
+            display_name: '初中数学',
+          },
+          {
+            value: 3,
+            display_name: '初中物理',
+          },
+        ],
+      },
+      question_status: {
+        label: '状态',
+        data: [
+          {
+            value: 1,
+            display_name: '草稿',
+          },
+          {
+            value: 2,
+            display_name: '待审核',
+          },
+        ],
+      },
+      difficulty: {
+        label: '难度',
+        data: [
+          {
+            value: 1,
+            display_name: '困难（0.26-0.40）',
+          },
+          {
+            value: 2,
+            display_name: '较难（0.26-0.40）',
+          },
+          {
+            value: 3,
+            display_name: '中等（0.26-0.40）',
+          },
+          {
+            value: 4,
+            display_name: '较易（0.26-0.40）',
+          },
+          {
+            value: 5,
+            display_name: '容易（0.26-0.40）',
+          },
+        ],
+      },
     },
 
     /* --- 下方试卷列表 --- */
@@ -233,7 +241,7 @@ export default {
 
   methods: {
     toComposePaper() {
-      //
+      this.$router.push('/question/paper/composition')
     },
   },
 
