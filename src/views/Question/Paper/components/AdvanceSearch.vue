@@ -4,7 +4,7 @@
       class="condition"
       v-for="(item, key, index) in data"
     >
-      <dt class="condition-title">{{label[index]}}</dt>
+      <dt class="condition-title">{{item.label}}</dt>
       <dd class="condition-options">
         <span
           :class="{
@@ -14,7 +14,7 @@
           @click="onChooseOption(key)"
         >全部</span>
         <span
-          v-for="option in item"
+          v-for="option in item.data"
           :class="{
             'condition-options__item': true,
             'active': opts[key] === String(option.value),
@@ -33,11 +33,6 @@ export default {
   name: 'v-advance-search',
 
   props: {
-    // 高级搜索各种条件label
-    label: {
-      type: Array,
-      required: true,
-    },
     // 高级搜索条件数据
     data: {
       type: Object,
