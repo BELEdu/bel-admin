@@ -26,6 +26,10 @@ const QUESTION_PAPER = {
   name: '试卷',
   link: '/question/paper',
 }
+const QUESTION_PAPER_COMPOSITION = {
+  name: '组卷中心',
+  link: '/question/paper/composition',
+}
 
 export default [
   // 知识点
@@ -85,6 +89,18 @@ export default [
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
+      ],
+    },
+  },
+  {
+    path: QUESTION_PAPER_COMPOSITION.link,
+    name: 'QuestionPaper',
+    component: views.QuestionPaperComposition,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        QUESTION_PAPER_COMPOSITION,
       ],
     },
   },

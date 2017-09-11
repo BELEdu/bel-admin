@@ -11,6 +11,7 @@ export { default as QuestionKnowledgeEdition } from './Question/Knowledge/Editio
 export { default as QuestionChapter } from './Question/Chapter'
 export { default as QuestionQuestion } from './Question/Question'
 export { default as QuestionPaper } from './Question/Paper'
+export { default as QuestionPaperComposition } from './Question/Paper/Composition'
 
 // 算法中心
 export { default as AlgorithmKnowledge } from './Algorithm/Knowledge/'
