@@ -11,22 +11,21 @@ export default {
 
   state: {
     // 用户标签列表
-    data: [],
+    list: [],
   },
 
   mutations: {
     // 用户标签列表
-    [LABEL.INIT](state, data) {
-      state.data = data
+    [LABEL.INIT](state, list) {
+      state.list = list
     },
     // 添加用户标签
     [LABEL.CREATE](state, item) {
-      state.data = state.data
-        .push(item)
+      state.list.push(item)
     },
     // 删除用户标签
     [LABEL.DELETE](state, id) {
-      state.data = state.data
+      state.list = state.list
         .filter(item => item.id !== id)
     },
   },
@@ -40,9 +39,11 @@ export default {
         })
     },
     // 添加用户标签接口
-    [LABEL.CREATE]({ dispatch }, form) {
+    [LABEL.CREATE]({ commit }, form) {
       return Http.post('/user_label', form)
-        .then(() => dispatch(LABEL.INIT))
+        .then((result) => {
+          commit(LABEL.CREATE, result)
+        })
     },
     // 删除用户标签接口
     [LABEL.DELETE]({ commit }, id) {

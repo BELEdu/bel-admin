@@ -24,7 +24,10 @@
           </Row>
         </Form-item>
       </Form>
-      <Table size="small" class="app-table point-table" :columns="columns" :data="data" border></Table>
+
+      <div class="label-modal__table">
+        <Table size="small" class="app-table point-table" :columns="columns" :data="list" border></Table>
+      </div>
     </app-form-modal>
 
     <!-- 删除模态框 -->
@@ -37,7 +40,6 @@
     >
       <div class="text-center">删除该标签 <span class="color-primary">" {{deleteName}} "</span> 后将无法再回复，是否继续删除？</div>
     </app-warn-modal>
-
   </div>
 </template>
 
@@ -47,6 +49,7 @@
  * @author zml
  * @version 2017-09-11
  */
+
 import { mapState } from 'vuex'
 import { LABEL } from '@/store/mutationTypes'
 import { form } from '@/mixins'
@@ -68,8 +71,8 @@ export default {
   data() {
     return {
       loading: {
-        modal: false,
-        delete: false,
+        modal: false, // 添加按钮loading
+        delete: false, // 确认删除按钮loading
       },
 
       deleteModal: false, // 删除模态框
@@ -94,7 +97,7 @@ export default {
           title: '操作',
           key: 10,
           align: 'center',
-          width: 80,
+          width: 100,
           render: createButton([
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.display_name) },
           ]),
@@ -106,13 +109,24 @@ export default {
 
   computed: {
     ...mapState({
-      data: state => state.label.data,
+      list: state => state.label.list,
     }),
+  },
+
+  watch: {
+    value() {
+      this.resetHandler()
+    },
   },
 
   methods: {
     closeModal() { // 关闭该模态框
       this.$emit('closeLabelModal')
+    },
+
+    resetHandler() { // 重置表单
+      this.$refs.form.resetFields()
+      this.formErrors = {}
     },
 
     submit() { // 添加用户标签
@@ -123,9 +137,8 @@ export default {
     },
 
     successHandler() { // 添加用户标签成功
+      this.resetHandler()
       this.formLoading = false
-      this.$refs.form.resetFields()
-      this.formErrors = {}
       this.$Message.success('添加成功！')
     },
 
@@ -157,22 +170,42 @@ export default {
     },
   },
 
-
   created() {
     this.getLabelData()
   },
-
 }
 </script>
 
 <style lang="less">
 @import '~vars';
 .label-modal {
+
   .ivu-table-small td {
-      height: 36px;
+    height: 36px;
   }
-  .app-table th .ivu-table-cell, .app-table td .ivu-table-cell {
+
+  .app-table th .ivu-table-cell,
+  .app-table td .ivu-table-cell {
     padding: 4px 12px;
+  }
+
+  &__table {
+    border-top: 1px solid @border-color-split ;
+    border-bottom: 1px solid @border-color-split ;
+    max-height: 286px;
+    overflow: auto;
+
+    .ivu-table-wrapper {
+      border-top: 0;
+    }
+
+    .ivu-table:before {
+      height: 0;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
   }
 }
 </style>

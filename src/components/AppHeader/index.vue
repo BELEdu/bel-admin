@@ -85,6 +85,7 @@ export default {
   data() {
     return {
       modal: false,
+      labelModal: false,
 
       form: {
         old_password: '',
@@ -115,8 +116,6 @@ export default {
           },
         ],
       },
-
-      labelModal: false,
     }
   },
 
