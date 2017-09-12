@@ -69,7 +69,7 @@
             <Button
               size="small"
               type="primary"
-              @click="toAnalysis">
+            >
               查看解析
             </Button>
             <Button size="small" type="primary">收藏题目</Button>
@@ -87,7 +87,10 @@
     <ul class="question-paper-composition__cart">
       <li v-for="i in 6" :key="i">选择题(10)</li>
       <li>
-        <Button type="primary" size="small" long @click="previewPaper()">试卷预览</Button>
+        <Button
+          type="primary" size="small" long
+          @click="toCreatePaper()"
+        >生成试卷</Button>
       </li>
     </ul>
   </div>
@@ -120,6 +123,11 @@ export default {
     query: {
       'equal[subject_id]': 1,
     },
+
+    subjects: [
+      { value: 1, display_name: '高中数学' },
+      { value: 2, display_name: '高中英语' },
+    ],
 
     // 高级搜索数据
     advanceConditions: {
@@ -208,6 +216,10 @@ export default {
   methods: {
     goBack() {
       this.$router.push('/question/paper')
+    },
+
+    toCreatePaper() {
+      this.$router.push('/question/paper/creation')
     },
   },
 

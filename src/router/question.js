@@ -36,6 +36,11 @@ const QUESTION_PAPER_COMPOSITION = {
   link: '/question/paper/composition',
 }
 
+const QUESTION_PAPER_CREATION = {
+  name: '生成试卷',
+  link: '/question/paper/creation',
+}
+
 export default [
   // 知识点
   {
@@ -85,7 +90,10 @@ export default [
       ],
     },
   },
-  // 试卷
+
+  /* --- 试卷 --- */
+
+  // 试卷列表页
   {
     path: QUESTION_PAPER.link,
     name: 'QuestionPaper',
@@ -97,15 +105,32 @@ export default [
       ],
     },
   },
+
+  // 组卷页
   {
     path: QUESTION_PAPER_COMPOSITION.link,
-    name: 'QuestionPaper',
+    name: 'QuestionPaperComposition',
     component: views.QuestionPaperComposition,
     meta: {
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
         QUESTION_PAPER_COMPOSITION,
+      ],
+    },
+  },
+
+  // 生成书卷页
+  {
+    path: QUESTION_PAPER_CREATION.link,
+    name: 'QuestionPaperCreation',
+    component: views.QuestionPaperCreation,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        QUESTION_PAPER_COMPOSITION,
+        QUESTION_PAPER_CREATION,
       ],
     },
   },
