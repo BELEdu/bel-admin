@@ -1,6 +1,6 @@
 <template>
-  <Form-item :label-width="fullWidth ? 1 : null">
-    <Alert class="app-form-alert" type="error" show-icon v-if="flatErrors.length !== 0">
+  <Form-item class="app-form-alert" :label-width="fullWidth ? 1 : null">
+    <Alert class="app-form-alert__alert" type="error" show-icon v-if="flatErrors.length !== 0">
       <!--<Alert type="error" show-icon >-->
       {{ title }}
       <span slot="desc">
@@ -45,7 +45,14 @@ export default {
 
 <style lang="less">
 .app-form-alert {
-  margin-bottom: 30px;
+
+  &.ivu-form-item {
+    margin-bottom: 0;
+  }
+
+  &__alert{
+    margin-bottom: 30px;
+  }
 }
 </style>
 
