@@ -101,7 +101,7 @@
 
 <script>
 export default {
-  name: 'app-structure-editor',
+  name: 'app-tree-structure',
 
   props: {
     // 操作目标：知识点、章节。。。
@@ -276,7 +276,11 @@ export default {
   },
 
   created() {
-    this.bidirectionalTree(this.treeData)
+    this.$http.get('/knowledge/tree/1')
+      .then((res) => {
+        this.treeData = res
+        this.bidirectionalTree(this.treeData)
+      })
     // 初始默认为根节点
     // this.seletedNode = {
     // id: 0,
@@ -309,6 +313,7 @@ export default {
     height: 500px;
     border: 1px solid @border-color-base;
     border-radius: 4px;
+    overflow: auto;
   }
 
   &__creation {
