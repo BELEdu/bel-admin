@@ -100,22 +100,22 @@ export const STUDENT = {
     },
   },
 
-  STUDYPROGRESS: {// 学习进度
-    STUDENT: {// (学员)
+  STUDYPROGRESS: { // 学习进度
+    STUDENT: { // (学员)
       INIT: 'STUDENT.STUDYPROGRESS.STUDENT.INIT',
-      HISTORY: {// 历史计划(学员)
+      HISTORY: { // 历史计划(学员)
         INIT: 'STUDENT.STUDYPROGRESS.STUDENT.HISTORY.INIT',
       },
     },
-    CLASSES: {// (班级)
+    CLASSES: { // (班级)
       INIT: 'STUDENT.STUDYPROGRESS.CLASSES.INIT',
-      HISTORY: {// 历史计划(班级)
+      HISTORY: { // 历史计划(班级)
         INIT: 'STUDENT.STUDYPROGRESS.CLASSES.HISTORY.INIT',
       },
     },
   },
 
-  KNOWLEDGEPOINT: {// 学员知识点
+  KNOWLEDGEPOINT: { // 学员知识点
     INIT: 'STUDENT.KNOWLEDGEPOINT.INIT',
   },
 }
@@ -125,4 +125,15 @@ export const LABEL = {
   INIT: 'LABEL.INIT',
   CREATE: 'LABEL.CREATE',
   DELETE: 'LABEL.DELETE',
+}
+
+// 题库中心
+export const QUESTION = {
+  CHAPTER: { // 章节
+    INIT: 'QUESTION.CHAPTER.INIT',
+  },
+
+  QUESTION: { // 试题
+    INIT: 'QUESTION.QUESTION.INIT',
+  },
 }

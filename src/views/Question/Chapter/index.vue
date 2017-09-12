@@ -1,5 +1,5 @@
 <template>
-  <div>章节部分</div>
+  <div class="question-chapter">章节部分</div>
 </template>
 
 <script>
