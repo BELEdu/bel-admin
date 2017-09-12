@@ -10,24 +10,29 @@ const QUESTION_KNOWLEDGE = {
   name: '知识点',
   link: '/question/knowledge',
 }
+
 const QUESTION_KNOWLEDGE_EDITION = {
   name: '编辑知识点',
   link: '/question/knowledge/edition',
 }
+
 const QUESTION_CHAPTER = {
   name: '章节',
   link: '/question/chapter',
 }
+
 const QUESTION_QUESTION = {
   name: '试题',
   link: '/question/question',
 }
+
 const QUESTION_PAPER = {
   name: '试卷',
   link: '/question/paper',
 }
+
 const QUESTION_PAPER_COMPOSITION = {
-  name: '组卷中心',
+  name: '组卷',
   link: '/question/paper/composition',
 }
 

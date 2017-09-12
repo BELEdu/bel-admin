@@ -83,7 +83,6 @@ export default {
         this.$route.query[key],
       )
     })
-    console.log(this.opts)
   },
 }
 </script>
