@@ -253,17 +253,23 @@ export default {
 
   computed: {
     isNotBranch() {
-      const result = !this.buffer.data
-        || !this.buffer.data.length
-        || !this.buffer.data[0].art_knowledge_importance
-      return result
+      // console.log(this.$route.query)
+      // const result = !this.buffer.data
+      //   || !this.buffer.data.length
+      //   || !this.buffer.data[0]
+      //     // eslint-disable-next-line
+      //     .hasOwnProperty('art_knowledge_importance')
+      // return result
+      const subject = this.$route.query['equal[grade_range_subject_id]']
+      return subject && subject !== '5'
     },
 
     colConfig() {
       if (this.isNotBranch) {
         return this.tableConfig
       }
-      return this.tableConfig.splice(4, 1,
+      const temp = [...this.tableConfig]
+      temp.splice(4, 1,
         {
           title: '文科重要性',
           key: 'knowledge_importance',
@@ -277,6 +283,7 @@ export default {
           sortable: 'custom',
         },
       )
+      return temp
     },
   },
 
