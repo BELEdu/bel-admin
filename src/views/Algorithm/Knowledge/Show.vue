@@ -66,10 +66,10 @@
     >
       <h4
         class="info__title"
-      >知识点：正数与负数</h4>
+      >知识点：{{infosLabel}}</h4>
       <Table border
         :columns="infoColConfig"
-        :data="infos"
+        :data="infos.data"
       ></Table>
     </Modal>
   </div>
@@ -147,38 +147,48 @@ export default {
       infoColConfig: [
         {
           title: '题目ID',
-          key: 1,
+          key: 'question_id',
           align: 'center',
         },
         {
           title: '是否正确',
-          key: 2,
+          key: 'right_wrong_name',
           align: 'center',
         },
         {
           title: '测试时间',
-          key: 3,
+          key: 'created_at',
           align: 'center',
         },
         {
           title: '测试ID',
-          key: 4,
+          key: 'test_id',
           align: 'center',
         },
       ],
 
-      infos: Array(8).fill({
-        1: '1019154102',
-        2: '是',
-        3: '2017-06-08',
-        4: 'WYW1057481',
-      }),
+      infos: {},
+
+      infosLabel: '',
     }
   },
 
   methods: {
-    toCheckInfo() {
-      this.infoModal.active = true
+    toCheckInfo(row) {
+      const url = '/algorithm/knowledge/detail/'
+        + `${this.$route.params.id}`
+        + `${row}`
+
+      this.$http.get(url)
+        .then((res) => {
+          res.data.forEach((item) => {
+            // eslint-disable-next-line
+            item.created_at = item.created_at.slice(0, 10)
+          })
+          this.infosLabel = row.knowledge_name
+          this.infos = res
+          this.infoModal.active = true
+        })
     },
   },
 }
@@ -191,7 +201,14 @@ export default {
 
     & .info__title {
       margin-bottom: 15px;
+      font-size: 14px;
       font-weight: normal;
+    }
+
+    & .ivu-modal-body {
+      padding-right: 1px;
+      max-height: 500px;
+      overflow: auto;
     }
   }
 }

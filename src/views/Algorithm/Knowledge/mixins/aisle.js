@@ -45,7 +45,15 @@ export default {
 
     getData(query, to) {
       return this.$http.get(to.fullPath)
-        .then((res) => { this.buffer = res })
+        .then((res) => {
+          if (res.data.length && res.data[0].created_at) {
+            res.data.forEach((item) => {
+              // eslint-disable-next-line
+              item.created_at = item.created_at.slice(0, 10)
+            })
+          }
+          this.buffer = res
+        })
     },
 
     /**
