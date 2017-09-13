@@ -1,5 +1,5 @@
 <template>
-  <div class="algorithm-knowledge-info">
+  <div class="algorithm-knowledge-show">
     <Form class="app-search-form app-search-form-layout">
       <!-- 关键字检索 -->
       <Form-item>
@@ -15,10 +15,10 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
@@ -40,56 +40,27 @@
       <span>薄弱知识点：70个</span>
       <span>总知识点： 172个</span>
       <Button
-        :type="statisticType
-          ? 'primary'
-          : 'warning'"
-        @click="onToggleList"
-      >
-        {{statisticType
-          ? '显示明细列表'
-          : '显示统计列表'
-        }}
-      </Button>
+        type="primary"
+        @click="toggleList('detail')"
+      >显示明细列表</Button>
     </div>
 
     <!-- 统计列表 -->
-    <div
-      v-if="statisticType"
-    >
-      <Table border
-        :columns="statisticColConfig"
-        :data="statistics"
-        @on-sort-change="sort"
-      ></Table>
+    <Table border
+      :columns="colConfig"
+      :data="buffer.data"
+      @on-sort-change="sort"
+    ></Table>
 
-      <!-- <app-pager
-        :data="buffer"
-        @on-change="goTo"
-        @on-page-size-change="pageSizeChange"
-      ></app-pager> -->
-    </div>
-
-    <!-- 明细列表 -->
-
-    <div
-      v-if="!statisticType"
-    >
-      <Table border
-        :columns="detailColConfig"
-        :data="details"
-        @on-sort-change="sort"
-      ></Table>
-
-      <!-- <app-pager
-        :data="buffer"
-        @on-change="goTo"
-       @on-page-size-change="pageSizeChange"
-      ></app-pager> -->
-    </div>
+    <app-pager
+      :data="buffer"
+      @on-change="goTo"
+      @on-page-size-change="pageSizeChange"
+    ></app-pager>
 
     <!-- 查看知识点明细 -->
     <Modal
-      class="algorithm-knowledge-info__info"
+      class="algorithm-knowledge-show__info"
       v-model="infoModal.active"
       title="知识点详情"
     >
@@ -106,63 +77,50 @@
 
 <script>
 /**
- * 算法中心 - 学员知识详情
+ * 算法中心 - 学员知识点 - 知识点详情
  *
- * @author
+ * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import list from '@/mixins/list'
 import { createButton } from '@/utils'
+import aisle from './mixins/aisle'
 
 export default {
   name: '',
 
-  mixins: [list],
+  mixins: [list, aisle],
 
   data() {
     return {
-      /* --- 搜索 --- */
-
-      likeKeys: [
-        { value: 'number', label: '知识点编号' },
-        { value: 'name', label: '知识点名称' },
-      ],
-
-      likeKey: 'number',
-
-      /* --- 列表 --- */
-
-      statisticType: true,
-
       /* 统计列表 */
 
-      statisticColConfig: [
+      colConfig: [
         {
           title: '知识点编号',
-          key: 1,
+          key: 'knowledge_number',
           align: 'center',
         },
         {
           title: '知识点名称',
-          key: 2,
+          key: 'knowledge_name',
           align: 'center',
         },
         {
           title: '测试频次',
-          key: 3,
+          key: 'amount',
           align: 'center',
           sortable: 'custom',
         },
         {
           title: '错误频次',
-          key: 4,
+          key: 'wrong_count',
           align: 'center',
           sortable: 'custom',
         },
         {
           title: '是否薄弱',
-          key: 5,
+          key: 'is_weak',
           align: 'center',
           sortable: 'custom',
         },
@@ -178,13 +136,7 @@ export default {
         },
       ],
 
-      statistics: Array(10).fill({
-        1: 3478,
-        2: '正数与负数',
-        3: 5,
-        4: 2,
-        5: '是',
-      }),
+      buffer: {},
 
       /* 某知识点详情列表 */
 
@@ -221,70 +173,19 @@ export default {
         3: '2017-06-08',
         4: 'WYW1057481',
       }),
-
-      /* 详情列表 */
-
-      detailColConfig: [
-        {
-          title: '知识点编号',
-          key: 1,
-          align: 'center',
-        },
-        {
-          title: '知识点名称',
-          key: 2,
-          align: 'center',
-        },
-        {
-          title: '题目编号',
-          key: 3,
-          align: 'center',
-        },
-        {
-          title: '是否正确',
-          key: 4,
-          align: 'center',
-        },
-        {
-          title: '测试时间',
-          key: 5,
-          align: 'center',
-        },
-        {
-          title: '测试编号',
-          key: 6,
-          align: 'center',
-        },
-      ],
-
-      details: Array(10).fill({
-        1: 3478,
-        2: '正数与负数',
-        3: 1019154102,
-        4: '是',
-        5: '2017-06-08',
-        6: 'WYW1057481',
-      }),
     }
   },
 
   methods: {
-    onToggleList() {
-      this.statisticType = !this.statisticType
-    },
     toCheckInfo() {
       this.infoModal.active = true
     },
-  },
-
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 }
 </script>
 
 <style lang="less">
-.algorithm-knowledge-info {
+.algorithm-knowledge-show {
 
   &__info {
 
