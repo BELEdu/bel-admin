@@ -25,7 +25,14 @@ const QUESTION_QUESTION = {
   name: '试题',
   link: '/question/question',
 }
-
+const QUESTION_QUESTION_ADD = {
+  name: '添加试题',
+  link: '/question/question/edit',
+}
+const QUESTION_QUESTION_EDIT = {
+  name: '编辑试题',
+  link: '/question/question/edit/:id',
+}
 const QUESTION_PAPER = {
   name: '试卷',
   link: '/question/paper',
@@ -87,6 +94,30 @@ export default [
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_QUESTION,
+      ],
+    },
+  },
+  {
+    path: QUESTION_QUESTION_ADD.link,
+    name: 'QuestionQuestionAdd',
+    component: views.QuestionQuestionEdit,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_QUESTION,
+        QUESTION_QUESTION_ADD,
+      ],
+    },
+  },
+  {
+    path: QUESTION_QUESTION_EDIT.link,
+    name: 'QuestionQuestionEdit',
+    component: views.QuestionQuestionEdit,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_QUESTION,
+        QUESTION_QUESTION_EDIT,
       ],
     },
   },
