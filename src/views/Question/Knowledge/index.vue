@@ -108,7 +108,7 @@
       v-model="knowledgeEditionModal.active"
     >
       <!-- title -->
-      <h3>知识点：集合的概念</h3>
+      <h3>知识点：{{editionInfo.display_name}}</h3>
       <!-- content -->
       <Form v-if="isNotBranch"
         :label-width="80" inline
