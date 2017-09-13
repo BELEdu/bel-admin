@@ -19,8 +19,7 @@
         </Select>
       </Form-item>
       <!-- 重要性 -->
-      <Form-item
-      >
+      <Form-item>
         <Select
           v-model="query['equal[knowledge_importance]']"
           placeholder="全部重要性"
@@ -108,39 +107,70 @@
       title="编辑知识点"
       v-model="knowledgeEditionModal.active"
     >
+      <!-- title -->
       <h3>知识点：集合的概念</h3>
-      <Form :label-width="80" inline>
-        <Form-item
-          label="理科频次"
-        >
-          <InputNumber></InputNumber>
-        </Form-item>
-        <Form-item
-          label="理科分值"
-        >
-          <InputNumber></InputNumber>
-        </Form-item>
-        <Form-item
-          label="文科频次"
-        >
-          <InputNumber></InputNumber>
-        </Form-item>
-        <Form-item
-          label="文科分值"
-        >
-          <InputNumber></InputNumber>
-        </Form-item>
+      <!-- content -->
+      <Form v-if="isNotBranch"
+        :label-width="80" inline
+      >
         <Form-item
           label="考试频次"
         >
-          <InputNumber></InputNumber>
+          <InputNumber
+            v-model="editionInfo.frequency"
+          ></InputNumber>
         </Form-item>
         <Form-item
           label="考试分值"
         >
-          <InputNumber></InputNumber>
+          <InputNumber
+            v-model="editionInfo.score"
+          ></InputNumber>
         </Form-item>
       </Form>
+      <Form v-else
+        :label-width="80" inline
+      >
+        <Form-item
+          label="理科频次"
+        >
+          <InputNumber
+            v-model="editionInfo.frequency"
+          ></InputNumber>
+        </Form-item>
+        <Form-item
+          label="理科分值"
+        >
+          <InputNumber
+            v-model="editionInfo.score"
+          ></InputNumber>
+        </Form-item>
+        <Form-item
+          label="文科频次"
+        >
+          <InputNumber
+            v-model="editionInfo.art_frequency"
+          ></InputNumber>
+        </Form-item>
+        <Form-item
+          label="文科分值"
+        >
+          <InputNumber
+            v-model="editionInfo.art_score"
+          ></InputNumber>
+        </Form-item>
+      </Form>
+      <div slot="footer">
+        <Button
+          type="text"
+          @click="deactivateKnowledgeEdition"
+        >取消</Button>
+        <Button
+          type="primary"
+          :loading="knowledgeEditionModal.confirmLoading"
+          @click="editKnowledge"
+        >确定</Button>
+      </div>
     </Modal>
 
     <Modal
@@ -245,6 +275,8 @@ export default {
         errorReasons: {},
       },
 
+      editionInfo: {},
+
       structureEditionModal: {
         active: false,
       },
@@ -253,13 +285,6 @@ export default {
 
   computed: {
     isNotBranch() {
-      // console.log(this.$route.query)
-      // const result = !this.buffer.data
-      //   || !this.buffer.data.length
-      //   || !this.buffer.data[0]
-      //     // eslint-disable-next-line
-      //     .hasOwnProperty('art_knowledge_importance')
-      // return result
       const subject = this.$route.query['equal[grade_range_subject_id]']
       return subject && subject !== '5'
     },
@@ -298,8 +323,12 @@ export default {
 
     /* 编辑知识点 */
 
-    activateKnowledgeEdition() {
-      this.knowledgeEditionModal.active = true
+    activateKnowledgeEdition(row) {
+      this.$http.get(`/knowledge/${row.id}`)
+        .then((res) => {
+          this.editionInfo = res
+          this.knowledgeEditionModal.active = true
+        })
     },
 
     deactivateKnowledgeEdition() {
@@ -308,6 +337,18 @@ export default {
         confirmLoading: false,
         errorReasons: {},
       }
+    },
+
+    editKnowledge() {
+      this.knowledgeEditionModal.confirmLoading = true
+      this.$http.patch(
+        `/knowledge/${this.editionInfo.id}`,
+        this.editionInfo,
+      )
+        .then(() => {
+          this.fetchData()
+          this.deactivateKnowledgeEdition()
+        })
     },
 
     /* 编辑知识点结构 */
