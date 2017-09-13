@@ -83,6 +83,20 @@
       @on-page-size-change="pageSizeChange"
     ></app-pager>
 
+    <!-- 编辑章节弹窗 -->
+    <edit-modal
+      v-model="modal.edit"
+      :id="id"
+      @closeEditModal="modal.edit = false"
+    ></edit-modal>
+
+    <!-- 查看详情弹窗 -->
+    <detail-modal
+      v-model="modal.detail"
+      :id="id"
+      @closeDetailModal="modal.detail = false"
+    ></detail-modal>
+
   </div>
 </template>
 
@@ -98,6 +112,8 @@ import { list } from '@/mixins'
 import { GLOBAL } from '@/store/mutationTypes'
 // import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
+import EditModal from './components/EditModal'
+import DetailModal from './components/DetailModal'
 import cdata from './cdata'
 
 export default {
@@ -105,17 +121,22 @@ export default {
 
   mixins: [list],
 
+  components: {
+    EditModal,
+    DetailModal,
+  },
+
   data() {
     return {
       likeKeys: [
-        { label: '章节名称', value: 'display_name' },
-        { label: '上级', value: 'p_id' },
-        { label: '知识点', value: 'knowledge' },
+        { label: '章节名称', value: 'chapter_name' },
+        { label: '上级', value: 'parent_name' },
+        { label: '知识点', value: 'knowledge_name' },
       ],
-      likeKey: 'display_name',
+      likeKey: 'chapter_name',
       query: {
         'equal[grade_range_subject_id]': null,
-        'equal[teach_material]': null,
+        'equal[teaching_version]': null,
       },
 
       subjects: [
@@ -127,31 +148,74 @@ export default {
 
       materials: [
         { display_name: '人教版', value: 1 },
-        { display_name: '沪教版', value: 2 },
-        { display_name: '黄冈版', value: 3 },
+        { display_name: '鲁科版', value: 2 },
+        { display_name: '沪科版', value: 3 },
+        { display_name: '浙教版', value: 4 },
       ],
-
-      list: cdata,
 
       columns: [
         { title: '章节编号', key: 'number', align: 'center' },
         { title: '章节名称', key: 'display_name', align: 'center' },
         { title: '上级', key: 'p_id', align: 'center' },
-        { title: '包含知识点', key: 'have_knowledge', align: 'center' },
-        { title: '关联知识点', key: 'relation_knowledge', align: 'center' },
+        {
+          title: '包含知识点',
+          key: 'have_knowledge',
+          align: 'left',
+          render: (h, params) => {
+            const { have_knowledge } = params.row
+            return h('ul',
+              {
+                class: 'question-chapter__point',
+              }, have_knowledge.map(value => h('li', value)),
+            )
+          },
+        },
+        {
+          title: '关联知识点',
+          key: 'have_knowledge',
+          align: 'left',
+          render: (h, params) => {
+            const { relation_knowledge } = params.row
+            return h('ul',
+              {
+                class: 'question-chapter__point',
+              }, relation_knowledge.map(value => h('li', value)),
+            )
+          },
+        },
         {
           title: '操作',
           key: 10,
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '编辑', type: 'success', click: row => this.openManageModal(row.id) },
+            { text: '编辑', type: 'success', click: row => this.openEditModal(row.id) },
+            { text: '查看', type: 'primary', click: row => this.openDetailModal(row.id) },
           ]),
         },
       ],
 
+      list: cdata,
 
+      modal: { // 模态框
+        edit: false,
+        detail: false,
+      },
+
+      id: null,
     }
+  },
+
+  methods: {
+    openEditModal(id) {
+      this.id = id
+      this.modal.edit = true
+    },
+
+    openDetailModal(id) {
+      this.id = id
+      this.modal.detail = true
+    },
   },
 
   created() {
@@ -161,5 +225,12 @@ export default {
 </script>
 
 <style lang="less">
+@import '~vars';
+.question-chapter {
+  &__point {
+    list-style-type: disc;
+    margin-left: 15px;
+  }
+}
 
 </style>
