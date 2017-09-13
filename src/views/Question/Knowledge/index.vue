@@ -5,24 +5,25 @@
       <!-- 年段+学科 -->
       <Form-item>
         <Select
-          v-model="query['equal[subject_id]']"
+          v-model="query['equal[grade_range_subject_id]']"
           placeholder="年段学科"
           style="width: 150px;"
         >
           <Option
             v-for="item in subjects"
-            :value="item.value"
-            :key="item.value"
+            :value="item.id"
+            :key="item.id"
           >
             {{item.display_name}}
           </Option>
         </Select>
       </Form-item>
       <!-- 重要性 -->
-      <Form-item>
+      <Form-item
+      >
         <Select
-          v-model="query['equal[important]']"
-          placeholder="选择重要性"
+          v-model="query['equal[knowledge_importance]']"
+          placeholder="全部重要性"
           style="width: 150px;"
         >
           <Option
@@ -32,6 +33,7 @@
           >
             {{item.display_name}}
           </Option>
+          <Option :value="''">全部重要性</Option>
         </Select>
       </Form-item>
       <!-- 关键字检索 -->
@@ -48,17 +50,20 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
       </Form-item>
       <!-- 查询按钮 -->
       <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">
+        <Button
+          type="primary" icon="ios-search"
+          @click="search"
+        >
           搜索
         </Button>
       </Form-item>
@@ -85,16 +90,16 @@
     <Table
       border
       :columns="colConfig"
-      :data="list"
+      :data="buffer.data"
       @on-sort-change="sort"
     ></Table>
 
     <!-- 底部分页 -->
-    <!-- <app-pager
+    <app-pager
       :data="buffer"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
-    ></app-pager> -->
+    ></app-pager>
 
     <!-- 知识点编辑弹窗 -->
 
@@ -158,7 +163,7 @@
  * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import Http from '@/utils/http'
 import { createButton } from '@/utils'
 import list from '@/mixins/list'
 import vTreeStructure from '../components/TreeStructure'
@@ -176,66 +181,47 @@ export default {
     return {
       /* --- 顶部搜索 --- */
 
-      likeKeys: [
-        { value: 'point', label: '知识点' },
-        { value: 'up', label: '上级' },
-      ],
-      likeKey: 'point',
+      likeKeys: [],
+      likeKey: 'knowledge_name',
 
       query: {
-        'equal[subject_id]': 1,
-        'equal[important]': 4,
+        'equal[grade_range_subject_id]': 5,
+        'equal[knowledge_importance]': '',
       },
 
-      subjects: [
-        { display_name: '高中数学', value: 1 },
-        { display_name: '高中语文', value: 2 },
-        { display_name: '高中英语', value: 3 },
-        { display_name: '高中物理', value: 4 },
-      ],
+      subjects: [],
 
-      importances: [
-        { display_name: '1', value: 1 },
-        { display_name: '2', value: 2 },
-        { display_name: '3', value: 3 },
-        { display_name: '全部重要性', value: 4 },
-      ],
+      importances: [],
 
       /* --- 中部辅助 --- */
 
       /* --- 下部列表 --- */
 
-      colConfig: [
+      tableConfig: [
         {
           title: '编号',
-          key: 1,
+          key: 'number',
           align: 'center',
         },
         {
           title: '知识点',
-          key: 2,
+          key: 'display_name',
           align: 'center',
         },
         {
           title: '上级',
-          key: 3,
+          key: 'parent_name',
           align: 'center',
           sortable: 'custom',
         },
         {
           title: '排序',
-          key: 4,
+          key: 'sort',
           align: 'center',
         },
         {
-          title: '文科重要性',
-          key: 5,
-          align: 'center',
-          sortable: 'custom',
-        },
-        {
-          title: '理科重要性',
-          key: 6,
+          title: '重要性',
+          key: 'knowledge_importance',
           align: 'center',
           sortable: 'custom',
         },
@@ -251,14 +237,7 @@ export default {
         },
       ],
 
-      list: Array(10).fill({
-        1: '1019194413',
-        2: '集合的概念',
-        3: '集合/集合的概念',
-        4: 1,
-        5: 2,
-        6: 3,
-      }),
+      buffer: {},
 
       knowledgeEditionModal: {
         active: false,
@@ -272,7 +251,44 @@ export default {
     }
   },
 
+  computed: {
+    isNotBranch() {
+      const result = !this.buffer.data
+        || !this.buffer.data.length
+        || !this.buffer.data[0].art_knowledge_importance
+      return result
+    },
+
+    colConfig() {
+      if (this.isNotBranch) {
+        return this.tableConfig
+      }
+      return this.tableConfig.splice(4, 1,
+        {
+          title: '文科重要性',
+          key: 'knowledge_importance',
+          align: 'center',
+          sortable: 'custom',
+        },
+        {
+          title: '理科重要性',
+          key: 'art_knowledge_importance',
+          align: 'center',
+          sortable: 'custom',
+        },
+      )
+    },
+  },
+
   methods: {
+    /* 获取列表数据 */
+    getData(query, to) {
+      const urlArr = to.fullPath.split('/').slice(2)
+      const url = `/${urlArr.join('/')}`
+      return this.$http.get(url)
+        .then((res) => { this.buffer = res })
+    },
+
     /* 编辑知识点 */
 
     activateKnowledgeEdition() {
@@ -300,8 +316,21 @@ export default {
     },
   },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+  beforeRouteEnter(to, from, next) {
+    Http.get('/knowledge/index_before')
+      .then(({
+        search_fields,
+        knowledge_importance,
+        grade_range_subject_id,
+      }) => {
+        next((vm) => {
+          /* eslint-disable no-param-reassign */
+          vm.subjects = grade_range_subject_id
+          vm.likeKeys = search_fields
+          vm.importances = knowledge_importance
+          /* eslint-enalbe */
+        })
+      })
   },
 }
 </script>
