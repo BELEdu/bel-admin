@@ -16,7 +16,8 @@ export { default as QuestionPaperCreation } from './Question/Paper/Creation'
 
 // 算法中心
 export { default as AlgorithmKnowledge } from './Algorithm/Knowledge/'
-export { default as AlgorithmKnowledgeInfo } from './Algorithm/Knowledge/Info'
+export { default as AlgorithmKnowledgeShow } from './Algorithm/Knowledge/Show'
+export { default as AlgorithmKnowledgeDetail } from './Algorithm/Knowledge/Detail'
 
 // 业务管理
 export { default as Hotline } from './Business/Hotline'

@@ -144,9 +144,9 @@ export default {
       }, true)
     },
 
-    fetchData(query = this.$route.query) {
+    fetchData(to = this.$route) {
       if (this.getData) {
-        this.getData(this.parse(query))
+        this.getData(this.parse(to.query), to)
           .catch(() => {
             this.$Notice.error({ title: '无法访问数据，请稍后再试', duration: 0 })
           })
@@ -163,7 +163,7 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    this.fetchData(to.query)
+    this.fetchData(to)
     next()
   },
 }

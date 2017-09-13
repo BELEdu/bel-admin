@@ -4,17 +4,18 @@
       <!-- 特殊字段搜索 -->
       <Form-item>
         <Select
-          v-model="query['equal[subject_id]']"
-          placeholder="选择学科"
+          v-model="query['equal[grade_range_subject_id]']"
+          placeholder="全部学科"
           style="width: 150px;"
         >
           <Option
-            v-for="item in subject"
-            :key="item.value"
-            :value="item.value"
+            v-for="item in subjects"
+            :key="item.id"
+            :value="item.id"
           >
             {{item.display_name}}
           </Option>
+          <Option value="">全部学科</Option>
         </Select>
       </Form-item>
       <!-- 关键字检索 -->
@@ -31,10 +32,10 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
@@ -59,11 +60,11 @@
       @on-sort-change="sort"
     ></Table>
 
-    <!-- <app-pager
+    <app-pager
       :data="buffer"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
-    ></app-pager> -->
+    ></app-pager>
   </div>
 </template>
 
@@ -74,7 +75,7 @@
  * @author
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import Http from '@/utils/http'
 import list from '@/mixins/list'
 import { createButton } from '@/utils'
 
@@ -87,32 +88,26 @@ export default {
     return {
     /* --- 头部搜索栏数据 --- */
 
-      likeKeys: [
-        { value: 'number', label: '知识点编号' },
-        { value: 'name', label: '知识点名称' },
-      ],
-      likeKey: 'number',
+      likeKeys: [],
+      likeKey: 'student_number',
 
       query: {
-        'equal[subject_id]': 1,
+        'equal[grade_range_subject_id]': '',
       },
 
-      subject: [
-        { value: 1, display_name: '高中数学' },
-        { value: 2, display_name: '高中英语' },
-      ],
+      subjects: [],
 
       /* --- 下方列表 --- */
 
       colConfig: [
         {
           title: '学员编号',
-          key: 1,
+          key: 'number',
           align: 'center',
         },
         {
           title: '学员姓名',
-          key: 2,
+          key: 'display_name',
           align: 'center',
         },
         {
@@ -122,13 +117,13 @@ export default {
         },
         {
           title: '薄弱知识点个数',
-          key: 4,
+          key: 'count_weak_knowledge',
           align: 'center',
           sortable: 'custom',
         },
         {
           title: '总知识点个数',
-          key: 5,
+          key: 'count_knowledge',
           align: 'center',
           sortable: 'custom',
         },
@@ -144,28 +139,36 @@ export default {
         },
       ],
 
-      /* 模拟列表数据 */
-      buffer: {
-        data: Array(10).fill({
-          1: 3478,
-          2: '正数与负数',
-          3: 5,
-          4: 2,
-          5: '是',
-        }),
-      },
+      /* 列表数据 */
+      buffer: {},
     }
   },
 
   methods: {
     // eslint-disable-next-line
     toCheck(row) {
-      this.$router.push('/algorithm/knowledge/info')
+      this.$router.push(`/algorithm/knowledge/show/${row.id}`)
+    },
+
+    getData(query, to) {
+      return this.$http.get(to.fullPath)
+        .then((res) => { this.buffer = res })
     },
   },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+  beforeRouteEnter(to, from, next) {
+    Http.get('/algorithm/knowledge/index_before')
+      .then(({
+        search_fields,
+        grade_range_subject_id,
+      }) => {
+        next((vm) => {
+          /* eslint-disable no-param-reassign */
+          vm.subjects = grade_range_subject_id
+          vm.likeKeys = search_fields
+          /* eslint-enalbe */
+        })
+      })
   },
 }
 </script>
