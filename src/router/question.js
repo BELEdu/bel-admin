@@ -27,11 +27,11 @@ const QUESTION_QUESTION = {
 }
 const QUESTION_QUESTION_ADD = {
   name: '添加试题',
-  link: '/question/question/edit',
+  link: '/question/question/:subject',
 }
 const QUESTION_QUESTION_EDIT = {
   name: '编辑试题',
-  link: '/question/question/edit/:id',
+  link: '/question/question/:subject/:id',
 }
 const QUESTION_PAPER = {
   name: '试卷',
