@@ -1,5 +1,7 @@
 <template>
-  <div>编辑试题</div>
+  <div>
+    <app-editor-title></app-editor-title>
+  </div>
 </template>
 
 <script>
