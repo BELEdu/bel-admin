@@ -10,7 +10,7 @@
           style="width:9em;"
         >
           <Option
-            v-for="item in subjects"
+            v-for="item in grade_range_subject_id"
             :value="item.value"
             :key="item.value"
           >
@@ -21,12 +21,12 @@
       <!-- 教材版本 -->
       <Form-item>
         <Select
-          v-model="query[`equal[teach_material]`]"
+          v-model="query[`equal[teaching_version]`]"
           placeholder="选择教材版本"
           style="width:9em;"
         >
           <Option
-            v-for="item in materials"
+            v-for="item in teaching_version"
             :value="item.value"
             :key="item.value"
           >
@@ -103,8 +103,8 @@
 <script>
 /**
  * 题库中心 - 章节
- *
- * @author
+ *  @author zml
+ *  @version 2017-09-12
  */
 
 // import { mapState } from 'vuex'
@@ -139,14 +139,14 @@ export default {
         'equal[teaching_version]': null,
       },
 
-      subjects: [
+      grade_range_subject_id: [
         { display_name: '高中数学', value: 1 },
         { display_name: '高中语文', value: 2 },
         { display_name: '高中英语', value: 3 },
         { display_name: '高中物理', value: 4 },
       ],
 
-      materials: [
+      teaching_version: [
         { display_name: '人教版', value: 1 },
         { display_name: '鲁科版', value: 2 },
         { display_name: '沪科版', value: 3 },
