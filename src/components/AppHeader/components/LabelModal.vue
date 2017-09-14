@@ -38,7 +38,7 @@
       @on-ok="deleteLabel()"
       action="删除"
     >
-      <div class="text-center">删除该标签 <span class="color-primary">" {{deleteName}} "</span> 后将无法再回复，是否继续删除？</div>
+      <div class="text-center">删除该标签 <span class="color-primary">" {{deleteName}} "</span> 后将无法再恢复，是否继续删除？</div>
     </app-warn-modal>
   </div>
 </template>
