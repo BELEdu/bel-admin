@@ -13,7 +13,7 @@ const QUESTION_KNOWLEDGE = {
 
 const QUESTION_KNOWLEDGE_EDITION = {
   name: '编辑知识点',
-  link: '/question/knowledge/edition',
+  link: '/question/knowledge/edition/:id',
 }
 
 const QUESTION_CHAPTER = {

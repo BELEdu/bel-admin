@@ -4,6 +4,7 @@
     <div v-if="type === 'multiple'">
       <Button
         type="primary" long
+        @click="batchSelect"
       >批量选择</Button>
     </div>
 
@@ -18,7 +19,10 @@
           type="primary"
           @click="toggleSelectType()"
         >切换为单选</Button>
-        <Button type="primary">确定</Button>
+        <Button
+          type="primary"
+          @click="batchSelect"
+        >批量选择</Button>
       </div>
 
       <!-- 知识点单选 -->
@@ -31,6 +35,7 @@
 
     <!-- 树形结构 -->
     <Tree
+      ref="tree"
       :show-checkbox="multiple"
       :data="treeData"
     ></Tree>
@@ -39,65 +44,35 @@
 
 <script>
 export default {
+  name: 'v-side-tree',
+
   props: {
     type: {
       type: String,
-      default: () => 'all',
+      default: () => 'multiple',
+    },
+    treeData: {
+      type: Array,
+      required: true,
     },
   },
 
   data: () => ({
-    treeData: [
-      {
-        id: 1,
-        title: '高中',
-        children: [
-          {
-            id: 11,
-            title: '高一',
-            children: [
-              {
-                id: 111,
-                title: '高一数学',
-              },
-              {
-                id: 112,
-                title: '高一英语',
-              },
-              {
-                id: 113,
-                title: '高一数学',
-              },
-              {
-                id: 114,
-                title: '高一英语',
-              },
-            ],
-          },
-          {
-            id: 12,
-            title: '高二',
-            children: [
-              {
-                id: 121,
-                title: '高二物理',
-              },
-              {
-                id: 122,
-                title: '高二生物',
-              },
-            ],
-          },
-        ],
-      },
-    ],
-
     multiple: true,
   }),
 
   methods: {
     toggleSelectType() {
       this.multiple = !this.multiple
+    },
+
+    batchSelect() {
+      const nodes = this.$refs.tree
+        .getCheckedNodes()
+        .filter(node => !node.children)
+      const ids = nodes
+        .map(node => node.id)
+      this.$emit('batch-select', ids, nodes)
     },
   },
 }
