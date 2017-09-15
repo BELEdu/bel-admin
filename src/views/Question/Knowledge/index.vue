@@ -72,14 +72,15 @@
     <div class="app-content-topbar">
       <h2>知识点列表</h2>
       <Button
-        @click="toBulkEdit"
         type="primary"
+        @click="toBatchEdit"
       >
         批量编辑知识点
       </Button>
       <Button
         type='primary'
-        @click="activateStructureEdition"
+        :loading="structureLoading"
+        @click="activateStructure"
       >
         编辑知识点结构
       </Button>
@@ -175,12 +176,19 @@
 
     <Modal
       class="question-knowledge__structure"
-      v-model="structureEditionModal.active"
+      v-model="structureModal.active"
       title="编辑知识点"
     >
       <v-tree-structure
         keyword="知识点"
+        :data="this.structureModal.data"
+        @create="createNode"
+        @delete="deleteNode"
+        @sort="sortNode"
        >
+        <div slot="header">
+          以下为当前学科的所有知识点及其结构，您可增加与删除知识点，也可以调整知识点的排序，排序的调整仅限同父级下的同级排序。
+        </div>
       </v-tree-structure>
     </Modal>
   </div>
@@ -277,9 +285,12 @@ export default {
 
       editionInfo: {},
 
-      structureEditionModal: {
+      structureModal: {
         active: false,
+        data: [],
       },
+
+      structureLoading: false,
     }
   },
 
@@ -353,13 +364,41 @@ export default {
 
     /* 编辑知识点结构 */
 
-    activateStructureEdition() {
-      this.structureEditionModal.active = true
+    activateStructure() {
+      this.structureLoading = true
+      const host = '/knowledge/tree'
+      const id = this.$route.query['equal[grade_range_subject_id]']
+        ? this.$route.query['equal[grade_range_subject_id]']
+        : 5
+      this.$http.get(`${host}/${id}`)
+        .then((res) => {
+          this.structureModal.data = res
+          this.structureModal.active = true
+          this.structureLoading = false
+        })
+    },
+
+    createNode(data, success, fail) {
+      this.$http.post('/knowledge', data)
+        .then(res => success(res))
+        .catch(error => fail(error))
+    },
+
+    deleteNode(id, success, fail) {
+      this.$http.delete(`/knowledge/${id}`)
+        .then(() => success())
+        .catch(error => fail(error))
+    },
+
+    sortNode(data, success, fail) {
+      this.$http.patch(`/knowledge/sort/${data.id}`, data)
+        .then(() => success())
+        .catch(error => fail(error))
     },
 
     /* 去批量编辑知识点 */
 
-    toBulkEdit() {
+    toBatchEdit() {
       this.$router.push('/question/knowledge/edition')
     },
   },

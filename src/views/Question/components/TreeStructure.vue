@@ -1,12 +1,10 @@
 <template>
   <div class="structure-editor">
-    <header class="structure-editor__header">
-      以下为当前学科的所有知识点及其结构，您可增加与删除知识点，也可以调整知识点的排序，排序的调整仅限同父级下的同级排序。
-    </header>
+    <slot name="header"></slot>
 
     <section class="structure-editor__content">
       <Tree
-        :data="treeData"
+        :data="tree"
         @on-select-change="seleteNode"
       ></Tree>
     </section>
@@ -16,33 +14,41 @@
     >
       <Button
         type="success"
-        :disabled="!seletedNode"
+        :disabled="!selectedNode && !!tree.length"
+        :loading="loading"
         @click="activateCreation"
       >
         <Icon type="plus" />
         添加
       </Button>
       <Button
-        :disabled="!seletedNode
-          || seletedNode.sort === 1"
+        :disabled="!selectedNode
+          || selectedNode === selectedNode.parentNode
+            .children[0]"
         type="primary"
+        :loading="loading"
+        @click="preSort('up')"
       >
         <Icon type="arrow-up-c" />
         上移
       </Button>
       <Button
-        :disabled="!seletedNode
-          || seletedNode.sort === seletedNode.parentNode.children.length"
+        :disabled="!selectedNode
+          || selectedNode === selectedNode.parentNode
+            .children[selectedNode.parentNode.children.length - 1]"
         type="primary"
+        :loading="loading"
+        @click="preSort('down')"
       >
         <Icon type="arrow-down-c" />
         下移
       </Button>
       <Button
-        :disabled="!seletedNode
-          || ( seletedNode.children
-            && seletedNode.children.length > 0)"
+        :disabled="!selectedNode
+          || ( selectedNode.children
+            && selectedNode.children.length > 0)"
         type="error"
+        :loading="loading"
         @click="preDelete"
       >
         <Icon type="android-delete" />
@@ -56,6 +62,7 @@
       :title="`添加${keyword}`"
       :width="400"
       v-model="creationModal.active"
+      @on-cancel="deactivateCreation"
     >
       <div class="structure-editor__creation-location">
         <span>选择添加位置：</span>
@@ -66,6 +73,7 @@
             : 'ghost'
           "
           @click="locateCreation('equative')"
+          :disabled="!tree.length"
         >同级</Button>
         <Button
           size="small"
@@ -88,10 +96,12 @@
       </div>
 
       <div class="structure-editor__creation-control" slot="footer">
-        <Button>取消</Button>
+        <Button
+          @click="deactivateCreation"
+        >取消</Button>
         <Button
           @click="preCreate"
-          :loading="creationModal.comfirmLoading"
+          :loading="creationModal.confirmLoading"
           type="primary"
         >确定</Button>
       </div>
@@ -109,55 +119,19 @@ export default {
       type: String,
       required: true,
     },
+    // 初始数据
+    data: {
+      type: Array,
+      required: true,
+    },
   },
 
   data: () => ({
-    treeData: [
-      {
-        id: 1,
-        title: '高中',
-        children: [
-          {
-            id: 11,
-            title: '高一',
-            children: [
-              {
-                id: 111,
-                title: '高一数学',
-              },
-              {
-                id: 112,
-                title: '高一英语',
-              },
-              {
-                id: 113,
-                title: '高一数学',
-              },
-              {
-                id: 114,
-                title: '高一英语',
-              },
-            ],
-          },
-          {
-            id: 12,
-            title: '高二',
-            children: [
-              {
-                id: 121,
-                title: '高二物理',
-              },
-              {
-                id: 122,
-                title: '高二生物',
-              },
-            ],
-          },
-        ],
-      },
-    ],
+    rootNode: { id: 0 },
 
-    seletedNode: null,
+    tree: [],
+
+    selectedNode: null,
 
     creationModal: {
       active: false,
@@ -167,40 +141,84 @@ export default {
 
     creationInfo: {
       text: '',
-      location: 'equative',
+      location: 'sub',
     },
+
+    loading: false,
   }),
 
   computed: {
     parentNode() {
-      if (!this.seletedNode) return null
-      const { location } = this.creation
-      if (location === 'sub') {
-        return this.seletedNode.parentNode
+      if (!this.selectedNode) return null
+      if (this.creationInfo.location === 'sub') {
+        return this.selectedNode
       }
-      return this.seletedNode
+      return this.selectedNode.parentNode
     },
+  },
+
+  watch: {
+    data(value) {
+      this.tree = this.tree2way([...value])
+      this.rootNode.children = this.tree
+      const subject_id = this.$route.query['equal[grade_range_subject_id]']
+      this.rootNode.subject_id = subject_id || 5
+    },
+
+    // 初始空树&删光时候的层级初始
+    'tree.length': 'initLocation',
   },
 
   methods: {
     /* --- Initialization --- */
 
     seleteNode(nodes) {
-      this.seletedNode = nodes[0]
+      this.selectedNode = nodes[0]
     },
 
-    bidirectionalTree(children, parent = { id: 0, children }) {
-      children.forEach((childNode, sort) => {
-        /* eslint-disable no-param-reassign */
-        childNode.parentNode = parent
-        childNode.sort = sort + 1
-        /* eslint-enable */
-        if (childNode.children
-          && childNode.children.length
-        ) {
-          this.bidirectionalTree(childNode.children, childNode)
+    tree2way(children, parent = this.rootNode) {
+      return children.map((item) => {
+        const child = { ...item }
+        let cNodes = child.children
+
+        if (cNodes && cNodes.length) {
+          cNodes = this.tree2way(cNodes, child)
         }
+
+        this.$set(child, 'parentNode', parent)
+        this.$set(child, 'children', cNodes)
+
+        return child
       })
+    },
+
+    /* --- Assitance --- */
+
+    initLocation(val) {
+      if (val) {
+        this.creationInfo.location = 'equative'
+      } else {
+        this.creationInfo.location = 'sub'
+      }
+    },
+
+    errorRender(error) {
+      if (typeof error === 'string') return error
+      return Object.keys(error)
+        .reduce((acc, key, index, arr) => {
+          const message = index === arr.length - 1
+            ? error[key][0]
+            : `${error[key][0]}\n`
+          return acc + message
+        }, '')
+    },
+
+    activateLoading() {
+      this.loading = true
+    },
+
+    deactivateLoading() {
+      this.loading = false
     },
 
     /* --- Creation --- */
@@ -210,12 +228,15 @@ export default {
     },
 
     deactivateCreation() {
-      this.creationModal.active = false
-      this.creationModal.confirmLoading = false
+      this.creationModal = {
+        active: false,
+        confirmLoading: false,
+        errorReasons: {},
+      }
+
       this.creationInfo = {
         text: '',
         location: 'equative',
-        parentNode: null,
       }
     },
 
@@ -224,68 +245,146 @@ export default {
     },
 
     preCreate() {
-      const data = this.creationInfo.text.split('\n')
-      this.$emit('create', [...data],
+      this.creationModal.confirmLoading = true
+      // 初始空树，没有parentNode
+      const p_id = this.parentNode
+        ? this.parentNode.id : 0
+      const current_id = this.selectedNode
+        ? this.selectedNode.id : 0
+      const data = this.creationInfo.text
+        .split('\n')
+        .map(name => ({ p_id, display_name: name }))
+
+      this.$emit('create',
+        {
+          grade_range_subject_id: this.rootNode.subject_id,
+          current_id,
+          location: this.creationInfo.location,
+          data,
+        },
         // success
         (nodes) => {
           this.creationSucceed(nodes)
           this.deactivateCreation()
           this.$Message.success('创建成功')
         },
-        // error
-        () => {
+        // fail
+        (error) => {
+          // this.creationModal.confirmLoading = false
           this.deactivateCreation()
-          this.$Message.success('创建失败')
+          this.$Notice.error({
+            title: '创建失败',
+            desc: this.errorRender(error.errors),
+          })
         },
       )
     },
 
-    // eslint-disable-next-line
     creationSucceed(nodes) {
-      const type = this.creationInfo.location
-      if (type === 'equative') {
-        // 插入后位置
+      // 初始空树插入
+      const parent = this.parentNode || this.rootNode
+      const children = this.tree2way(nodes, parent)
+      // 初始空树插入
+      if (!this.selectedNode) {
+        return this.tree.push(...children)
       }
-      if (type === 'sub') {
-        // 插入children末尾
+      // 子级插入
+      if (this.creationInfo.location === 'sub') {
+        if (!this.selectedNode.children) {
+          this.selectedNode.children = []
+        }
+        return this.selectedNode.children.push(...children)
       }
+      // 同级插入
+      return this.parentNode.children
+        .splice(children[0].sort - 1, 0, ...children)
     },
 
     /* --- Deletion --- */
+
     preDelete() {
-      const id = this.seletedNode.id
+      this.$Modal.confirm({
+        title: '删除知识点',
+        content: '删除的知识点无法恢复，确定删除么？',
+        okText: '确定',
+        cancelText: '取消',
+        onOk: this.delete,
+        loading: true,
+      })
+    },
+
+    delete() {
+      this.activateLoading()
+      const id = this.selectedNode.id
       this.$emit('delete', id,
         // success
         () => {
-          // 移除节点
-          this.deletionSucceed(id)
+          this.deletionSucceed()
+          this.$Modal.remove()
         },
-        // error
-        () => {
-          // 显示删除失败
+        // fail
+        (error) => {
+          this.deactivateLoading()
+          this.$Notice.error({
+            title: '删除失败',
+            desc: error.message,
+          })
+          this.$Modal.remove()
         },
       )
     },
 
-    // eslint-disable-next-line
-    deletionSucceed(id) {
-      // 删除对应节点
+    deletionSucceed() {
+      // 更新视图
+      const list = this.selectedNode.parentNode.children
+      const index = list.indexOf(this.selectedNode)
+      // eslint-disable-next-line
+      this.$delete(list, index)
+      // 更新状态
+      this.deactivateLoading()
+      this.selectedNode = null
+      this.$Message.success('删除成功')
     },
 
     /* --- sort --- */
-  },
 
-  created() {
-    this.$http.get('/knowledge/tree/1')
-      .then((res) => {
-        this.treeData = res
-        this.bidirectionalTree(this.treeData)
-      })
-    // 初始默认为根节点
-    // this.seletedNode = {
-    // id: 0,
-    // children: this.treeData,
-    // }
+    preSort(type) {
+      this.activateLoading()
+      this.$emit('sort',
+        {
+          id: this.selectedNode.id,
+          sort: type,
+        },
+        // success
+        () => {
+          this.sortSucceed(type)
+          this.deactivateLoading()
+        },
+        // fail
+        (error) => {
+          const sortType = type === 'up' ? '上移' : '下移'
+          this.$Notice.error({
+            title: `${sortType}失败`,
+            desc: error.message,
+          })
+          this.deactivateLoading()
+        })
+    },
+
+    sortSucceed(type) {
+      const list = this.parentNode.children
+      const index = list.indexOf(this.selectedNode)
+      if (type === 'up') {
+        this.exchangeNode(list, index, -1)
+      } else {
+        this.exchangeNode(list, index, 1)
+      }
+    },
+
+    exchangeNode(list, index, target) {
+      list.splice(index, 1, list[index + target])
+      list.splice(index + target, 1, this.selectedNode)
+    },
   },
 }
 </script>
@@ -294,10 +393,6 @@ export default {
 @import '~vars';
 
 .structure-editor {
-
-  &__header {
-    margin-bottom: 10px;
-  }
 
   &__control {
     text-align: center;
@@ -308,12 +403,20 @@ export default {
   }
 
   &__content {
-    margin-bottom: 15px;
+    margin: 15px 0;
     padding: 0 8px;
     height: 500px;
     border: 1px solid @border-color-base;
     border-radius: 4px;
     overflow: auto;
+
+    & .ivu-tree-title {
+      padding: 0 5px 0 0;
+    }
+
+    & .ivu-tree ul li {
+      margin: 4px 0;
+    }
   }
 
   &__creation {
@@ -336,6 +439,12 @@ export default {
 
     &-control {
       text-align: center;
+    }
+
+    // 作为自弹窗的修正
+    & .ivu-modal-wrap,
+    & .ivu-modal-mask, {
+      z-index: 1001,
     }
   }
 }
