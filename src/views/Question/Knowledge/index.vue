@@ -179,7 +179,7 @@
       v-model="structureModal.active"
       title="编辑知识点"
     >
-      <v-tree-structure
+      <v-structure-tree
         keyword="知识点"
         :data="this.structureModal.data"
         @create="createNode"
@@ -189,7 +189,7 @@
         <div slot="header">
           以下为当前学科的所有知识点及其结构，您可增加与删除知识点，也可以调整知识点的排序，排序的调整仅限同父级下的同级排序。
         </div>
-      </v-tree-structure>
+      </v-structure-tree>
     </Modal>
   </div>
 </template>
@@ -204,7 +204,7 @@
 import Http from '@/utils/http'
 import { createButton } from '@/utils'
 import list from '@/mixins/list'
-import vTreeStructure from '../components/TreeStructure'
+import vStructureTree from '../components/StructureTree'
 
 export default {
   name: 'question-knowledge',
@@ -212,7 +212,7 @@ export default {
   mixins: [list],
 
   components: {
-    vTreeStructure,
+    vStructureTree,
   },
 
   data() {
@@ -399,7 +399,10 @@ export default {
     /* 去批量编辑知识点 */
 
     toBatchEdit() {
-      this.$router.push('/question/knowledge/edition')
+      const id = this.$route.query['equal[grade_range_subject_id]']
+        ? this.$route.query['equal[grade_range_subject_id]']
+        : 5
+      this.$router.push(`/question/knowledge/edition/${id}`)
     },
   },
 

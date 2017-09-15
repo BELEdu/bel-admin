@@ -42,7 +42,7 @@
     <div class="content">
       <!-- 下左：树形搜索 -->
       <aside>
-        <v-side-choosen></v-side-choosen>
+        <v-side-tree></v-side-tree>
       </aside>
       <!-- 下右：主体 -->
       <section>
@@ -106,7 +106,7 @@
 import { GLOBAL } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import vAdvanceSearch from './components/AdvanceSearch'
-import vSideChoosen from '../components/SideChoosen'
+import vSideTree from '../components/SideTree'
 
 export default {
   name: 'question-paper-composition',
@@ -115,7 +115,7 @@ export default {
 
   components: {
     vAdvanceSearch,
-    vSideChoosen,
+    vSideTree,
   },
 
   data: () => ({

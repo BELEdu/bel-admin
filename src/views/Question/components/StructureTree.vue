@@ -1,8 +1,8 @@
 <template>
-  <div class="structure-editor">
+  <div class="structure-tree">
     <slot name="header"></slot>
 
-    <section class="structure-editor__content">
+    <section class="structure-tree__content">
       <Tree
         :data="tree"
         @on-select-change="seleteNode"
@@ -10,7 +10,7 @@
     </section>
 
     <footer
-      class="structure-editor__control"
+      class="structure-tree__control"
     >
       <Button
         type="success"
@@ -58,13 +58,13 @@
 
     <!-- 添加编辑框 -->
     <Modal
-      class="structure-editor__creation"
+      class="structure-tree__creation"
       :title="`添加${keyword}`"
       :width="400"
       v-model="creationModal.active"
       @on-cancel="deactivateCreation"
     >
-      <div class="structure-editor__creation-location">
+      <div class="structure-tree__creation-location">
         <span>选择添加位置：</span>
         <Button
           size="small"
@@ -85,7 +85,7 @@
         >子级</Button>
       </div>
 
-      <div class="structure-editor__creation-content">
+      <div class="structure-tree__creation-content">
         <p>输入{{keyword}}名称（每行一个）</p>
         <Input
           v-model="creationInfo.text"
@@ -95,7 +95,7 @@
         </Input>
       </div>
 
-      <div class="structure-editor__creation-control" slot="footer">
+      <div class="structure-tree__creation-control" slot="footer">
         <Button
           @click="deactivateCreation"
         >取消</Button>
@@ -111,7 +111,7 @@
 
 <script>
 export default {
-  name: 'app-tree-structure',
+  name: 'v-structure-tree',
 
   props: {
     // 操作目标：知识点、章节。。。
@@ -392,7 +392,7 @@ export default {
 <style lang="less">
 @import '~vars';
 
-.structure-editor {
+.structure-tree {
 
   &__control {
     text-align: center;
