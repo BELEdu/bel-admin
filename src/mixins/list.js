@@ -32,7 +32,7 @@ export default {
           const value = this.query[key]
 
           // 无值时不处理
-          if (value == null || value.length === 0) {
+          if (value == null || (typeof value === 'object' && value.length === 0)) {
             return result
           }
 
@@ -79,8 +79,15 @@ export default {
       delete copy.per_page
       const likeKey = this.getLikeKey(copy)
       if (likeKey) {
-        this.likeValue = copy[likeKey]
+        // 这里拿到的likeKey实际上是'like[display_name]'这样的形式，这里需要的是中括号中的部分
+        this.likeKey = likeKey.replace(/like\[(.+)\]/, '$1')
+
+        // 因为组件对likeKey做了监听，每次更改likeKey时会清空likeValue，所以这里使用$nextTick来避免这一次的复制被清空
+        const likeValue = copy[likeKey]
         delete copy[likeKey]
+        this.$nextTick(() => {
+          this.likeValue = likeValue
+        })
       }
       this.query = {
         ...this.query,
