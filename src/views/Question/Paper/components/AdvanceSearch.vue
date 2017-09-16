@@ -19,7 +19,7 @@
             'condition-options__item': true,
             'active': opts[key] === String(option.value),
           }"
-          @click="onChooseOption(key, option.value)"
+          @click="onChooseOption(key, String(option.value))"
         >
           {{option.display_name}}
         </span>
@@ -65,7 +65,7 @@ export default {
       // 有效更新条件
       } else {
         // 更新视图选中状态
-        this.opts[key] = String(value)
+        this.opts[key] = value
         // 更新路由
         this.$router.push({
           path,
