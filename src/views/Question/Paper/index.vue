@@ -92,7 +92,6 @@
  * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import vAdvanceSearch from './components/AdvanceSearch'
@@ -194,13 +193,7 @@ export default {
     },
   },
 
-  beforeRouteE(to, from, next) {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-    next()
-  },
-
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
     this.$http.get('/paper/index_before')
       .then(({
         // 条件搜索
