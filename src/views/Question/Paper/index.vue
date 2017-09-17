@@ -3,16 +3,16 @@
     <!-- 顶部搜索栏 -->
     <Form class="app-search-form app-search-form-layout">
       <!-- 年段+学科 -->
-      <Form-item>
+      <Form-item v-if="likeKeys.length && subjects.length">
         <Select
-          v-model="query['equal[subject_id]']"
+          v-model="query['equal[grade_range_subject_id]']"
           placeholder="年段学科"
           style="width: 150px;"
         >
           <Option
             v-for="item in subjects"
-            :value="item.value"
-            :key="item.value"
+            :value="item.id"
+            :key="item.id"
           >
             {{item.display_name}}
           </Option>
@@ -32,10 +32,10 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
@@ -53,6 +53,7 @@
 
     <!-- 上方条件过滤 -->
     <v-advance-search
+      v-if="advanceConditions"
       :data="advanceConditions"
     ></v-advance-search>
 
@@ -71,16 +72,16 @@
     <Table
       border
       :columns="colConfig"
-      :data="list"
+      :data="buffer.data"
       @on-sort-change="sort"
     ></Table>
 
     <!-- 底部分页 -->
-    <!-- <app-pager
+    <app-pager
       :data="buffer"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
-    ></app-pager> -->
+    ></app-pager>
   </div>
 </template>
 
@@ -92,166 +93,134 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-// import { list } from '@/mixins'
+import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import vAdvanceSearch from './components/AdvanceSearch'
 
 export default {
   name: 'question-paper',
 
-  // mixins: [list],
+  mixins: [list],
 
   components: {
     vAdvanceSearch,
   },
 
-  data: () => ({
-    /* --- 顶部搜索栏数据 --- */
+  data() {
+    return {
+      /* --- 顶部搜索栏数据 --- */
 
-    likeKeys: [
-      { value: 'title', label: '试卷标题' },
-      { value: 'name', label: '创建人' },
-    ],
-    likeKey: 'title',
+      likeKeys: [],
 
-    query: {
-      'equal[subject_id]': 1,
-    },
+      likeKey: 'display_name',
 
-    subjects: [
-      { value: 1, display_name: '高中数学' },
-      { value: 2, display_name: '高中英语' },
-    ],
+      subjects: [],
 
-    /* --- 上方高级搜索数据 --- */
+      query: {
+        'equal[grade_range_subject_id]': 5,
+      },
 
-    advanceConditions: {
-      grade_range_subject: {
-        label: '学科',
-        data: [
-          {
-            value: 1,
-            display_name: '初中数学',
-          },
-          {
-            value: 3,
-            display_name: '初中物理',
-          },
-        ],
-      },
-      question_status: {
-        label: '状态',
-        data: [
-          {
-            value: 1,
-            display_name: '草稿',
-          },
-          {
-            value: 2,
-            display_name: '待审核',
-          },
-        ],
-      },
-      difficulty: {
-        label: '难度',
-        data: [
-          {
-            value: 1,
-            display_name: '困难（0.26-0.40）',
-          },
-          {
-            value: 2,
-            display_name: '较难（0.26-0.40）',
-          },
-          {
-            value: 3,
-            display_name: '中等（0.26-0.40）',
-          },
-          {
-            value: 4,
-            display_name: '较易（0.26-0.40）',
-          },
-          {
-            value: 5,
-            display_name: '容易（0.26-0.40）',
-          },
-        ],
-      },
-    },
+      /* --- 上方高级搜索数据 --- */
 
-    /* --- 下方试卷列表 --- */
-    colConfig: [
-      {
-        title: '试卷标题',
-        key: 1,
-        align: 'center',
-      },
-      {
-        title: '试题量',
-        key: 2,
-        align: 'center',
-        sortable: 'custom',
-      },
-      {
-        title: '创建人',
-        key: 3,
-        align: 'center',
-      },
-      {
-        title: '创建日期',
-        key: 4,
-        align: 'center',
-        sortable: 'custom',
-      },
-      {
-        title: '浏览量',
-        key: 5,
-        align: 'center',
-        sortable: 'custom',
-      },
-      {
-        title: '操作',
-        key: 6,
-        align: 'center',
-        render: createButton([
-          {
-            text: '删除',
-            type: 'error',
-          },
-          {
-            text: '编辑',
-            type: 'success',
-          },
-          {
-            text: '查看',
-            type: 'info',
-          },
-        ]),
-      },
-    ],
+      advanceConditions: null,
 
-    list: Array(10).fill({
-      1: '2017届河北省承德实验中学高三上学期期中考试语文试卷',
-      2: 15,
-      3: '李小平',
-      4: '2017-04-23',
-      5: 197,
-    }),
-  }),
+      /* --- 下方试卷列表 --- */
+      colConfig: [
+        {
+          title: '试卷标题',
+          key: 'display_name',
+          align: 'center',
+        },
+        {
+          title: '试题量',
+          key: 'question_count',
+          align: 'center',
+          sortable: 'custom',
+        },
+        {
+          title: '创建人',
+          key: 'user_realname',
+          align: 'center',
+        },
+        {
+          title: '创建日期',
+          key: 'created_at',
+          align: 'center',
+          sortable: 'custom',
+        },
+        {
+          title: '浏览量',
+          key: 'view_count',
+          align: 'center',
+          sortable: 'custom',
+        },
+        {
+          title: '操作',
+          key: 6,
+          align: 'center',
+          render: createButton([
+            {
+              text: '删除',
+              type: 'error',
+            },
+            {
+              text: '编辑',
+              type: 'success',
+            },
+            {
+              text: '查看',
+              type: 'info',
+            },
+          ]),
+        },
+      ],
+
+      buffer: {},
+    }
+  },
 
   methods: {
     toComposePaper() {
       this.$router.push('/question/paper/composition')
     },
+
+    getData(queryUrl, to) {
+      const url = to.fullPath
+        .split('/')
+        .splice(2)
+        .join('/')
+      return this.$http.get(`/${url}`)
+        .then((res) => { this.buffer = res })
+    },
   },
 
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteE(to, from, next) {
     this.$store.commit(GLOBAL.LOADING.HIDE)
     next()
   },
 
   created() {
     this.$store.commit(GLOBAL.LOADING.HIDE)
+    this.$http.get('/paper/index_before')
+      .then(({
+        // 条件搜索
+        grade_range_subject_id,
+        search_fields,
+        // 高级搜索
+        grade,
+        paper_type,
+        province,
+        year,
+      }) => {
+        this.subjects = grade_range_subject_id
+        this.likeKeys = search_fields
+        this.advanceConditions = {
+          grade,
+          paper_type,
+          province,
+          year,
+        }
+      })
   },
 }
 </script>
