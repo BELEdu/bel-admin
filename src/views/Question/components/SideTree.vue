@@ -12,7 +12,7 @@
     <div v-else>
       <!-- 知识点多选 -->
       <div
-        class="multiple"
+        class="multiple clearfix"
         v-if="multiple"
       >
         <Button
@@ -87,7 +87,11 @@ export default {
       width: 115px;
 
       &:first-child {
-        margin-right: 20px;
+        float: left;
+      }
+
+      &:last-child {
+        float: right;
       }
     }
   }
