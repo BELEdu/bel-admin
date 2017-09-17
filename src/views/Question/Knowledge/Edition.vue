@@ -2,7 +2,7 @@
   <div class="question-knowledge-edition">
     <aside>
       <v-side-tree
-        :tree-data="treeData"
+        :data="treeData"
         @batch-select="onBatchSelect"
       ></v-side-tree>
     </aside>

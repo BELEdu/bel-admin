@@ -37,7 +37,7 @@
     <Tree
       ref="tree"
       :show-checkbox="multiple"
-      :data="treeData"
+      :data="data"
     ></Tree>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
       type: String,
       default: () => 'multiple',
     },
-    treeData: {
+    data: {
       type: Array,
       required: true,
     },
