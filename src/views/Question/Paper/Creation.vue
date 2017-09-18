@@ -247,17 +247,11 @@ export default {
 
 <style lang="less">
 @import '~vars';
+@import './mixins/paper.less';
+
 @layout-width:    975px;
 @layout-padding:  10px;
 @layout-gutter:   10px;
-@border-radius:  4px;
-@bd-primary: 1px solid @primary-color;
-@bd-base: 1px solid @border-color-base;
-@gutter-unit: 6px;
-@color-font-select: #fff;
-@small-font: 12px;
-@mid-font: 14px;
-@large-font: 16px;
 
 .button-dashed-color(@text, @bd: transparent) {
   border-color: @bd;
@@ -344,85 +338,14 @@ export default {
       & > article {
         overflow: hidden;
       }
-    }
-  }
-}
 
-
-// 试卷section、topic hover mixin
-.hoverbar() {
-  position: absolute;
-  right: 0;
-  top: 0;
-  display: none;
-  border-bottom: @bd-primary;
-  border-left: @bd-primary;
-  border-radius: @border-radius;
-  background-color: @color-font-select;
-  padding: @gutter-unit/2;
-
-  & .ivu-input-number {
-    margin-right: 10px;
-    border-color: @primary-color;
-    width: 60px;
-  }
-
-  & button {
-    border-color: @primary-color;
-    background-color: @color-font-select;
-    color: @primary-color;
-
-    &:hover {
-      border-color: @primary-color;
-      background-color: @primary-color;
-      color: @color-font-select;
-    }
-  }
-
-  &>span {
-    margin: 0 @gutter-unit/2;
-    vertical-align: middle;
-    color: @primary-color;
-  }
-}
-
-.question-paper-creation > .creation-content {
-
-  & .section {
-    border-radius: @border-radius;
-    padding: @layout-padding;
-    background-color: @bg-color;
-
-    & > h2 {
-      margin-bottom: 10px;
-    }
-  }
-
-  & .topic {
-
-    &-item {
-      position: relative;
-      margin-bottom: @layout-gutter;
-      border: 1px solid transparent;
-      border-radius: @border-radius;
-      padding: @layout-padding;
-      background-color: #fff;
-      cursor: pointer;
-
-      &:hover {
-        border: @bd-primary;
-
-       &>.topic-item__control {
-         display: block;
-        }
+      & .section {
+        .section()
       }
-    }
 
-    // 标题悬浮控制条
-    &-item__control {
-      .hoverbar();
-      font-size: 12px;
-      font-weight: normal;
+      & .topic {
+        .topic()
+      }
     }
   }
 }

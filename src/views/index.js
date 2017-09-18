@@ -12,6 +12,7 @@ export { default as QuestionChapter } from './Question/Chapter'
 export { default as QuestionQuestion } from './Question/Question'
 export { default as QuestionQuestionEdit } from './Question/Question/Edit'
 export { default as QuestionPaper } from './Question/Paper'
+export { default as QuestionPaperDetail } from './Question/Paper/Detail'
 export { default as QuestionPaperComposition } from './Question/Paper/Composition'
 export { default as QuestionPaperCreation } from './Question/Paper/Creation'
 

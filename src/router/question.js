@@ -33,9 +33,15 @@ const QUESTION_QUESTION_EDIT = {
   name: '编辑试题',
   link: '/question/question/:subject/:id',
 }
+
 const QUESTION_PAPER = {
   name: '试卷',
   link: '/question/paper',
+}
+
+const QUESTION_PAPER_DETAIL = {
+  name: '试卷详情',
+  link: '/question/paper/:id',
 }
 
 const QUESTION_PAPER_COMPOSITION = {
@@ -165,4 +171,19 @@ export default [
       ],
     },
   },
+
+  // 试卷详情页
+  {
+    path: QUESTION_PAPER_DETAIL.link,
+    name: 'QuestionPaperDetail',
+    component: views.QuestionPaperDetail,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        QUESTION_PAPER_DETAIL,
+      ],
+    },
+  },
+
 ]
