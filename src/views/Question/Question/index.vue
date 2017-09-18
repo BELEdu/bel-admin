@@ -63,7 +63,7 @@
         <h2>试题列表</h2>
       </Col>
       <Col>
-        <Button type="primary">添加试题</Button>
+        <Button type="primary"  @click="$router.push('/question/question/22')">添加试题</Button>
       </Col>
     </Row>
 
@@ -95,10 +95,29 @@
       v-model="modal.delete"
       title="删除确认"
       :loading="loading.delete"
-      @on-ok="deleteQuestion()"
+      @on-ok="deleteQuestion"
       action="删除"
     >
-      <div class="text-center">删除该编号 <span class="color-primary">" {{questionNumber}} "</span> 的试题后将无法再恢复<br>是否继续删除？</div>
+      <div class="text-center">
+        删除该编号
+        <span class="color-primary">" {{questionNumber}} "</span>
+        的试题后将无法再恢复<br>是否继续删除？
+      </div>
+    </app-warn-modal>
+
+    <!-- 下线模态框 -->
+    <app-warn-modal
+      v-model="modal.outline"
+      title="下线确认"
+      :loading="loading.outline"
+      @on-ok="outline"
+      action="下线"
+    >
+      <div class="text-center">
+        下架后，该试题
+        <span class="color-primary">" {{questionNumber}} "</span>
+        将变为草稿状态，无法继续使用。若需上架，需要再次经过审核才可上架。
+      </div>
     </app-warn-modal>
 
   </div>
@@ -172,7 +191,7 @@ export default {
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.number) },
             { text: '查看', type: 'primary', click: row => this.openDetailModal(row.id) },
             { text: '编辑', type: 'success', click: row => this.$router.push(`/question/question/1/${row.id}`) },
-            { text: '下线', click: row => this.openDetailModal(row.id) },
+            { text: '下线', click: row => this.openOutlineModal(row.id, row.number) },
           ]),
         },
       ],
@@ -186,29 +205,42 @@ export default {
       modal: {
         delete: false,
         detail: false,
+        outline: false,
       },
 
       loading: {
         delete: false,
+        outline: false,
       },
     }
   },
 
   methods: {
-    openDeleteModal(id, number) {
+    openDetailModal(id) { // 打开详情弹窗
+      this.questionId = id
+      this.modal.detail = true
+    },
+
+    openDeleteModal(id, number) { // 打开删除弹窗
       this.questionId = id
       this.questionNumber = number
       this.modal.delete = true
     },
 
-    deleteQuestion() {
+    deleteQuestion() { // 删除操作
       this.loading.delete = true
       // 这里写删除逻辑
     },
 
-    openDetailModal(id) {
+    openOutlineModal(id, number) { // 打开下线弹窗
       this.questionId = id
-      this.modal.detail = true
+      this.questionNumber = number
+      this.modal.outline = true
+    },
+
+    outline() { // 下线操作、
+      this.loading.outline = true
+      // 这里写下线逻辑
     },
   },
 

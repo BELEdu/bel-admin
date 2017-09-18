@@ -82,7 +82,17 @@ export default {
           { title: '类型', key: 'paper_type_name', align: 'center' },
           { title: '难度', key: 'question_difficulty_name', align: 'center' },
           { title: '时间', key: 'year_name', align: 'center' },
-          { title: '知识点', key: 'knowledge_ids', align: 'center', width: 250 },
+          {
+            title: '知识点',
+            key: 'knowledge_ids',
+            align: 'center',
+            width: 250,
+            render: (h, params) => {
+              const { knowledge_ids } = params.row
+              return h('ul', knowledge_ids.map(value => h('li', value)),
+              )
+            },
+          },
         ],
         logs: [
           { title: '操作者', key: 'realname', align: 'center' },
