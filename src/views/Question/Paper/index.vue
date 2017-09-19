@@ -75,6 +75,16 @@
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
     ></app-pager>
+
+    <!-- 删除警告框 -->
+    <app-warn-modal
+      v-model="deletionModal.active"
+      :title="deletionModal.title"
+      :loading="deletionModal.confirmLoading"
+      @on-ok="deletePaper"
+    >
+      <div>该试卷删除后将无法恢复，是否继续删除？</div>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -153,6 +163,7 @@ export default {
             {
               text: '删除',
               type: 'error',
+              click: this.activatePaperDeletion,
             },
             {
               text: '编辑',
@@ -161,13 +172,21 @@ export default {
             {
               text: '查看',
               type: 'info',
-              click: this.onCheckInfo,
+              click: this.onCheckPaper,
             },
           ]),
         },
       ],
 
       buffer: {},
+
+      deletionModal: {
+        active: false,
+        confirmLoading: false,
+        title: '删除确认',
+      },
+
+      deletionTarget: null,
     }
   },
 
@@ -219,8 +238,34 @@ export default {
       this.$router.push('/question/paper/composition')
     },
 
-    onCheckInfo(row) {
+    onCheckPaper(row) {
       this.$router.push(`/question/paper/${row.id}`)
+    },
+
+    activatePaperDeletion(row) {
+      this.deletionTarget = row
+      this.deletionModal.active = true
+    },
+
+    deactivatePaperDeletion() {
+      this.deletionTarget = null
+      this.deletionModal.active = false
+      this.deletionModal.confirmLoading = false
+    },
+
+    deletePaper() {
+      this.deletionModal.confirmLoading = true
+      const id = this.deletionTarget.id
+      this.$http.delete(`/paper/${id}`)
+        .then(() => {
+          this.buffer.data = this.buffer.data
+            .filter(data => data.id !== id)
+          this.$Message.success('删除成功')
+        })
+        .catch(() => {
+          this.$Message.error('删除失败')
+        })
+        .then(() => this.deactivatePaperDeletion())
     },
   },
 
