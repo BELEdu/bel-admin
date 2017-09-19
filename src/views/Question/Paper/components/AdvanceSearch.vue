@@ -4,25 +4,29 @@
       class="condition"
       v-for="(item, key, index) in data"
     >
-      <dt class="condition-title">{{item.label}}</dt>
-      <dd class="condition-options">
-        <span
-          :class="{
-            'condition-options__all': true,
-            'active': !opts[key],
-          }"
+      <dt class="title">{{item.label}}</dt>
+      <dd class="options">
+        <Button
+          class="options__all"
+          size="small"
+          :type="
+            !$route.query[key] ? 'primary' : 'text'
+          "
           @click="onChooseOption(key)"
-        >全部</span>
-        <span
+        >全部</Button>
+        <Button
           v-for="option in item.data"
-          :class="{
-            'condition-options__item': true,
-            'active': opts[key] === String(option.value),
-          }"
+          class="options__item"
+          :type="
+            $route.query[key] === String(option.value)
+              ? 'primary'
+              : 'text'
+          "
+          :key="option.value"
           @click="onChooseOption(key, String(option.value))"
         >
           {{option.display_name}}
-        </span>
+        </Button>
       </dd>
     </dl>
   </div>
@@ -40,11 +44,6 @@ export default {
     },
   },
 
-  data: () => ({
-    // 条件集合，以及当前选中状态
-    opts: {},
-  }),
-
   methods: {
     onChooseOption(key, value) {
       // 重复点击无动作
@@ -54,8 +53,6 @@ export default {
       const path = this.$route.path
       // 选择全部则移除条件
       if (!value) {
-        // 更新视图选中状态
-        this.opts[key] = value
         // 更新路由
         const { [key]: filter, ...rest } = query
         this.$router.push({
@@ -64,8 +61,6 @@ export default {
         })
       // 有效更新条件
       } else {
-        // 更新视图选中状态
-        this.opts[key] = value
         // 更新路由
         this.$router.push({
           path,
@@ -74,64 +69,18 @@ export default {
       }
     },
   },
-
-  created() {
-    Object.keys(this.data).forEach((key) => {
-      this.$set(
-        this.opts,
-        key,
-        this.$route.query[key],
-      )
-    })
-  },
 }
 </script>
 
 <style lang="less">
 @import '~vars';
-
-@item-height: 26px;
+@import '../mixins/paper.less';
 
 .v-advance-search {
   font-size: 14px;
 
   & .condition {
-    line-height: @item-height;
-
-    &-title {
-      float: left;
-      margin-right: 10px;
-      padding: 0 10px;
-      font-weight: bold;
-    }
-
-    &-options {
-      margin-top: 10px;
-      overflow-x: hidden;
-
-      & > span {
-        display: inline-block;
-        cursor: pointer;
-
-        &:hover {
-          color: @info-color;
-        }
-      }
-
-      &__all {
-        padding: 0 10px;
-      }
-
-      &__item {
-        margin-left: 10px;
-        padding: 0 5px;
-      }
-    }
-  }
-
-  & .active {
-    background-color: @primary-color;
-    color: #fff !important;
+    .condition();
   }
 }
 </style>
