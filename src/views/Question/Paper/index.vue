@@ -2,22 +2,6 @@
   <div class="qusetion-paper">
     <!-- 顶部搜索栏 -->
     <Form class="app-search-form app-search-form-layout">
-      <!-- 年段+学科 -->
-      <Form-item v-if="likeKeys.length && subjects.length">
-        <Select
-          v-model="query['equal[grade_range_subject_id]']"
-          placeholder="年段学科"
-          style="width: 150px;"
-        >
-          <Option
-            v-for="item in subjects"
-            :value="item.id"
-            :key="item.id"
-          >
-            {{item.display_name}}
-          </Option>
-        </Select>
-      </Form-item>
       <!-- 关键字检索 -->
       <Form-item>
         <Input
@@ -51,6 +35,15 @@
       </Form-item>
     </Form>
 
+
+    <!-- 科目过滤 -->
+    <v-subject-radio
+      v-if="subjects"
+      :data="subjects.data"
+      :default="subjects.default"
+      @change="getPrecondition"
+    >
+    </v-subject-radio>
     <!-- 上方条件过滤 -->
     <v-advance-search
       v-if="advanceConditions"
@@ -95,6 +88,7 @@
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import vAdvanceSearch from './components/AdvanceSearch'
+import vSubjectRadio from './components/SubjectRadio'
 
 export default {
   name: 'question-paper',
@@ -103,6 +97,7 @@ export default {
 
   components: {
     vAdvanceSearch,
+    vSubjectRadio,
   },
 
   data() {
@@ -113,13 +108,10 @@ export default {
 
       likeKey: 'display_name',
 
-      subjects: [],
-
-      query: {
-        'equal[grade_range_subject_id]': 5,
-      },
 
       /* --- 上方高级搜索数据 --- */
+
+      subjects: null,
 
       advanceConditions: null,
 
@@ -169,6 +161,7 @@ export default {
             {
               text: '查看',
               type: 'info',
+              click: this.onCheckInfo,
             },
           ]),
         },
@@ -179,8 +172,38 @@ export default {
   },
 
   methods: {
-    toComposePaper() {
-      this.$router.push('/question/paper/composition')
+    /* --- initialization --- */
+
+    getPrecondition(subjectId) {
+      /* eslint-disable prefer-template */
+      const url = '/paper/index_before'
+        + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
+      /* eslint-enable */
+
+      this.$http.get(url)
+        .then(({
+          // 条件搜索
+          search_fields,
+          // 高级搜索
+          current_grade_range_subject_id,
+          grade_range_subject_id,
+          grade,
+          paper_type,
+          province,
+          year,
+        }) => {
+          this.subjects = {
+            default: current_grade_range_subject_id,
+            data: grade_range_subject_id,
+          }
+          this.likeKeys = search_fields
+          this.advanceConditions = {
+            grade,
+            paper_type,
+            province,
+            year,
+          }
+        })
     },
 
     getData(queryUrl, to) {
@@ -191,29 +214,19 @@ export default {
       return this.$http.get(`/${url}`)
         .then((res) => { this.buffer = res })
     },
+
+    toComposePaper() {
+      this.$router.push('/question/paper/composition')
+    },
+
+    onCheckInfo(row) {
+      this.$router.push(`/question/paper/${row.id}`)
+    },
   },
 
   created() {
-    this.$http.get('/paper/index_before')
-      .then(({
-        // 条件搜索
-        grade_range_subject_id,
-        search_fields,
-        // 高级搜索
-        grade,
-        paper_type,
-        province,
-        year,
-      }) => {
-        this.subjects = grade_range_subject_id
-        this.likeKeys = search_fields
-        this.advanceConditions = {
-          grade,
-          paper_type,
-          province,
-          year,
-        }
-      })
+    const subjectId = this.$route.query['equal[grade_range_subject_id]']
+    this.getPrecondition(subjectId)
   },
 }
 </script>
