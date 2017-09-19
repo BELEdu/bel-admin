@@ -44,41 +44,14 @@
     <footer>
       <Button
         type="primary"
-        @click="deactivateAnalysis"
+        @click="goBack"
       >返回</Button>
     </footer>
 
-    <Modal
-      class="question-paper-detail__analysis"
-      v-if="analysis"
-      v-model="analysisModal.active"
-      title="试题解析"
-    >
-      <div class="question-paper-detail__analysis-header">
-        <span>题目ID: {{analysis.question_id}}</span>
-        <span>题型: {{analysis.question_type_name}}</span>
-        <span>难度: {{analysis.question_difficulty_name}}</span>
-        <span>日期: {{analysis.created_at | dateFormat}}</span>
-        <p>来源: {{analysis.from_name}}</p>
-        <p>知识点: {{analysis.knowledge_name}}</p>
-      </div>
-      <article>
-        <h3>【题目】</h3>
-        <div>{{analysis.content}}</div>
-        <h3>【答案】</h3>
-        <div>{{answer}}</div>
-        <h3>【解析】</h3>
-        <div>{{analysis.anlysis}}</div>
-      </article>
-      <div
-        slot="footer"
-      >
-        <Button
-          type="primary"
-          @click="deactivateAnalysis"
-        >返回</Button>
-      </div>
-    </Modal>
+    <v-analysis
+      :visible.sync="analysisModal.active"
+      :data="analysis"
+    ></v-analysis>
   </section>
 </template>
 
@@ -90,9 +63,17 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
+import goBack from '@/mixins/goBack'
+import vAnalysis from './components/Analysis'
 
 export default {
   name: 'question-paper-detail',
+
+  mixins: [goBack],
+
+  components: {
+    vAnalysis,
+  },
 
   data: () => ({
     paper: null,
@@ -101,35 +82,15 @@ export default {
       active: false,
     },
 
-    analysis: null,
-  }),
+    analysis: {},
 
-  computed: {
-    answer() {
-      if (!this.analysisInfo) return null
-      if (this.analysisInfo.question_template === 1) {
-        const answer = this.analysisInfo.answers
-          .find(item => item.is_correct)
-        return answer.option
-      }
-      return this.analysisInfo.analysis
-    },
-  },
+    backRoute: '/question/paper',
+  }),
 
   methods: {
     activateAnalysis(data) {
       this.analysisModal.active = true
       this.analysis = data
-    },
-
-    deactivateAnalysis() {
-      this.analysisModal.active = false
-    },
-  },
-
-  filters: {
-    dateFormat(value) {
-      return value.slice(0, 10)
     },
   },
 
@@ -179,32 +140,11 @@ export default {
   }
 
   & > footer {
+    margin-top: 15px;
     text-align: center;
 
     & button {
       width: 100px;
-    }
-  }
-}
-
-.question-paper-detail__analysis {
-
-  &-header {
-    font-size: 14px;
-    margin-bottom: 10px;
-
-    & span {
-      margin-right: 10px;
-    }
-  }
-
-  & article {
-    background-color: @bg-color;
-    padding: @layout-padding;
-    max-height: 500px;
-
-    & > div {
-      margin-bottom: @layout-gutter;
     }
   }
 }
