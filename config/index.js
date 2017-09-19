@@ -34,6 +34,10 @@ module.exports = {
          target: 'https://oa-api.caihonggou.com',
          changeOrigin: true
       },
+      '/assets/1.0.0/lib/': {
+        target: 'https://oa.caihonggou.com',
+        changeOrigin: true
+     },
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

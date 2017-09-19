@@ -10,6 +10,7 @@ import AppDatePicker from './AppDatePicker'
 import AppTimePicker from './AppTimePicker'
 import AppMapCascader from './AppMapCascader'
 import AppEcharts from './AppEcharts'
+import AppEditor from './AppEditor'
 
 const rbdog = {
   AppEditorTitle,
@@ -24,6 +25,7 @@ const rbdog = {
   AppTimePicker,
   AppMapCascader,
   AppEcharts,
+  AppEditor,
 }
 
 const install = (Vue) => {
