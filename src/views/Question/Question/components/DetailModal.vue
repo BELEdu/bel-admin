@@ -2,7 +2,7 @@
   <div>
     <!-- 试题详情弹窗 -->
     <Modal
-      title="试题详情"
+      :title="`试题详情（${questionDetail.number}）`"
       width="800"
       :value="value"
       @input="value => $emit('input', value)"
@@ -14,7 +14,7 @@
         class="app-table"
         size="small"
         :columns="columns.info"
-        :data="data.info"
+        :data="[questionDetail]"
         border
       ></Table>
 
@@ -40,14 +40,14 @@
         class="app-table"
         size="small"
         :columns="columns.logs"
-        :data="data.logs"
+        :data="questionDetail.logs"
         border
       ></Table>
 
       <div slot="footer">
         <Button type="ghost" size="large" @click="closeModal()">返回</Button>
-        <Button type="primary" size="large">驳回</Button>
-        <Button type="primary" size="large">通过并发布</Button>
+        <Button type="primary" v-if="isWait" size="large">驳回</Button>
+        <Button type="primary" v-if="isWait" size="large">通过并发布</Button>
       </div>
     </Modal>
 
@@ -70,6 +70,10 @@ export default {
       required: true,
       default: false,
     },
+    questionDetail: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -82,17 +86,7 @@ export default {
           { title: '类型', key: 'paper_type_name', align: 'center' },
           { title: '难度', key: 'question_difficulty_name', align: 'center' },
           { title: '时间', key: 'year_name', align: 'center' },
-          {
-            title: '知识点',
-            key: 'knowledge_ids',
-            align: 'center',
-            width: 250,
-            render: (h, params) => {
-              const { knowledge_ids } = params.row
-              return h('ul', knowledge_ids.map(value => h('li', value)),
-              )
-            },
-          },
+          { title: '知识点', key: 'knowledge_str', align: 'center' },
         ],
         logs: [
           { title: '操作者', key: 'realname', align: 'center' },
@@ -102,35 +96,16 @@ export default {
         ],
       },
 
-      data: {
-        info: [
-          {
-            grade_range_subject_id: 1,
-            question_type_id: 2,
-            paper_type_name: '历年真题',
-            question_difficulty_name: '容易',
-            year_name: '2017',
-            knowledge_ids: [2, 3, 4],
-          },
-        ],
-        logs: [
-          {
-            realname: '李小平(模拟数据)',
-            question_log_type_name: '保存',
-            created_at: '2017-04-20 17:25',
-            remark: '备注111',
-          },
-          {
-            realname: '沈腾(模拟数据)',
-            question_log_type_name: '提交',
-            created_at: '2017-04-21 17:25',
-            remark: '备注222',
-          },
-        ],
-      },
-
-
     }
+  },
+
+  computed: {
+    dataInfo() {
+      return this.questionDetail
+    },
+    isWait() {
+      return this.questionDetail.question_status === 2
+    },
   },
 
   methods: {

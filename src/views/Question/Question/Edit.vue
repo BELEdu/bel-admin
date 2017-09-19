@@ -10,14 +10,22 @@
       >
         <Row>
           <Col span="12">
-            <Form-item label="学科">
-              <Select placeholder="请选择..." v-model="form.grade_range_subject_id" :disabled="isUpdate">
-                <Option v-for="item in grade_range_subject" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
+            <Form-item label="学科" required>
+              <Select
+                placeholder="请选择..."
+                v-model="grade_range_subject_id"
+                @on-change="changeSubject"
+              >
+                <Option
+                  v-for="item in subjects"
+                  :value="item.id"
+                  :key="item.id"
+                >{{ item.display_name }}</Option>
               </Select>
             </Form-item>
           </Col>
-          <Col span="12">
-            <Form-item label="试题来源">
+          <Col span="12" label="试题来源">
+            <Form-item>
               <Input placeholder="请输入" v-model="form.from_name"></Input>
             </Form-item>
           </Col>
@@ -25,11 +33,11 @@
 
         <Row>
           <Col span="12">
-            <Form-item label="题型">
+            <Form-item label="题型" prop="question_type_id">
               <button-radio
                 v-if="!isUpdate"
                 v-model="form.question_type_id"
-                :data="question_type"
+                :data="questionTypes"
                 size="small"
               ></button-radio>
               <!-- 如果是编辑状态，则只显示已选项 -->
@@ -37,7 +45,7 @@
             </Form-item>
           </Col>
           <Col span="12">
-            <Form-item label="难度">
+            <Form-item label="难度" required>
               <Slider
                 v-model="form.question_difficulty"
                 :tip-format="tipFormat"
@@ -53,19 +61,19 @@
 
         <Row>
           <Col span="12">
-            <Form-item label="类型">
+            <Form-item label="类型" prop="paper_type">
               <button-radio
                 v-model="form.paper_type"
-                :data="paper_type"
+                :data="paperTypes"
                 size="small"
               ></button-radio>
             </Form-item>
           </Col>
           <Col span="12">
-            <Form-item label="时间">
+            <Form-item label="时间" prop="year">
               <button-radio
                 v-model="form.year"
-                :data="year"
+                :data="years"
                 size="small"
               ></button-radio>
             </Form-item>
@@ -74,25 +82,30 @@
 
         <Row>
           <Col span="12">
-            <Form-item label="关联知识点">
-              <Input placeholder="请输入"></Input>
+            <Form-item label="关联知识点" prop="knowledge_ids">
+              <Select placeholder="请选择..." multiple v-model="form.knowledge_ids">
+                <Option v-for="item in test" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
+              </Select>
             </Form-item>
           </Col>
           <Col span="12">
             <Form-item label="收藏标签">
-              <Select placeholder="请选择..." v-model="form.grade_range_subject_id">
+              <Select placeholder="请选择..." multiple v-model="form.user_label_ids">
                 <Option v-for="item in user_label_list" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
               </Select>
             </Form-item>
           </Col>
         </Row>
 
-        <Form-item label="题目">
+        <Form-item label="题目" prop="content">
           <Input v-model="form.content" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入题目..."></Input>
         </Form-item>
 
         <!-- 选择题 -->
-        <Form-item label="选项及答案">
+        <Form-item
+          label="选项及答案"
+          v-if="questionTemplateFormat === 1"
+        >
           <ul class="question-edit__answer">
             <li v-for="(item,index) in form.answers" :key="index">
               <Row>
@@ -116,8 +129,16 @@
 
         </Form-item>
 
+        <!-- 判断题 -->
+        <Form-item label="答案" v-if="questionTemplateFormat === 2">
+          <RadioGroup v-model="form.answers[0].is_correct">
+            <Radio :label="1">对</Radio>
+            <Radio :label="0">错</Radio>
+          </RadioGroup>
+        </Form-item>
+
         <!-- 填空题 -->
-        <Form-item label="答案">
+        <Form-item label="答案" v-if="questionTemplateFormat === 3">
           <Row>
             <Col offset="2" span="22">
               <p class="question-edit__answer__tips">请在题目内容操作部分点击 <Icon type="plus-round" class="color-primary"/> 来插入填空</p>
@@ -133,16 +154,8 @@
           </ul>
         </Form-item>
 
-        <!-- 判断题 -->
-        <Form-item label="答案">
-          <RadioGroup v-model="form.answers[0].is_correct">
-            <Radio :label="1">对</Radio>
-            <Radio :label="0">错</Radio>
-          </RadioGroup>
-        </Form-item>
-
         <!-- 解答题 -->
-        <Form-item label="答案">
+        <Form-item label="答案" v-if="questionTemplateFormat === 4">
           <Input v-model="form.answers[0].content" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入题目..."></Input>
         </Form-item>
 
@@ -158,6 +171,7 @@
         </Form-item>
 
         <Form-item>
+          <Button @click="handleReset()">重置</Button>
           <Button @click="goBack()">取消</Button>
           <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
             存为草稿
@@ -178,10 +192,12 @@
  * @version 2017-09-14
  */
 
-// import Http from '@/utils/http'
+import { mapState } from 'vuex'
+import Http from '@/utils/http'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
 import ButtonRadio from '../components/ButtonRadio'
+// eslint-disable-next-line
 import edata from './edata'
 
 
@@ -204,45 +220,60 @@ export default {
   data() {
     return {
       form: {
-        from_name: '来自xxx', // 试题来源
-        question_status: 2, // 题型类型（如简答题计算题选择题）
-        grade_range_subject_id: 3, // 学科
-        question_type_id: 1, // 题型id
-        question_difficulty: 2, // 题目难度
-        paper_type: 1, // 试卷类型
-        year: 2017, // 时间
-        knowledge_ids: [2, 3], // 关联知识点
-        user_label_ids: [1, 2], // 收藏标签
-        content: '题目内容哦哦哦哦哦___, 222222___.', // 题目内容
-        analysis: '题目解析啊啊啊啊啊', // 题目解析
-        answers: [ // 答案
-          {
-            option: '',
-            content: '填空1',
-            is_correct: 1,
-          },
-          {
-            option: '',
-            content: '填空2',
-            is_correct: 0,
-          },
-          {
-            option: '',
-            content: '填空3',
-            is_correct: 0,
-          },
+        from_name: '', // 试题来源
+        question_status: null, //
+        question_type_id: null, // 题型id
+        question_difficulty: 1, // 题目难度
+        paper_type: null, // 试卷类型
+        year: null, // 时间
+        knowledge_ids: [], // 关联知识点
+        user_label_ids: [], // 收藏标签
+        content: '', // 题目内容
+        analysis: '', // 题目解析
+        answers: [{ ...defaultAnswer }], // 答案
+      },
+
+      grade_range_subject_id: null, // 年级学科id
+
+      rules: {
+        question_type_id: [
+          this.$rules.required('试题来源', 'number', 'change'),
+        ],
+        paper_type: [
+          this.$rules.required('类型', 'number', 'change'),
+        ],
+        year: [
+          this.$rules.required('时间', 'number', 'change'),
+        ],
+        knowledge_ids: [
+          this.$rules.required('关联知识点', 'array', 'change'),
+        ],
+        content: [
+          this.$rules.required('题目'),
         ],
       },
 
-      rules: {},
+      subjects: [], // 年级学科数据源
+      questionTypes: [], // 题型数据源
+      difficulty: [], // 难度数据源
+      paperTypes: [], // 考试类型数据源
+      years: [], // 时间数据源
+      knowledge_tree: [], // 知识点数据源
 
-      grade_range_subject: [],
-      question_type: [],
-      question_difficulty: [],
-      paper_type: [],
-      year: [],
-      knowledge_tree: [],
-      user_label_list: [],
+      test: [
+        {
+          id: 1,
+          display_name: '知识点1',
+        },
+        {
+          id: 2,
+          display_name: '知识点2',
+        },
+        {
+          id: 3,
+          display_name: '知识点3',
+        },
+      ],
 
       afterAdded: 'continue', // 添加后进行的操作 continue-继续 back-返回
 
@@ -250,16 +281,27 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      user_label_list: state => state.label.list, // 用户收藏标签数据源
+    }),
+    id() {
+      return this.$router.currentRoute.params.id
+    },
+    subject() {
+      return this.$router.currentRoute.params.subject
+    },
     isUpdate() { // 判断是编辑还是新增
       return !!this.$router.currentRoute.params.id
     },
-    questionTypeFormat() {
+    questionTypeFormat() { // 题型名称格式化
       const { question_type_id } = this.form
-      return this.question_type.find(item => item.value === question_type_id).display_name
+      return question_type_id != null ?
+        this.questionTypes.find(item => item.value === question_type_id).display_name : null
     },
-    questionStatusFormat() {
+    questionTemplateFormat() { // 题型模板
       const { question_type_id } = this.form
-      return this.question_type.find(item => item.value === question_type_id).question_template
+      return question_type_id != null ?
+        this.questionTypes.find(item => item.value === question_type_id).question_template : null
     },
   },
 
@@ -288,42 +330,83 @@ export default {
       return tip
     },
 
-    removeChoice() {
+    removeChoice() { // 移除选择题选项
       if (this.form.answers.length > 2) {
         this.form.answers.pop()
       }
     },
 
-    addChoice() {
+    addChoice() { // 添加选择题选项
       this.form.answers.push({ ...defaultAnswer })
+    },
+
+    handleReset() {
+      this.form.question_type_id = null
+      // this.form.paper_type = null
+    },
+
+    getQuestionData() { // 获取题目详情
+      return this.$http.get(`/question/${this.id}`)
+        .then((res) => {
+          this.form = res
+        })
+    },
+
+    changeSubject(subjectId) { // 切换科目
+      this.handleReset()
+      this.$http.get(`/question/store_before?grade_range_subject_id=${subjectId}`)
+        .then(({
+          grade_range_subject_id,
+          question_type,
+          question_difficulty,
+          paper_type,
+          year,
+          knowledge_tree,
+        }) => {
+          this.subjects = grade_range_subject_id
+          this.questionTypes = question_type
+          this.difficulty = question_difficulty
+          this.paperTypes = paper_type
+          this.years = year
+          this.knowledge_tree = knowledge_tree
+        })
+    },
+
+    submit() {
+
     },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    if (this.isUpdate) {
+      this.getQuestionData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
   },
 
   beforeRouteEnter(to, from, next) {
-    // Http.get('/question/store_before')
-    return Promise.resolve(edata)
+    const subjectId = +to.params.subject
+    Http.get(`/question/store_before?grade_range_subject_id=${subjectId}`)
+    // Http.get('/question/store_before?grade_range_subject_id=1')
+    // return Promise.resolve(edata)
       .then(({
-        grade_range_subject,
+        grade_range_subject_id,
         question_type,
         question_difficulty,
         paper_type,
         year,
         knowledge_tree,
-        user_label_list,
       }) => {
         next((vm) => {
           /* eslint-disable no-param-reassign */
-          vm.grade_range_subject = grade_range_subject
-          vm.question_type = question_type
-          vm.question_difficulty = question_difficulty
-          vm.paper_type = paper_type
-          vm.year = year
+          vm.subjects = grade_range_subject_id
+          vm.questionTypes = question_type
+          vm.difficulty = question_difficulty
+          vm.paperTypes = paper_type
+          vm.years = year
           vm.knowledge_tree = knowledge_tree
-          vm.user_label_list = user_label_list
+          vm.grade_range_subject_id = subjectId
           /* eslint-enalbe */
         })
       })
