@@ -47,8 +47,23 @@ export default {
 
       const CKEDITOR = window.CKEDITOR
 
-      CKEDITOR.config.height = this.height
-      CKEDITOR.config.width = this.width
+      // 自定义工具栏
+      CKEDITOR.config.toolbar = [
+        {
+          name: 'base',
+          items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'Image', 'SpecialChar', 'Table', 'Formula'],
+        },
+      ]
+      CKEDITOR.config.extraPlugins = 'formula'
+
+
+      // CKEDITOR.config.height = this.height
+      // CKEDITOR.config.width = this.width
+      // 上面两行代码是全局性设置，这里需要在初始化编辑器时单独把config传入，以便每个实例实现不同的尺寸
+      const config = {
+        width: `${this.width}px`,
+        height: `${this.height}px`,
+      }
 
       function isWysiwygareaAvailable() {
       // eslint-disable-next-line
@@ -62,10 +77,10 @@ export default {
       const editorElement = CKEDITOR.document.getById(this.id)
 
       if (wysiwygareaAvailable) {
-        this.editor = CKEDITOR.replace(this.id)
+        this.editor = CKEDITOR.replace(this.id, config)
       } else {
         editorElement.setAttribute('contenteditable', 'true')
-        this.editor = CKEDITOR.inline(this.id)
+        this.editor = CKEDITOR.inline(this.id, config)
       }
 
       // 设置编辑器的初始内容
