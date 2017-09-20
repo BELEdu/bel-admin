@@ -1,7 +1,5 @@
 <template>
-  <div :class="className">
-    <div :id="id"></div>
-  </div>
+  <div :id="id"></div>
 </template>
 
 <script>
@@ -11,10 +9,6 @@ import './mathml'
 export default {
   props: {
     value: {
-      type: String,
-      default: '',
-    },
-    className: {
       type: String,
       default: '',
     },
