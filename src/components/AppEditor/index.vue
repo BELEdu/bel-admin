@@ -3,6 +3,12 @@
 </template>
 
 <script>
+/**
+ * 公共编辑器组件
+ * 调用此组件时，请务必将用于v-model的字段同时用于设置v-if
+ * 如：<app-editor v-model="content" v-if="content"></app-editor>
+ */
+
 import 'ckeditor'
 import './mathml'
 
@@ -42,9 +48,6 @@ export default {
     },
 
     init() {
-      // 指定wiris编辑器的资源请求地址（图标、字体等等）
-      window.com.wiris.js.defaultBasePath = '/assets/1.0.0/lib/editor/editor/resources'
-
       const CKEDITOR = window.CKEDITOR
 
       // 自定义工具栏
@@ -92,6 +95,10 @@ export default {
 
       // 派发编辑器的实例本身，以应对更灵活的使用情况
       this.$emit('init', this.editor)
+
+      // FMATH在第一次转Canvas操作时特别慢（可能是其内部需要预先处理某些事务）
+      // 这里在实例化编辑器以后，先做了一次无用的转换来绕过这个问题，以便用户实际操作时能马上快速响应
+      window.mathmlToImage('<math><mn>2</mn></math>', () => {})
     },
   },
 
@@ -110,6 +117,10 @@ export default {
         this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
         this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
       ])
+        .then(() => {
+          // 指定wiris编辑器的资源请求地址（图标、字体等等）
+          window.com.wiris.js.defaultBasePath = '/assets/1.0.0/lib/editor/editor/resources'
+        })
         .then(this.init)
     }
   },
