@@ -24,7 +24,7 @@ export default {
 
   data() {
     return {
-      id: `editor-${Date.now().toString(32)}`,
+      id: `editor-${Math.random().toString(32).slice(2)}`,
       editor: null,
     }
   },
