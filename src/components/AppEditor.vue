@@ -9,6 +9,10 @@ import 'ckeditor'
 
 export default {
   props: {
+    value: {
+      type: String,
+      default: '',
+    },
     className: {
       type: String,
       default: '',
@@ -69,10 +73,14 @@ export default {
         this.editor = CKEDITOR.inline(this.id)
       }
 
+      // 设置编辑器的初始内容
+      this.editor.setData(this.value)
+      // 监听编辑器的内容变化，并派发input事件使得调用此组件的地方可以直接使用v-model绑定值
       this.editor.on('change', (event) => {
-        this.$emit('change', event.editor.getData())
+        this.$emit('input', event.editor.getData())
       })
 
+      // 派发编辑器的实例本身，以应对更灵活的使用情况
       this.$emit('init', this.editor)
     },
   },
