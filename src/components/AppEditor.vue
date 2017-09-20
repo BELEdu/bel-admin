@@ -1,6 +1,6 @@
 <template>
   <div :class="className">
-    <div id="editor"></div>
+    <div :id="id"></div>
   </div>
 </template>
 
@@ -21,6 +21,12 @@ export default {
       type: Number,
       default: 250,
     },
+  },
+
+  data() {
+    return {
+      id: `editor-${Date.now().toString(32)}`,
+    }
   },
 
   methods: {
@@ -53,22 +59,13 @@ export default {
       }
 
       const wysiwygareaAvailable = isWysiwygareaAvailable()
-      const isBBCodeBuiltIn = !!CKEDITOR.plugins.get('bbcode')
-
-
-      const editorElement = CKEDITOR.document.getById('editor')
-      if (isBBCodeBuiltIn) {
-        editorElement.setHtml(
-          'Hello world!\n\n' +
-        'I\'m an instance of [url=http://ckeditor.com]CKEditor[/url].',
-        )
-      }
+      const editorElement = CKEDITOR.document.getById(this.id)
 
       if (wysiwygareaAvailable) {
-        CKEDITOR.replace('editor')
+        CKEDITOR.replace(this.id)
       } else {
         editorElement.setAttribute('contenteditable', 'true')
-        CKEDITOR.inline('editor')
+        CKEDITOR.inline(this.id)
       }
     },
   },
