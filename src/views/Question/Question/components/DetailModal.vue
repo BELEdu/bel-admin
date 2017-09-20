@@ -46,9 +46,36 @@
 
       <div slot="footer">
         <Button type="ghost" size="large" @click="closeModal()">返回</Button>
-        <Button type="primary" v-if="isWait" size="large">驳回</Button>
-        <Button type="primary" v-if="isWait" size="large">通过并发布</Button>
+        <Button type="primary" v-if="isWait" size="large" @click="modal = true" :loading="loading">驳回</Button>
+        <Button type="primary" v-if="isWait" size="large" @click="submit(4)" :loading="loading">通过并发布</Button>
       </div>
+    </Modal>
+
+    <!-- 驳回弹窗 -->
+    <Modal
+      v-model="modal"
+      width="360"
+      :maskClosable="true"
+      :loading="loading"
+      @on-ok="submit(3)"
+      @on-cancel="closeRejectModal"
+    >
+      <p slot="header" class="text-center color-warning">
+          <Icon type="information-circled"></Icon>
+          <span>驳回确认</span>
+      </p>
+
+      <Form :model="form" ref="from" :label-width="40">
+        <FormItem>
+          <CheckboxGroup v-model="rejectArray">
+            <Checkbox v-for="item in rejectTexts" :key="item" :label="item"></Checkbox>
+          </CheckboxGroup>
+        </FormItem>
+        <FormItem label="备注">
+          <Input v-model="form.remark"></Input>
+        </FormItem>
+      </Form>
+
     </Modal>
 
   </div>
@@ -78,6 +105,18 @@ export default {
 
   data() {
     return {
+      form: {
+        question_status: null,
+        remark: '',
+      },
+
+      rejectArray: [],
+
+      rejectTexts: ['属性有误', '题目有误', '答案有误', '解析有误', '试题有误'],
+
+      modal: false,
+
+      loading: false,
 
       columns: {
         info: [
@@ -111,6 +150,29 @@ export default {
   methods: {
     closeModal() { // 关闭该模态框
       this.$emit('closeDetailModal')
+    },
+
+    closeRejectModal() {
+      this.form.remark = ''
+      this.modal = false
+      this.loading = false
+    },
+
+    submit(status) {
+      this.form.status = status
+      this.loading = true
+      this.$http.patch(`question/check_status/${this.questionDetail.id}`, {
+        ...this.form,
+      })
+        .then(() => {
+          this.$Message.success('提交成功')
+          this.closeRejectModal()
+          this.$emit('fetchData')
+        })
+        .catch(({ message }) => {
+          this.loading = false
+          this.$Message.error(message)
+        })
     },
   },
 }
