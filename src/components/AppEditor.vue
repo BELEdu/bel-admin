@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       id: `editor-${Date.now().toString(32)}`,
+      editor: null,
     }
   },
 
@@ -62,11 +63,17 @@ export default {
       const editorElement = CKEDITOR.document.getById(this.id)
 
       if (wysiwygareaAvailable) {
-        CKEDITOR.replace(this.id)
+        this.editor = CKEDITOR.replace(this.id)
       } else {
         editorElement.setAttribute('contenteditable', 'true')
-        CKEDITOR.inline(this.id)
+        this.editor = CKEDITOR.inline(this.id)
       }
+
+      this.editor.on('change', (event) => {
+        this.$emit('change', event.editor.getData())
+      })
+
+      this.$emit('init', this.editor)
     },
   },
 
