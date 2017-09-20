@@ -73,15 +73,24 @@ export default {
     },
   },
 
+  /**
+   * 初始化编辑器
+   * 初始化时所需的依赖，在这里通过动态插入script标签来载入，以避免一进入应用就要请求编辑器相关的大量资源
+   * 依赖仅需载入一次，载入依赖前，需先判断是否已载入过，如果已载入直接执行初始化代码
+   * `window.com`是wiris编辑器挂载的一个全局变量，这里通过这个变量来判断是否已载入过依赖
+   */
   mounted() {
-    // 动态插入script标签，避免一进入应用就要请求编辑器相关的大量资源
-    Promise.all([
-      this.loadScript('/assets/1.0.0/lib/editor/editor.js'),
-      this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
-      this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
-      this.loadScript('/assets/1.0.0/lib/fmath/mathml.js'),
-    ])
-      .then(this.init)
+    if (window.com) {
+      this.init()
+    } else {
+      Promise.all([
+        this.loadScript('/assets/1.0.0/lib/editor/editor.js'),
+        this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
+        this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
+        this.loadScript('/assets/1.0.0/lib/fmath/mathml.js'),
+      ])
+        .then(this.init)
+    }
   },
 }
 </script>
