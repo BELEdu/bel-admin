@@ -13,7 +13,7 @@
             <Form-item label="学科" required>
               <Select
                 placeholder="请选择..."
-                v-model="grade_range_subject_id"
+                v-model="form.grade_range_subject_id"
                 @on-change="changeSubject"
               >
                 <Option
@@ -24,8 +24,8 @@
               </Select>
             </Form-item>
           </Col>
-          <Col span="12" label="试题来源">
-            <Form-item>
+          <Col span="12">
+            <Form-item label="试题来源">
               <Input placeholder="请输入" v-model="form.from_name"></Input>
             </Form-item>
           </Col>
@@ -39,6 +39,7 @@
                 v-model="form.question_type_id"
                 :data="questionTypes"
                 size="small"
+                @change="changeQuestionType"
               ></button-radio>
               <!-- 如果是编辑状态，则只显示已选项 -->
               <Button v-if="isUpdate" size="small" type="primary">{{questionTypeFormat}}</Button>
@@ -98,69 +99,89 @@
         </Row>
 
         <Form-item label="题目" prop="content">
-          <Input v-model="form.content" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入题目..."></Input>
+          <app-editor v-if="form.content" v-model="form.content"></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
-        <Form-item
-          label="选项及答案"
-          v-if="questionTemplateFormat === 1"
-        >
-          <ul class="question-edit__answer">
-            <li v-for="(item,index) in form.answers" :key="index">
-              <Row>
-                <Col span="2"><Radio :true-value="1" :false-value="0" v-model="item.is_correct">A</Radio></Col>
-                <Col span="22"><Input v-model="item.content"  type="textarea" placeholder="请输入..."></Input></Col>
-              </Row>
-            </li>
-          </ul>
+        <div class="question-edit__answer" v-if="questionTemplateFormat === 1">
+          <Form-item label="选项及答案" class="question-edit__answer__choice" required  prop="answers">
+            <p class="question-edit__answer__tips">请选中
+              <span class="color-primary">正确答案</span>
+            </p>
+          </Form-item>
+          <Form-item
+            v-for="(item,index) in form.answers"
+            :key="index"
+            :prop="`answers.${index}.content`"
+            :rules="[$rules.required('选项内容')]"
+          >
+            <Row>
+              <Col span="2">
+                <Checkbox
+                  :true-value="1"
+                  :false-value="0"
+                  v-model="item.is_correct"
+                >{{String.fromCharCode(index+65)}}</Checkbox>
+              </Col>
+              <Col span="22">
+                <app-editor
+                  :height="80"
+                  v-if="item.content"
+                  v-model="item.content"
+                ></app-editor>
+              </Col>
+            </Row>
+          </Form-item>
+          <Form-item>
+            <div class="text-center question-edit__answer__btn">
+              <Button type="dashed" icon="minus-round" @click="removeChoice">减少选项</Button>
+              <Button type="dashed" icon="plus-round" @click="addChoice">增加选项</Button>
+            </div>
+          </Form-item>
+        </div>
 
-          <Row>
-            <Col offset="2" span="22">
-              <p class="question-edit__answer__tips">请选中正确答案</p>
-            </Col>
-          </Row>
-
-          <!-- 操作按钮 -->
-          <div class="text-center question-edit__answer__btn">
-            <Button type="dashed" icon="minus-round" @click="removeChoice">减少选项</Button>
-            <Button type="dashed" icon="plus-round" @click="addChoice">增加选项</Button>
-          </div>
-
-        </Form-item>
 
         <!-- 判断题 -->
-        <Form-item label="答案" v-if="questionTemplateFormat === 2">
+        <Form-item
+          label="答案"
+          v-if="questionTemplateFormat === 2"
+          required
+        >
           <RadioGroup v-model="form.answers[0].is_correct">
             <Radio :label="1">对</Radio>
             <Radio :label="0">错</Radio>
           </RadioGroup>
         </Form-item>
 
+
         <!-- 填空题 -->
-        <Form-item label="答案" v-if="questionTemplateFormat === 3">
-          <Row>
-            <Col offset="2" span="22">
-              <p class="question-edit__answer__tips">请在题目内容操作部分点击 <Icon type="plus-round" class="color-primary"/> 来插入填空</p>
-            </Col>
-          </Row>
-          <ul class="question-edit__answer">
-            <li v-for="(item,index) in form.answers" :key="index">
-              <Row>
-                <Col span="2">{{`填空题 ${index+1}`}}</Col>
-                <Col span="22"><Input v-model="item.content" type="textarea" placeholder="请输入..."></Input></Col>
-              </Row>
-            </li>
-          </ul>
-        </Form-item>
+        <div class="question-edit__answer"  v-if="questionTemplateFormat === 3">
+          <Form-item label="答案" required>
+             <p class="question-edit__answer__tips">请在题目内容操作部分点击 <Icon type="plus-round" class="color-primary"/> 来插入填空</p>
+          </Form-item>
+          <Form-item
+            v-for="(item,index) in form.answers"
+            :key="index"
+          >
+            <Row>
+              <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
+              <Col span="22"><app-editor v-if="item.content" v-model="item.content"></app-editor></Col>
+            </Row>
+          </Form-item>
+        </div>
 
         <!-- 解答题 -->
-        <Form-item label="答案" v-if="questionTemplateFormat === 4">
-          <Input v-model="form.answers[0].content" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入题目..."></Input>
+        <Form-item
+          label="答案"
+          v-if="questionTemplateFormat === 4"
+          prop="answers.0.content"
+          :rules="[$rules.required('答案')]"
+        >
+          <app-editor v-if="form.answers[0].content" v-model="form.answers[0].content" ></app-editor>
         </Form-item>
 
         <Form-item label="解析">
-          <Input v-model="form.analysis" type="textarea" :autosize="{minRows: 4,maxRows: 8}" placeholder="请输入题目..."></Input>
+          <app-editor v-if="form.analysis" v-model="form.analysis" ></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -171,12 +192,11 @@
         </Form-item>
 
         <Form-item>
-          <Button @click="handleReset()">重置</Button>
           <Button @click="goBack()">取消</Button>
-          <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
+          <Button type="primary" @click="choseStatus(1)" :loading="formLoading">
             存为草稿
           </Button>
-          <Button type="primary" @click="beforeSubmit()" :loading="formLoading">
+          <Button type="primary" @click="choseStatus(2)" :loading="formLoading">
             提交审核
           </Button>
         </Form-item>
@@ -197,8 +217,6 @@ import Http from '@/utils/http'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
 import ButtonRadio from '../components/ButtonRadio'
-// eslint-disable-next-line
-import edata from './edata'
 
 
 // eslint-disable-next-line
@@ -220,6 +238,7 @@ export default {
   data() {
     return {
       form: {
+        grade_range_subject_id: null, // 年级学科id
         from_name: '', // 试题来源
         question_status: null, //
         question_type_id: null, // 题型id
@@ -233,11 +252,9 @@ export default {
         answers: [{ ...defaultAnswer }], // 答案
       },
 
-      grade_range_subject_id: null, // 年级学科id
-
       rules: {
         question_type_id: [
-          this.$rules.required('试题来源', 'number', 'change'),
+          this.$rules.required('题型', 'number', 'change'),
         ],
         paper_type: [
           this.$rules.required('类型', 'number', 'change'),
@@ -250,6 +267,9 @@ export default {
         ],
         content: [
           this.$rules.required('题目'),
+        ],
+        answers: [
+          { validator: this.isSelected, trigger: 'change' },
         ],
       },
 
@@ -275,7 +295,7 @@ export default {
         },
       ],
 
-      afterAdded: 'continue', // 添加后进行的操作 continue-继续 back-返回
+      afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
 
     }
   },
@@ -284,11 +304,8 @@ export default {
     ...mapState({
       user_label_list: state => state.label.list, // 用户收藏标签数据源
     }),
-    id() {
+    id() { // 获取用户id
       return this.$router.currentRoute.params.id
-    },
-    subject() {
-      return this.$router.currentRoute.params.subject
     },
     isUpdate() { // 判断是编辑还是新增
       return !!this.$router.currentRoute.params.id
@@ -330,6 +347,17 @@ export default {
       return tip
     },
 
+    isSelected(rule, value, callback) { // 验证如果是选择题的话必须选一个选项
+      if (this.questionTemplateFormat === 1) {
+        if (value.some(item => item.is_correct === 1)) {
+          callback()
+        }
+
+        callback(new Error('请至少选择一个选项'))
+      }
+      callback()
+    },
+
     removeChoice() { // 移除选择题选项
       if (this.form.answers.length > 2) {
         this.form.answers.pop()
@@ -337,12 +365,14 @@ export default {
     },
 
     addChoice() { // 添加选择题选项
-      this.form.answers.push({ ...defaultAnswer })
+      if (this.form.answers.length < 26) {
+        this.form.answers.push({ ...defaultAnswer })
+      }
     },
 
     handleReset() {
       this.form.question_type_id = null
-      // this.form.paper_type = null
+      this.form.paper_type = null
     },
 
     getQuestionData() { // 获取题目详情
@@ -372,8 +402,44 @@ export default {
         })
     },
 
-    submit() {
+    changeQuestionType() { // 切换题型重置答案
+      if (this.questionTemplateFormat === 1) {
+        this.form.answers = [
+          { ...defaultAnswer },
+          { ...defaultAnswer },
+          { ...defaultAnswer },
+          { ...defaultAnswer },
+        ]
+      } else if (this.questionTemplateFormat === 3) {
+        this.form.answers = [{ ...defaultAnswer }]
+      } else {
+        this.form.answers = [{ ...defaultAnswer }]
+      }
+    },
 
+    choseStatus(status) { // 存为草稿||提交审核
+      this.form.question_status = +status
+      this.beforeSubmit()
+    },
+
+    submit() { // 提交表单
+      const data = this.form
+      ;(
+        this.isUpdate ?
+          this.$http.patch(`/question/${this.id}`, data) :
+          this.$http.post('/question', data)
+      )
+        .then(this.successHandler)
+        .catch(this.errorHandler)
+    },
+
+    successHandler() {
+      this.formLoading = false
+      if (this.afterAdded === 'back') {
+        this.goBack(true)
+      } else {
+        location.reload()
+      }
     },
   },
 
@@ -388,8 +454,6 @@ export default {
   beforeRouteEnter(to, from, next) {
     const subjectId = +to.params.subject
     Http.get(`/question/store_before?grade_range_subject_id=${subjectId}`)
-    // Http.get('/question/store_before?grade_range_subject_id=1')
-    // return Promise.resolve(edata)
       .then(({
         grade_range_subject_id,
         question_type,
@@ -406,7 +470,7 @@ export default {
           vm.paperTypes = paper_type
           vm.years = year
           vm.knowledge_tree = knowledge_tree
-          vm.grade_range_subject_id = subjectId
+          vm.form.grade_range_subject_id = subjectId
           /* eslint-enalbe */
         })
       })
@@ -416,14 +480,26 @@ export default {
 
 <style lang="less">
 @import '~vars';
+
 .question-edit {
 
-  &__answer{
-    & li:not(:last-child) {
-      margin-bottom: 15px;
+  &__answer {
+
+    .ivu-checkbox-inner {
+      margin-right: 15px;
     }
 
-    &__btn{
+    .ivu-form-item-error-tip {
+      left: 70px;
+    }
+
+    &__choice {
+      .ivu-form-item-error-tip {
+        left: 0;
+      }
+    }
+
+    &__btn {
       .ivu-btn {
         margin-right: 20px;
         color: @primary-color;
@@ -431,11 +507,12 @@ export default {
       }
     }
 
-    &__tips{
+    &__tips {
       padding: 10px 0;
       line-height: 1;
       font-size: 14px;
     }
   }
 }
+
 </style>
