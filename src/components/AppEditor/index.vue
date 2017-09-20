@@ -5,8 +5,8 @@
 <script>
 /**
  * 公共编辑器组件
- * 调用此组件时，请务必将用于v-model的字段同时用于设置v-if
- * 如：<app-editor v-model="content" v-if="content"></app-editor>
+ * 调用此组件时，请务必将用于v-model的字段同时用于设置v-if，如：<app-editor v-model="content" v-if="content"></app-editor>
+ * 出于某些原因，ckeditor的资源加载路径设置在Main组件中（不想定义在index.html中，但又必须定义在`import 'ckeditor'`之前）
  */
 
 import 'ckeditor'
