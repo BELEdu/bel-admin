@@ -6,6 +6,7 @@
 
 <script>
 import 'ckeditor'
+import './mathml'
 
 export default {
   props: {
@@ -99,7 +100,6 @@ export default {
         this.loadScript('/assets/1.0.0/lib/editor/editor.js'),
         this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
         this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
-        this.loadScript('/assets/1.0.0/lib/fmath/mathml.js'),
       ])
         .then(this.init)
     }
