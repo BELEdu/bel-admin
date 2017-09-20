@@ -88,6 +88,7 @@
       v-model="modal.detail"
       :question-detail="questionDetail"
       @closeDetailModal="modal.detail = false"
+      @fetchData="fetchData"
     ></detail-modal>
 
      <!-- 删除模态框 -->
@@ -136,7 +137,6 @@ import { list } from '@/mixins'
 // import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import DetailModal from './components/DetailModal'
-// import cdata from './cdata'
 
 export default {
   name: 'question-question',
@@ -152,7 +152,7 @@ export default {
       likeKeys: [], // 关键字搜索取before接口
       likeKey: 'user_realname',
       query: {
-        'equal[grade_range_subject_id]': 1,
+        'equal[grade_range_subject_id]': null,
         'equal[question_status]': null,
       },
 
@@ -163,7 +163,23 @@ export default {
 
       columns: [
         { title: '题目编号', key: 'number', align: 'center' },
-        { title: '题目内容', key: 'content', align: 'center', width: 400 },
+        {
+          title: '题目内容',
+          key: 'content',
+          align: 'left',
+          width: 400,
+          render: (h, params) => {
+            const { content } = params.row
+            return h('div',
+              {
+                class: 'question-question__content',
+                domProps: {
+                  innerHTML: content,
+                },
+              },
+            )
+          },
+        },
         { title: '题型', key: 'question_type_name', align: 'center' },
         { title: '创建人', key: 'user_realname', align: 'center' },
         { title: '创建时间', key: 'created_at', align: 'center' },
@@ -190,7 +206,7 @@ export default {
               text: '查看',
               type: 'primary',
               isShow: ({ row }) =>
-                row.question_status === 1 || row.question_status === 3 || row.question_status === 4,
+                row.question_status !== 2,
               click: row => this.openDetailModal(row.id),
             },
             {
@@ -247,6 +263,12 @@ export default {
           this.list.data = this.list.data
             .filter(item => item.id !== this.questionId)
           this.$Message.warning('删除成功')
+          this.loading.delete = false
+          this.modal.delete = false
+        })
+        .catch(({ message }) => {
+          this.modal.delete = false
+          this.$Message.error(message)
         })
     },
 
@@ -256,11 +278,20 @@ export default {
       this.modal.outline = true
     },
 
-    outline() { // 下线操作、
+    outline() { // 下线操作
       this.loading.outline = true
-      // 这里写下线逻辑
+      this.$http.patch(`/question/set_offline/${this.questionId}`)
+        .then(() => {
+          this.$Message.warning('下线')
+          this.loading.outline = false
+          this.modal.outline = false
+          this.fetchData()
+        })
+        .catch(({ message }) => {
+          this.modal.outline = false
+          this.$Message.error(message)
+        })
     },
-
 
     getData(query, to) { // 获取列表数据
       const urlArr = to.fullPath.split('/').slice(2)
@@ -280,12 +311,16 @@ export default {
         grade_range_subject_id,
         question_status,
         search_fields,
+        current_grade_range_subject_id,
       }) => {
         next((vm) => {
           /* eslint-disable no-param-reassign */
           vm.grade_range_subject_id = grade_range_subject_id
           vm.question_status = question_status
           vm.likeKeys = search_fields
+          if (!vm.query['equal[grade_range_subject_id]']) {
+            vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
+          }
           /* eslint-enalbe */
         })
       })
@@ -295,4 +330,10 @@ export default {
 
 <style lang="less">
 @import '~vars';
+.question-question {
+  &__content {
+    max-height: 36px;
+    overflow: hidden;
+  }
+}
 </style>
