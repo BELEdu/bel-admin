@@ -15,11 +15,11 @@
     </header>
     <article>
       <h3>【题目】</h3>
-      <div>{{data.content}}</div>
+      <div v-html="data.content"></div>
       <h3>【答案】</h3>
-      <div>{{answer}}</div>
+      <div v-html="answer"></div>
       <h3>【解析】</h3>
-      <div>{{data.anlysis}}</div>
+      <div v-html="data.analysis"></div>
     </article>
     <div
       slot="footer"
