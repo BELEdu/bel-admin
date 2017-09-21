@@ -10,7 +10,7 @@
           style="width: 150px;"
         >
           <Option
-            v-for="item in subjects"
+            v-for="item in subjects.data"
             :value="item.id"
             :key="item.id"
           >
@@ -182,6 +182,7 @@
       <v-structure-tree
         keyword="知识点"
         :data="this.structureModal.data"
+        :default-subject="this.subjects.default"
         @create="createNode"
         @delete="deleteNode"
         @sort="sortNode"
@@ -223,11 +224,14 @@ export default {
       likeKey: 'knowledge_name',
 
       query: {
-        'equal[grade_range_subject_id]': 5,
+        'equal[grade_range_subject_id]': 0,
         'equal[knowledge_importance]': '',
       },
 
-      subjects: [],
+      subjects: {
+        default: 0,
+        data: [],
+      },
 
       importances: [],
 
@@ -369,7 +373,7 @@ export default {
       const host = '/knowledge/tree'
       const id = this.$route.query['equal[grade_range_subject_id]']
         ? this.$route.query['equal[grade_range_subject_id]']
-        : 5
+        : this.subjects.default
       this.$http.get(`${host}/${id}`)
         .then((res) => {
           this.structureModal.data = res
@@ -401,7 +405,7 @@ export default {
     toBatchEdit() {
       const id = this.$route.query['equal[grade_range_subject_id]']
         ? this.$route.query['equal[grade_range_subject_id]']
-        : 5
+        : this.subjects.default
       this.$router.push(`/question/knowledge/edition/${id}`)
     },
   },
@@ -409,13 +413,18 @@ export default {
   beforeRouteEnter(to, from, next) {
     Http.get('/knowledge/index_before')
       .then(({
+        current_grade_range_subject_id,
+        grade_range_subject_id,
         search_fields,
         knowledge_importance,
-        grade_range_subject_id,
       }) => {
         next((vm) => {
           /* eslint-disable no-param-reassign */
-          vm.subjects = grade_range_subject_id
+          vm.subjects = {
+            default: current_grade_range_subject_id,
+            data: grade_range_subject_id,
+          }
+          vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
           vm.likeKeys = search_fields
           vm.importances = knowledge_importance
           /* eslint-enalbe */
