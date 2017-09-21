@@ -162,7 +162,11 @@ export default {
       list: {}, // 列表数据
 
       columns: [
-        { title: '题目编号', key: 'number', align: 'center' },
+        {
+          title: '题目编号',
+          key: 'number',
+          align: 'center',
+        },
         {
           title: '题目内容',
           key: 'content',
@@ -180,10 +184,25 @@ export default {
             )
           },
         },
-        { title: '题型', key: 'question_type_name', align: 'center' },
-        { title: '创建人', key: 'user_realname', align: 'center' },
-        { title: '创建时间', key: 'created_at', align: 'center' },
-        { title: '状态', key: 'question_status_name', align: 'center' },
+        {
+          title: '题型',
+          key: 'question_type_name',
+          align: 'center',
+        },
+        {
+          title: '创建人',
+          key: 'user_realname',
+          align: 'center',
+        },
+        {
+          title: '创建时间',
+          key: 'created_at',
+          align: 'center' },
+        {
+          title: '状态',
+          key: 'question_status_name',
+          align: 'center',
+        },
         {
           title: '操作',
           key: 10,
