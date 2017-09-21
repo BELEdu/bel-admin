@@ -8,6 +8,7 @@
         :rules="rules"
         ref="form"
       >
+        <app-form-alert :errors="formErrors"></app-form-alert>
         <Row>
           <Col span="12">
             <Form-item label="学科" required>
@@ -15,6 +16,7 @@
                 placeholder="请选择..."
                 v-model="form.grade_range_subject_id"
                 @on-change="changeSubject"
+                :disabled="isUpdate"
               >
                 <Option
                   v-for="item in subjects"
