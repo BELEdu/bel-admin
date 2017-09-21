@@ -101,7 +101,7 @@
         </Row>
 
         <Form-item label="题目" prop="content">
-          <app-editor v-if="form.content" v-model="form.content"></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.content"></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
@@ -128,7 +128,7 @@
               <Col span="22">
                 <app-editor
                   :height="80"
-                  v-if="item.content"
+                  v-if="!isLoading"
                   v-model="item.content"
                 ></app-editor>
               </Col>
@@ -167,7 +167,7 @@
           >
             <Row>
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
-              <Col span="22"><app-editor v-if="item.content" v-model="item.content"></app-editor></Col>
+              <Col span="22"><app-editor v-if="!isLoading" v-model="item.content"></app-editor></Col>
             </Row>
           </Form-item>
         </div>
@@ -179,11 +179,11 @@
           prop="answers.0.content"
           :rules="[$rules.required('答案')]"
         >
-          <app-editor v-if="form.answers[0].content" v-model="form.answers[0].content" ></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.answers[0].content" ></app-editor>
         </Form-item>
 
         <Form-item label="解析">
-          <app-editor v-if="form.analysis" v-model="form.analysis" ></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.analysis" ></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -305,6 +305,7 @@ export default {
   computed: {
     ...mapState({
       user_label_list: state => state.label.list, // 用户收藏标签数据源
+      isLoading: state => state.loading,
     }),
     id() { // 获取用户id
       return this.$router.currentRoute.params.id
