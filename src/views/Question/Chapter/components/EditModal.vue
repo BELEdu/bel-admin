@@ -15,8 +15,11 @@
       <!-- 表单 -->
       <Form ref="form" :model="form">
 
+        <!-- 提交报错 -->
+        <app-form-alert :errors="formErrors"></app-form-alert>
+
         <!-- 标题 -->
-        <h3 class="chapter-edit__title">章节：1.3 函数的基本性质</h3>
+        <h3 class="chapter-edit__title">章节：{{form.display_name}}</h3>
 
         <!-- 表格 -->
         <div class="app-table point-table ivu-table-wrapper">
@@ -74,19 +77,21 @@
               <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
                 <tbody class="ivu-table-tbody">
                   <tr class="ivu-table-row"
-                    v-for="(item,index) in form.knowledge" :key="index"
+                    v-for="(item,index) in form.data" :key="index"
                   >
                     <td class="ivu-table-column-left" width="220">
                       <div class="ivu-table-cell">
                         <FormItem
-                          :prop="`knowledge.${index}.id`"
-                          :rules="{required: true, trigger: 'blur'}"
+                          :prop="`data.${index}.id`"
+                          :rules="$rules.required('知识点', 'number', 'change')"
                         >
                           <Row>
-                            <Col span="21">
-                              <Input v-model="item.id" size="small"></Input>
+                            <Col span="20">
+                              <Select v-model="item.id">
+                                <Option v-for="konwledge in tree" :value="konwledge" :key="konwledge">{{ konwledge }}</Option>
+                              </Select>
                             </Col>
-                            <Col span="3">
+                            <Col span="4">
                               <Button type="text" icon="close" size="small" @click="removeKnowledge(index)"></Button>
                             </Col>
                           </Row>
@@ -95,42 +100,42 @@
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.duration`">
+                        <FormItem :prop="`data.${index}.duration`">
                           <InputNumber :min="0" v-model="item.duration" size="small"></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.frequency`">
+                        <FormItem :prop="`data.${index}.frequency`">
                           <InputNumber :min="0" v-model="item.frequency" size="small"></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.score`">
+                        <FormItem :prop="`data.${index}.score`">
                           <InputNumber :min="0" v-model="item.score" size="small"></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.art_duration`">
+                        <FormItem :prop="`data.${index}.art_duration`">
                           <InputNumber :min="0" v-model="item.art_duration" size="small"></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.art_frequency`">
+                        <FormItem :prop="`data.${index}.art_frequency`">
                           <InputNumber :min="0" v-model="item.art_frequency" size="small"></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`knowledge.${index}.art_score`">
+                        <FormItem :prop="`data.${index}.art_score`">
                           <InputNumber :min="0" v-model="item.art_score" size="small"></InputNumber>
                         </FormItem>
                       </div>
@@ -149,7 +154,7 @@
               </table>
             </div>
             <!-- 缺省信息 -->
-            <div class="ivu-table-tip" v-if="form.knowledge.length === 0">
+            <!-- <div class="ivu-table-tip" v-if="form.data.length === 0">
               <table cellspacing="0" cellpadding="0" border="0">
                 <tbody>
                   <tr>
@@ -159,7 +164,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </div> -->
           </div>
         </div>
 
@@ -169,9 +174,9 @@
         </div>
 
         <!-- 解析 -->
-        <FormItem label="解析：">
+        <!-- <FormItem label="解析：">
           <Input type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入章节解析..."></Input>
-        </FormItem>
+        </FormItem> -->
 
       </Form>
       <!-- 表单END -->
@@ -189,7 +194,7 @@
  */
 
 import { form } from '@/mixins'
-import edata from './edata'
+// import edata from './edata'
 
 const defaultKnowledge = {
   id: null,
@@ -213,6 +218,10 @@ export default {
       required: true,
       default: false,
     },
+    form: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -222,27 +231,40 @@ export default {
         delete: false,
       },
 
-      form: edata,
-
-      hasDepartment: true, // 是否分科
+      tree: [34, 35, 36, 37, 43, 44, 45],
     }
+  },
+
+  computed: {
+    hasDepartment() {
+      return this.form.grade_range_subject_id === 5
+    },
   },
 
   methods: {
     closeModal() { // 关闭该模态框
+      this.formErrors = {}
       this.$emit('closeEditModal')
     },
 
-    submit() {
-
-    },
-
     addKnowledge() {
-      this.form.knowledge.push({ ...defaultKnowledge })
+      this.form.data.push({ ...defaultKnowledge })
     },
 
     removeKnowledge(index) {
-      this.form.knowledge.splice(index, 1)
+      this.form.data.splice(index, 1)
+    },
+
+    submit() {
+      this.$http.patch(`/chapter/${this.form.id}`, this.form)
+        .then(this.successHandler)
+        .catch(this.errorHandler)
+    },
+
+    successHandler() {
+      this.formLoading = false
+      this.closeModal()
+      this.$emit('fetchData')
     },
   },
 }
@@ -266,6 +288,13 @@ export default {
     }
   }
 
+
+  .ivu-table-body,
+  .ivu-table,
+  .app-table td .ivu-table-cell {
+    overflow: visible;
+  }
+
   .app-table td .ivu-table-cell {
     padding: 5px 8px;
   }
@@ -276,6 +305,10 @@ export default {
 
   .ivu-input-number {
     width: 100%;
+  }
+
+  .ivu-form-item-error-tip {
+    position: relative;
   }
 }
 </style>
