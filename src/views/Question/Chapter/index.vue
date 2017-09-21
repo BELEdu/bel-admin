@@ -11,8 +11,8 @@
         >
           <Option
             v-for="item in grade_range_subject_id"
-            :value="item.value"
-            :key="item.value"
+            :value="item.id"
+            :key="item.id"
           >
             {{item.display_name}}
           </Option>
@@ -44,10 +44,10 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
@@ -63,7 +63,7 @@
         <h2>章节列表</h2>
       </Col>
       <Col>
-        <Button type="primary">编辑章节</Button>
+        <Button type="primary" @click="openChapterModal">编辑章节</Button>
       </Col>
     </Row>
 
@@ -86,16 +86,36 @@
     <!-- 编辑章节弹窗 -->
     <edit-modal
       v-model="modal.edit"
-      :id="id"
+      :form="editData"
       @closeEditModal="modal.edit = false"
+      @fetchData="fetchData"
     ></edit-modal>
 
-    <!-- 查看详情弹窗 -->
+    <!-- 查看弹窗 -->
     <detail-modal
       v-model="modal.detail"
-      :id="id"
       @closeDetailModal="modal.detail = false"
     ></detail-modal>
+
+    <!-- 编辑章节树弹窗 -->
+    <Modal
+      class="question-knowledge__structure"
+      v-model="modal.chapter"
+      title="编辑章节"
+    >
+      <structure-tree
+        keyword="章节"
+        :data="chapterTree"
+        @create="createChapter"
+        @delete="deleteChapter"
+        @sort="sortChapter"
+       >
+        <div slot="header">
+          以下为当前学科的各个教材版本的章节及其结构，您可增加与删除章节，也可以调整掌控额的排序，排序的调整仅限同父级下的同级排序，所有操作仅在确认后才生效。
+        </div>
+      </structure-tree>
+      <div slot="footer"></div>
+    </Modal>
 
   </div>
 </template>
@@ -107,14 +127,16 @@
  *  @version 2017-09-12
  */
 
-// import { mapState } from 'vuex'
+import Http from '@/utils/http'
 import { list } from '@/mixins'
-import { GLOBAL } from '@/store/mutationTypes'
+// import { mapState } from 'vuex'
+// import { GLOBAL } from '@/store/mutationTypes'
 // import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import EditModal from './components/EditModal'
 import DetailModal from './components/DetailModal'
-import cdata from './cdata'
+import StructureTree from '../components/StructureTree'
+// import cdata from './cdata'
 
 export default {
   name: 'question-chapter',
@@ -124,39 +146,37 @@ export default {
   components: {
     EditModal,
     DetailModal,
+    StructureTree,
   },
 
   data() {
     return {
-      likeKeys: [
-        { label: '章节名称', value: 'chapter_name' },
-        { label: '上级', value: 'parent_name' },
-        { label: '知识点', value: 'knowledge_name' },
-      ],
+      likeKeys: [],
       likeKey: 'chapter_name',
       query: {
         'equal[grade_range_subject_id]': null,
         'equal[teaching_version]': null,
       },
 
-      grade_range_subject_id: [
-        { display_name: '高中数学', value: 1 },
-        { display_name: '高中语文', value: 2 },
-        { display_name: '高中英语', value: 3 },
-        { display_name: '高中物理', value: 4 },
-      ],
-
-      teaching_version: [
-        { display_name: '人教版', value: 1 },
-        { display_name: '鲁科版', value: 2 },
-        { display_name: '沪科版', value: 3 },
-        { display_name: '浙教版', value: 4 },
-      ],
+      grade_range_subject_id: [], // 学科年级数据源
+      teaching_version: [], // 教材版本数据源
 
       columns: [
-        { title: '章节编号', key: 'number', align: 'center' },
-        { title: '章节名称', key: 'display_name', align: 'center' },
-        { title: '上级', key: 'p_id', align: 'center' },
+        {
+          title: '章节编号',
+          key: 'number',
+          align: 'left',
+        },
+        {
+          title: '章节名称',
+          key: 'display_name',
+          align: 'center',
+        },
+        { title: '上级',
+          key: 'p_id',
+          align: 'center',
+          sortable: 'custom',
+        },
         {
           title: '包含知识点',
           key: 'have_knowledge',
@@ -195,31 +215,96 @@ export default {
         },
       ],
 
-      list: cdata,
+      list: {}, // 列表数据
 
-      modal: { // 模态框
+      modal: { // 弹窗控制
         edit: false,
         detail: false,
+        chapter: false,
       },
 
-      id: null,
+      chapterTree: [], // 章节树
+
+      editData: {}, // 编辑章节数据
     }
   },
 
   methods: {
-    openEditModal(id) {
-      this.id = id
-      this.modal.edit = true
+    openChapterModal() { // 打开编辑章节树弹窗
+      this.$http.get(`/chapter/tree/${this.query['equal[grade_range_subject_id]']}`)
+        .then((res) => {
+          this.modal.chapter = true
+          this.chapterTree = res
+        })
     },
 
-    openDetailModal(id) {
-      this.id = id
+    openEditModal(id) { // 打开编辑章节弹窗
+      this.$http.get(`/chapter/${id}`)
+        .then((res) => {
+          this.editData = res
+          this.modal.edit = true
+        })
+    },
+
+    openDetailModal() { // 打开查看弹窗
       this.modal.detail = true
+    },
+
+    getData(query, to) { // 获取列表数据
+      const urlArr = to.fullPath.split('/').slice(2)
+      const url = `/${urlArr.join('/')}`
+      return this.$http.get(url)
+        .then((res) => { this.list = res })
+    },
+
+    createChapter(data, success, fail) { // 添加章节
+      this.$http.post('/chapter', data)
+        .then((res) => {
+          success(res)
+          this.fetchData()
+        })
+        .catch(error => fail(error))
+    },
+
+    deleteChapter(id, success, fail) { // 删除章节
+      this.$http.delete(`/chapter/${id}`)
+        .then((res) => {
+          success(res)
+          this.fetchData()
+        })
+        .catch(error => fail(error))
+    },
+
+    sortChapter(data, success, fail) { // 排序章节
+      this.$http.patch(`/chapter/sort/${data.id}`, data)
+        .then(() => success())
+        .catch(error => fail(error))
     },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+
+  },
+
+  beforeRouteEnter(to, from, next) {
+    Http.get('/chapter/index_before')
+      .then(({
+        grade_range_subject_id,
+        teaching_version,
+        search_fields,
+        current_grade_range_subject_id,
+      }) => {
+        next((vm) => {
+          /* eslint-disable no-param-reassign */
+          vm.grade_range_subject_id = grade_range_subject_id
+          vm.teaching_version = teaching_version
+          vm.likeKeys = search_fields
+          if (!vm.query['equal[grade_range_subject_id]']) {
+            vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
+          }
+          /* eslint-enalbe */
+        })
+      })
   },
 }
 </script>
