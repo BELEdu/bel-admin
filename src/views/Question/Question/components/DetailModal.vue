@@ -72,7 +72,7 @@
           </CheckboxGroup>
         </FormItem>
         <FormItem label="备注">
-          <Input v-model="form.remark"></Input>
+          <Input type="textarea" :autosize="{minRows: 3,maxRows: 5}" v-model="form.remark"></Input>
         </FormItem>
       </Form>
 
@@ -159,15 +159,17 @@ export default {
     },
 
     submit(status) {
-      this.form.status = status
       this.loading = true
-      this.$http.patch(`question/check_status/${this.questionDetail.id}`, {
+      this.form.question_status = status
+      this.form.remark = this.rejectArray.join('; ') + this.form.remark
+      this.$http.patch(`/question/check_status/${this.questionDetail.id}`, {
         ...this.form,
       })
         .then(() => {
           this.$Message.success('提交成功')
           this.closeRejectModal()
           this.$emit('fetchData')
+          this.$emit('closeDetailModal')
         })
         .catch(({ message }) => {
           this.loading = false
