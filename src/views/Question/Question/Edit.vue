@@ -86,9 +86,11 @@
         <Row>
           <Col span="12">
             <Form-item label="关联知识点" prop="knowledge_ids">
-              <Select placeholder="请选择..." multiple v-model="form.knowledge_ids">
-                <Option v-for="item in test" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
-              </Select>
+              <app-tree-select
+                v-model="form.knowledge_ids"
+                :data="knowledge_tree"
+                multiple
+              ></app-tree-select>
             </Form-item>
           </Col>
           <Col span="12">
@@ -373,9 +375,10 @@ export default {
       }
     },
 
-    handleReset() {
+    handleReset() { // 重置选项
       this.form.question_type_id = null
       this.form.paper_type = null
+      this.form.knowledge_ids.length = 0
     },
 
     getQuestionData() { // 获取题目详情
