@@ -1,0 +1,22 @@
+/* --- 边树容器样式 --- */
+
+.sideframe() {
+  float: left;
+  width: 280px;
+  height: 600px;
+  border: 1px solid @border-color-base;
+  border-radius: 4px;
+
+  & .v-side-tree {
+
+    & > div:first-of-type {
+      padding: 6px;
+    }
+
+    & .ivu-tree {
+      overflow: auto;
+      max-height: 554px;
+      padding: 0 8px 8px 8px;
+    }
+  }
+}

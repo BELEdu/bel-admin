@@ -218,6 +218,7 @@ export default {
 
 <style lang="less">
 @import '~vars';
+@import '../mixins/style';
 
 @content-width: 975px;
 
@@ -225,12 +226,7 @@ export default {
   width: @content-width;
 
   & > aside {
-    float: left;
-    width: 280px;
-    height: 600px;
-    padding: 10px;
-    border: 1px solid @border-color-base;
-    border-radius: 4px;
+    .sideframe();
   }
 
   & > section {
