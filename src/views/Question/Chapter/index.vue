@@ -86,7 +86,8 @@
     <!-- 编辑章节弹窗 -->
     <edit-modal
       v-model="modal.edit"
-      :form="editData"
+      :form="form"
+      :grade-range-subject-id="query[`equal[grade_range_subject_id]`]"
       @closeEditModal="modal.edit = false"
       @fetchData="fetchData"
     ></edit-modal>
@@ -225,7 +226,7 @@ export default {
 
       chapterTree: [], // 章节树
 
-      editData: {}, // 编辑章节数据
+      form: { data: [] }, // 章节详细数据（编辑时用）
     }
   },
 
@@ -241,7 +242,7 @@ export default {
     openEditModal(id) { // 打开编辑章节弹窗
       this.$http.get(`/chapter/${id}`)
         .then((res) => {
-          this.editData = res
+          this.form = res
           this.modal.edit = true
         })
     },
