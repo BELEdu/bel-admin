@@ -127,6 +127,7 @@ export default {
       } else if (this.selectedItems[0]) {
         value = this.selectedItems[0].id
       }
+      this.$emit('change', value)
       this.$emit('input', value)
     },
 
