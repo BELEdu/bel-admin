@@ -5,7 +5,7 @@ import AppWarnModal from './AppWarnModal'
 import AppFormAlert from './AppFormAlert'
 import AppDictsFilter from './AppDictsFilter'
 import AppUploader from './AppUploader'
-import AppKnowledgeTree from './AppKnowledgeTree'
+import AppTreeSelect from './AppTreeSelect'
 import AppDatePicker from './AppDatePicker'
 import AppTimePicker from './AppTimePicker'
 import AppMapCascader from './AppMapCascader'
@@ -20,7 +20,7 @@ const rbdog = {
   AppFormAlert,
   AppDictsFilter,
   AppUploader,
-  AppKnowledgeTree,
+  AppTreeSelect,
   AppDatePicker,
   AppTimePicker,
   AppMapCascader,
