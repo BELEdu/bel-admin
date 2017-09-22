@@ -35,6 +35,10 @@ export default {
     value: {
       required: true,
     },
+    data: {
+      type: Array,
+      required: true,
+    },
   },
 
   data() {
@@ -81,6 +85,10 @@ export default {
         }
       }
       this.items.forEach(handler)
+    },
+
+    data(tree) {
+      this.init(tree)
     },
   },
 
@@ -134,33 +142,33 @@ export default {
     onClickDocument() {
       this.dropdown = false
     },
+
+    init(tree) {
+      // 每次接受到树状数据时，应根据this.value的初始值，设置对应项的selected属性为true
+      const handler = (item) => {
+        if (item.children) {
+          item.children.forEach(handler)
+        }
+
+        const mutilpleSelected = this.multiple && this.value.includes(item.id)
+        const singleSelected = !this.multiple && this.value === item.id
+        if (mutilpleSelected || singleSelected) {
+          item.selected = true
+        }
+      }
+      tree.forEach(handler)
+
+      this.items = tree
+      this.onSelectChange()
+    },
   },
 
   created() {
-    this.$http.get('/knowledge/tree/5')
-      .then((result) => {
-        // 组件创建时，应根据this.value的初始值，设置对应项的selected属性为true
-        const handler = (item) => {
-          if (item.children) {
-            item.children.forEach(handler)
-          }
-
-          const mutilpleSelected = this.multiple && this.value.includes(item.id)
-          const singleSelected = !this.multiple && this.value === item.id
-          if (mutilpleSelected || singleSelected) {
-            item.selected = true
-          }
-        }
-        result.forEach(handler)
-
-        this.items = result
-      })
-
-      .then(() => {
-        this.onSelectChange()
-      })
-
     document.body.addEventListener('click', this.onClickDocument)
+  },
+
+  mounted() {
+    this.init(this.data)
   },
 
   beforeDestroy() {
