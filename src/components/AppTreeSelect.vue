@@ -2,11 +2,12 @@
   <div class="app-tree-select" @click.stop>
     <div class="ivu-select ivu-select-multiple" :class="{'ivu-select-visible': dropdown}" @click="onDropdown">
       <div class="ivu-select-selection">
-        <div class="ivu-tag" v-for="item in selectedItems">
+        <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}">请选择...</span>
+        <div v-if="multiple" class="ivu-tag" v-for="item in selectedItems">
           <span class="ivu-tag-text">{{ item.title }}</span>
           <i class="ivu-icon ivu-icon-ios-close-empty" @click.stop="onRemove(item)"></i>
         </div>
-        <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}">请选择...</span>
+        <span v-else class="ivu-select-selected-value">{{ selectedItems[0] && selectedItems[0].title }}</span>
         <i class="ivu-icon ivu-icon-ios-close ivu-select-arrow" style="display: none;"></i>
         <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>
       </div>
