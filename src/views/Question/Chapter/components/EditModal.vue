@@ -79,7 +79,7 @@
                   <tr class="ivu-table-row"
                     v-for="(item,index) in form.data" :key="index"
                   >
-                    <td class="ivu-table-column-left" width="220">
+                    <td class="ivu-table-column-left" width="280">
                       <div class="ivu-table-cell">
                         <FormItem
                           :prop="`data.${index}.id`"
@@ -87,9 +87,11 @@
                         >
                           <Row>
                             <Col span="20">
-                              <Select v-model="item.id">
-                                <Option v-for="konwledge in tree" :value="konwledge" :key="konwledge">{{ konwledge }}</Option>
-                              </Select>
+                              <app-tree-select
+                                v-model="item.id"
+                                :data="JSON.parse(JSON.stringify(knowledgeTree))"
+                                @change="(value) => changeKnowledge(value, index)"
+                              ></app-tree-select>
                             </Col>
                             <Col span="4">
                               <Button type="text" icon="close" size="small" @click="removeKnowledge(index)"></Button>
@@ -101,42 +103,66 @@
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.duration`">
-                          <InputNumber :min="0" v-model="item.duration" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.duration"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.frequency`">
-                          <InputNumber :min="0" v-model="item.frequency" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.frequency"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.score`">
-                          <InputNumber :min="0" v-model="item.score" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.score"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.art_duration`">
-                          <InputNumber :min="0" v-model="item.art_duration" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.art_duration"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.art_frequency`">
-                          <InputNumber :min="0" v-model="item.art_frequency" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.art_frequency"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
                         <FormItem :prop="`data.${index}.art_score`">
-                          <InputNumber :min="0" v-model="item.art_score" size="small"></InputNumber>
+                          <InputNumber
+                            v-model="item.art_score"
+                            :min="0"
+                            :disabled="item.chapter_knowledge_type === 0"
+                          ></InputNumber>
                         </FormItem>
                       </div>
                     </td>
@@ -154,7 +180,7 @@
               </table>
             </div>
             <!-- 缺省信息 -->
-            <!-- <div class="ivu-table-tip" v-if="form.data.length === 0">
+            <div class="ivu-table-tip" v-if="form.data.length === 0">
               <table cellspacing="0" cellpadding="0" border="0">
                 <tbody>
                   <tr>
@@ -164,7 +190,7 @@
                   </tr>
                 </tbody>
               </table>
-            </div> -->
+            </div>
           </div>
         </div>
 
@@ -194,7 +220,6 @@
  */
 
 import { form } from '@/mixins'
-// import edata from './edata'
 
 const defaultKnowledge = {
   id: null,
@@ -222,16 +247,17 @@ export default {
       type: Object,
       required: true,
     },
+    gradeRangeSubjectId: {
+      type: Number,
+    },
   },
 
   data() {
     return {
       loading: {
         modal: false,
-        delete: false,
       },
-
-      tree: [34, 35, 36, 37, 43, 44, 45],
+      knowledgeTree: [], // 知识点树
     }
   },
 
@@ -241,18 +267,56 @@ export default {
     },
   },
 
+  watch: {
+    gradeRangeSubjectId(val) { // 每当父组件的年级学科改变时，预请求知识点树数据
+      this.getKnowledgeTree(val)
+    },
+  },
+
   methods: {
+    getKnowledgeTree(id) { // 获取知识点树
+      this.$http.get(`/knowledge/tree/${id}`)
+        .then((res) => {
+          this.knowledgeTree = res
+        })
+    },
+
     closeModal() { // 关闭该模态框
       this.formErrors = {}
       this.$emit('closeEditModal')
     },
 
-    addKnowledge() {
+    addKnowledge() { // 添加知识点
       this.form.data.push({ ...defaultKnowledge })
     },
 
-    removeKnowledge(index) {
+    removeKnowledge(index) { // 移除知识点
       this.form.data.splice(index, 1)
+    },
+
+    changeKnowledge(value, index) { // 更改&选择知识点时获取该知识点详情
+      const { data } = this.form
+      if (data.filter(item => item.id === value).length > 1) {
+        this.$Message.error('该知识点已添加过')
+        this.removeKnowledge(index)
+      } else if (value) {
+        this.$http.get(`/knowledge/${value}`)
+          .then(({
+            duration,
+            frequency,
+            score,
+            art_duration,
+            art_frequency,
+            art_score,
+          }) => {
+            data[index].duration = duration
+            data[index].frequency = frequency
+            data[index].score = score
+            data[index].art_duration = art_duration
+            data[index].art_frequency = art_frequency
+            data[index].art_score = art_score
+          })
+      }
     },
 
     submit() {
@@ -266,6 +330,7 @@ export default {
       this.closeModal()
       this.$emit('fetchData')
     },
+
   },
 }
 </script>
