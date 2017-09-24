@@ -11,7 +11,7 @@
           :type="
             !$route.query[tag] ? 'primary' : 'text'
           "
-          :disabled="readonly && $route.query[tag]"
+          :disabled="$route.query[tag] && readonly"
           @click="onChooseOption(tag)"
         >全部</Button>
         <Button
