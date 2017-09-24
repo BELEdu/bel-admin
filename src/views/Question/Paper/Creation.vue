@@ -4,31 +4,34 @@
     <Form
       class="creation-source"
       :label-width="80"
+      ref="places"
+      :model="paper.places | translateToObject"
     >
       <Form-item
+        v-for="(place, index) in paper.places"
+        :key="index"
+        :prop="`${index}`"
         label="来源"
+        :rules="[{ required: true, validator: validatePlace(index) }]"
       >
-        <Select>
-          <Option value="1"></Option>
-        </Select>
-        <Select>
-          <Option value="1"></Option>
-        </Select>
-        <Select v-model="schoolList" multiple>
-          <Option
-            v-for="school in schoolsData"
-            :value="school.value"
-            :label="school.label"
-            :key="school.value"
-          ></Option>
-        </Select>
-        <Icon type="android-delete"></Icon>
+        <Cascader
+          :data="mapData"
+          v-model="paper.places[index]"
+          :clearable="false"
+          @input="() => autoName(index === 0)"
+        ></Cascader>
+        <Icon
+          v-show="index"
+          type="android-delete"
+          @click.native="deletePlace(index)"
+        ></Icon>
       </Form-item>
     </Form>
     <!-- 添加来源 -->
     <div class="creation-source__add">
       <Button
         type="dashed"
+        @click="addPlace"
       >+增加来源</Button>
     </div>
 
@@ -36,48 +39,66 @@
     <Form
       class="creation-info"
       :label-width="80"
+      :model="paper"
+      :rules="paperRules"
+      ref="paperConfig"
     >
+      <!-- 时间 -->
       <Form-item
         class="creation-info__time"
-        label="时间"
-      >
-        <Select>
-          <Option value="1"></Option>
-        </Select>
-      </Form-item>
-      <Form-item
-        :label="subject.label"
+        :label="year.label"
+        prop="year"
       >
         <v-button-radio
-          v-model="info.subject"
-          :data="subject.data"
+          v-model="paper.year"
+          :data="year.data"
           size="small"
+          @change="autoName"
         ></v-button-radio>
       </Form-item>
+      <!-- 科目 -->
+      <Form-item
+        :label="subjects.label"
+        prop="subject_type"
+      >
+        <v-button-radio
+          v-model="paper.subject_type"
+          :data="subjects.data"
+          size="small"
+          @change="autoName"
+        ></v-button-radio>
+      </Form-item>
+      <!-- 年级 -->
       <Form-item
         :label="grade.label"
+        prop="grade"
       >
         <v-button-radio
-          v-model="info.grade"
+          v-model="paper.grade"
           :data="grade.data"
           size="small"
+          @change="autoName"
         ></v-button-radio>
       </Form-item>
+      <!-- 试卷类型 -->
       <Form-item
-        :label="type.label"
+        :label="paper_type.label"
+        prop="paper_type"
       >
         <v-button-radio
-          v-model="info.type"
-          :data="type.data"
+          v-model="paper.paper_type"
+          :data="paper_type.data"
           size="small"
+          @change="autoName"
         ></v-button-radio>
       </Form-item>
       <Form-item
         class="creation-info__title"
         label="试卷标题"
+        prop="display_name"
       >
         <Input
-          v-model="info.title"
+          v-model="paper.display_name"
         ></Input>
       </Form-item>
     </Form>
@@ -93,29 +114,87 @@
       </aside>
       <article>
         <div
-          v-for="i in 3" :key="i"
           class="section"
+          v-for="(section, sindex) in paper.question_types"
+          v-if="section.questions.length"
+          :key="section.question_type_id"
         >
           <!-- 题型标题 -->
-          <h2>一、 选择题 （ 本大题共2小题，共6.0分）</h2>
-            <!-- 题目列表 -->
+          <h2>
+            {{sectionsView[sindex].vindex}}、
+            {{section.display_name}}
+            （
+              共{{section.questions.length}}小题，
+              总计{{sectionsView[sindex].score}}分
+             ）
+          </h2>
+          <!-- 题目列表 -->
           <ul class="topic">
-            <li v-for="i in 5" :key="i" class="topic-item">
-              1. 一副含30°和45°角的三角板ABC和DEF叠合在一起，边BC与EF重合，BC=EF=12cm（如图1），点G为边BC（EF）的中点，边FD与AB相交于点H，此时线段BH的长是 ______ ．现将三角板DEF绕点G按顺时针方向旋转（如图2），在∠CGF从0°到60°的变化过程中，点H相应移动的路径长共为 ______ ．（结果保留根号）
+            <li
+              class="topic-item"
+              v-for="(topic, tindex) in section.questions"
+              :key="topic.question_id"
+            >
+              <span style="float: left;">{{tindex + 1}}、</span>
+              <div v-html="topic.content"></div>
               <div class="topic-item__control">
                 <span>分值</span>
-                <InputNumber size="small"></InputNumber>
-                <Button size="small">查看解析</Button>
-                <Button size="small">换题</Button>
-                <Button size="small">删除</Button>
-                <Button size="small">上移</Button>
-                <Button size="small">下移</Button>
+                <InputNumber
+                  size="small"
+                  :min="0"
+                  v-model="topic.score"
+                  @on-change="initSectionsView(paper.question_types)"
+                ></InputNumber>
+                <Button
+                  size="small"
+                  @click="activateAnalysis(topic)"
+                >查看解析</Button>
+                <Button
+                  size="small"
+                  @click="() => {
+                    updataTopic(tindex, sindex, topic.question_type_id)
+                  }"
+                >换题</Button>
+                <Button
+                  size="small"
+                  @click="deleteTopic(section.questions, tindex, sindex)"
+                >删除</Button>
+                <Button
+                  size="small"
+                  :disabled="tindex === 0"
+                  @click="sortTopic(section.questions, topic, tindex, 'up')"
+                >上移</Button>
+                <Button
+                  size="small"
+                  :disabled="tindex === section.questions.length - 1"
+                  @click="sortTopic(section.questions, topic, tindex, 'down')"
+                >下移</Button>
               </div>
             </li>
            </ul>
          </div>
       </article>
     </section>
+
+    <footer>
+      <Button
+        type="ghost"
+        @click="onCancel"
+      >取消</Button>
+      <Button
+        type="ghost"
+        @click="backToCompose"
+      >返回组卷</Button>
+      <Button
+        type="primary"
+        @click="prePaperCreation"
+      >保存</Button>
+    </footer>
+
+    <v-question-analysis
+      :visible.sync="analysisModal.active"
+      :data="analysisModal.data"
+    ></v-question-analysis>
   </div>
 </template>
 
@@ -126,121 +205,305 @@
  * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import mapData from '@/assets/china.json'
+import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import vButtonRadio from '../components/ButtonRadio'
+import vQuestionAnalysis from './components/Analysis'
+import paperBiz from './mixins/paper'
 
 export default {
   name: 'question-paper-creation',
 
+  mixins: [paperBiz],
+
   components: {
     vButtonRadio,
+    vQuestionAnalysis,
   },
 
   data: () => ({
-    info: {
-      grade: 1,
-      subject: 1,
-      type: 1,
-      title: '',
+    // 模拟来源数据
+    mapData,
+
+    // 题型试题渲染数据 { 总分, 索引 }
+    sectionsView: [],
+
+    analysisModal: {
+      active: false,
+      data: {},
     },
 
     schoolsData: [
       {
         value: 'beijing',
-        label: '北京市',
+        display_name: '北京市',
       },
       {
         value: 'shanghai',
-        label: '上海市',
+        display_name: '上海市',
       },
       {
         value: 'shenzhen',
-        label: '深圳市',
+        display_name: '深圳市',
       },
       {
         value: 'hangzhou',
-        label: '杭州市',
+        display_name: '杭州市',
       },
       {
         value: 'nanjing',
-        label: '南京市',
+        display_name: '南京市',
       },
       {
         value: 'chongqing',
-        label: '重庆市',
+        display_name: '重庆市',
       },
     ],
+
     schoolList: [],
 
-    grade: {
-      label: '年级',
-      data: [
-        {
-          display_name: '高一',
-          value: 1,
-        },
-        {
-          display_name: '高二',
-          value: 2,
-        },
-        {
-          display_name: '高三',
-          value: 3,
-        },
-      ],
-    },
+    /* buttonRadio数据 */
 
-    subject: {
-      label: '文理科',
-      data: [
-        {
-          display_name: '理科',
-          value: 1,
-        },
-        {
-          display_name: '文科',
-          value: 2,
-        },
-        {
-          display_name: '不分科',
-          value: 3,
-        },
-      ],
-    },
+    year: { label: '', data: [] },
 
-    type: {
-      label: '类型',
-      data: [
-        {
-          display_name: '历年真题',
-          value: 1,
-        },
-        {
-          display_name: '模拟题',
-          value: 2,
-        },
-        {
-          display_name: '入学测试',
-          value: 3,
-        },
-        {
-          display_name: '期末考试',
-          value: 4,
-        },
-        {
-          display_name: '其中考试',
-          value: 5,
-        },
-        {
-          display_name: '月考测试',
-          value: 6,
-        },
+    grade: { label: '', data: [] },
+
+    subjects: { label: '', data: [] },
+
+    paper_type: { label: '', data: [] },
+
+    // 表单验证
+    paperRules: {
+      year: [
+        { required: true, message: '必须选择时间' },
+      ],
+      subject_type: [
+        { required: true, message: '必须选择分科信息' },
+      ],
+      grade: [
+        { required: true, message: '必须选择年级信息' },
+      ],
+      paper_type: [
+        { required: true, message: '必须选择类型信息' },
+      ],
+      display_name: [
+        { required: true, message: '必须填写试卷标题' },
       ],
     },
   }),
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+  watch: {
+    'paper.question_types': 'initSectionsView',
+  },
+
+  filters: {
+    translateToObject(value) {
+      return { ...value }
+    },
+  },
+
+  methods: {
+    /* --- initialization --- */
+
+    getPrecondition(subjectId) {
+      /* eslint-disable prefer-template */
+      const url = '/paper/store_before'
+        + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
+      /* eslint-enable */
+
+      return this.$http.get(url)
+        .then(({
+          // 高级搜索
+          year,
+          grade,
+          subject_type,
+          paper_type,
+        }) => {
+          this.year = year
+          this.grade = grade
+          this.paper_type = paper_type
+          this.subjects = subject_type
+        })
+    },
+
+    initSectionsView(question_types) {
+      if (question_types.length) {
+        question_types.reduce((
+          acc,
+          section,
+          sindex,
+        ) => {
+          this.figureSectionsView(sindex, acc)
+          if (section.questions.length) {
+            return acc + 1
+          }
+          return acc
+        }, 1)
+      }
+    },
+
+    initEdition(from) {
+      const id = this.$route.params.id
+      if (id
+          && from.name
+          && from.meta.source !== 'paperCompose'
+      ) {
+        this.$http.get(`/paper/${id}`)
+          .then((res) => {
+            // eslint-disable-next-line
+            this.paper = { ...res }
+            this.$store.commit(GLOBAL.LOADING.HIDE)
+          })
+      } else {
+        this.$store.commit(GLOBAL.LOADING.HIDE)
+      }
+    },
+
+    /* --- Assistance --- */
+
+    /**
+     * 计算某题型的总分和在视图中的位置
+     *
+     * @param {number}  sindex - 题型在paper.question_types数据中的索引
+     * @param {number}  vindex - 题型在视图中的索引
+     */
+    figureSectionsView(sindex, vindex) {
+      const score = this.paper.question_types[sindex].questions
+        .reduce((acc, question) => acc + question.score, 0)
+      this.$set(this.sectionsView, sindex, { score, vindex })
+    },
+
+    validatePlace(index) {
+      return (rule, value, callback) => {
+        if (!this.paper.places[index].length) {
+          return callback(new Error('来源信息不能为空'))
+        }
+        return callback()
+      }
+    },
+
+    getDisplayName(value, list, prefix = '', suffix = '') {
+      if (!value) return ''
+      const target = list.find(item => item.value === value)
+      return `${prefix}${target.display_name}${suffix}`
+    },
+
+    /**
+     * 通过places[0]，兑换cascader数据的displayname
+     *
+     * @param {Array} place - cascader绑定的值
+     */
+    getPlaceName(index = 0, source = this.mapData) {
+      const place = source
+        .find(item => item.value === this.paper.places[0][index])
+      if (place.children) {
+        return `${place.label}${this.getPlaceName(index + 1, place.children)}`
+      }
+      return place.label
+    },
+
+    /* --- Control --- */
+
+    onCancel() {
+      this.$router.push(`/question/paper?${this.currentSubject}`)
+    },
+
+    addPlace() {
+      this.$refs.places.validate((valid) => {
+        if (valid) this.paper.places.push([])
+      })
+    },
+
+    deletePlace(index) {
+      this.paper.places.splice(index, 1)
+    },
+
+    backToCompose(question_type) {
+      const host = '/question/paper/composition'
+      const id = this.$route.params.id
+      const questionType = question_type
+        ? `&question_type_id=${question_type}`
+        : ''
+      if (id) {
+        return this.$router
+          .push(`${host}/${id}?${this.currentSubject}${questionType}`)
+      }
+      return this.$router
+        .push(`${host}?${this.currentSubject}${questionType}`)
+    },
+
+    /* --- Bussiness --- */
+
+    /* auto name */
+
+    autoName(switcher = true) {
+      if (!switcher) return
+      const paper = this.paper
+      const display = this.getDisplayName
+      const placeName = this.paper.places[0].length
+        ? this.getPlaceName()
+        : ''
+      paper.display_name = `${display(paper.year, this.year.data, '', '年')}`
+        + ` ${placeName}`
+        + ` ${display(paper.grade, this.grade.data)}`
+        + ` ${display(paper.paper_type, this.paper_type.data)}`
+        + `${display(paper.subject_type, this.subjects.data, '(', ')')}`
+    },
+
+    /* sort */
+
+    sortTopic(list, tnode, tindex, sortType) {
+      if (sortType === 'up') {
+        this.exchangeNode(list, tnode, tindex, -1)
+      } else {
+        this.exchangeNode(list, tnode, tindex, 1)
+      }
+    },
+
+    exchangeNode(list, node, index, target) {
+      list.splice(index, 1, list[index + target])
+      list.splice(index + target, 1, node)
+    },
+
+    /* deletion */
+
+    deleteTopic(list, tindex) {
+      list.splice(tindex, 1)
+      this.initSectionsView(this.paper.question_types)
+    },
+
+    /* updata topic */
+
+    updataTopic(tindex, sindex, questionType) {
+      const { PAPER } = QUESTION
+      this.$store.commit(PAPER.CONFIRM_TEMPORY, { tindex, sindex })
+      this.backToCompose(questionType)
+    },
+
+    /* check analysis */
+
+    activateAnalysis(topic) {
+      this.analysisModal.active = true
+      this.analysisModal.data = topic
+    },
+
+    /* paper creation */
+
+    prePaperCreation() {
+      let trigger = true
+      this.$refs.places.validate((valid) => { trigger = trigger && valid })
+      this.$refs.paperConfig.validate((valid) => { trigger = trigger && valid })
+      if (trigger) this.createPaper()
+    },
+
+    createPaper() {
+      const id = this.$route.params.id
+      if (id) {
+        return this.$http.patch(`/paper/${id}`, this.paper)
+      }
+      this.paper.grade_range_subject_id = this.currentSubjectId
+      return this.$http.post('/paper', this.paper)
+    },
   },
 }
 </script>
@@ -262,6 +525,7 @@ export default {
     border-color: lighten(@bd, 8%);
     color: lighten(@text, 8%);
   }
+
   &:active {
     border-color: darken(@bd, 8%);
     color: darken(@text, 8%);
@@ -271,24 +535,22 @@ export default {
 .question-paper-creation {
   width: @layout-width;
 
-  & .ivu-form-item {
-    margin-bottom: 20px;
-  }
-
   & .ivu-form-item-label {
     font-size: 14px;
+  }
+
+  & .ivu-form-item-error-tip {
+    padding: 0 6px;
   }
 
   & .creation {
 
     &-source {
 
-      & .ivu-select {
-        width: 150px;
-
-        &:last-of-type {
-          width: 400px;
-        }
+      & .ivu-cascader {
+        display: inline-block;
+        margin-left: 8px;
+        width: 500px;
       }
 
       & .ivu-icon-android-delete {
@@ -301,6 +563,7 @@ export default {
       }
 
       &__add {
+        margin: 20px 0 10px 0;
         padding-left: 350px;
 
         & > button {
@@ -324,6 +587,7 @@ export default {
       &__title {
 
         & .ivu-input-wrapper {
+          margin-left: 8px;
           width: 500px;
         }
       }
@@ -346,6 +610,15 @@ export default {
       & .topic {
         .topic()
       }
+    }
+  }
+
+  & footer {
+    margin-top: 20px;
+    text-align: center;
+
+    & > button {
+      margin: 0 15px;
     }
   }
 }

@@ -38,6 +38,7 @@
       ref="tree"
       :show-checkbox="multiple"
       :data="data"
+      @on-select-change="singleSelect"
     ></Tree>
   </div>
 </template>
@@ -64,6 +65,11 @@ export default {
   methods: {
     toggleSelectType() {
       this.multiple = !this.multiple
+    },
+
+    singleSelect([node]) {
+      if (this.multiple || node.children) return
+      this.$emit('single-select', [node.id], [node])
     },
 
     batchSelect() {

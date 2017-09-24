@@ -44,14 +44,24 @@ const QUESTION_PAPER_DETAIL = {
   link: '/question/paper/:id',
 }
 
-const QUESTION_PAPER_COMPOSITION = {
+const QUESTION_PAPER_CREATION_COMPOSITION = {
   name: '组卷',
   link: '/question/paper/composition',
+}
+
+const QUESTION_PAPER_EDITION_COMPOSITION = {
+  name: '组卷',
+  link: '/question/paper/composition/:id',
 }
 
 const QUESTION_PAPER_CREATION = {
   name: '生成试卷',
   link: '/question/paper/creation',
+}
+
+const QUESTION_PAPER_EDITION = {
+  name: '编辑试卷',
+  link: '/question/paper/creation/:id',
 }
 
 export default [
@@ -143,31 +153,64 @@ export default [
     },
   },
 
-  // 组卷页
+  // 组卷页 - 新建
   {
-    path: QUESTION_PAPER_COMPOSITION.link,
+    path: QUESTION_PAPER_CREATION_COMPOSITION.link,
     name: 'QuestionPaperComposition',
     component: views.QuestionPaperComposition,
     meta: {
+      source: 'paperCompose',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
-        QUESTION_PAPER_COMPOSITION,
+        QUESTION_PAPER_CREATION_COMPOSITION,
       ],
     },
   },
 
-  // 生成书卷页
+  // 组卷页 - 编辑
+  {
+    path: QUESTION_PAPER_EDITION_COMPOSITION.link,
+    name: 'QuestionPaperComposition',
+    component: views.QuestionPaperComposition,
+    meta: {
+      source: 'paperCompose',
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        QUESTION_PAPER_EDITION_COMPOSITION,
+      ],
+    },
+  },
+
+  // 生成试卷页 - 新建
   {
     path: QUESTION_PAPER_CREATION.link,
     name: 'QuestionPaperCreation',
     component: views.QuestionPaperCreation,
     meta: {
+      source: 'paperCompose',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
-        QUESTION_PAPER_COMPOSITION,
+        QUESTION_PAPER_CREATION_COMPOSITION,
         QUESTION_PAPER_CREATION,
+      ],
+    },
+  },
+
+  // 生成试卷页 - 编辑
+  {
+    path: QUESTION_PAPER_EDITION.link,
+    name: 'QuestionPaperEdition',
+    component: views.QuestionPaperCreation,
+    meta: {
+      source: 'paperCompose',
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        QUESTION_PAPER_EDITION_COMPOSITION,
+        QUESTION_PAPER_EDITION,
       ],
     },
   },

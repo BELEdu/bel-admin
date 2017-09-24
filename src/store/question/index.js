@@ -7,10 +7,12 @@
 // 引入子模块
 import chapter from './chapter'
 import question from './question'
+import paper from './paper'
 
 export default {
   modules: {
     chapter,
     question,
+    paper,
   },
 }

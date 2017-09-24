@@ -1,83 +1,128 @@
 <template>
   <div class="question-paper-composition">
-    <!-- 顶部 -->
-    <Form class="app-search-form app-search-form-layout">
-      <!-- 年段+学科 -->
-      <Form-item>
-        <Select
-          v-model="query['equal[subject_id]']"
-          placeholder="年段学科"
-          style="width: 150px;"
-        >
-          <Option
-            v-for="item in subjects"
-            :value="item.value"
-            :key="item.value"
-          >
-            {{item.display_name}}
-          </Option>
-        </Select>
-      </Form-item>
-      <!-- 搜索按钮 -->
-      <Form-item>
-        <Button
-          type="primary" icon="ios-search"
-          @click="search"
-        >
-          搜索
-        </Button>
-      </Form-item>
-      <!-- 后退按钮 -->
-      <Form-item>
-        <Button
-          type="primary" icon="arrow-return-left"
-          @click="goBack"
-        >
-          返回
-        </Button>
-      </Form-item>
-    </Form>
-
-    <!-- 下部 -->
     <div class="content">
-      <!-- 下左：树形搜索 -->
+      <!-- 左：树形搜索 -->
       <aside>
-        <v-side-tree></v-side-tree>
+        <nav class="clearfix">
+          <span
+            :class="{
+              active: myLabelTree
+            }"
+            @click="myLabelTree = true"
+          >按我的标签</span>
+          <span
+            :class="{
+              active: !myLabelTree
+            }"
+            @click="myLabelTree = false"
+          >按知识点</span>
+        </nav>
+        <v-side-tree
+          v-show="myLabelTree"
+          :key="`${currentSubject}label`"
+          class="content__tree"
+          type="all"
+          :data="labelTree"
+          @batch-select="ids => onTreeSelect('user_label_id', ids)"
+          @single-select="ids => onTreeSelect('user_label_id', ids)"
+        ></v-side-tree>
+        <v-side-tree
+          v-show="!myLabelTree"
+          :key="`${currentSubject}knowledge`"
+          class="content__tree"
+          type="all"
+          :data="knowledgeTree"
+          @batch-select="ids => onTreeSelect('knowledge_id', ids)"
+          @single-select="ids => onTreeSelect('knowledge_id', ids)"
+        ></v-side-tree>
       </aside>
-      <!-- 下右：主体 -->
+      <!-- 右：主体 -->
       <section>
+        <!-- 科目过滤 -->
+        <v-subject-radio
+          v-if="subjects"
+          :data="subjects.data"
+          :default="subjects.default"
+          @change="getPrecondition"
+        >
+        </v-subject-radio>
         <!-- 上部：高级搜索 -->
         <v-advance-search
-          :data="advanceConditions"
+          v-for="(condition, key) in advanceConditions"
+          :key="key"
+          :label="condition.label"
+          :data="condition.data"
+          :tag="key"
+          :readonly="tempory.active && key==='question_type_id'"
         ></v-advance-search>
         <!-- 中部：帮助条 -->
-        <div class="content__help">
-          <Button type="text">本页全部加入</Button>
-          <span>总共<em>100000</em>题</span>
-          <Page class="app-page-small" :total="100"></Page>
+        <div class="content__help"
+          v-if="buffer.data"
+        >
+          <Button
+            v-if="buffer.data.length
+              &&buffer.data.every(topic => questionExisted(topic))
+            "
+            type="text"
+            @click="batchRemoveQuestions"
+          >取消全部加入</Button>
+          <Button
+            v-else
+            type="text"
+            @click="batchAddQuestion"
+          >本页全部加入</Button>
+          <span>总共<em>{{buffer.data.length}}</em>题</span>
+          <Page
+            class="app-page-small"
+            @on-change="goTo"
+            :total="buffer.total"
+            :page-size="buffer.per_page"
+            :current="buffer.current_page"
+            placement="top"
+          ></Page>
         </div>
         <!-- 下部：题目列表 -->
         <div
           class="content__topic"
-          v-for="i in 10" :key="i"
+          v-for="topic in buffer.data" :key="topic.id"
         >
           <!-- 题目内容 -->
-          <div style="height: 100px;"></div>
+          <div
+            class="content__topic-content"
+            v-html="topic.content"
+          ></div>
           <!-- 题目控件 -->
           <div class="content__topic-bar">
-            <Button size="small" type="primary">加入试卷</Button>
+            <Button
+              v-if="tempory.active"
+              size="small" type="primary"
+              :disabled="questionExisted(topic)"
+              @click="updateTopic(topic)"
+            >更换试题</Button>
+            <template v-else>
+              <Button
+                v-if="questionExisted(topic)"
+                size="small"
+                @click="removeQuestion(topic)"
+              >移除试卷</Button>
+              <Button
+                v-else
+                size="small"
+                type="primary"
+                @click="addQuestion(topic)"
+              >加入试卷</Button>
+            </template>
             <Button
               size="small"
               type="primary"
+              @click.stop="activateAnalysis(topic)"
             >
               查看解析
             </Button>
-            <Button size="small" type="primary">收藏题目</Button>
-            <Button size="small" type="primary">换题</Button>
             <span>难度系数：
-              <span>1.00-0.86</span>
+              <span>{{topic.question_difficulty_name}}</span>
             </span>
-            <span>题型：单选题目</span>
+            <span>题型：{{topic.question_type_name}}</span>
           </div>
         </div>
       </section>
@@ -85,7 +130,10 @@
 
     <!-- 屏幕右下角选中题目提示 -->
     <ul class="question-paper-composition__cart">
-      <li v-for="i in 6" :key="i">选择题(10)</li>
+      <li
+        v-for="item in paper.question_types"
+        :key="item.question_type_id"
+      >{{item.display_name}}({{item.questions.length}})</li>
       <li>
         <Button
           type="primary" size="small" long
@@ -93,6 +141,11 @@
         >生成试卷</Button>
       </li>
     </ul>
+
+    <v-analysis
+      :visible.sync="analysisModal.active"
+      :data="analysis"
+    ></v-analysis>
   </div>
 </template>
 
@@ -103,139 +156,264 @@
  * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
 import { list } from '@/mixins'
+import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import vAdvanceSearch from './components/AdvanceSearch'
+import vSubjectRadio from './components/SubjectRadio'
 import vSideTree from '../components/SideTree'
+import vAnalysis from './components/Analysis'
+import paperBiz from './mixins/paper'
 
 export default {
   name: 'question-paper-composition',
 
-  mixins: [list],
+  mixins: [list, paperBiz],
 
   components: {
     vAdvanceSearch,
+    vSubjectRadio,
     vSideTree,
+    vAnalysis,
   },
 
   data: () => ({
-    // 年段选择栏数据
-    query: {
-      'equal[subject_id]': 1,
+    // server: 学科选择数据
+    subjects: null,
+
+    // server: 知识点树
+    knowledgeTree: [],
+
+    // server: 标签树
+    labelTree: [],
+
+    // 切换树的数据类型
+    myLabelTree: true,
+
+    // server: 高级搜索数据
+    advanceConditions: null,
+
+    // server: 题目数据
+    buffer: {},
+
+    // 查看解析
+    analysisModal: {
+      active: false,
     },
 
-    subjects: [
-      { value: 1, display_name: '高中数学' },
-      { value: 2, display_name: '高中英语' },
-    ],
+    analysis: {},
 
-    // 高级搜索数据
-    advanceConditions: {
-      grade_range_subject: {
-        label: '题型',
-        data: [
-          {
-            value: 1,
-            display_name: '单选题',
-          },
-          {
-            value: 2,
-            display_name: '多选题',
-          },
-          {
-            value: 3,
-            display_name: '简答题',
-          },
-          {
-            value: 4,
-            display_name: '作图题',
-          },
-          {
-            value: 5,
-            display_name: '应用题',
-          },
-        ],
-      },
-      type: {
-        label: '类型',
-        data: [
-          {
-            value: 1,
-            display_name: '历年真题',
-          },
-          {
-            value: 2,
-            display_name: '模拟题',
-          },
-          {
-            value: 3,
-            display_name: '入学测试',
-          },
-          {
-            value: 4,
-            display_name: '期末考试',
-          },
-          {
-            value: 5,
-            display_name: '期中考试',
-          },
-          {
-            value: 6,
-            display_name: '月考试卷',
-          },
-        ],
-      },
-      difficulty: {
-        label: '难度',
-        data: [
-          {
-            value: 1,
-            display_name: '困难（0.26-0.40）',
-          },
-          {
-            value: 2,
-            display_name: '较难（0.26-0.40）',
-          },
-          {
-            value: 3,
-            display_name: '中等（0.26-0.40）',
-          },
-          {
-            value: 4,
-            display_name: '较易（0.26-0.40）',
-          },
-          {
-            value: 5,
-            display_name: '容易（0.26-0.40）',
-          },
-        ],
-      },
+    // 组卷试题数据
+    paper: {
+      question_types: [],
     },
   }),
 
-  methods: {
-    goBack() {
-      this.$router.push('/question/paper')
+  computed: {
+    ...mapState({
+      tempory: state => state.question.paper.tempory,
+    }),
+
+    queryUrl() {
+      const url = this.$route.fullPath
+      const index = url.indexOf('?')
+      return index > -1 ? url.slice(index) : ''
     },
+
+    createPaperUrl() {
+      const id = this.$route.params.id
+      if (!id) {
+        return `/question/paper/creation?${this.currentSubject}`
+      }
+      return `/question/paper/creation/${id}?${this.currentSubject}`
+    },
+  },
+
+  methods: {
+    /* --- Initialization --- */
+
+    getPrecondition(subjectId) {
+      /* eslint-disable prefer-template */
+      const url = '/question/for_paper_before'
+        + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
+      /* eslint-enable */
+
+      return this.$http.get(url)
+        .then(({
+          // 高级搜索
+          current_grade_range_subject_id,
+          grade_range_subject_id,
+          question_type_id,
+          paper_type,
+          question_difficulty,
+          // 树结构数据
+          knowledge_tree,
+          user_label_list,
+        }) => {
+          this.subjects = {
+            data: grade_range_subject_id,
+            default: current_grade_range_subject_id,
+          }
+          this.advanceConditions = {
+            question_type_id,
+            paper_type,
+            question_difficulty,
+          }
+          this.generatePaper(question_type_id.data)
+          this.knowledgeTree = knowledge_tree
+          this.labelTree = user_label_list
+        })
+    },
+
+    // 1. 生成试卷信息；2. 变换学科，清空原本选题;
+    generatePaper(types) {
+      this.paper.question_types = types
+        .map(type => ({
+          question_type_id: type.id,
+          display_name: type.display_name,
+          questions: [],
+        }))
+    },
+
+    getData(queryUrl) {
+      const url = queryUrl
+        ? `/question/for_paper${queryUrl}&per_page=20`
+        : '/question/for_paper?perpage=20'
+      return this.$http.get(url)
+        .then((res) => {
+          this.buffer = this.initQuestions(res)
+        })
+    },
+
+    initQuestions(buffer) {
+      const data = buffer.data.map(question => ({
+        ...question,
+        question_id: question.id,
+        score: 0,
+      }))
+      return { ...buffer, ...{ data } }
+    },
+
+    onTreeSelect(key, ids) {
+      if (ids.length > 1) {
+        this.onBatchSelect(key, ids)
+      } else {
+        this.onSingleSelect(key, ids)
+      }
+    },
+
+    onBatchSelect(key, ids) {
+      const fragment = this.batchUrl(key, ids)
+      this.searchData(this.recombineQuery(fragment))
+    },
+
+    onSingleSelect(key, [id]) {
+      const fragment = id ? `equal[${key}]=${id}` : ''
+      this.searchData(this.recombineQuery(fragment))
+    },
+
+    // 通过side-tree获取数据，无记忆
+    searchData(url) {
+      this.$store.commit(GLOBAL.LOADING.SHOW)
+      this.getData(url)
+        .catch(() => {
+          this.$Notice.error({
+            title: '无法访问数据，请稍后再试',
+            duration: 0,
+          })
+        })
+        .then(() => {
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
+
+    /* --- Control--- */
 
     toCreatePaper() {
-      this.$router.push('/question/paper/creation')
+      this.$store.commit(QUESTION.PAPER.COMPOSE, { ...this.paper })
+      this.$store.commit(QUESTION.PAPER.CANCEL_TEMPORY)
+      this.$router.push(this.createPaperUrl)
     },
-  },
 
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-  },
+    activateAnalysis(data) {
+      this.analysisModal.active = true
+      this.analysis = data
+    },
 
-  beforeRouteUpdate(to, from, next) {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-    next()
+    /* --- assistance --- */
+
+    questionExisted(question) {
+      return this.paper.question_types
+        .some((type) => {
+          if (type.question_type_id === question.question_type_id) {
+            return type.questions
+              .some(item => item.question_id === question.question_id)
+          }
+          return false
+        })
+    },
+
+    batchUrl(key, values) {
+      return values
+        .reduce((acc, value) => `${acc}&in[${key}][]=${value}`, '')
+    },
+
+    recombineQuery(fragment) {
+      return this.queryUrl
+        ? `?${this.queryUrl}&${fragment}`
+        : `?${fragment}`
+    },
+
+    /* --- business --- */
+
+    addQuestion(topic) {
+      this.paper.question_types.forEach((type) => {
+        if (type.question_type_id === topic.question_type_id) {
+          type.questions.push(topic)
+        }
+      })
+    },
+
+    removeQuestion(topic) {
+      this.paper.question_types.forEach((type) => {
+        if (type.question_type_id === topic.question_type_id) {
+          const index = type.questions
+            .findIndex(question => question.question_id === topic.question_id)
+          if (index > -1) type.questions.splice(index, 1)
+        }
+      })
+    },
+
+    batchAddQuestion() {
+      this.batchRemoveQuestions()
+      this.buffer.data
+        .forEach(topic => this.addQuestion(topic))
+    },
+
+    batchRemoveQuestions() {
+      this.buffer.data
+        .forEach(topic => this.removeQuestion(topic))
+    },
+
+    /* update topic */
+
+    updateTopic(topic) {
+      // 切换试题
+      const { sindex, tindex } = this.tempory
+      this.paper.question_types[sindex]
+        .questions
+        .splice(tindex, 1, { ...topic })
+      // 重新生成试卷
+      this.toCreatePaper()
+    },
   },
 }
 </script>
 
 <style lang="less">
 @import '~vars';
+@import '../mixins/style';
+
 @layout-width:    1160px;
 @layout-padding:  10px;
 @layout-gutter:   10px;
@@ -247,13 +425,35 @@ export default {
   & .content {
 
     & > aside {
-      float: left;
+      .sideframe();
       margin-top: @layout-padding;
-      padding: @layout-padding;
-      height: 600px;
-      width: 280px;
-      border: 1px solid @border-color-base;
-      border-radius: @border-radius;
+
+      & > nav {
+        background-color: @bg-color;
+        height: 35px;
+
+        & > span {
+          float: left;
+          width: 50%;
+          line-height: 35px;
+          text-align: center;
+
+          &:hover {
+            cursor: pointer;
+            color: @info-color;
+          }
+
+          &.active {
+            background-color: #fff;
+            color: inherit;
+            cursor: default;
+          }
+        }
+      }
+
+      & .v-side-tree .ivu-tree {
+        max-height: 519px;
+      }
     }
 
     & > section {
@@ -294,6 +494,10 @@ export default {
       margin-top: @layout-gutter;
       border: 1px solid @border-color-base;
       border-radius: @border-radius;
+
+      &-content {
+        padding: @layout-padding;
+      }
 
       &-bar {
         padding: @layout-padding;
