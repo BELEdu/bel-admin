@@ -35,7 +35,6 @@
       </Form-item>
     </Form>
 
-
     <!-- 科目过滤 -->
     <v-subject-radio
       v-if="subjects"
@@ -46,8 +45,11 @@
     </v-subject-radio>
     <!-- 上方条件过滤 -->
     <v-advance-search
-      v-if="advanceConditions"
-      :data="advanceConditions"
+      v-for="(condition, key) in advanceConditions"
+      :key="key"
+      :label="condition.label"
+      :data="condition.data"
+      :tag="key"
     ></v-advance-search>
 
     <!-- 中部标题栏 -->
@@ -123,7 +125,7 @@ export default {
 
       subjects: null,
 
-      advanceConditions: null,
+      advanceConditions: {},
 
       /* --- 下方试卷列表 --- */
       colConfig: [
@@ -168,6 +170,7 @@ export default {
             {
               text: '编辑',
               type: 'success',
+              click: this.onEditPaper,
             },
             {
               text: '查看',
@@ -188,6 +191,18 @@ export default {
 
       deletionTarget: null,
     }
+  },
+
+  computed: {
+    subjectId() {
+      let subjectId = this.$route.query['equal[grade_range_subject_id]']
+      subjectId = subjectId || this.subjects.default
+      return subjectId
+    },
+
+    currentSubject() {
+      return `equal[grade_range_subject_id]=${this.subjectId}`
+    },
   },
 
   methods: {
@@ -235,12 +250,27 @@ export default {
     },
 
     toComposePaper() {
-      this.$router.push('/question/paper/composition')
+      const url = '/question/paper/composition'
+        + `?equal[grade_range_subject_id]=${this.subjectId}`
+      this.$router.push(url)
     },
+
+    /* --- business --- */
+
+    /* check */
 
     onCheckPaper(row) {
       this.$router.push(`/question/paper/${row.id}`)
     },
+
+    /* edit */
+
+    onEditPaper(row) {
+      const url = `/question/paper/creation/${row.id}?${this.currentSubject}`
+      this.$router.push(url)
+    },
+
+    /* delete */
 
     activatePaperDeletion(row) {
       this.deletionTarget = row

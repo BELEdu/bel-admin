@@ -2,28 +2,32 @@
   <div class="v-advance-search">
     <dl
       class="condition"
-      v-for="(item, key, index) in data"
     >
-      <dt class="title">{{item.label}}</dt>
+      <dt class="title">{{label}}</dt>
       <dd class="options">
         <Button
           class="options__all"
           size="small"
           :type="
-            !$route.query[key] ? 'primary' : 'text'
+            !$route.query[tag] ? 'primary' : 'text'
           "
-          @click="onChooseOption(key)"
+          :disabled="readonly && $route.query[tag]"
+          @click="onChooseOption(tag)"
         >全部</Button>
         <Button
-          v-for="option in item.data"
+          v-for="option in data"
           class="options__item"
           :type="
-            $route.query[key] === String(option.value)
+            $route.query[tag] === String(option.value)
               ? 'primary'
               : 'text'
           "
+          :disabled="
+            readonly
+            && $route.query[tag] !== String(option.value)
+          "
           :key="option.value"
-          @click="onChooseOption(key, String(option.value))"
+          @click="onChooseOption(tag, String(option.value))"
         >
           {{option.display_name}}
         </Button>
@@ -37,10 +41,25 @@ export default {
   name: 'v-advance-search',
 
   props: {
+    // 中文标识
+    label: {
+      type: String,
+      required: true,
+    },
+    // queryKey
+    tag: {
+      type: String,
+      required: true,
+    },
     // 高级搜索条件数据
     data: {
-      type: Object,
+      type: Array,
       required: true,
+    },
+    // 是否禁止变更
+    readonly: {
+      type: Boolean,
+      default: false,
     },
   },
 
