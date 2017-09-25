@@ -75,6 +75,15 @@ export default {
     // 刷新页面时，根据$route.query设置this.query的值，以便视图上正确反应当前的搜索条件
     mapRouteToQuery() {
       const copy = { ...this.$route.query }
+
+      // $route.query的值都为字符串，这里把可以转为数字类型的值转为数字类型
+      Object.keys(copy).forEach((key) => {
+        const numberifiedValue = +copy[key]
+        if (numberifiedValue === 0 || numberifiedValue) {
+          copy[key] = numberifiedValue
+        }
+      })
+
       delete copy.page
       delete copy.per_page
       const likeKey = this.getLikeKey(copy)
