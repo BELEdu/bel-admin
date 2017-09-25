@@ -86,8 +86,9 @@
     <!-- 编辑章节弹窗 -->
     <edit-modal
       v-model="modal.edit"
+      v-if="form"
       :form="form"
-      :grade-range-subject-id="query[`equal[grade_range_subject_id]`]"
+      :default-subject="current_grade_range_subject_id"
       @closeEditModal="modal.edit = false"
       @fetchData="fetchData"
     ></edit-modal>
@@ -107,6 +108,7 @@
       <structure-tree
         keyword="章节"
         :data="chapterTree"
+        :default-subject="current_grade_range_subject_id"
         @create="createChapter"
         @delete="deleteChapter"
         @sort="sortChapter"
@@ -137,7 +139,6 @@ import { createButton } from '@/utils'
 import EditModal from './components/EditModal'
 import DetailModal from './components/DetailModal'
 import StructureTree from '../components/StructureTree'
-// import cdata from './cdata'
 
 export default {
   name: 'question-chapter',
@@ -155,10 +156,11 @@ export default {
       likeKeys: [],
       likeKey: 'chapter_name',
       query: {
-        'equal[grade_range_subject_id]': null,
+        // 'equal[grade_range_subject_id]': null,
         'equal[teaching_version]': null,
       },
 
+      current_grade_range_subject_id: 0, // 默认年级学科id
       grade_range_subject_id: [], // 学科年级数据源
       teaching_version: [], // 教材版本数据源
 
@@ -166,7 +168,7 @@ export default {
         {
           title: '章节编号',
           key: 'number',
-          align: 'left',
+          align: 'center',
         },
         {
           title: '章节名称',
@@ -224,15 +226,16 @@ export default {
         chapter: false,
       },
 
-      chapterTree: [], // 章节树
+      chapterTree: [], // 章节树数据
 
-      form: { data: [] }, // 章节详细数据（编辑时用）
+      form: null, // 章节详细数据（编辑时用）
     }
   },
 
   methods: {
     openChapterModal() { // 打开编辑章节树弹窗
-      this.$http.get(`/chapter/tree/${this.query['equal[grade_range_subject_id]']}`)
+      const id = this.$route.query['equal[grade_range_subject_id]'] || this.current_grade_range_subject_id
+      this.$http.get(`/chapter/tree/${id}`)
         .then((res) => {
           this.modal.chapter = true
           this.chapterTree = res
@@ -284,7 +287,6 @@ export default {
   },
 
   created() {
-
   },
 
   beforeRouteEnter(to, from, next) {
@@ -300,8 +302,11 @@ export default {
           vm.grade_range_subject_id = grade_range_subject_id
           vm.teaching_version = teaching_version
           vm.likeKeys = search_fields
-          if (!vm.query['equal[grade_range_subject_id]']) {
-            vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
+          vm.current_grade_range_subject_id = current_grade_range_subject_id
+          // 如果URL中没有年段学科id的话，使用默认年段学科id
+          vm.query = {
+            'equal[grade_range_subject_id]': current_grade_range_subject_id,
+            ...vm.query,
           }
           /* eslint-enalbe */
         })
