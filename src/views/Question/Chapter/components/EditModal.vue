@@ -247,7 +247,7 @@ export default {
       type: Object,
       required: true,
     },
-    gradeRangeSubjectId: {
+    defaultSubject: {
       type: Number,
     },
   },
@@ -265,10 +265,14 @@ export default {
     hasDepartment() {
       return this.form.grade_range_subject_id === 5
     },
+
+    subjectId() {
+      return +this.$route.query['equal[grade_range_subject_id]'] || this.defaultSubject
+    },
   },
 
   watch: {
-    gradeRangeSubjectId(val) { // 每当父组件的年级学科改变时，预请求知识点树数据
+    subjectId(val) { // 每当父组件的年级学科改变时，预请求知识点树数据
       this.getKnowledgeTree(val)
     },
   },
@@ -298,7 +302,7 @@ export default {
       const { data } = this.form
       if (data.filter(item => item.id === value).length > 1) {
         this.$Message.error('该知识点已添加过')
-        this.removeKnowledge(index)
+        // this.removeKnowledge(index)
       } else if (value) {
         this.$http.get(`/knowledge/${value}`)
           .then(({
@@ -331,6 +335,10 @@ export default {
       this.$emit('fetchData')
     },
 
+  },
+
+  created() {
+    this.getKnowledgeTree(this.subjectId)
   },
 }
 </script>
