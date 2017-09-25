@@ -20,17 +20,7 @@
 
       <!-- 题目显示区域 -->
       <div class="question-detail__content">
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
-        <p>测试内容<br>测试内容</p>
+        <question-analysis :data="questionDetail"></question-analysis>
       </div>
 
       <h3 class="question-detail__log">操作历史</h3>
@@ -87,9 +77,14 @@
  * @author zml
  * @version 2017-09-13
  */
+import QuestionAnalysis from './QuestionAnalysis'
 
 export default {
   name: 'question-question-detail-modal',
+
+  components: {
+    QuestionAnalysis,
+  },
 
   props: {
     value: {
@@ -193,15 +188,13 @@ export default {
   }
 
   &__log {
-    margin: 20px 0;
+    margin: 10px 0;
   }
 
   &__content {
-    margin-top: 20px;
+    // margin-top: 20px;
     border: 1px solid @border-color-split ;
-    max-height: 300px;
-    min-height: 150px;
-    overflow: auto;
+    border-top: 0px;
   }
 }
 </style>
