@@ -86,6 +86,7 @@
     <!-- 查看详情弹窗 -->
     <detail-modal
       v-model="modal.detail"
+      v-if="questionDetail"
       :question-detail="questionDetail"
       @closeDetailModal="modal.detail = false"
       @fetchData="fetchData"
@@ -109,6 +110,7 @@
     <!-- 下线模态框 -->
     <app-warn-modal
       v-model="modal.outline"
+
       title="下线确认"
       :loading="loading.outline"
       @on-ok="outline"
@@ -152,7 +154,7 @@ export default {
       likeKeys: [], // 关键字搜索取before接口
       likeKey: 'user_realname',
       query: {
-        'equal[grade_range_subject_id]': null,
+        // 'equal[grade_range_subject_id]': null,
         'equal[question_status]': null,
       },
 
@@ -245,7 +247,7 @@ export default {
 
       questionNumber: null, // 试题编号
       questionId: null, // 试题id
-      questionDetail: {}, // 题目查询
+      questionDetail: null, // 题目查询
 
       modal: { // 弹窗控制
         delete: false,
@@ -337,8 +339,9 @@ export default {
           vm.grade_range_subject_id = grade_range_subject_id
           vm.question_status = question_status
           vm.likeKeys = search_fields
-          if (!vm.query['equal[grade_range_subject_id]']) {
-            vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
+          vm.query = {
+            'equal[grade_range_subject_id]': current_grade_range_subject_id,
+            ...vm.query,
           }
           /* eslint-enalbe */
         })
