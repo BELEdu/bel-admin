@@ -14,6 +14,11 @@ export function unit_decode(res) {
   return { ...res }
 }
 
+// 调整后端数据为需求格式
+export function list_decode(buffer) {
+  return { ...buffer }
+}
+
 export function editInit() {
   return {
     // 产品名称: "required|min:2|max:20"
@@ -39,43 +44,21 @@ export function editInit() {
   }
 }
 
-// 调整后端数据为需求格式
-export function list_decode(buffer) {
-  const ectype = { ...buffer }
-  // 处理数据
-  if (Array.isArray(buffer.data)) {
-    ectype.data = ectype.data.map((item) => {
-      const unit = { ...item }
-      if (unit.created_at) {
-        unit.created_at = unit.created_at.slice(0, 10)
-      }
-      return unit
-    })
-  }
-
-  return ectype
-}
-
 // 搜索配置
 export function searchConfig() {
   return {
     // 关键字检索范围
-    likeKeys: [
-      { label: '产品编号', value: 'product_number' },
-      { label: '创建人', value: 'username' },
-    ],
+    likeKeys: [],
     // 选择关键字
-    likeKey: 'product_number',
+    likeKey: 'display_name',
     query: {
-      // 时间段搜索
-      'between[created_at]': [],
-      // 特殊字段搜索
-      'equal[subject_id]': null,
+      'equal[grade_range_subject_id]': '',
+      'equal[sale_type]': '',
+      'equal[sale_status]': '',
     },
   }
 }
 
-// eslint-disable-next-line
 export function colConfig(that) {
   return [
     {
