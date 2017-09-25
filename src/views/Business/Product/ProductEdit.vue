@@ -12,15 +12,6 @@
       :model="fdata"
     >
       <Form-item
-        label="产品名称"
-        prop="display_name"
-      >
-        <Input
-          placeholder="请输入产品名称"
-          v-model="fdata.display_name"
-        ></Input>
-      </Form-item>
-      <Form-item
         label="产品类型"
         prop="product_type"
       >
@@ -207,11 +198,6 @@ export default {
 
       // 表单验证
       formRules: {
-        display_name: [
-          this.$rules.required('产品名称'),
-          this.$rules.length(2, 10),
-          this.$rules.name,
-        ],
         product_type: [
           this.$rules.required('产品类型', 'number', 'change'),
         ],
@@ -256,6 +242,31 @@ export default {
       this.allareas = all
     },
 
+    autoName() {
+      const name = this.getName(this.fdata.grade, this.preConfig.grade)
+        + this.getName(
+          this.fdata.grade_range_subject_id,
+          this.preConfig.grade_range_subject_list,
+        )
+        + this.getName(
+          this.fdata.product_type,
+          this.preConfig.product_type,
+        )
+        + this.getName(
+          this.fdata.study_target,
+          this.preConfig.study_target,
+        )
+        + this.getName(
+          this.fdata.class_capacity,
+          this.preConfig.class_capacity,
+        )
+      return name
+    },
+
+    getName(value, before) {
+      return before.find(item => value === item.value).display_name
+    },
+
     /* --- business --- */
 
     setAllAreasStatus() {
@@ -275,6 +286,7 @@ export default {
       this.loading = true
       // 根据接口文档转化数据
       const fdata = unit_encode(this.fdata)
+      fdata.display_name = this.autoName()
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
@@ -288,7 +300,6 @@ export default {
     // Form click提交表单事件handler @click.stop="submit"
     handleSubmit(name) {
       // 其他处理...
-
       // 进行表单提交
       this.$refs[name].validate((valid) => { if (valid) this.submit() })
     },
