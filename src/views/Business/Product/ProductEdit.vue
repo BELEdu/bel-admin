@@ -1,44 +1,133 @@
 <template>
-  <main class="app-form-entire product-edit">
+  <main
+    class="product-edit"
+    v-if="preConfig"
+  >
     <app-editor-title></app-editor-title>
-    <Form class="product-edit-form"
-      :label-width="110" ref="form"
-      :rules="formRules" :model="fdata"
+    <Form
+      class="app-form-entire product-edit-form"
+      ref="form"
+      :label-width="110"
+      :rules="formRules"
+      :model="fdata"
     >
-      <Form-item label="产品名称" prop="display_name">
-        <Input placeholder="请输入产品名称" v-model="fdata.display_name"></Input>
+      <Form-item
+        label="产品名称"
+        prop="display_name"
+      >
+        <Input
+          placeholder="请输入产品名称"
+          v-model="fdata.display_name"
+        ></Input>
       </Form-item>
-      <Form-item label="产品类型" v-if="dicts.product_type.length" prop="product_type_id">
-        <Select placeholder="请选择......" v-model="fdata.product_type_id">
-          <Option v-for="item in dicts.product_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+      <Form-item
+        label="产品类型"
+        prop="product_type"
+      >
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.product_type"
+        >
+          <Option
+            v-for="item in preConfig.product_type"
+            :value="item.value"
+            :key="item.display_name"
+          >{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="产品子类型" prop="product_subtype_id">
-        <Select placeholder="请选择......" v-model="fdata.product_subtype_id">
-          <Option v-for="item in sub_type" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+      <Form-item
+        label="学习目标"
+        prop="study_target"
+      >
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.study_target"
+        >
+          <Option
+            v-for="item in preConfig.study_target"
+            :value="item.value"
+            :key="item.display_name"
+          >{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="学科" prop="subject_item">
-        <Select placeholder="请选择......" v-model="fdata.subject_item">
-          <Option v-for="item in dicts.subject_item" :value="item.value" :key="item.display_name">{{item.display_name}}</Option>
+      <Form-item
+        label="年级"
+        prop="grade"
+      >
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.grade"
+        >
+          <Option
+            v-for="item in preConfig.grade"
+            :value="item.value"
+            :key="item.display_name"
+          >{{item.display_name}}</Option>
         </Select>
       </Form-item>
-      <Form-item label="课程时长" prop="course_duration">
-        <Input placeholder="请输入课程时长" v-model="fdata.course_duration"></Input>
-        <span>分钟</span>
+      <Form-item
+        label="学科"
+        prop="grade_range_subject_id"
+      >
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.grade_range_subject_id"
+        >
+          <Option
+            v-for="item in preConfig.grade_range_subject_list"
+            :value="item.value"
+            :key="item.display_name"
+          >{{item.display_name}}</Option>
+        </Select>
       </Form-item>
-      <Form-item label="产品总价" prop="price">
-        <Input placeholder="请输入产品总价" v-model="fdata.price"></Input>
+      <Form-item
+        label="班级容量"
+        prop="class_capacity"
+      >
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.class_capacity"
+        >
+          <Option
+            v-for="item in preConfig.class_capacity"
+            :value="item.value"
+            :key="item.display_name"
+          >{{item.display_name}}</Option>
+        </Select>
+      </Form-item>
+      <Form-item
+        label="运营类型"
+      >
+        <Radio-group v-model="fdata.sale_type">
+          <Radio
+            v-for="item in preConfig.sale_type"
+            :label="item.value"
+            :key="item.display_name"
+          >
+            <span>{{item.display_name}}</span>
+          </Radio>
+        </Radio-group>
+      </Form-item>
+      <Form-item
+        label="每课时单价"
+        prop="price"
+      >
+        <InputNumber
+          :min="0"
+          placeholder="输入每课时单价"
+          v-model="fdata.price"
+          style="width: 250px;"
+        ></InputNumber>
         <span>元</span>
       </Form-item>
-      <!-- 17.07.21 废弃 -->
-      <!-- <Form-item label="课时数量" prop="course_total">
-        <Input placeholder="请输入课程数量" v-model="fdata.course_total"></Input>
-        <span>个</span>
-      </Form-item> -->
       <Form-item label="销售状态">
-        <Radio-group v-model="fdata.sale_status">
-          <Radio v-for="item in dicts.sale_status" :label="item.value" :key="item.display_name">
+        <Radio-group
+          v-model="fdata.sale_status"
+        >
+          <Radio
+            v-for="item in preConfig.sale_status"
+            :label="item.value" :key="item.display_name"
+          >
             <span>{{item.display_name}}</span>
           </Radio>
         </Radio-group>
@@ -49,16 +138,25 @@
             <dl>
               <dt></dt>
               <dd>
-                <Checkbox v-model="allareas">
+                <Checkbox
+                  v-model="allareas"
+                  @click.native.prevent="setAllAreasStatus"
+                >
                   <span>全选</span>
                 </Checkbox>
               </dd>
             </dl>
           </div>
-          <Checkbox-group v-model="fdata.product_areas" class="product-edit__areas-right">
+          <Checkbox-group
+            class="product-edit__areas-right"
+            v-model="fdata.area_ids"
+          >
             <dl>
-              <dt>全选</dt>
-              <dd v-for="item in school_list" :key="item.display_name">
+              <dt>校区</dt>
+              <dd
+                v-for="item in preConfig.school_list"
+                :key="item.display_name"
+              >
                 <Checkbox :label="item.id">
                   <span>{{item.display_name}}</span>
                 </Checkbox>
@@ -69,7 +167,10 @@
       </Form-item>
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="handleSubmit('form')">提交</Button>
+        <Button
+          type="primary"
+          @click="handleSubmit('form')"
+        >提交</Button>
       </Form-item>
     </Form>
   </main>
@@ -78,8 +179,8 @@
 <script>
 /**
  * 产品管理 - 产品编辑
- * @author hjz
- * @version 2017-06-07
+ *
+ * @author huojinzhao
  */
 
 import { goBack } from '@/mixins'
@@ -93,12 +194,17 @@ export default {
 
   data() {
     return {
+      preConfig: null,
+
       // 最终提交给后端的数据
       fdata: editInit(),
+
       // 提交按钮状态控制
       loading: false,
+
       // 校区数据
       school_list: [],
+
       // 表单验证
       formRules: {
         display_name: [
@@ -106,77 +212,63 @@ export default {
           this.$rules.length(2, 10),
           this.$rules.name,
         ],
-        product_type_id: [
+        product_type: [
           this.$rules.required('产品类型', 'number', 'change'),
         ],
-        product_subtype_id: [
-          this.$rules.required('产品子类型', 'number', 'change'),
+        study_target: [
+          this.$rules.required('学习目标', 'number', 'change'),
         ],
-        subject_item: [
+        grade: [
+          this.$rules.required('年级', 'number', 'change'),
+        ],
+        grade_range_subject_id: [
           this.$rules.required('学科', 'number', 'change'),
         ],
-        course_duration: [
-          this.$rules.required('课程时长'),
-          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '请输入有效数字', trigger: 'blur' },
-        ],
-        course_total: [
-          this.$rules.required('课程数量'),
-          this.$rules.int,
-          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '数量应该大于1', trigger: 'blur' },
+        class_capacity: [
+          this.$rules.required('班级容量', 'number', 'change'),
         ],
         price: [
-          this.$rules.required('产品单价'),
+          this.$rules.required('每课时单价', 'number', 'change'),
           this.$rules.price,
         ],
       },
+
       // 校区全选
       allareas: false,
     }
   },
 
-  computed: {
-    // store字典数据
-    dicts() {
-      const { product_type, product_areas, sale_status, subject_item } = this.$store.state.dicts
-      return { product_type, product_areas, sale_status, subject_item }
-    },
-    // 产品子类列表
-    sub_type() {
-      const id = this.fdata.product_type_id
-      const arr = this.dicts.product_type
-      if (id && arr.length) {
-        const product = arr.find(item => item.value === id)
-        if (product) return product.children
-      }
-      return []
-    },
-    // 选中校区列表
-    areasChosed() {
-      return this.fdata.product_areas
-    },
-  },
-
   watch: {
-    allareas(nv) {
-      if (nv) {
-        const list = this.school_list.map(item => item.id)
-        this.fdata.product_areas = list
-      } else if (this.fdata.product_areas.length === this.school_list.length) {
-        this.fdata.product_areas = []
-      }
-    },
-    areasChosed(nv) {
-      let all = false
-      if (nv.length > 0) {
-        // 校区有可能删除或者更新，而fdata.product_areas不会
-        // 所以拿校区到fdata中比对
-        all = this.school_list.every(item => nv.includes(item.id))
-      }
-      this.allareas = all
-    },
+    'fdata.area_ids': 'getAllAreasStatus',
   },
 
   methods: {
+    /* --- Assistance --- */
+
+    getAllAreasStatus() {
+      let all = false
+      if (this.fdata.area_ids.length > 0) {
+        // 校区有可能删除或者更新，而fdata.area_ids不会
+        // 所以拿校区到fdata中比对
+        all = this.preConfig
+          .school_list.every(item => this.fdata.area_ids.includes(item.id))
+      }
+      this.allareas = all
+    },
+
+    /* --- business --- */
+
+    setAllAreasStatus() {
+      const nextStatus = !this.allareas
+      if (nextStatus) {
+        const list = this.preConfig
+          .school_list.map(item => item.id)
+        this.fdata.area_ids = list
+      } else {
+        this.fdata.area_ids = []
+      }
+    },
+
     // 提交编辑好的表单数据
     submit() {
       // 开启按钮loadding
@@ -192,6 +284,7 @@ export default {
           .then(() => { this.loading = false; this.goBack() })
       }
     },
+
     // Form click提交表单事件handler @click.stop="submit"
     handleSubmit(name) {
       // 其他处理...
@@ -201,12 +294,13 @@ export default {
     },
   },
 
-  created() {
-    Http.get('/school_list')
-      .then((res) => {
-        this.school_list = res
-      })
+  beforeRouteEnter(to, from, next) {
+    Http.get('/product/store_before')
+      // eslint-disable-next-line
+      .then(data => next((vm) => { vm.preConfig = { ...data } }))
+  },
 
+  created() {
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
       .then((res) => {
         this.fdata = unit_decode(res)

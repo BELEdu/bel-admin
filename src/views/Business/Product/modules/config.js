@@ -7,52 +7,35 @@
 import { createButton } from '@/utils'
 
 export function unit_encode(data) {
-  const ectype = { ...data }
-
-  if (parseInt(ectype.course_duration, 10)) {
-    ectype.course_duration = parseFloat(ectype.course_duration, 10)
-  }
-
-  // if (parseInt(ectype.course_total, 10)) {
-  //   ectype.course_total = parseFloat(ectype.course_total, 10)
-  // }
-
-  if (parseFloat(ectype.price)) {
-    ectype.price = parseFloat(ectype.price)
-  }
-
-  return ectype
+  return { ...data }
 }
 
 export function unit_decode(res) {
-  const data = res
-
-  data.course_duration = data.course_duration.toString()
-  // data.course_total = data.course_total.toString()
-
-  return data
+  return { ...res }
 }
 
 export function editInit() {
   return {
     // 产品名称: "required|min:2|max:20"
     display_name: '',
-    // 产品分类 "required|numeric",
-    product_type_id: null,
-    // 产品子分类
-    product_subtype_id: null,
-    // 学科
-    subject_item: null,
-    // 课程时长
-    course_duration: null,
-    // 课程总数: "numeric", 2017.07.21废弃
-    // course_total: null,
-    // "numeric",
-    price: null,
-    // 销售状态: "字典表: sale_status",
+    // 产品类型: "required|numeric"
+    product_type: null,
+    // 学习目标: "required|numeric"
+    study_target: null,
+    // 年级: "required|numeric"
+    grade: null,
+    // 学科: "required|numeric"
+    grade_range_subject_id: null,
+    // 班级容量: "required|numeric"
+    class_capacity: null,
+    // 运营类型: "numeric"
+    sale_type: null,
+    // 每课时单价："required|numeric"
+    price: 0,
+    // 销售状态: "numeric"
     sale_status: null,
-    // 销售校区: "numeric",
-    product_areas: [],
+    // 销售校区: "Array<numeric>"
+    area_ids: [],
   }
 }
 
@@ -97,70 +80,38 @@ export function colConfig(that) {
   return [
     {
       title: '产品编号',
-      key: 'product_number',
+      key: 'number',
       align: 'center',
-      width: 150,
       sortable: 'custom',
     },
     {
       title: '产品名称',
       key: 'display_name',
       align: 'center',
-      width: 200,
-    },
-    {
-      title: '产品类型',
-      key: 'product_type_name',
-      align: 'center',
-      width: 250,
-    },
-    {
-      title: '产品子分类',
-      key: 'product_subtype_name',
-      align: 'center',
     },
     {
       title: '学科',
-      key: 'subject_item_name',
+      key: 'grade_range_subject_name',
       align: 'center',
     },
-    // 17.07.19废弃，换成课程总数
-    // {
-    //   title: '每课时长（分钟）',
-    //   key: 'course_duration',
-    //   align: 'center',
-    //   width: 150,
-    //   sortable: 'custom',
-    // },
-    // 再次废弃
-    // {
-    //   title: '课时数量（个）',
-    //   key: 'course_total',
-    //   align: 'center',
-    //   width: 150,
-    //   sortable: 'custom',
-    // },
     {
-      title: '产品总价（元）',
+      title: '运营类型',
+      key: 'sale_type_name',
+      align: 'center',
+    },
+    {
+      title: '课时单价(元)',
       key: 'price',
       align: 'center',
-      width: 140,
-      sortable: 'custom',
-    },
-    {
-      title: '创建人',
-      key: 'username',
-      align: 'center',
-    },
-    {
-      title: '创建时间',
-      key: 'created_at',
-      align: 'center',
-      sortable: 'custom',
     },
     {
       title: '销售状态',
       key: 'sale_status_name',
+      align: 'center',
+    },
+    {
+      title: '创建人',
+      key: 'realname',
       align: 'center',
     },
     {
