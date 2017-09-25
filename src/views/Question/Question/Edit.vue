@@ -125,7 +125,7 @@
                   :true-value="1"
                   :false-value="0"
                   v-model="item.is_correct"
-                >{{String.fromCharCode(index+65)}}</Checkbox>
+                >{{index | alphabetize}}</Checkbox>
               </Col>
               <Col span="22">
                 <app-editor
@@ -169,7 +169,13 @@
           >
             <Row>
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
-              <Col span="22"><app-editor v-if="!isLoading" v-model="item.content"></app-editor></Col>
+              <Col span="22">
+                <app-editor
+                  :height="80"
+                  v-if="!isLoading"
+                  v-model="item.content"
+                ></app-editor>
+              </Col>
             </Row>
           </Form-item>
         </div>
@@ -304,6 +310,13 @@ export default {
     }
   },
 
+  filters: {
+    alphabetize(charCode) {
+      const charCodeOfA = 'A'.charCodeAt(0)
+      return String.fromCharCode(charCode + charCodeOfA)
+    },
+  },
+
   computed: {
     ...mapState({
       user_label_list: state => state.label.list, // 用户收藏标签数据源
@@ -417,7 +430,11 @@ export default {
           { ...defaultAnswer },
         ]
       } else if (this.questionTemplateFormat === 3) {
-        this.form.answers = [{ ...defaultAnswer }]
+        this.form.answers = [
+          { ...defaultAnswer },
+          { ...defaultAnswer },
+          { ...defaultAnswer },
+        ]
       } else {
         this.form.answers = [{ ...defaultAnswer }]
       }
