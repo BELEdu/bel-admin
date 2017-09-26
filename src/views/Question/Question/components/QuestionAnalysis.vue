@@ -1,13 +1,22 @@
 <template>
   <div class="question-analysis">
-    <article>
-      <h3>【题目】</h3>
-      <div v-html="data.content"></div>
-      <h3>【答案】</h3>
-      <div v-html="questionAnswer"></div>
-      <h3>【解析】</h3>
-      <div v-html="data.analysis"></div>
-    </article>
+    <h3>【题目】</h3>
+    <article v-html="data.content"></article>
+    <ul class="question-analysis__choice clearfix">
+      <li
+      v-for="(item,index) in choiceQuestion"
+      :key="index"
+      :style='{ width: `${choiceWidth}%` }'
+      v-html="item"
+      ></li>
+    </ul>
+    <!-- {{choiceQuestion}}
+    <div>{{choiceMaxLength}}</div>
+    <div>{{choiceWidth}}</div> -->
+    <h3>【答案】</h3>
+    <article v-html="questionAnswer"></article>
+    <h3>【解析】</h3>
+    <article v-html="data.analysis"></article>
   </div>
 </template>
 
@@ -36,38 +45,61 @@ export default {
      * 3 填空题
      * 4 解答题
      */
-    questionTemplate() {
-      return this.data.question_type_id
+    questionAnswer() {
+      switch (this.data.question_template) {
+        case 1:
+          return this.data.answers
+            .map(({ option, is_correct }) => ({ option, is_correct }))
+            .filter(({ is_correct }) => is_correct)
+            .map(({ option }) => option)
+            .join('，')
+        case 2:
+          return this.data.answers[0].is_correct === 1 ? '对' : '错'
+        case 3:
+          return this.data.answers
+            .map(({ content }) => content)
+            .join('；')
+        case 4:
+          return this.data.answers[0].content
+        default:
+          return ''
+      }
     },
 
-    /**
-     * 筛选出正确答案，并将其格式化为大写字母ABCD的形式
-     * ABCD是根据答案在数组中的位置计算的，如数组的第一项0对应A
-     * 这里使用charCode来将数组的下标转换为大写字母
-     */
-    questionAnswer() {
-      if (this.questionTemplate === 1) {
-        const charCodeOfA = 'A'.charCodeAt(0)
+    choiceQuestion() {
+      if (this.data.question_template === 1) {
         return this.data.answers
-          .map(({ is_correct }, index) => ({ index, is_correct }))
-          .filter(({ is_correct }) => is_correct)
-          .map(({ index }) => String.fromCharCode(index + charCodeOfA))
-          .join('，')
-      } else if (this.questionTemplate === 2) {
-        return this.data.answers
-          .map(({ is_correct }) => (is_correct === 1 ? '对' : '错'))
-          .join('，')
-      } else if (this.questionTemplate === 3) {
-        return this.data.answers
-          .map(({ content }) => content)
-          .join('')
+          .map(({ option, content }) => (`${option}. ${content}`))
       }
-      return this.data.answers[0].content || ''
+      return false
+    },
+
+    choiceMaxLength() {
+      if (this.choiceQuestion) {
+        if (this.choiceQuestion.some(item => /<img/.test(item))) {
+          return false
+        }
+        return Math.max.apply(null, this.choiceQuestion.map(item => item.length))
+      }
+      return false
+    },
+
+    choiceWidth() {
+      const l = this.choiceMaxLength
+      if (l >= 24) {
+        return 100
+      } else if (l > 15 && l < 24) {
+        return 50
+      }
+      return 25
     },
   },
 
   methods: {
-
+    // 计算字符串长度
+    strLength(str) {
+      return str.lengh
+    },
   },
 }
 </script>
@@ -75,28 +107,30 @@ export default {
 <style lang="less">
 @import '~vars';
 
-@layout-gutter: 10px;
-@layout-padding: 10px;
-@max-height: 300px;
+@question-width: 500px;
 
 .question-analysis {
+  margin: auto;
+  width: @question-width !important;
+  background-color: inherit;
 
-  & article {
-    background-color: @bg-color;
-    padding: @layout-padding;
-    max-height: @max-height;
-    overflow: auto;
+  &::before {
+    display: block;
+    content: " ";
+    clear: both;
+    height: 1px;
+  }
 
-    & > h3 {
-      margin-bottom: 8px;
-    }
+  &>h3 {
+    margin: 10px 0;
+  }
 
-    & > div {
-      margin-bottom: @layout-gutter;
+  &__choice {
+    margin-top: 10px;
 
-      &:last-child {
-        margin-bottom:0;
-      }
+    &>li {
+      float: left;
+      // width: 50%;
     }
   }
 }
