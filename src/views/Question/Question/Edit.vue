@@ -125,7 +125,7 @@
                   :true-value="1"
                   :false-value="0"
                   v-model="item.is_correct"
-                >{{index | alphabetize}}</Checkbox>
+                >{{alphabetize(index)}}</Checkbox>
               </Col>
               <Col span="22">
                 <app-editor
@@ -228,13 +228,14 @@ import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
 import ButtonRadio from '../components/ButtonRadio'
 
-
-// eslint-disable-next-line
+// 默认单项答案
 const defaultAnswer = {
   option: '', // 选项
   content: '', // 内容
-  is_correct: 0,
+  is_correct: 0, // 是否是正确选项
 }
+
+// const charCodeOfA = 'A'.charCodeAt(0)
 
 export default {
   name: 'question-question-edit',
@@ -250,7 +251,7 @@ export default {
       form: {
         grade_range_subject_id: null, // 年级学科id
         from_name: '', // 试题来源
-        question_status: null, //
+        question_status: null, // 提交状态 1：存为草稿 2：提交审核
         question_type_id: null, // 题型id
         question_difficulty: 1, // 题目难度
         paper_type: null, // 试卷类型
@@ -279,7 +280,7 @@ export default {
           this.$rules.required('题目'),
         ],
         answers: [
-          { validator: this.isSelected, trigger: 'change' },
+          { validator: this.AnswerIsSelected, trigger: 'change' },
         ],
       },
 
@@ -290,101 +291,91 @@ export default {
       years: [], // 时间数据源
       knowledge_tree: [], // 知识点数据源
 
-      test: [
-        {
-          id: 1,
-          display_name: '知识点1',
-        },
-        {
-          id: 2,
-          display_name: '知识点2',
-        },
-        {
-          id: 3,
-          display_name: '知识点3',
-        },
-      ],
-
       afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
-
     }
-  },
-
-  filters: {
-    alphabetize(charCode) {
-      const charCodeOfA = 'A'.charCodeAt(0)
-      return String.fromCharCode(charCode + charCodeOfA)
-    },
   },
 
   computed: {
     ...mapState({
       user_label_list: state => state.label.list, // 用户收藏标签数据源
-      isLoading: state => state.loading,
+      isLoading: state => state.loading, // 页面加载成功的标志，用于让ckeditor在接口请求成功后再渲染
     }),
+
     id() { // 获取用户id
       return this.$router.currentRoute.params.id
     },
+
     isUpdate() { // 判断是编辑还是新增
       return !!this.$router.currentRoute.params.id
     },
+
     questionTypeFormat() { // 题型名称格式化
       const { question_type_id } = this.form
-      return question_type_id != null ?
+      return question_type_id ?
         this.questionTypes.find(item => item.value === question_type_id).display_name : null
     },
-    questionTemplateFormat() { // 题型模板
+
+    questionTemplateFormat() { // 试题模板格式化 1 选择题（单选、多选）2 判断题 3 填空题 4 解答题
       const { question_type_id } = this.form
-      return question_type_id != null ?
+      return question_type_id ?
         this.questionTypes.find(item => item.value === question_type_id).question_template : null
     },
   },
 
   methods: {
-    tipFormat(val) {
-      let tip
+    // eslint-disable-next-line
+    tipFormat(val) { // 试题难度格式化
       switch (val) {
         case 1:
-          tip = '容易'
-          break
+          return '容易'
         case 2:
-          tip = '较易'
-          break
+          return '较易'
         case 3:
-          tip = '中等'
-          break
+          return '中等'
         case 4:
-          tip = '较难'
-          break
+          return '较难'
         case 5:
-          tip = '困难'
-          break
+          return '困难'
         default:
-          break
+          return ''
       }
-      return tip
     },
 
-    isSelected(rule, value, callback) { // 验证如果是选择题的话必须选一个选项
+    /**
+     * 自定义校验
+     * 如果是选择题的话必须选一个选项
+     */
+    AnswerIsSelected(rule, value, callback) {
       if (this.questionTemplateFormat === 1) {
         if (value.some(item => item.is_correct === 1)) {
           callback()
         }
-
         callback(new Error('请至少选择一个选项'))
       }
       callback()
     },
 
-    removeChoice() { // 移除选择题选项
-      if (this.form.answers.length > 2) {
-        this.form.answers.pop()
-      }
+    /**
+     * ABCD是根据答案在数组中的位置计算的，如数组的第一项0对应A
+     * 这里使用charCode来将数组的下标转换为大写字母
+     */
+    alphabetize(charCode) {
+      const charCodeOfA = 'A'.charCodeAt(0)
+      return String.fromCharCode(charCode + charCodeOfA)
     },
 
     addChoice() { // 添加选择题选项
-      if (this.form.answers.length < 26) {
-        this.form.answers.push({ ...defaultAnswer })
+      const length = this.form.answers.length
+      if (length < 26) {
+        this.form.answers.push(
+          { ...defaultAnswer, option: this.alphabetize(length) },
+        )
+      }
+    },
+
+    removeChoice() { // 移除选择题选项
+      if (this.form.answers.length > 2) {
+        this.form.answers.pop()
       }
     },
 
@@ -401,7 +392,7 @@ export default {
         })
     },
 
-    changeSubject(subjectId) { // 切换科目
+    changeSubject(subjectId) { // 切换科目，重置试题信息
       this.handleReset()
       this.$http.get(`/question/store_before?grade_range_subject_id=${subjectId}`)
         .then(({
@@ -422,21 +413,21 @@ export default {
     },
 
     changeQuestionType() { // 切换题型重置答案
-      if (this.questionTemplateFormat === 1) {
-        this.form.answers = [
-          { ...defaultAnswer },
-          { ...defaultAnswer },
-          { ...defaultAnswer },
-          { ...defaultAnswer },
-        ]
-      } else if (this.questionTemplateFormat === 3) {
-        this.form.answers = [
-          { ...defaultAnswer },
-          { ...defaultAnswer },
-          { ...defaultAnswer },
-        ]
-      } else {
-        this.form.answers = [{ ...defaultAnswer }]
+      switch (this.questionTemplateFormat) {
+        case 1:
+          this.form.answers = [
+            { ...defaultAnswer, option: 'A' },
+            { ...defaultAnswer, option: 'B' },
+            { ...defaultAnswer, option: 'C' },
+            { ...defaultAnswer, option: 'D' },
+          ]
+          break
+        case 3:
+          this.form.answers = Array(3).fill({ ...defaultAnswer })
+          break
+        default:
+          this.form.answers = [{ ...defaultAnswer }]
+          break
       }
     },
 
