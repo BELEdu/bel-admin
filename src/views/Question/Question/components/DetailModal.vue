@@ -3,7 +3,7 @@
     <!-- 试题详情弹窗 -->
     <Modal
       :title="`试题详情（${questionDetail.number}）`"
-      width="800"
+      width="600"
       :value="value"
       @input="value => $emit('input', value)"
       :maskClosable="true"
@@ -115,16 +115,16 @@ export default {
 
       columns: {
         info: [
-          { title: '学科', key: 'grade_range_subject_id', align: 'center' },
-          { title: '题型', key: 'question_type_id', align: 'center' },
-          { title: '类型', key: 'paper_type_name', align: 'center' },
-          { title: '难度', key: 'question_difficulty_name', align: 'center' },
-          { title: '时间', key: 'year_name', align: 'center' },
+          { title: '学科', key: 'grade_range_subject_name', align: 'center', width: 80 },
+          { title: '题型', key: 'question_type_name', align: 'center', width: 100 },
+          { title: '类型', key: 'paper_type_name', align: 'center', width: 100 },
+          { title: '难度', key: 'question_difficulty_name', align: 'center', width: 60 },
+          { title: '时间', key: 'year_name', align: 'center', width: 60 },
           { title: '知识点', key: 'knowledge_str', align: 'center' },
         ],
         logs: [
           { title: '操作者', key: 'realname', align: 'center' },
-          { title: '操作类型', key: 'question_log_type_name', align: 'center' },
+          { title: '操作类型', key: 'question_log_type_name', align: 'center', width: 80 },
           { title: '操作时间', key: 'created_at', align: 'center' },
           { title: '备注', key: 'remark', align: 'center' },
         ],
@@ -192,9 +192,10 @@ export default {
   }
 
   &__content {
-    // margin-top: 20px;
+    background-color: @bg-color;
     border: 1px solid @border-color-split ;
     border-top: 0px;
+    padding: 0 10px 10px 10px;
   }
 }
 </style>
