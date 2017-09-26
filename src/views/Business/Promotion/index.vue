@@ -75,7 +75,7 @@
       :data="buffer"
      ></app-pager>
 
-    <!--删除提醒框-->
+    <!-- 删除提醒框 -->
     <app-warn-modal
       v-model="warn.show"
       :title="warn.title"
@@ -84,6 +84,15 @@
     >
       <p>删除该条记录后将无法再恢复，是否继续删除？</p>
     </app-warn-modal>
+
+    <!-- 活动编辑 -->
+    <v-promotion-edit
+      :visible.sync="promotionDialog.active"
+      :edition="promotionDialog.info"
+      :target="promotionDialog.target"
+      :readonly="promotionDialog.readonly"
+      @success="editionSucceed"
+    ></v-promotion-edit>
   </div>
 </template>
 
@@ -97,11 +106,16 @@
 import Http from '@/utils/http'
 import { list } from '@/mixins'
 import { colConfig, searchConfig } from './modules/config'
+import vPromotionEdit from './components/PromotionEdit'
 
 export default {
   name: 'business-promotion',
 
   mixins: [list],
+
+  components: {
+    vPromotionEdit,
+  },
 
   data() {
     return {
@@ -124,6 +138,14 @@ export default {
 
       // 列表数据
       buffer: {},
+
+      // 优惠编辑
+      promotionDialog: {
+        active: false,
+        info: null,
+        target: null,
+        readonly: false,
+      },
     }
   },
 
@@ -137,7 +159,7 @@ export default {
       return this.$http.get(url)
         .then((res) => {
           // this.buffer = this.listDecode(res)
-          this.buffer = res
+          this.buffer = this.listDecode(res)
         })
     },
 
@@ -146,23 +168,30 @@ export default {
     listDecode(buffer) {
       const data = buffer.data.map((item) => {
         const validity_period = `
-          ${item.start_at.splice(0, 10)}
+          ${item.start_at}
           -
-          ${item.end_at.splice(0, 10)}
+          ${item.end_at}
         `
-        return { ...item, ...{ validity_period } }
+        return { ...item, validity_period }
       })
       return { ...buffer, ...{ data } }
+    },
+
+    configPromotion(info = null, target = null, readonly = false) {
+      return { active: true, info, target, readonly }
     },
 
     /* --- bussiness --- */
 
     toCreate() {
-      this.$router.push('/business/product/edit')
+      this.promotionDialog = this.configPromotion()
     },
 
     toUpdate(row) {
-      this.$router.push(`/business/product/edit/${row.id}`)
+      this.$http.get(`/promotion/${row.id}`)
+        .then((res) => {
+          this.promotionDialog = this.configPromotion(res, row.id, true)
+        })
     },
 
     /* deletion */
@@ -183,6 +212,11 @@ export default {
         .then(() => {
           this.warn.show = false
         })
+    },
+
+    /* edition */
+    editionSucceed() {
+      this.fetchData()
     },
   },
 
