@@ -124,37 +124,11 @@
         </Radio-group>
       </Form-item>
       <Form-item label="销售校区">
-        <div class="product-edit__areas">
-          <div class="product-edit__areas-left">
-            <dl>
-              <dt></dt>
-              <dd>
-                <Checkbox
-                  v-model="allareas"
-                  @click.native.prevent="setAllAreasStatus"
-                >
-                  <span>全选</span>
-                </Checkbox>
-              </dd>
-            </dl>
-          </div>
-          <Checkbox-group
-            class="product-edit__areas-right"
-            v-model="fdata.area_ids"
-          >
-            <dl>
-              <dt>校区</dt>
-              <dd
-                v-for="item in preConfig.school_list"
-                :key="item.display_name"
-              >
-                <Checkbox :label="item.id">
-                  <span>{{item.display_name}}</span>
-                </Checkbox>
-              </dd>
-            </dl>
-          </Checkbox-group>
-        </div>
+        <v-table-checkbox
+          :value.sync="fdata.area_ids"
+          :list="preConfig.school_list"
+          label="校区"
+        ></v-table-checkbox>
       </Form-item>
       <Form-item>
         <Button @click="goBack()">取消</Button>
@@ -178,10 +152,16 @@ import { goBack } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 import { editInit, unit_encode, unit_decode } from './modules/config'
+import vTableCheckbox from '../components/TableCheckbox'
 
 export default {
+  name: 'business-product-edit',
 
   mixins: [goBack],
+
+  components: {
+    vTableCheckbox,
+  },
 
   data() {
     return {
@@ -192,9 +172,6 @@ export default {
 
       // 提交按钮状态控制
       loading: false,
-
-      // 校区数据
-      school_list: [],
 
       // 表单验证
       formRules: {
@@ -218,29 +195,11 @@ export default {
           this.$rules.price,
         ],
       },
-
-      // 校区全选
-      allareas: false,
     }
-  },
-
-  watch: {
-    'fdata.area_ids': 'getAllAreasStatus',
   },
 
   methods: {
     /* --- Assistance --- */
-
-    getAllAreasStatus() {
-      let all = false
-      if (this.fdata.area_ids.length > 0) {
-        // 校区有可能删除或者更新，而fdata.area_ids不会
-        // 所以拿校区到fdata中比对
-        all = this.preConfig
-          .school_list.every(item => this.fdata.area_ids.includes(item.id))
-      }
-      this.allareas = all
-    },
 
     autoName() {
       const name = this.getName(this.fdata.grade, this.preConfig.grade)
@@ -268,17 +227,6 @@ export default {
     },
 
     /* --- business --- */
-
-    setAllAreasStatus() {
-      const nextStatus = !this.allareas
-      if (nextStatus) {
-        const list = this.preConfig
-          .school_list.map(item => item.id)
-        this.fdata.area_ids = list
-      } else {
-        this.fdata.area_ids = []
-      }
-    },
 
     // 提交编辑好的表单数据
     submit() {
@@ -345,62 +293,6 @@ export default {
         }
       }
     }
-  }
-}
-
-.product-edit__areas {
-  display: flex;
-  border: 1px solid @border-color-base;
-
-  &-left {
-    flex-basis: 100px;
-    flex-shrink: 0;
-    text-align: center;
-
-    & dt {
-      height: 33px;
-      border-bottom: 1px solid @border-color-base;
-    }
-
-    & dd {
-      text-align: center;
-
-      & .ivu-checkbox-wrapper {
-        margin: 0 !important;
-      }
-    }
-  }
-
-  &-right {
-    border-left: 1px solid @border-color-base;
-    padding-left: 20px;
-    flex-grow: 1;
-
-    & dt {
-      margin-left: -20px;
-      border-bottom: 1px solid @border-color-base;
-      text-align: center;
-    }
-
-    & dd {
-      display: inline-block;
-    }
-  }
-}
-
-.ie {
-
-  .product-edit__areas {
-
-    &-left {
-      float: left;
-      width: 100px;
-    }
-
-    &-right {
-      overflow: hidden;
-    }
-
   }
 }
 </style>
