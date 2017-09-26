@@ -32,6 +32,7 @@ export { default as ContractAudit } from './Business/Contract/ContractAudit'
 export { default as ContractRefund } from './Business/Contract/ContractRefund'
 export { default as Product } from './Business/Product'
 export { default as ProductEdit } from './Business/Product/ProductEdit'
+export { default as Promotion } from './Business/Promotion'
 
 // 排课管理
 export { default as CurriculumTeacher } from './Curriculum/Teacher/'

@@ -7,10 +7,30 @@
 
 import * as views from '@/views'
 
-const BUSSINESS_HOTLINE = { name: '热线登记', link: '/business/hotline' }
-const BUSSINESS_COMMUNICATION = { name: '沟通记录', link: '/business/communication' }
-const BUSSINESS_PRODUCT = { name: '产品管理', link: '/business/product' }
-const BUSSINESS_CONTRACT = { name: '合同审批', link: '/business/contract' }
+const BUSINESS_HOTLINE = {
+  name: '热线登记',
+  link: '/business/hotline',
+}
+
+const BUSINESS_COMMUNICATION = {
+  name: '沟通记录',
+  link: '/business/communication',
+}
+
+const BUSINESS_PRODUCT = {
+  name: '产品管理',
+  link: '/business/product',
+}
+
+const BUSINESS_CONTRACT = {
+  name: '合同审批',
+  link: '/business/contract',
+}
+
+const BUSINESS_PROMOTION = {
+  name: '优惠活动',
+  link: '/business/promotion',
+}
 
 export default [
   // 热线登记
@@ -35,7 +55,7 @@ export default [
       uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_HOTLINE,
+        BUSINESS_HOTLINE,
         { name: '新建热线' },
       ],
     },
@@ -49,7 +69,7 @@ export default [
       uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_HOTLINE,
+        BUSINESS_HOTLINE,
         { name: '编辑热线' },
       ],
     },
@@ -76,7 +96,7 @@ export default [
       uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_COMMUNICATION,
+        BUSINESS_COMMUNICATION,
         { name: '新建记录' },
       ],
     },
@@ -90,7 +110,7 @@ export default [
       uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_COMMUNICATION,
+        BUSINESS_COMMUNICATION,
         { name: '编辑记录' },
       ],
     },
@@ -117,7 +137,7 @@ export default [
       uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_CONTRACT,
+        BUSINESS_CONTRACT,
         { name: '新建审批' },
       ],
     },
@@ -131,7 +151,7 @@ export default [
       uri: 'contract/edit',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_CONTRACT,
+        BUSINESS_CONTRACT,
         { name: '审批详情' },
       ],
     },
@@ -146,7 +166,7 @@ export default [
       action: 'update',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_CONTRACT,
+        BUSINESS_CONTRACT,
         { name: '更新审批' },
       ],
     },
@@ -161,7 +181,7 @@ export default [
       action: 'create',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_CONTRACT,
+        BUSINESS_CONTRACT,
         { name: '新建审批' },
       ],
     },
@@ -175,7 +195,7 @@ export default [
       uri: 'contract/audit',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_CONTRACT,
+        BUSINESS_CONTRACT,
         { name: '审批详情' },
       ],
     },
@@ -202,7 +222,7 @@ export default [
       uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_PRODUCT,
+        BUSINESS_PRODUCT,
         { name: '新建产品' },
       ],
     },
@@ -216,8 +236,22 @@ export default [
       uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
-        BUSSINESS_PRODUCT,
+        BUSINESS_PRODUCT,
         { name: '编辑产品' },
+      ],
+    },
+  },
+
+  // 优惠活动
+  {
+    path: BUSINESS_PROMOTION.link,
+    name: 'BussinessProductPromotion',
+    component: views.Promotion,
+    meta: {
+      uri: 'product',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSINESS_PROMOTION,
       ],
     },
   },
