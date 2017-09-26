@@ -4,6 +4,7 @@
       v-for="item in data" :key="item.value"
       :size="size"
       :type="item.value === value ? 'primary' : 'text'"
+      :disabled="item.value !== value && readonly"
       @click="choose(item)"
     >
       {{item.display_name}}
@@ -30,6 +31,10 @@ export default {
     size: {
       type: String,
       default: () => 'default',
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
     },
   },
 
