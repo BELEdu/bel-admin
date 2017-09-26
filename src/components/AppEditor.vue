@@ -3,14 +3,7 @@
 </template>
 
 <script>
-/**
- * 公共编辑器组件
- * 调用此组件时，请务必将用于v-model的字段同时用于设置v-if，如：<app-editor v-model="content" v-if="content"></app-editor>
- * 出于某些原因，ckeditor的资源加载路径设置在Main组件中（不想定义在index.html中，但又必须定义在`import 'ckeditor'`之前）
- */
-
-import 'ckeditor'
-import './mathml'
+window.CKEDITOR_BASEPATH = '/assets/1.0.0/lib/ckeditor/'
 
 export default {
   props: {
@@ -54,11 +47,11 @@ export default {
       CKEDITOR.config.toolbar = [
         {
           name: 'base',
-          items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'Image', 'SpecialChar', 'Table', 'Formula'],
+          items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'base64image', 'SpecialChar', 'Table', 'Wiris'],
         },
       ]
-      CKEDITOR.config.extraPlugins = 'formula'
 
+      CKEDITOR.config.extraPlugins = 'wiris,base64pasteanddrag,base64image'
 
       // CKEDITOR.config.height = this.height
       // CKEDITOR.config.width = this.width
@@ -98,7 +91,8 @@ export default {
 
       // FMATH在第一次转Canvas操作时特别慢（可能是其内部需要预先处理某些事务）
       // 这里在实例化编辑器以后，先做了一次无用的转换来绕过这个问题，以便用户实际操作时能马上快速响应
-      window.mathmlToImage('<math><mn>2</mn></math>', () => {})
+      // window.mathmlToImage('<math><mn>2</mn></math>', () => {})
+      // 以上代码应该转移到ckeditor plugins中的相关文件里
     },
   },
 
@@ -113,13 +107,14 @@ export default {
       this.init()
     } else {
       Promise.all([
-        this.loadScript('/assets/1.0.0/lib/editor/editor.js'),
+        this.loadScript('/assets/1.0.0/lib/ckeditor/ckeditor.js'),
+        this.loadScript('/assets/1.0.0/lib/wiris/editor.js'),
         this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
         this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
       ])
         .then(() => {
           // 指定wiris编辑器的资源请求地址（图标、字体等等）
-          window.com.wiris.js.defaultBasePath = '/assets/1.0.0/lib/editor/editor/resources'
+          window.com.wiris.js.defaultBasePath = '/assets/1.0.0/lib/wiris/editor/resources'
         })
         .then(this.init)
     }

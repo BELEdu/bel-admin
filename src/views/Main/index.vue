@@ -44,8 +44,6 @@ import AppMenu from '@/components/AppMenu'
 import AppFooter from '@/components/AppFooter'
 import { GLOBAL } from '@/store/mutationTypes'
 
-window.CKEDITOR_BASEPATH = '/assets/1.0.0/lib/'
-
 export default {
   name: 'app',
 
