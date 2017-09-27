@@ -159,7 +159,9 @@ export default {
       tree.forEach(handler)
 
       this.items = tree
-      this.onSelectChange()
+      this.$nextTick(() => {
+        this.onSelectChange()
+      })
     },
   },
 
