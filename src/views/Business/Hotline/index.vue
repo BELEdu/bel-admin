@@ -1,7 +1,10 @@
 <template>
   <div class="hotline">
     <!-- 顶部搜索 -->
-    <Form class="app-search-form">
+    <Form
+      v-if="preConfig"
+      class="app-search-form  app-search-form-layout"
+    >
       <!-- 关键字检索 -->
       <Form-item>
         <Input
@@ -16,10 +19,10 @@
           >
             <Option
               v-for="likeKey in likeKeys"
-              :key="likeKey.value"
-              :value="likeKey.value"
+              :key="likeKey.field_name"
+              :value="likeKey.field_name"
             >
-              {{ likeKey.label }}
+              {{ likeKey.display_name }}
             </Option>
           </Select>
         </Input>
@@ -28,8 +31,11 @@
       <Form-item>
         <Date-picker
           v-model="query['between[visited_at]']"
-          format="yyyy-MM-dd" type="daterange" placement="bottom-start"
-          placeholder="来访日期范围" style="width: 200px"
+          format="yyyy-MM-dd"
+          type="daterange"
+          placement="bottom-start"
+          placeholder="来访日期范围"
+          style="width: 200px"
           :editable="false"
         >
         </Date-picker>
@@ -38,11 +44,29 @@
       <Form-item>
         <Select
           v-model="query['equal[student_current_status]']"
-          placeholder="选择当前状态"
+          placeholder="当前状态"
           style="width: 150px;"
         >
+          <Option value="">全部状态</Option>
           <Option
-            v-for="item in student_current_status"
+            v-for="item in preConfig.student_current_status"
+            :value="item.value"
+            :key="item.value"
+          >
+            {{item.display_name}}
+          </Option>
+        </Select>
+      </Form-item>
+      <!-- 报班意向搜索 -->
+      <Form-item>
+        <Select
+          v-model="query['equal[apply_course_intention]']"
+          placeholder="报班意向"
+          style="width: 150px;"
+        >
+          <Option value="">全部意向</Option>
+          <Option
+            v-for="item in preConfig.apply_course_intention"
             :value="item.value"
             :key="item.value"
           >
@@ -59,15 +83,14 @@
     </Form>
     <!-- end 顶部搜索 -->
 
-    <Row class="app-content-header" type="flex" justify="space-between">
-      <Col>
-      <h2 icon="">热线登记</h2>
-      </Col>
-      <Col>
+    <div class="app-content-topbar">
+      <h2>热线登记</h2>
+      <Button
+        type="primary"
+        @click="toCreate()"
+      >添加热线</Button>
       <Button type="primary">导入热线</Button>
-      <Button type="primary" @click="toCreate()">添加热线</Button>
-      </Col>
-    </Row>
+    </div>
 
     <Table border
       :columns="colConfig"
@@ -86,8 +109,8 @@
 <script>
 /**
  * 业务管理 - 热线登记
- * @author hjz
- * @version 2017-06-06
+ *
+ * @author huojinzhao
  */
 
 import { mapState } from 'vuex'
@@ -104,6 +127,7 @@ export default {
     return {
       // 搜索配置
       ...searchConfig(),
+
       // 删除警告对话框数据
       warn: {
         show: false,
@@ -111,7 +135,10 @@ export default {
         row: null,
         loading: false,
       },
+
       colConfig: colConfig(this),
+
+      preConfig: null,
     }
   },
 
@@ -123,15 +150,29 @@ export default {
   },
 
   methods: {
+    /* --- initialization --- */
+
+    getPreconfig() {
+      this.$http.get('/hotline/index_before')
+        .then(({ search_fields, ...rest }) => {
+          this.likeKeys = [...search_fields]
+          this.preConfig = { ...rest }
+        })
+    },
+
+    /* --- business --- */
+
     // 进入新增编辑路由页，例子：/business/hotline/edit
     toCreate() {
       this.$router.push('/business/hotline/edit')
     },
+
     // 进入修改路由，例子：/business/hotline/edit/:id
     // row为createButton方法传入的参数，写死
     toUpdate(row) {
       this.$router.push(`/business/hotline/edit/${row.id}`)
     },
+
     // 删除某一列表项
     toDelete(row) {
       // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
@@ -139,6 +180,7 @@ export default {
       this.warn.show = true
       this.warn.row = row
     },
+
     doDelete() {
       this.warn.loading = true
       this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
@@ -146,19 +188,10 @@ export default {
           this.warn.show = false
         })
     },
-    toFiltrate() {
-      // 封装一个公共方法formEncoded(obj)，将对象转化成键值对字符串
-      // const query = {
-      //   ...this.$route.query,
-      //   // 查询条件对象
-      //   ...this.searchOptions,
-      // }
-      // this.$router.push(`/business/hotline/edit?${formEncoded(query)}`)
-    },
   },
 
-  // 根据当前路由进行初始化
   created() {
+    this.getPreconfig()
     this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
       .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
@@ -173,21 +206,4 @@ export default {
 
 <style lang="less">
 
-@gutter-block: 8px;
-
-.hotline {
-
-  & .ivu-form-item {
-    display: inline-block;
-    margin-right: @gutter-block;
-  }
-
-  & .ivu-form-item-label {
-    font-size: 14px;
-  }
-
-  & .ivu-form-item-content {
-    display: inline-block;
-  }
-}
 </style>

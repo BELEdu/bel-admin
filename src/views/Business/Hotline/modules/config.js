@@ -7,46 +7,25 @@ import { createButton } from '@/utils'
 
 export function editInit() {
   return {
-    visited_at: null,
-    elder_name: '',
     student_name: '',
+    gender: null,
+    elder_name: '',
     mobile: '',
-    areas_code: [],
-    grade: null,
-    invited_teacher_id: '',
-    market_staff_name: '',
     school_name: '',
+    grade: null,
+    apply_course_intention: null,
+    invited_teacher_id: null,
+    market_staff_name: '',
+    visited_at: null,
     return_visited_at: null,
   }
-}
-
-// 返还给服务器的数据处理
-export function encode(data) {
-  /* 之前没用app-date-pick自行处理数据，此处先留着 */
-
-  // const ectype = { ...data }
-
-  // if (ectype.return_visited_at === '') {
-  //   ectype.return_visited_at = null
-  // }
-
-  // return ectype
-
-  return data
 }
 
 // 搜索配置
 export function searchConfig() {
   return {
     // 关键字检索范围
-    likeKeys: [
-      { label: '学员姓名', value: 'student_name' },
-      { label: '家长姓名', value: 'elder_name' },
-      { label: '手机号码', value: 'mobile' },
-      { label: '邀约咨询师', value: 'invited_teacher_name' },
-      { label: '签约咨询师', value: 'signed_teacher_name' },
-      { label: '市场专员', value: 'market_staff_name' },
-    ],
+    likeKeys: [],
     // 选择关键字
     likeKey: 'student_name',
     query: {
@@ -54,6 +33,7 @@ export function searchConfig() {
       'between[visited_at]': [],
       // 特殊字段搜索
       'equal[student_current_status]': null,
+      'equal[apply_course_intention]': null,
     },
   }
 }
@@ -61,10 +41,14 @@ export function searchConfig() {
 export function colConfig(that) {
   return [
     {
-      title: '来访日期',
-      key: 'visited_at',
+      title: '学员姓名',
+      key: 'student_name',
       align: 'center',
-      sortable: 'custom',
+    },
+    {
+      title: '学员性别',
+      key: 'gender_name',
+      align: 'center',
     },
     {
       title: '家长姓名',
@@ -72,8 +56,9 @@ export function colConfig(that) {
       align: 'center',
     },
     {
-      title: '学员姓名',
-      key: 'student_name',
+      title: '手机号码',
+      key: 'mobile',
+      width: 120,
       align: 'center',
     },
     {
@@ -82,21 +67,10 @@ export function colConfig(that) {
       align: 'center',
     },
     {
-      title: '所在地区',
-      key: 'place_name',
-      align: 'center',
-    },
-    {
       title: '当前年级',
       key: 'grade_name',
       align: 'center',
       sortable: 'custom',
-    },
-    {
-      title: '手机号码',
-      key: 'mobile',
-      width: 120,
-      align: 'center',
     },
     {
       title: '邀约咨询师',
@@ -119,14 +93,19 @@ export function colConfig(that) {
       align: 'center',
     },
     {
+      title: '报班意向',
+      key: 'apply_course_intention_name',
+      align: 'center',
+    },
+    {
       title: '签约时间',
       key: 'signed_at',
       align: 'center',
       sortable: 'custom',
     },
     {
-      title: '合同金额',
-      key: 'contract_total',
+      title: '来访日期',
+      key: 'visited_at',
       align: 'center',
       sortable: 'custom',
     },
