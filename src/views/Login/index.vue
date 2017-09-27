@@ -2,7 +2,7 @@
   <div class="login">
     <div class="login-box">
       <header class="login-box__header">
-        <h1>欢迎登录精英教育OA管理系统</h1>
+        <h1>欢迎登陆爱考拉 SaaS 管理系统</h1>
       </header>
 
       <Form class="login-box__body" :model="form" :rules="rules" :label-width="60" ref="form">

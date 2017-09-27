@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <img class="app-logo" :src="require('@/assets/logo.png')" alt="厦门大学教学系统">
-    <h1 class="app-title">某某机构教学系统</h1>
+    <h1 class="app-title">厦门彩虹狗科技有限公司</h1>
     <div class="app-user">
       <span class="app-user__notif">
         <Icon type="android-notifications-none"></Icon>

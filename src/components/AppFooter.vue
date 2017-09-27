@@ -1,7 +1,8 @@
 <template>
   <footer class="app-footer">
     <div class="app-footer__content">
-      <a href="#">XXXX信息科技有限公司</a> 2016 - 2017 © All Rights Reserved. <a href="#">闽ICP备15020969号</a>
+      <a href="#">厦门彩虹狗科技有限公司</a>
+      <span>2016 - 2017 © All Rights Reserved.</span>
     </div>
   </footer>
 </template>
