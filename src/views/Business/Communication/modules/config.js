@@ -17,13 +17,12 @@ export function editInit() {
     // min:2|max:20
     school_name: '',
     // min:2|max:10
-    rank: '',
+    rank: null,
     // 字典： grade
     grade: null,
-    // 是否偏科， 字典： is
-    is_tend_subject: null,
-    // 回访时间 ： date_format:Y-m-d
-    return_visited_at: null,
+    // 偏科情况
+    tend_subject_description: '',
+    // 沟通类型
     communication_type: null,
     // 沟通时间： date_format:Y-m-d
     communication_at: '',
@@ -34,23 +33,19 @@ export function editInit() {
 
 // 返还给服务器的数据处理
 export function encode(data) {
-  // eslint-disable-next-line
-  let ectype = { ...data }
+  const ectype = { ...data }
+
   // visited_at 处理首次时间
-  if (typeof ectype.visited_at === 'object' && ectype.visited_at !== null) {
+  if (typeof ectype.visited_at === 'object'
+    && ectype.visited_at !== null
+  ) {
     ectype.visited_at = ectype.visited_at.toJSON().slice(0, 10)
   }
-  if (ectype.visited_at === '' || ectype.visited_at === '0000-00-00') {
+  if (ectype.visited_at === ''
+    || ectype.visited_at === '0000-00-00'
+  ) {
     ectype.visited_at = null
   }
-  // return_visited_at 处理回访时间
-  if (typeof ectype.return_visited_at === 'object' && ectype.return_visited_at !== null) {
-    ectype.return_visited_at = ectype.return_visited_at.toJSON().slice(0, 10)
-  }
-  if (ectype.return_visited_at === '' || ectype.return_visited_at === '0000-00-00') {
-    ectype.return_visited_at = null
-  }
-  // 地址map编码
 
   return ectype
 }
@@ -59,55 +54,62 @@ export function encode(data) {
 export function searchConfig() {
   return {
     // 关键字检索范围
-    likeKeys: [
-      { label: '学员姓名', value: 'student_name' },
-      { label: '手机号码', value: 'mobile' },
-      { label: '在读学校', value: 'school_name' },
-    ],
+    likeKeys: [],
     // 选择关键字
     likeKey: 'student_name',
     query: {
-      // 时间段搜索
-      'between[first_communication_at]': [],
-      // 特殊字段搜索
-      'equal[student_current_status]': null, // 当前状态
-      'equal[communication_type]': null, // 类型
+      'equal[student_current_status]': null,
+      'equal[communication_type]': null,
     },
   }
 }
 
+// 沟通情况render
+const buildLogs = (h, { row }) => h('div',
+  {
+    style: {
+      'text-align': 'left',
+    },
+  },
+  row.communication_logs.map(log => h('div',
+    {
+      style: {
+        margin: '3px 0',
+      },
+    },
+    [
+      h('span',
+        {
+          style: {
+            'font-weight': 'bold',
+            'margin-right': '5px',
+          },
+        },
+        log.communication_at,
+      ),
+      h('span', null, log.content),
+    ],
+  )),
+)
+
 // 列表头配置
 export function colConfig(that) {
   return [
-    {
-      title: '首次沟通时间',
-      key: 'first_communication_at',
-      align: 'center',
-      width: 130,
-      sortable: 'custom',
-    },
-    {
-      title: '回访时间',
-      key: 'return_visited_at',
-      align: 'center',
-      width: 110,
-      sortable: 'custom',
-    },
-    {
-      title: '手机号码',
-      key: 'mobile',
-      align: 'center',
-      width: 115,
-    },
     {
       title: '学员姓名',
       key: 'student_name',
       align: 'center',
     },
     {
-      title: '性别',
+      title: '学员性别',
       key: 'gender_name',
       align: 'center',
+    },
+    {
+      title: '学员手机号码',
+      key: 'mobile',
+      align: 'center',
+      width: 115,
     },
     {
       title: '在读学校',
@@ -127,10 +129,9 @@ export function colConfig(that) {
       sortable: 'custom',
     },
     {
-      title: '偏科',
-      key: 'is_tend_subject_name',
+      title: '偏科情况',
+      key: 'tend_subject_description',
       align: 'center',
-      width: 70,
     },
     {
       title: '当前状态',
@@ -139,15 +140,16 @@ export function colConfig(that) {
       width: 90,
     },
     {
-      title: '类型',
+      title: '沟通类型',
       key: 'communication_type_name',
       align: 'center',
     },
     {
-      title: '最新沟通情况',
-      key: 'last_content',
+      title: '沟通情况',
+      key: 'logs',
+      width: 400,
       align: 'center',
-      width: 300,
+      render: buildLogs,
     },
     {
       title: '操作',

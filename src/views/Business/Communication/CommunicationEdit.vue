@@ -1,60 +1,77 @@
 <template>
-  <main class="commeditor app-form-entire" v-if="fdata">
+  <main class="commeditor" v-if="preConfig">
     <app-editor-title></app-editor-title>
-    <Form :label-width="110" :rules="formRules" ref="form" :model="fdata">
-      <Form-item label="学员姓名" required prop="student_name">
-        <Input placeholder="请输入学生姓名" v-model="fdata.student_name"></Input>
+    <Form
+      class="app-form-entire"
+      :label-width="110"
+      :rules="formRules"
+      :model="fdata"
+      ref="form"
+     >
+      <app-form-alert :errors="formErrors"></app-form-alert>
+      <Form-item label="学员姓名" prop="student_name">
+        <Input
+          placeholder="请输入学生姓名"
+          v-model="fdata.student_name"
+        ></Input>
       </Form-item>
-      <Form-item label="联系方式" required prop="mobile">
-        <Input placeholder="请输入手机号码" v-model="fdata.mobile"></Input>
+      <Form-item label="学生手机号" prop="mobile">
+        <Input
+          placeholder="请输入手机号码"
+          v-model="fdata.mobile"
+        ></Input>
       </Form-item>
       <Form-item label="学员性别">
         <Radio-group v-model="fdata.gender">
-          <Radio :label="1">
-            <span>男</span>
-          </Radio>
-          <Radio :label="2">
-            <span>女</span>
+          <Radio
+            v-for="item in preConfig.gender"
+            :label="item.value"
+          >
+            <span>{{item.display_name}}</span>
           </Radio>
         </Radio-group>
       </Form-item>
       <Form-item label="在读学校" prop="school_name">
-        <Input placeholder="请输入学校名称" v-model="fdata.school_name"></Input>
+        <Input
+          placeholder="请输入学校名称"
+          v-model="fdata.school_name"
+        ></Input>
       </Form-item>
       <Form-item label="年段排名" prop="rank">
-        <Input placeholder="请输入年段排名" v-model="fdata.rank"></Input>
+        <InputNumber
+          placeholder="请输入年段排名"
+          v-model="fdata.rank"
+        ></InputNumber>
       </Form-item>
       <Form-item label="当前年级">
-        <Select placeholder="请选择......" v-model="fdata.grade">
-          <Option 
-            v-if="dicts.grade" 
-            v-for="item in dicts.grade" 
-            :value="item.value" 
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.grade"
+        >
+          <Option
+            v-for="item in preConfig.grade"
+            :value="item.value"
             :key="item.display_name"
           >
             {{item.display_name}}
           </Option>
         </Select>
       </Form-item>
-      <Form-item label="是否偏科">
-        <Radio-group v-model="fdata.is_tend_subject">
-          <Radio :label="1">
-            <span>是</span>
-          </Radio>
-          <Radio :label="0">
-            <span>否</span>
-          </Radio>
-        </Radio-group>
-      </Form-item>
-      <Form-item label="回访时间" prop="return_visited_at">
-        <Date-picker placeholder="年 / 月 / 日" :editable="false" v-model="fdata.return_visited_at"></Date-picker>
+      <Form-item label="偏科情况">
+        <Input
+          placeholder="请输入偏科成绩，如：数学89，多个科目以“,”分开，没有则写“无”"
+          v-model="fdata.tend_subject_description"
+        ></Input>
       </Form-item>
       <Form-item label="沟通类型">
-        <Select placeholder="请选择......" v-model="fdata.communication_type">
-          <Option 
-            v-if="dicts.communication_type"
-            v-for="item in dicts.communication_type" 
-            :value="item.value" :key="item.display_name"
+        <Select
+          placeholder="请选择......"
+          v-model="fdata.communication_type"
+        >
+          <Option
+            v-for="item in preConfig.communication_type"
+            :value="item.value"
+            :key="item.display_name"
           >
             {{item.display_name}}
           </Option>
@@ -62,34 +79,74 @@
       </Form-item>
     </Form>
     <!-- log表单 -->
-    <Form :label-width="110" :rules="formRules" ref="comm_log" :model="comm_log">
+    <Form
+      class="app-form-entire"
+      :label-width="110"
+      :rules="formRules"
+      ref="comm_log"
+      :model="comm_log"
+    >
       <!-- log编辑 -->
-      <Form-item label="沟通时间" prop="communication_at">
-        <Date-picker placeholder="年 / 月 / 日" :editable="false" v-model="comm_log.communication_at"></Date-picker>
+      <Form-item
+        label="沟通时间"
+        prop="communication_at"
+      >
+        <Date-picker
+          placeholder="年 / 月 / 日"
+          :editable="false"
+          v-model="comm_log.communication_at"
+        ></Date-picker>
       </Form-item>
       <Form-item label="沟通情况" prop="content">
-        <Input type="textarea" placeholder="请输入......" :rows="4" v-model="comm_log.content"></Input>
+        <Input
+          type="textarea"
+          placeholder="请输入......"
+          :rows="4"
+          v-model="comm_log.content"
+        ></Input>
       </Form-item>
       <!-- log编辑 end-->
       <!-- 添加log -->
       <Form-item class="commeditor--plus-container">
-        <Button type="dashed" icon="plus" @click.stop="addLogClick = true; addLog('comm_log')">增加沟通记录</Button>
+        <Button
+          type="dashed"
+          icon="plus"
+          @click.stop="
+            addLogClick = true;
+            addLog('comm_log');
+          "
+        >增加沟通记录</Button>
       </Form-item>
       <!-- 添加log end -->
       <!-- logs展示 -->
-      <Row class="commeditor--contents" style="font-size: 14px;" v-for="(item, index) in fdata.communication_logs" v-if="fdata.communication_logs.length" :key="item.communication_at">
-        <Col span="3" class="commeditor--contents-date">{{item.communication_at}}</Col>
+      <Row
+        class="commeditor--contents"
+        v-for="(item, index) in fdata.communication_logs" v-if="fdata.communication_logs.length"
+        :key="item.communication_at"
+      >
+        <Col span="3"
+          class="commeditor--contents-date"
+        >{{item.communication_at}}</Col>
         <Col span="20">{{item.content}}</Col>
         <Col span="1" style="padding-left: 5px;">
-        <!-- 删除log-->
-        <Button class="commeditor--contents-delete" size="small" type="text" @click.stop="deleteLog(item.communication_id, item.id, index)">删除</Button>
-        <!-- 删除log end-->
+          <!-- 删除log-->
+          <Button
+            class="commeditor--contents-delete"
+            size="small"
+            type="text"
+            @click.stop="deleteLog(item.communication_id, item.id, index)"
+          >删除</Button>
+          <!-- 删除log end-->
         </Col>
       </Row>
       <!-- logs展示 end -->
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" :loading="loading" @click="handleSubmit('form')">提交</Button>
+        <Button
+          type="primary"
+          :loading="loading"
+          @click="handleSubmit('form')"
+        >提交</Button>
       </Form-item>
     </Form>
     <!-- log表单 end -->
@@ -99,11 +156,11 @@
 <script>
 /**
  * 沟通记录 - 记录编辑
- * @author hjz
- * @version 2017-06-07
+ *
+ * @author huojinzhao
  */
 
-import { goBack } from '@/mixins'
+import { goBack, form } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 import { editInit, encode } from './modules/config'
@@ -111,24 +168,28 @@ import { editInit, encode } from './modules/config'
 export default {
   name: 'CommunicationEdit',
 
-  mixins: [goBack],
+  mixins: [goBack, form],
 
   data() {
     return {
       // 最终提交给后端的数据
       fdata: editInit(),
+
       // log 单独编辑表单数据
       comm_log: {
         communication_at: '',
         content: '',
       },
+
       // "提交"按钮状态控制
       loading: false,
+
       // "增加沟通记录"按钮验证标志
       addLogClick: false,
+
       // 字典数据
       communication_type: null,
-      grade: null,
+
       // 表单验证规则
       formRules: {
         student_name: [
@@ -145,8 +206,12 @@ export default {
           this.$rules.name,
         ],
         rank: [
-          { type: 'string', pattern: /^[1-9][0-9]*$/, message: '排名应为大于1的有效数字', trigger: 'blur' },
-          this.$rules.length(1, 10),
+          {
+            min: 1,
+            type: 'number',
+            message: '排名应为大于1的有效数字',
+            trigger: 'change',
+          },
         ],
         communication_at: [
           { validator: this.validateLogAt },
@@ -155,17 +220,21 @@ export default {
           { validator: this.validateLogContent },
         ],
       },
+
+      preConfig: null,
     }
   },
 
-  computed: {
-    dicts() {
-      const { communication_type, grade } = this.$store.state.dicts
-      return { communication_type, grade }
-    },
-  },
-
   methods: {
+    /* --- initialization --- */
+
+    getPreconfig() {
+      this.$http.get('/communication/store_before')
+        .then((res) => { this.preConfig = { ...res } })
+    },
+
+    /* --- assistance --- */
+
     // 表单项validator
     validateLogAt(rule, value, callback) {
       // 点击"新增沟通记录"按钮情况下，有空字段验证
@@ -180,6 +249,7 @@ export default {
       }
       this.addLogClick = false
     },
+
     validateLogContent(rule, value, callback) {
       const at = this.comm_log.communication_at
       // 点击"新增沟通记录"按钮情况下有空字段的验证
@@ -198,6 +268,9 @@ export default {
       // 重置点击"新增沟通记录"按钮的状态
       this.addLogClick = false
     },
+
+    /* --- business --- */
+
     // 删除log项
     deleteLog(communication_id, id, index) {
       if (id && communication_id) {
@@ -205,18 +278,23 @@ export default {
       }
       this.fdata.communication_logs.splice(index, 1)
     },
+
     // 新增log项
     addLog(name) {
       let result = false
       // log验证成功后
       this.$refs[name].validate((valid) => {
         if (valid) {
-          const communication_at = this.comm_log.communication_at.toJSON().slice(0, 10)
+          const communication_at = this.comm_log
+            .communication_at
+            .toJSON().slice(0, 10)
           const comm_log = {
             communication_at,
             content: this.comm_log.content,
           }
-          if (this.$route.params.id) Http.post(`/communication/${this.$route.params.id}/log`, comm_log)
+          if (this.$route.params.id) {
+            Http.post(`/communication/${this.$route.params.id}/log`, comm_log)
+          }
           this.fdata.communication_logs.push(comm_log)
           this.$refs[name].resetFields()
         }
@@ -225,6 +303,7 @@ export default {
       // 返回log验证结果
       return result
     },
+
     // 编辑提交表单数据
     submit() {
       // 开启按钮loadding
@@ -235,12 +314,17 @@ export default {
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.goBack() })
+          .then(() => this.goBack())
+          .catch(this.errorHandler)
+          .then(() => { this.loading = false })
       } else {
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.goBack() })
+          .then(() => this.goBack())
+          .catch(this.errorHandler)
+          .then(() => { this.loading = false })
       }
     },
+
     // Form click提交表单事件handler
     handleSubmit(name) {
       // 验证和处理没有用"增加沟通记录"的comm_log表单
@@ -251,14 +335,19 @@ export default {
         logValid = this.addLog('comm_log')
       }
       // 进行表单提交
-      this.$refs[name].validate((valid) => { if (valid && logValid) this.submit() })
+      this.$refs[name]
+        .validate((valid) => { if (valid && logValid) this.submit() })
     },
   },
 
   created() {
+    this.getPreconfig()
     // 编辑页面初始化以及loading页面关闭
     this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => { this.fdata = res; this.$store.commit(GLOBAL.LOADING.HIDE) })
+      .then((res) => {
+        this.fdata = res
+        this.$store.commit(GLOBAL.LOADING.HIDE)
+      })
       .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
@@ -286,6 +375,10 @@ export default {
 
 // iview样式重写
 .commeditor {
+
+  & .ivu-input-number {
+    width: 100%;
+  }
 
   & .ivu-date-picker {
     display: block;
