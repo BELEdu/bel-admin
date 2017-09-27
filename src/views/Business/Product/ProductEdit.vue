@@ -11,6 +11,7 @@
       :rules="formRules"
       :model="fdata"
     >
+      <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item
         label="产品类型"
         prop="product_type"
@@ -148,7 +149,7 @@
  * @author huojinzhao
  */
 
-import { goBack } from '@/mixins'
+import { goBack, form } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 import { editInit, unit_encode, unit_decode } from './modules/config'
@@ -157,7 +158,7 @@ import vTableCheckbox from '../components/TableCheckbox'
 export default {
   name: 'business-product-edit',
 
-  mixins: [goBack],
+  mixins: [goBack, form],
 
   components: {
     vTableCheckbox,
@@ -230,26 +231,29 @@ export default {
 
     // 提交编辑好的表单数据
     submit() {
-      // 开启按钮loadding
       this.loading = true
-      // 根据接口文档转化数据
       const fdata = unit_encode(this.fdata)
+      // 产品名称非输入，而是自动生成
       fdata.display_name = this.autoName()
       if (this.$route.params.id) {
         const id = this.$route.params.id
         this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.goBack() })
+          .then(() => this.goBack())
+          .catch(this.errorHandler)
+          .then(() => { this.loading = false })
       } else {
         this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.goBack() })
+          .then(() => {
+            this.goBack()
+          })
+          .catch(this.errorHandler)
+          .then(() => { this.loading = false })
       }
     },
 
-    // Form click提交表单事件handler @click.stop="submit"
     handleSubmit(name) {
-      // 其他处理...
-      // 进行表单提交
-      this.$refs[name].validate((valid) => { if (valid) this.submit() })
+      this.$refs[name]
+        .validate((valid) => { if (valid) this.submit() })
     },
   },
 
