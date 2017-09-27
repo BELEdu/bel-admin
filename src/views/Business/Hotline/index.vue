@@ -95,12 +95,23 @@
     <Table border
       :columns="colConfig"
       :data="buffer.data"
-      @on-sort-change="sort"></Table>
+      @on-sort-change="sort"
+    ></Table>
+
     <!-- 分页插件 -->
-    <app-pager @on-change="goTo" @on-page-size-change="pageSizeChange" :data="buffer"></app-pager>
+    <app-pager
+      @on-change="goTo"
+      @on-page-size-change="pageSizeChange"
+      :data="buffer"
+    ></app-pager>
 
     <!--删除提醒框-->
-    <app-warn-modal v-model="warn.show" :title="warn.title" :loading="warn.loading" @on-ok="doDelete()">
+    <app-warn-modal
+      v-model="warn.show"
+      :title="warn.title"
+      :loading="warn.loading"
+      @on-ok="doDelete()"
+    >
       <p>删除该条记录后将无法再恢复，是否继续删除？</p>
     </app-warn-modal>
   </div>
@@ -145,7 +156,6 @@ export default {
   computed: {
     ...mapState({
       buffer: state => state.business.buffer.hotline,
-      student_current_status: state => state.dicts.student_current_status,
     }),
   },
 
