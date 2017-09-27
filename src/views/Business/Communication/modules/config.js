@@ -154,7 +154,7 @@ export function colConfig(that) {
     {
       title: '操作',
       key: '13',
-      width: 130,
+      width: 180,
       align: 'center',
       render: createButton([
         {
@@ -166,6 +166,11 @@ export function colConfig(that) {
           text: '修改',
           type: 'primary',
           click: that.toUpdate,
+        },
+        {
+          text: '记录',
+          type: 'success',
+          click: that.showRecord,
         },
       ]),
     },

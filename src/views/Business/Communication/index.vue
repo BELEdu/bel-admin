@@ -97,6 +97,13 @@
     >
       <p>删除该条记录后将无法再恢复，是否继续删除？</p>
     </app-warn-modal>
+
+    <v-record
+      :visible.sync="recordModal.active"
+      :logs="recordModal.data"
+      :target="recordModal.id"
+      @success="recordEditionSucceed"
+    ></v-record>
   </main>
 </template>
 
@@ -111,12 +118,17 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
 import { colConfig, searchConfig } from './modules/config'
+import vRecord from './components/record'
 
 
 export default {
   name: 'business-communication',
 
   mixins: [list],
+
+  components: {
+    vRecord,
+  },
 
   data() {
     return {
@@ -135,6 +147,12 @@ export default {
       colConfig: colConfig(this),
 
       preConfig: null,
+
+      recordModal: {
+        active: false,
+        id: null,
+        data: [],
+      },
     }
   },
 
@@ -179,6 +197,21 @@ export default {
         .then(() => {
           this.warn.show = false
         })
+    },
+
+    showRecord(row) {
+      this.$http.get(`/communication/${row.id}`)
+        .then(({ communication_logs: logs }) => {
+          this.recordModal = {
+            active: true,
+            data: logs,
+            id: row.id,
+          }
+        })
+    },
+
+    recordEditionSucceed() {
+      this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
     },
   },
 
