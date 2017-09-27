@@ -25,6 +25,7 @@
         <Radio-group v-model="fdata.gender">
           <Radio
             v-for="item in preConfig.gender"
+            :key="item.value"
             :label="item.value"
           >
             <span>{{item.display_name}}</span>
