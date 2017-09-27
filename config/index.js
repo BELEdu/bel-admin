@@ -31,8 +31,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/v1': {
-         target: 'https://oa-api.caihonggou.com',
-         changeOrigin: true
+        target: 'https://oa-api.caihonggou.com',
+        changeOrigin: true
+      },
+      '/images': {
+        target: 'https://oa-api.caihonggou.com',
+        changeOrigin: true
       },
       '/assets/1.0.0/lib/': {
         target: 'https://oa.caihonggou.com',
