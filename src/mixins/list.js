@@ -83,9 +83,14 @@ export default {
 
       // $route.query的值都为字符串，这里把可以转为数字类型的值转为数字类型
       Object.keys(copy).forEach((key) => {
-        const numberifiedValue = +copy[key]
-        if (numberifiedValue === 0 || numberifiedValue) {
-          copy[key] = numberifiedValue
+        const value = copy[key]
+        if (typeof value === 'string' && value) {
+          const numberifiedValue = +value
+          // 判断转换结果是否为NaN
+          // eslint-disable-next-line
+          if (numberifiedValue === numberifiedValue) {
+            copy[key] = numberifiedValue
+          }
         }
       })
 
