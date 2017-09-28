@@ -49,7 +49,7 @@
       :key="key"
       :label="condition.label"
       :data="condition.data"
-      :tag="key"
+      :tag="`equal[${key}]`"
     ></v-advance-search>
 
     <!-- 中部标题栏 -->
@@ -120,7 +120,6 @@ export default {
 
       likeKey: 'display_name',
 
-
       /* --- 上方高级搜索数据 --- */
 
       subjects: null,
@@ -128,6 +127,7 @@ export default {
       advanceConditions: {},
 
       /* --- 下方试卷列表 --- */
+
       colConfig: [
         {
           title: '试卷标题',
