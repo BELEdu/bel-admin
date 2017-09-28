@@ -36,6 +36,11 @@ export default {
             return result
           }
 
+          // 处理值为日期的情况
+          if (value.toISOString) {
+            return { ...result, [key]: format(value, 'YYYY-MM-DD') }
+          }
+
           // 处理between查询的值
           if (typeof value === 'object') {
             const [startDate, endDate] = value
