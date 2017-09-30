@@ -8,6 +8,7 @@
           v-model="query[`equal[grade_range_subject_id]`]"
           placeholder="选择年段学科"
           style="width:9em;"
+          @on-change="changeSubject"
         >
           <Option
             v-for="item in grade_range_subject_id"
@@ -18,7 +19,23 @@
           </Option>
         </Select>
       </Form-item>
-      <!-- 教材版本 -->
+      <!-- 试题类型 -->
+      <Form-item>
+        <Select
+          v-model="query[`equal[question_type_id]`]"
+          placeholder="选择试题类型"
+          style="width:9em;"
+        >
+          <Option
+            v-for="item in question_type_id"
+            :value="item.value"
+            :key="item.value"
+          >
+            {{item.display_name}}
+          </Option>
+        </Select>
+      </Form-item>
+      <!-- 试题状态 -->
       <Form-item>
         <Select
           v-model="query[`equal[question_status]`]"
@@ -156,10 +173,12 @@ export default {
       query: {
         // 'equal[grade_range_subject_id]': null,
         'equal[question_status]': null,
+        'equal[question_type_id]': null,
       },
 
       grade_range_subject_id: [], // 年段及学科数据源
       question_status: [], // 试题状态数据源
+      question_type_id: [], // 试题类型数据源
 
       list: {}, // 列表数据
 
@@ -320,6 +339,32 @@ export default {
       return this.$http.get(url)
         .then((res) => { this.list = res })
     },
+
+    /**
+     * 切换科目时重新请求before接口
+     * 重置试题基本信息
+     * 重置query
+     */
+    changeSubject(subjectId) {
+      this.query['equal[question_type_id]'] = ''
+      this.query['equal[question_status]'] = ''
+      this.likeKeys = []
+
+      if (subjectId !== this.grade_range_subject_id) {
+        this.$http.get(`/question/index_before/?grade_range_subject_id=${subjectId}`)
+          .then(({
+            grade_range_subject_id,
+            question_status,
+            search_fields,
+            question_type_id,
+          }) => {
+            this.grade_range_subject_id = grade_range_subject_id
+            this.question_status = question_status
+            this.likeKeys = search_fields
+            this.question_type_id = question_type_id
+          })
+      }
+    },
   },
 
   created() {
@@ -332,6 +377,7 @@ export default {
         grade_range_subject_id,
         question_status,
         search_fields,
+        question_type_id,
         current_grade_range_subject_id,
       }) => {
         next((vm) => {
@@ -339,6 +385,7 @@ export default {
           vm.grade_range_subject_id = grade_range_subject_id
           vm.question_status = question_status
           vm.likeKeys = search_fields
+          vm.question_type_id = question_type_id
           vm.query = {
             'equal[grade_range_subject_id]': current_grade_range_subject_id,
             ...vm.query,
