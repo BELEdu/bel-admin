@@ -22,11 +22,10 @@
       <li>过滤后：<br>{{filterArray}}</li>
       <li>每项字符数：{{filterArrayLength}}</li>
       <li>最长的字符数：{{choiceMaxLength}}</li>
-      <li>每行最多几个字：{{ Math.floor(40 / answerLength)}}</li>
+      <li>如果放一行，每项最多几个字：{{ Math.floor(40 / answerLength)}}</li>
       <li>每行放几个（图片除外）：{{choiceCountPerLine}}</li>
       <li>百分比：{{choiceItemWidth}}</li>
     </ul>
-
 
     <h3>【答案】</h3>
     <article
