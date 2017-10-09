@@ -1,5 +1,8 @@
 <template>
   <div class="v-side-tree">
+
+    <!-- 默认为唯一单选模式，不提供模式切换 -->
+
     <!-- 唯一多选模式 -->
     <div v-if="type === 'multiple'">
       <Button
@@ -9,7 +12,7 @@
     </div>
 
     <!-- 多选单选混合模式 -->
-    <div v-else>
+    <div v-if="type === 'all'">
       <!-- 知识点多选 -->
       <div
         class="multiple clearfix"
@@ -50,7 +53,7 @@ export default {
   props: {
     type: {
       type: String,
-      default: () => 'multiple',
+      default: () => 'single',
     },
     data: {
       type: Array,
@@ -59,7 +62,7 @@ export default {
   },
 
   data: () => ({
-    multiple: true,
+    multiple: false,
   }),
 
   methods: {
