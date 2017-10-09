@@ -23,6 +23,7 @@
         <app-question-analysis
           :data="questionDetail"
         ></app-question-analysis>
+
       </div>
 
       <h3 class="question-detail__log">操作历史</h3>

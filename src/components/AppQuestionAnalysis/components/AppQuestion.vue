@@ -1,10 +1,15 @@
 <template>
   <div class="app-question" :style="{width:`${width}px`}">
+
+    <!-- 索引 -->
+    <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span>
+
     <!-- 题目 -->
     <article
       class="clearfix"
       v-html="data.content"
-    ></article>
+    >
+    </article>
 
     <!-- 选择题选项区域 -->
     <ul
@@ -45,6 +50,7 @@
   * @version 2017-10-09
   * @param {Object} data - 试题详情
   * @param {Number, String} width - 试题宽度，默认宽度500像素
+  * @param {Number} index - 试题索引，不传的时候不显示
   */
 
 export default {
@@ -58,6 +64,9 @@ export default {
     width: {
       type: [Number, String],
       default: 500,
+    },
+    index: {
+      type: Number,
     },
   },
 
