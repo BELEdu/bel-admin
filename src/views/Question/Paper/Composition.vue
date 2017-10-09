@@ -50,7 +50,7 @@
           :key="key"
           :label="condition.label"
           :data="condition.data"
-          :tag="key"
+          :tag="`equal[${key}]`"
           :readonly="tempory.active && key==='question_type_id'"
         ></v-advance-search>
         <!-- 中部：帮助条 -->

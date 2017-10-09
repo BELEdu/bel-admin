@@ -152,7 +152,7 @@
                 <Button
                   size="small"
                   @click="() => {
-                    updataTopic(tindex, sindex, topic.question_type_id)
+                    updateTopic(tindex, sindex, topic.question_type_id)
                   }"
                 >换题</Button>
                 <Button
@@ -422,7 +422,7 @@ export default {
       const host = '/question/paper/composition'
       const id = this.$route.params.id
       const questionType = question_type
-        ? `&question_type_id=${question_type}`
+        ? `&equal[question_type_id]=${question_type}`
         : ''
       if (id) {
         return this.$router
@@ -472,9 +472,9 @@ export default {
       this.initSectionsView(this.paper.question_types)
     },
 
-    /* updata topic */
+    /* update topic */
 
-    updataTopic(tindex, sindex, questionType) {
+    updateTopic(tindex, sindex, questionType) {
       const { PAPER } = QUESTION
       this.$store.commit(PAPER.CONFIRM_TEMPORY, { tindex, sindex })
       this.backToCompose(questionType)
