@@ -150,8 +150,8 @@ export default {
 
 <style lang="less">
 .app-question {
-  font-family: Times New Roman;
   margin: auto;
+  font-family: Times New Roman;
   background-color: inherit;
 
   &::before {
