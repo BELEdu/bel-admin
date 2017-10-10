@@ -1,203 +1,345 @@
 <template>
-  <main class="app-form-entire contract-create">
+  <main class="contract-create">
     <app-editor-title></app-editor-title>
-    <Steps :current="process - 1" class="contract-create-step steps-fix">
-      <Step title="选择流程" ></Step>
-      <Step title="输入学员信息" ></Step>
-      <Step title="选择产品" ></Step>
-      <Step title="提交审批" ></Step>
+
+    <!-- 审批进度条 -->
+    <Steps
+      :current="process - 1"
+      class="step steps-fix"
+    >
+      <Step title="选择流程"></Step>
+      <Step title="输入学员信息"></Step>
+      <Step title="选择产品"></Step>
+      <Step title="提交审批"></Step>
     </Steps>
-    <!-- 审批流程表单 -->
-    <Form :label-width="130" v-if="flowInfo"
-      v-show="process === 1" ref="infoForm"
-      :model="fdata.info" :rules="infoRules"
+
+    <!-- 流程一：审批流程 -->
+    <Form
+      class="app-form-entire"
+      :label-width="130"
+      v-if="flowInfo"
+      v-show="process === 1"
+      :model="fdata"
+      :rules="rules"
+      ref="infoForm"
      >
-      <Form-item label="合同名称" prop="display_name">
-        <Input placeholder="请输入合同名称" v-model="fdata.info.display_name"></Input>
+      <Form-item label="学员编号" prop="student_number">
+        <Input
+          placeholder="请输入学员编号"
+          v-model="fdata.student_number"
+        ></Input>
       </Form-item>
       <!-- 选择流程确定合同和角色选择 -->
       <Form-item label="流程名称" prop="flow_id">
-        <Select v-model="fdata.info.flow_id" @on-change="changeFlow">
+        <Select
+          @on-change="changeFlow"
+          v-model="fdata.flow_id"
+        >
           <Option
             v-for="item in flowInfo.flow_list"
-            :value="item.id" :key="item.id"
+            :value="item.id"
+            :key="item.id"
           >
             {{item.display_name}}
            </Option>
         </Select>
       </Form-item>
       <!-- 合同模板 -->
-      <Form-item v-if="flowInfo.flow_template_list.length"
-        label="合同模板" prop="template_type"
+      <Form-item
+        v-if="flowInfo.flow_template_list.length"
+        label="合同模板"
+        prop="template_type"
       >
-        <Select v-model="fdata.info.template_type">
-          <Option v-for="item in flowInfo.flow_template_list"
-            :value="item.id" :key="item.id"
-            >
+        <Select
+          v-model="fdata.template_type">
+          <Option
+            v-for="item in flowInfo.flow_template_list"
+            :value="item.id"
+            :key="item.id"
+          >
             {{item.display_name}}
            </Option>
         </Select>
       </Form-item>
       <!-- 流程数据 角色信息 -->
-      <Form :label-width="130" ref="authorityForm"
-        :model="fdata.info.authority[index]"
+      <Form-item
         v-for="(item, index) in flowInfo.role_list"
-        :key="item.display_name" :rules="authorityRules"
+        :key="item.display_name"
+        :rules="rules.authorityRules"
+        :label="item.display_name"
+        :prop="'authority.' + index + '.user_id'"
       >
-        <Form-item prop="user_id" :label="item.display_name">
-          <Select v-model="fdata.info.authority[index].user_id">
-            <Option v-for="user in item.users"
-              :value="user.id" :key="user.id"
-            >
-              {{user.realname}}
-            </Option>
-          </Select>
-        </Form-item>
-      </Form>
+        <Select
+          v-model="fdata.authority[index].user_id"
+        >
+          <Option
+            v-for="user in item.users"
+            :value="user.id"
+            :key="user.id"
+          >
+            {{user.realname}}
+          </Option>
+        </Select>
+      </Form-item>
       <!-- 第一步过关按钮 -->
       <Form-item>
         <Button @click="goBack()">取消</Button>
-        <Button type="primary" @click="checkMulForm('infoForm', 'authorityForm')">下一步</Button>
+        <Button
+          type="primary"
+          @click="checkFlowForm('infoForm', fetchStudentInfo)"
+        >下一步</Button>
       </Form-item>
     </Form>
-    <!-- 审批流程表单end -->
-    <!-- 学员信息表单 -->
-    <Form :label-width="130" v-show="process === 2" ref="studentForm"
-      :model="fdata.student" :rules="studentRules"
-    >
-      <template v-for="(item, index) in studentFormRender">
 
-        <Form-item label="学员性别" v-if="index === 8">
-          <Radio-group v-model="fdata.student.gender">
+    <!-- 流程二：学员信息表单 -->
+    <Form
+      class="app-form-entire"
+      :label-width="130"
+      v-show="process === 2"
+      :model="fdata"
+      :rules="rules"
+      ref="studentForm"
+    >
+      <template v-for="item in studentFormRender">
+        <Form-item
+          v-if="item.type === 'input'"
+          :label="item.label"
+          :prop="item.prop"
+        >
+          <Input
+            :placeholder="item.pholder"
+            v-model="fdata[item.prop]"
+          ></Input>
+        </Form-item>
+
+        <Form-item
+          v-else-if="item.type === 'select'"
+          :label="item.label"
+          :prop="item.prop"
+        >
+          <Select
+            v-model="fdata[item.prop]"
+          >
+            <Option
+              v-for="option in dicts[item.dictName]"
+              :key="option.value"
+              :value="option.value"
+            >{{option.display_name}}</Option>
+          </Select>
+        </Form-item>
+
+        <Form-item
+          v-else-if="item.type === 'radio'"
+          :label="item.label"
+          :prop="item.prop"
+        >
+          <Radio-group v-model="fdata[item.prop]">
             <Radio
-              v-for="item in dicts.gender"
-              :label="item.value"
-              :key="item.display_name">
-              <span>{{item.display_name}}</span>
+              v-for="option in dicts[item.dictName]"
+              :label="option.value"
+              :key="option.display_name"
+            >
+              <span>{{option.display_name}}</span>
             </Radio>
           </Radio-group>
         </Form-item>
 
-        <Form-item label="当前年级" v-else-if="index === 7">
-          <Select v-model="fdata.student.current_grade">
-            <Option v-for="item in dicts.grade" :key="item.value"
-              :value="item.value">{{item.display_name}}</Option>
-          </Select>
-        </Form-item>
-
-        <Row v-else-if="index === 6">
-          <Col span="10">
-          <Form-item label="填写地址">
-            <app-map-cascader v-model="fdata.student.areas_code"></app-map-cascader>
+        <template v-else>
+          <Form-item
+            class="student-areas"
+            :label="item.label"
+            prop="areas_code"
+            required
+          >
+            <app-map-cascader
+              v-model="fdata.areas_code"
+            ></app-map-cascader>
           </Form-item>
-          </Col>
-          <Col span="14" class="contract-create__student-location">
-          <Form-item>
-            <Input placeholder="请输入街道地址"></Input>
+          <Form-item
+            class="student-location"
+            :label-width="0"
+            prop="location"
+          >
+            <Input
+              placeholder="请输入街道"
+              v-model="fdata.location"
+            ></Input>
           </Form-item>
-          </Col>
-        </Row>
-
-        <Form-item v-else :label="item.label" :prop="item.prop">
-          <Input :placeholder="item.pholder" v-model="fdata.student[item.prop]"></Input>
-        </Form-item>
+        </template>
       </template>
 
       <Form-item>
-        <Button @click="goBack()">取消</Button>
-        <Button type="ghost" @click="step(-1)">上一步</Button>
-        <Button type="primary" @click="toNextForm('studentForm')">下一步</Button>
+        <Button
+          @click="goBack()"
+        >取消</Button>
+        <Button
+          type="ghost"
+          @click="step(-1)"
+        >上一步</Button>
+        <Button
+          type="primary"
+          @click="checkStudentForm"
+        >下一步</Button>
       </Form-item>
     </Form>
-    <!-- 学员信息表单end -->
-    <!-- 产品信息表单 -->
-    <Form :label-width="130" v-show="process === 3" ref="productForm" :model="fdata.product" :rules="productRules">
+
+    <!-- 第三步：产品信息表单 -->
+    <Form
+      class="app-form-entire"
+      :label-width="130"
+      v-if="process === 3"
+      :model="fdata"
+      ref="productForm"
+    >
       <!-- 产品选择 -->
-      <Form class="contract-create__product"
-        :label-width="95" :model="item" inline
-        v-for="(item, index) in fdata.product.list"
-        ref="products" :rules="productRules" :key="index"
+      <Form-item
+        class="product-product"
+        v-for="(item, index) in fdata.contract_product"
+        :key="index"
+        label="选择产品"
+        :prop="`contract_product[${index}].product_id`"
+        :rules="rules.contract_product"
       >
-        <!--<template v-for="(item, index) in fdata.product.list">-->
-        <Form-item class="contract-create__product__select"
-          v-if="productList.length" label="选择产品" prop="product_id"
+        <Select
+          v-model="item.product_id"
+          @on-change="calcProductMoney(item)"
         >
-          <Select v-model="item.product_id"
-            @on-change="calPrice(index)"
+          <Option
+            v-for="product in productList"
+            v-show="filterProducts(product, item.product_id)"
+            :value="product.id"
+            :key="product.id"
           >
-            <Option v-for="item in productList"
-              :value="item.id" :key="item.id"
-            >
-              {{item.display_name}}
-            </Option>
-          </Select>
-        </Form-item>
-        <Form-item label="购买数量" prop="number">
-          <Input-number v-model="item.number"
-            :min="1" @on-change="calPrice(index)"
-          ></Input-number>
-        </Form-item>
-        <Form-item class="contract-create__product__rate"
-          label="优惠比例" prop="discount_rate"
+            {{product.display_name}}
+          </Option>
+        </Select>
+
+        <span class="text">购买数量</span>
+
+        <Input-number
+          :min="1"
+          v-model="item.number"
+          @on-change="calcProductMoney(item)"
+        ></Input-number>
+
+        <span class="text">合计 {{item.money}}元</span>
+
+        <Button
+          class="product-delete"
+          v-show="index > 0"
+          size="small"
+          type="error"
+          @click.stop="deleteProduct(index)"
+        >删除</Button>
+      </Form-item>
+
+      <!-- 新增产品 -->
+      <div
+        class="product-create"
+      >
+        <Button
+          v-show="fdata.contract_product.length < productList.length"
+          type="dashed"
+          icon="plus-round"
+          @click.stop="createProduct"
+        >新增产品</Button>
+      </div>
+
+      <!-- 产品净总金额 -->
+      <Form-item label="产品总额">
+        <span>{{fdata.origin_price}}元</span>
+      </Form-item>
+
+      <!-- 优惠选择 -->
+      <Form-item
+        class="product-promotion"
+        v-for="(item, index) in fdata.contract_promotion"
+        :key="index"
+        label="优惠活动"
+      >
+        <Select
+          size="small"
+          v-model="item.promotion_id"
+          @on-change="selectPromotion(index)"
         >
-          <Input-number v-model="item.discount_rate"
-            :min="0" :max="100" @on-change="calPrice(index)"
-          ></Input-number>
-        </Form-item>
-        <span>%</span>
-        <div>
-          <span>合计</span>
-           <span>{{item.money}}元</span>
-          <Button size="small" type="error"
-            @click.stop="deleteProduct(index)"
-          >删除</Button>
-        </div>
-        <!--</template>-->
-      </Form>
-      <!-- 新增产品按钮 -->
-      <Row type="flex" justify="center" class="contract-create__product__create">
-        <Col span="4">
-        <Button type="dashed" long icon="plus-round" @click.stop="createProduct()">新增产品</Button>
-        </Col>
-      </Row>
-      <!-- 新增产品按钮end -->
-      <!-- 产品选择end -->
-      <Form-item label="合同金额" prop="discount">
-        <span class="contract-create__text">{{productsPrice}}元</span>
+          <Option :value="-1">无</Option>
+          <Option
+            v-for="promotion in promotionList"
+            v-show="filterPromotions(promotion, item.promotion_id)"
+            :value="promotion.id"
+            :key="promotion.id"
+          >
+            {{promotion.display_name}}
+          </Option>
+        </Select>
+        <Button
+          class="product-delete"
+          v-show="index > 0"
+          size="small"
+          type="error"
+          @click.stop="deletePromotion(index)"
+        >删除</Button>
       </Form-item>
-      <Form-item label="辅导地点" prop="location">
-        <Input placeholder="请输入辅导地点" v-model="fdata.product.location"></Input>
+
+      <!-- 新增优惠 -->
+      <div
+        class="product-create"
+      >
+        <Button
+          v-show="fdata.contract_promotion.length < promotionList.length"
+          type="dashed"
+          icon="plus-round"
+          @click.stop="createPromotion"
+        >新增优惠</Button>
+      </div>
+
+      <!-- 优惠后总金额 -->
+      <Form-item label="审批总额">
+        <span>{{fdata.money}}元</span>
       </Form-item>
+
       <Form-item label="审批说明" prop="note">
-        <Input type="textarea" :rows="6" v-model="fdata.product.note"></Input>
+        <Input
+          type="textarea"
+          :rows="6"
+          v-model="fdata.note"
+        ></Input>
       </Form-item>
       <Form-item>
-        <Button @click="goBack()">取消</Button>
-        <Button type="ghost" @click="step(-1)">上一步</Button>
-        <Button type="ghost">预览合同</Button>
-        <Button type="primary" @click="handleSubmit('productForm')">提交</Button>
+        <Button
+          @click="goBack()"
+        >取消</Button>
+        <Button
+          type="ghost"
+          @click="step(-1)"
+        >上一步</Button>
+        <Button
+          :loading="confirmLoading"
+          type="primary"
+          @click="preSubmit"
+        >提交</Button>
       </Form-item>
     </Form>
-    <!-- 产品信息表单end -->
   </main>
 </template>
 
 <script>
 /**
  * 合同审批 - 添加审批
- * @author hjz
- * @version 2017-06-08
+ *
+ * @author huojinzhao
  */
-import { goBack } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-// eslint-disable-next-line
+
+import { mapState } from 'vuex'
+import { GLOBAL } from '@/store/mutationTypes'
+import { goBack, form } from '@/mixins'
 import { Http } from '@/utils'
 import flow from './mixins/flow'
 import {
   editInit,
   productOrigin,
+  promotionOrigin,
   unit_encode,
-  unit_decode,
   formRules,
   studentFormRender,
 } from './modules/editConfig'
@@ -205,7 +347,7 @@ import {
 export default {
   name: 'ContractEditor',
 
-  mixins: [goBack, flow],
+  mixins: [goBack, flow, form],
 
   data() {
     return {
@@ -214,109 +356,245 @@ export default {
       // 提交按钮状态控制
       loading: false,
       // 表单验证
-      ...formRules(this),
+      rules: formRules(this),
       // 流程控制
       process: 1,
-      // 表单渲染
-      ...studentFormRender(),
-      // 后端产品列表数据
+      // step2: 表单渲染
+      studentFormRender: studentFormRender(),
+      // step3: 产品列表数据
       productList: [],
+      // step3: 原始优惠列表
+      promotionList: [],
+      // step3: 没给优惠对应活动列表，type: <array: object>
+      dupPromotionList: [[]],
+      // step3: 表单提交loading
+      confirmLoading: false,
     }
   },
 
   computed: {
-    dicts() {
-      const { gender, grade } = this.$store.state.dicts
-      return { gender, grade }
-    },
-    productsPrice() {
-      const list = this.fdata.product.list
-      return list.reduce(((acc, cv) => acc + cv.money), 0)
-    },
+    ...mapState({
+      dicts: state => ({
+        ...state.dicts,
+        school_list: [
+          {
+            display_name: '厦门一中',
+            value: 1,
+          },
+          {
+            display_name: '双十中学',
+            value: 2,
+          },
+        ],
+      }),
+    }),
   },
 
   methods: {
-    calPrice(index) {
-      const target = this.fdata.product.list[index]
-      const product = this.productList
-        .find(item => item.id === target.product_id)
+    /* --- Assitance --- */
 
-      if (product) {
-        const price = parseInt(product.price, 10)
-        const number = target.number
-        const discount = (100 - target.discount_rate) / 100
-        const money = number * price * discount
-        target.money = Math.ceil(money)
-      } else {
-        target.money = 0
-      }
-    },
-    // 添加产品项
-    createProduct() {
-      this.fdata.product.list.push(productOrigin())
-    },
-    // 删除产品项，至少保留一个
-    deleteProduct(index) {
-      const list = this.fdata.product.list
-      if (list.length > 1) list.splice(index, 1)
-    },
     // 进入下一步
     step(value) {
       if (this.process > 3 || this.process < 0) return
       this.process = this.process + value
     },
+
+    /* --- 第一步 --- */
+
+    fetchStudentInfo() {
+      const url = `/student/number/${this.fdata.student_number}`
+      return this.$http.get(url)
+        .then(({ id, ...rest }) => {
+          this.fdata = { ...this.fdata, ...rest }
+        })
+        .catch(() => this.$Notice.error({
+          title: '错误',
+          desc: '学生信息请求出错',
+          duration: 0,
+        }))
+    },
+
+    /* --- 第二步 --- */
+
+    validateAreas(rule, value, callback) {
+      return value && value.length
+        ? callback()
+        : callback('地区信息不能为空')
+    },
+
+    validateLocation(rule, value, callback) {
+      return value && value.length
+        ? callback()
+        : callback('街道信息不能为空')
+    },
+
+    checkStudentForm() {
+      this.$refs.studentForm
+        .validate((valid) => { if (valid) this.step(+1) })
+    },
+
+    /* --- 第三步 --- */
+
+    /* 产品相关 */
+
+    // 添加产品项
+    createProduct() {
+      this.$refs.productForm
+        .validate(valid => valid
+          && this.fdata.contract_product.push(productOrigin()),
+        )
+    },
+
+    // 删除产品项，至少保留一个
+    deleteProduct(index) {
+      const list = this.fdata.contract_product
+      if (list.length > 1) list.splice(index, 1)
+      this.calcOriginPrice()
+    },
+
+    // 产品选项过滤
+    filterProducts(product, id) {
+      // 选中不过滤
+      if (product.id === id) return true
+      // 非选中过滤
+      return this.fdata.contract_product
+        .every(item => item.product_id !== product.id)
+    },
+
+    // 计算单个产品金额
+    calcProductMoney(product) {
+      const target = this.productList
+        .find(item => item.id === product.product_id)
+      if (target) {
+        const money = (target.price * product.number).toFixed(2)
+        // eslint-disable-next-line
+        product.money = parseFloat(money)
+        this.calcOriginPrice()
+      }
+    },
+
+    // 计算净总金额，后计算优惠后总额
+    calcOriginPrice() {
+      this.fdata.origin_price = this
+        .fdata.contract_product
+        .reduce((acc, product) => acc + product.money, 0)
+      this.initPromotion()
+    },
+
+    /* 优惠相关 */
+
+    initPromotion() {
+      this.fdata.contract_promotion = [promotionOrigin()]
+      this.calcMoney()
+    },
+
+    createPromotion() {
+      this.fdata.contract_promotion.push(promotionOrigin())
+    },
+
+    deletePromotion(index) {
+      const list = this.fdata.contract_promotion
+      if (list.length > 1) list.splice(index, 1)
+      this.calcMoney()
+    },
+
+    selectPromotion(index) {
+      // 添加优惠信息
+      const list = this.fdata.contract_promotion
+      const promotion = this.promotionList
+        .find(item => item.id === list[index].promotion_id)
+      if (promotion) {
+        list[index] = { ...list[index], ...promotion }
+      }
+      // 重置优惠列表
+      this.fdata.contract_promotion = list.slice(0, index + 1)
+      // 计算优惠后金额
+      this.calcMoney()
+    },
+
+    calcMoney() {
+      this.fdata.money = this.fdata
+        .contract_promotion
+        .reduce((acc, promotion) => {
+          const {
+            promotion_id: id,
+            promotion_type: type,
+          } = promotion
+          if (id >= 0 && type === 1) {
+            return this.calcMinus(acc, promotion)
+          }
+          if (id >= 0 && type === 2) {
+            return this.calcDiscount(acc, promotion)
+          }
+          return acc
+        }, this.fdata.origin_price)
+    },
+
+    calcMinus(price, promotion) {
+      const result = (price - promotion.minus_price).toFixed(2)
+      return parseFloat(result)
+    },
+
+    calcDiscount(price, promotion) {
+      const result = (price * (promotion.discount / 100)).toFixed(2)
+      return parseFloat(result)
+    },
+
+    filterPromotions(promotion, id) {
+      // 选中不过滤
+      if (promotion.id === id) return true
+      // 非选中过滤
+      const result = this.fdata.contract_promotion
+        .every(item => item.promotion_id !== promotion.id)
+      return result && promotion.enjoy_price <= this.fdata.money
+    },
+
+    preSubmit() {
+      this.$refs.productForm
+        .validate(valid => valid && this.submit()
+          .then(() => this.goBack())
+          .catch(() => { this.confirmLoading = false }),
+        )
+    },
+
     // 提交编辑好的表单数据
     submit() {
+      const id = this.$route.params.id
       // 开启按钮loadding
-      this.loading = true
+      this.confirmLoading = true
       // 若表单数据和服务器要求不符，根据需要进行二次处理
       const fdata = unit_encode(this.fdata)
       // 判断新增还是修改
-      if (this.$route.params.id) {
-        const id = this.$route.params.id
-        this.fdata.info.id = id
-        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => { this.loading = false; this.goBack() })
-      } else {
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => { this.loading = false; this.goBack() })
+      if (id) {
+        return this.$http.patch(`/contract/edit/${id}`, fdata)
       }
-    },
-    // 进入下个表单前先进行验证
-    toNextForm(name) {
-      this.$refs[name].validate((valid) => { if (valid) this.step(+1) })
-    },
-    // Form click提交表单事件handler
-    handleSubmit(name) {
-      let upValid = false
-      let downValid = false
-
-      // 产品上表单验证
-      upValid = this.groupValidate('products')
-
-      // 产品下表单验证
-      this.$refs[name].validate((valid) => { downValid = valid })
-
-      // 若上下都验证成功，提交表单数据
-      if (upValid && downValid) this.submit()
+      return this.$http.post('/contract', fdata)
     },
   },
 
   created() {
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => {
-        // fdata之后选择下拉框才重组authority
-        this.isDealAuthority = false
-        this.fdata = unit_decode(res)
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
-      .catch(() => {
-        this.$store.commit(GLOBAL.LOADING.HIDE)
+    // 请求第三步需要的产品列表
+    Http.get('/contract_step3?sale_status=1')
+      .then(({
+        product_list,
+        promotion_list,
+      }) => {
+        this.productList = product_list
+        this.promotionList = promotion_list
       })
 
-    // 请求第三步需要的产品列表
-    Http.get('/product_list?sale_status=1')
-      .then((res) => { this.productList = res })
+    // 更新合同数据
+    const id = this.$route.params.id
+    if (id) {
+      this.$http.get(`/contract/edit/${id}`)
+        .then((data) => {
+          this.isDealAuthority = false
+          this.fdata = { ...this.fdata, ...data }
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
   },
 }
 </script>
@@ -327,111 +605,75 @@ export default {
 @gutter-unit: 8px;
 
 .contract-create {
+  width: @content-max-width;
 
   &__text {
     font-size: 14px;
   }
-}
 
-.contract-create-step {
-  margin-bottom: 40px;
-  padding-left: 50px;
-}
-
-.contract-create__product {
-  margin-left: 35px !important;
-  margin-bottom: 0 !important;
-
-  &>.ivu-form-item:not(:first-child) {
-    // background-color: red;
-
-    & .ivu-form-item-label {
-      padding-right: 14px;
-      width: 75px !important;
-    }
-
-    & .ivu-form-item-content {
-      margin-left: 75px !important;
-    }
+  & .step {
+    margin-bottom: 40px;
+    padding-left: 50px;
   }
 
-  &>.ivu-form-item {
-    margin-left: 5px !important;
-    margin-right: 0 !important;
-  }
+  & .student {
 
-  &>div:last-of-type {
-    position: relative;
-    display: inline-block;
-    margin-left: 10px;
-    padding-left: 10px;
-    width: 139px;
-    line-height: 32px;
-    font-size: 14px;
-
-    &>button {
-      position: absolute;
-      right: 0;
-      margin-top: 4px;
-    }
-  }
-
-  &__delete {
-    &.ivu-form-item {
-      margin: 0 !important;
+    &-areas {
+      display: inline-block;
+      width: 45%;
     }
 
-    & .ivu-form-item-content {
-      margin-left: @gutter-unit !important;
-    }
+    &-location {
+      float: right;
+      width: 50%;
 
-    & .ivu-btn {
-      width: 40px !important;
-      margin: 0 !important;
-    }
-  }
-
-  &__select {
-    & .ivu-form-item-content {
-      width: 345px !important;
-    }
-  }
-
-  &__rate {
-
-  }
-
-  &__create {
-    margin-bottom: 30px;
-  }
-}
-
-.contract-create__student {
-
-  &-location {
-
-    & .ivu-form-item-content {
-      margin-left: 10px !important;
-    }
-  }
-}
-
-.ie {
-
-  & .contract-create__product {
-
-    &__create {
-
-      & .ivu-col {
-        width: 100%;
-        text-align: center;
-        padding-bottom: 30px;
-        padding-left: 40px;
-
-        & .ivu-btn {
-          width: auto;
-        }
+      & .ivu-form-item-content {
+        margin-left: 0 !important;
       }
+    }
+  }
+
+  & .product {
+
+    &-product {
+
+      & .ivu-select {
+        width: 60%;
+      }
+
+      & .text {
+        margin: 0 10px 0 30px;
+      }
+    }
+
+    &-promotion {
+
+      & .ivu-select {
+        width: 60%;
+      }
+
+      & .text {
+        margin: 0 10px 0 30px;
+      }
+
+      & .product-delete {
+        float: none;
+        margin-left: 10px;
+      }
+    }
+
+    &-create {
+      margin-bottom: 30px;
+      text-align: center;
+
+      & > button {
+        width: 150px;
+      }
+    }
+
+    &-delete {
+      float: right;
+      margin-top: 3px;
     }
   }
 }

@@ -13,7 +13,7 @@ export default {
   data: () => ({
     // 流程数据
     flowInfo: null,
-    // 是否重构fdata的authority
+    // 是否重构fdata的authority，用于重新提交时前置禁用
     isDealAuthority: true,
   }),
 
@@ -23,6 +23,7 @@ export default {
       // this.$store.commit(GLOBAL.LOADING.SHOW)
       this.reqFlowInfo(value)
     },
+
     // 请求flowInfo
     reqFlowInfo(flow_id) {
       // 更新flowInfo，主要是合同模板和角色信息
@@ -37,6 +38,7 @@ export default {
           // this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
+
     // 普通合同和退费合同流程数据互斥需要过滤
     decodeFlowList(res) {
       const tmp = { ...res }
@@ -44,16 +46,21 @@ export default {
       let list = null
 
       // 普通合同过滤退费合同流程
-      if (uri === 'contract/refund' || uri === 'contract/refund/edit') {
-        list = tmp.flow_list.filter(item => item.flow_type_id === 4)
+      if (uri === 'contract/refund'
+        || uri === 'contract/refund/edit'
+      ) {
+        list = tmp.flow_list
+          .filter(item => item.flow_type_id === 4)
       // 退费合同过滤普通合同流程
       } else {
-        list = tmp.flow_list.filter(item => item.flow_type_id !== 4)
+        list = tmp.flow_list
+          .filter(item => item.flow_type_id !== 4)
       }
 
       tmp.flow_list = list
       return tmp
     },
+
     // 使用请求回来的flowInfo重构表单角色数组结构
     dealRoleKey() {
       const info = this.flowInfo
@@ -62,9 +69,22 @@ export default {
         authority.push({ role_id: item.id, user_id: null })
       })
       // fdata.info重构
-      this.fdata.info.authority = authority
-      this.fdata.info.template_type = null
+      this.fdata.authority = authority
+      this.fdata.template_type = null
     },
+
+    // 流程步骤表单验证
+    checkFlowForm(formName, callback = () => {}) {
+      this.$refs[formName]
+        .validate((valid) => {
+          if (valid) {
+            callback().then(() => this.step(+1))
+          }
+        })
+    },
+
+    /* ！！调整表单结构，调整完退费，这部分可以删除 */
+
     // v-for Form组（动态的、数据结构相同）验证
     groupValidate(name) {
       let groupValid = true
@@ -77,6 +97,7 @@ export default {
       }
       return groupValid
     },
+
     // 验证：静态表单中有动态表单
     checkMulForm(container, inners) {
       const innerValid = this.groupValidate(inners)
