@@ -70,7 +70,7 @@
         >
           <Option value="">全部状态</Option>
           <Option
-            v-for="item in preConfig.sale_type"
+            v-for="item in preConfig.sale_status"
             :value="item.value"
             :key="item.value"
           >
