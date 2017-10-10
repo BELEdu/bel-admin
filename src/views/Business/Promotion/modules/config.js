@@ -29,7 +29,7 @@ export function colConfig(that) {
     },
     {
       title: '最低总额',
-      key: 'minus_price',
+      key: 'enjoy_price',
       align: 'center',
     },
     {
