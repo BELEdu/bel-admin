@@ -82,6 +82,11 @@ export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Ed
 export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
 export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
 export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
+// 新版
+export { default as StudentStudentEdit } from './Student/Student/Edit'
+export { default as StudentStudentReview } from './Student/Student/Review'
+export { default as StudentStudentReviewProduct } from './Student/Student/Review/Product'
+
 
 export { default as StudentStudyprogress } from './Student/Studyprogress'
 export { default as StudentStudyprogressStudent } from './Student/Studyprogress/Student'

@@ -2,7 +2,7 @@
   <div>
 
     <Tabs :value="tabActive" type="card" :animated="false" @on-click="tabSelect" class="app-tabs">
-      <Tab-pane label="基础信息" name="edit"></Tab-pane>
+      <Tab-pane label="基本信息" name="editold"></Tab-pane>
       <Tab-pane label="交流会" name="meeting"></Tab-pane>
       <Tab-pane label="预警信息" name="warning"></Tab-pane>
       <div slot="extra">
@@ -33,6 +33,7 @@ export default {
       tabActive: '', // 当前激活的tab
       display_name: '', // 学员姓名
       number: '', // 学员编号
+      student_current_status_name: '', // 当前状态
     }
   },
 
@@ -53,6 +54,7 @@ export default {
         .then((res) => {
           this.display_name = res.display_name
           this.number = res.number
+          this.student_current_status_name = res.student_current_status_name
         })
     },
   },

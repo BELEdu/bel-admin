@@ -7,23 +7,37 @@
 
 import * as views from '@/views'
 
-const STUDENT_STUDENT = { name: '学员信息', link: '/student/student' }
+const STUDENT = { name: '学员课程' }
+const STUDENT_STUDENT = { name: '学员管理', link: '/student/student' }
 const STUDENT_CLASSES = { name: '班级管理', link: '/student/classes' }
 
 export default [
 
-  // 学员信息
+  // 学员课程 - 学员管理
   {
     path: STUDENT_STUDENT.link,
     name: 'StudentStudent',
     component: views.StudentStudent,
     meta: {
       breadcrumb: [
-        { name: '学员管理' },
+        STUDENT,
         STUDENT_STUDENT,
       ],
     },
   },
+  {
+    path: '/student/student/add',
+    name: 'StudentStudentAdd',
+    component: views.StudentStudentEdit,
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_STUDENT,
+        { name: '添加学员' },
+      ],
+    },
+  },
+  // 旧版添加学员（到时候要删除）
   {
     path: '/student/student/edit',
     name: 'StudentStudentAdd',
@@ -36,10 +50,64 @@ export default [
       ],
     },
   },
+
+  {
+    path: '/student/student/:id/edit',
+    name: 'StudentStudentEdit',
+    component: views.StudentStudentEdit,
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_STUDENT,
+        { name: '编辑学员' },
+      ],
+    },
+  },
+  {
+    path: '/student/student/:id',
+    name: 'StudentStudentReview',
+    redirect: '/student/student/:id/info',
+    component: views.StudentStudentReview,
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_STUDENT,
+        { name: '学员详情' },
+      ],
+    },
+    children: [
+      {
+        path: '/student/student/:id/info',
+        name: 'StudentStudentReviewInfo',
+        component: views.StudentStudentEdit,
+        meta: {
+          breadcrumb: [
+            STUDENT,
+            STUDENT_STUDENT,
+            { name: '基本信息' },
+          ],
+        },
+      },
+      {
+        path: '/student/student/:id/product',
+        name: 'StudentStudentReviewProduct',
+        component: views.StudentStudentReviewProduct,
+        meta: {
+          breadcrumb: [
+            STUDENT,
+            STUDENT_STUDENT,
+            { name: '签约产品' },
+          ],
+        },
+      },
+    ],
+  },
+
+  // 旧版
   {
     path: '/student/student/:studentId',
     name: 'StudentStudentDetail',
-    redirect: '/student/student/detail/edit',
+    redirect: '/student/student/detail/editold',
     component: views.StudentStudentDetail,
     meta: {
       breadcrumb: [
@@ -50,7 +118,7 @@ export default [
     },
     children: [
       {
-        path: '/student/student/:studentId/edit',
+        path: '/student/student/:studentId/editold',
         name: 'StudentStudentDetailEdit',
         component: views.StudentStudentDetailEdit,
         meta: {
