@@ -108,15 +108,15 @@
 
         <!-- 选择题 -->
         <div class="question-edit__answer" v-if="questionTemplateFormat === 1">
-          <Form-item label="选项及答案" class="question-edit__answer__choice" required  prop="answers">
+          <Form-item label="选项及答案" class="question-edit__answer__choice" required  prop="question_answers">
             <p class="question-edit__answer__tips">请选中
               <span class="color-primary">正确答案</span>
             </p>
           </Form-item>
           <Form-item
-            v-for="(item,index) in form.answers"
+            v-for="(item,index) in form.question_answers"
             :key="index"
-            :prop="`answers.${index}.content`"
+            :prop="`question_answers.${index}.content`"
             :rules="[$rules.required('选项内容')]"
           >
             <Row>
@@ -151,7 +151,7 @@
           v-if="questionTemplateFormat === 2"
           required
         >
-          <RadioGroup v-model="form.answers[0].is_correct">
+          <RadioGroup v-model="form.question_answers[0].is_correct">
             <Radio :label="1">对</Radio>
             <Radio :label="0">错</Radio>
           </RadioGroup>
@@ -164,7 +164,7 @@
              <p class="question-edit__answer__tips">请在题目内容操作部分点击 <Icon type="plus-round" class="color-primary"/> 来插入填空</p>
           </Form-item>
           <Form-item
-            v-for="(item,index) in form.answers"
+            v-for="(item,index) in form.question_answers"
             :key="index"
           >
             <Row>
@@ -184,10 +184,10 @@
         <Form-item
           label="答案"
           v-if="questionTemplateFormat === 4"
-          prop="answers.0.content"
+          prop="question_answers.0.content"
           :rules="[$rules.required('答案')]"
         >
-          <app-editor v-if="!isLoading" v-model="form.answers[0].content" ></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.question_answers[0].content" ></app-editor>
         </Form-item>
 
         <Form-item label="解析">
@@ -260,7 +260,7 @@ export default {
         user_label_ids: [], // 收藏标签
         content: '', // 题目内容
         analysis: '', // 题目解析
-        answers: [{ ...defaultAnswer }], // 答案
+        question_answers: [{ ...defaultAnswer }], // 答案
       },
 
       rules: {
@@ -279,7 +279,7 @@ export default {
         content: [
           this.$rules.required('题目'),
         ],
-        answers: [
+        question_answers: [
           { validator: this.AnswerIsSelected, trigger: 'change' },
         ],
       },
@@ -365,17 +365,17 @@ export default {
     },
 
     addChoice() { // 添加选择题选项
-      const length = this.form.answers.length
+      const length = this.form.question_answers.length
       if (length < 26) {
-        this.form.answers.push(
+        this.form.question_answers.push(
           { ...defaultAnswer, option: this.alphabetize(length) },
         )
       }
     },
 
     removeChoice() { // 移除选择题选项
-      if (this.form.answers.length > 2) {
-        this.form.answers.pop()
+      if (this.form.question_answers.length > 2) {
+        this.form.question_answers.pop()
       }
     },
 
@@ -415,7 +415,7 @@ export default {
     changeQuestionType() { // 切换题型重置答案
       switch (this.questionTemplateFormat) {
         case 1:
-          this.form.answers = [
+          this.form.question_answers = [
             { ...defaultAnswer, option: 'A' },
             { ...defaultAnswer, option: 'B' },
             { ...defaultAnswer, option: 'C' },
@@ -423,10 +423,10 @@ export default {
           ]
           break
         case 3:
-          this.form.answers = Array(3).fill({ ...defaultAnswer })
+          this.form.question_answers = Array(3).fill({ ...defaultAnswer })
           break
         default:
-          this.form.answers = [{ ...defaultAnswer }]
+          this.form.question_answers = [{ ...defaultAnswer }]
           break
       }
     },
