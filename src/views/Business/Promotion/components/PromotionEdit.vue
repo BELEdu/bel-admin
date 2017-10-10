@@ -3,8 +3,8 @@
     class="business__promotion_edit"
     :value="visible"
     :title="typeof target === 'number'
-      ? '添加优惠活动'
-      : '编辑优惠活动'
+      ? '编辑优惠活动'
+      : '添加优惠活动'
     "
     @on-cancel="cancel"
   >
