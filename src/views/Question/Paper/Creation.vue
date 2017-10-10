@@ -135,8 +135,13 @@
               v-for="(topic, tindex) in section.questions"
               :key="topic.question_id"
             >
-              <span style="float: left;">{{tindex + 1}}、</span>
-              <div v-html="topic.content"></div>
+              <!-- 题目内容 -->
+              <app-question
+                :index="tindex + 1"
+                :data="topic"
+                :width="850"
+              ></app-question>
+              <!-- 操作条 -->
               <div class="topic-item__control">
                 <span>分值</span>
                 <InputNumber

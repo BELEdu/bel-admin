@@ -13,14 +13,9 @@
       <p>来源: {{data.from_name}}</p>
       <p>知识点: {{data.knowledge_name}}</p>
     </header>
-    <article>
-      <h3>【题目】</h3>
-      <div v-html="data.content"></div>
-      <h3>【答案】</h3>
-      <div v-html="answer"></div>
-      <h3>【解析】</h3>
-      <div v-html="data.analysis"></div>
-    </article>
+    <app-question-analysis
+      :data="data"
+    ></app-question-analysis>
     <div
       slot="footer"
     >
@@ -53,18 +48,6 @@ export default {
     },
   },
 
-  computed: {
-    answer() {
-      if (!this.data.question_template) return null
-      if (this.data.question_template === 1) {
-        const answer = this.data.question_answers
-          .find(item => item.is_correct)
-        return answer.option
-      }
-      return this.data.analysis
-    },
-  },
-
   filters: {
     dateFormat(value) {
       return value ? value.slice(0, 10) : ''
@@ -88,6 +71,9 @@ export default {
 @import '../mixins/paper.less';
 
 .v-question-analysis {
+  & .ivu-modal {
+    width: 600px !important;
+  }
 
   & header {
     font-size: 14px;
@@ -95,16 +81,6 @@ export default {
 
     & span {
       margin-right: 10px;
-    }
-  }
-
-  & article {
-    background-color: @bg-color;
-    padding: @layout-padding;
-    max-height: 500px;
-
-    & > div {
-      margin-bottom: @layout-gutter;
     }
   }
 }

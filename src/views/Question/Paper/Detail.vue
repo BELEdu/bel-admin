@@ -6,7 +6,7 @@
     <header>
       <h2>{{paper.display_name}}</h2>
       <span>年级: {{paper.grade_name}}</span>
-      <span>| 类型: {{paper.paper_type_name}}|</span>
+      <span>| 类型: {{paper.paper_type_name}}</span>
       <span>| 区域: {{paper.area_name}}</span>
       <span>| 年份: {{paper.year}}</span>
       <span>| 题数: {{paper.question_count}}</span>
@@ -19,24 +19,29 @@
       >
         <h2>
           {{index + 1}}、{{type.display_name}}
-          （共{{type.question_count}}小题，总计{{type.total_score}}分）
+          （
+          共{{type.question_count}}小题，
+          总计{{type.total_score}}分
+          ）
         </h2>
         <ul class="topic">
           <li
             v-for="(item, index) in type.questions"
             class="topic-item"
           >
-            <span style="
-              margin-right: 5px;
-              float: left;
-             ">{{index + 1}}、</span>
-            {{item.content}}
+            <app-question
+              :index="index + 1"
+              :data="item"
+              :width="850"
+            ></app-question>
             <div class="topic-item__control">
               <Button
                 @click="activateAnalysis(item)"
                 size="small"
-              >查看解析</Button>
-             </div>
+              >
+                查看解析
+              </Button>
+            </div>
           </li>
         </ul>
       </div>
@@ -110,7 +115,7 @@ export default {
 @import './mixins/paper.less';
 
 .question-paper-detail {
-  width: @layout-width;
+  width: calc(@layout-width - 90px);
 
   & > header {
     margin-bottom: 20px;

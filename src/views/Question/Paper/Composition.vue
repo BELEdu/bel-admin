@@ -85,10 +85,10 @@
           v-for="topic in buffer.data" :key="topic.id"
         >
           <!-- 题目内容 -->
-          <div
+          <app-question
             class="content__topic-content"
-            v-html="topic.content"
-          ></div>
+            :data="topic" :width="850"
+          ></app-question>
           <!-- 题目控件 -->
           <div class="content__topic-bar">
             <Button
