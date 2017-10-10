@@ -2,7 +2,7 @@
   <main class="contract-create">
     <app-editor-title></app-editor-title>
 
-    <!-- 审批进度条 -->
+    <!-- 操作进度条提示 -->
     <Steps
       :current="process - 1"
       class="step steps-fix"
@@ -345,7 +345,7 @@ import {
 } from './modules/editConfig'
 
 export default {
-  name: 'ContractEditor',
+  name: 'BusinessContractEditor',
 
   mixins: [goBack, flow, form],
 
@@ -391,6 +391,16 @@ export default {
   },
 
   methods: {
+    /* --- Initialization --- */
+
+    fetchContractInfo(id) {
+      return this.$http.get(`/contract/edit/${id}`)
+        .then((data) => {
+          this.isDealAuthority = false
+          this.fdata = { ...this.fdata, ...data }
+        })
+    },
+
     /* --- Assitance --- */
 
     // 进入下一步
@@ -586,12 +596,8 @@ export default {
     // 更新合同数据
     const id = this.$route.params.id
     if (id) {
-      this.$http.get(`/contract/edit/${id}`)
-        .then((data) => {
-          this.isDealAuthority = false
-          this.fdata = { ...this.fdata, ...data }
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+      this.fetchContractInfo(id)
+        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     } else {
       this.$store.commit(GLOBAL.LOADING.HIDE)
     }
