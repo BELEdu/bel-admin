@@ -78,7 +78,7 @@ export default {
 
     // 答案共有几项
     answerLength() {
-      return this.data.answers.length
+      return this.data.question_answers.length
     },
 
     // 选择题题型每行可容纳字符数
@@ -88,12 +88,12 @@ export default {
 
     // 选择题的任意选项中是否包含图片
     isChoiceHasImage() {
-      return this.isChoice && this.data.answers.some(answer => answer.content.includes('<img'))
+      return this.isChoice && this.data.question_answers.some(answer => answer.content.includes('<img'))
     },
 
     // 最终用于渲染选择题选项的HTML字符串
     choiceItems() {
-      return this.data.answers
+      return this.data.question_answers
         .map(({ option, content }) => (`${option}. ${content}`))
     },
 

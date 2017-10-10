@@ -23,7 +23,6 @@
         <app-question-analysis
           :data="questionDetail"
         ></app-question-analysis>
-
       </div>
 
       <h3 class="question-detail__log">操作历史</h3>
@@ -194,6 +193,10 @@ export default {
     border: 1px solid @border-color-split ;
     border-top: 0px;
     padding: 0 10px 10px 10px;
+
+    &>div {
+      margin: auto;
+    }
   }
 }
 </style>

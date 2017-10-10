@@ -55,21 +55,22 @@ export default {
      * 4 解答题
      */
     questionAnswer() {
-      switch (this.data.question_template) {
+      const { question_answers, question_template } = this.data
+      switch (question_template) {
         case 1:
-          return this.data.answers
+          return question_answers
             .map(({ option, is_correct }) => ({ option, is_correct }))
             .filter(({ is_correct }) => is_correct)
             .map(({ option }) => option)
             .join('，')
         case 2:
-          return this.data.answers[0].is_correct === 1 ? '对' : '错'
+          return question_answers[0].is_correct === 1 ? '对' : '错'
         case 3:
-          return this.data.answers
+          return question_answers
             .map(({ content }) => content)
             .join('；')
         case 4:
-          return this.data.answers[0].content
+          return question_answers[0].content
         default:
           return ''
       }
