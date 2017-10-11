@@ -1,8 +1,8 @@
 <template>
   <div class="student-info">
 
-    <!-- 关键字搜索 -->
     <Form inline class="app-search-form">
+      <!-- 关键字搜索 -->
       <Form-item>
         <Input
           v-model="likeValue"
@@ -83,8 +83,8 @@
       </Col>
       <Col>
         <Button type="primary" @click="openManageModal">分配学管师</Button>
-        <Button type="primary" @click="$router.push('/student/student/edit')">添加学员旧</Button>
-        <Button type="primary" @click="$router.push('/student/student/add')">添加学员新</Button>
+        <!-- <Button type="primary" @click="$router.push('/student/student/edit')">添加学员旧</Button> -->
+        <Button type="primary" @click="$router.push('/student/student/add')">添加学员</Button>
       </Col>
     </Row>
 
@@ -195,12 +195,11 @@ export default {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 250,
+          width: 200,
           render: createButton([
             { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/editold`) },
-            { text: '编辑新', type: 'success', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
-            { text: '交流会', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/meeting/edit`) },
+            { text: '编辑', type: 'success', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
             { text: '查看', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/info`) },
           ]),
         },

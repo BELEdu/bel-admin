@@ -61,7 +61,7 @@
 
         <Col span="11" offset="1">
 
-          <Form-item label="家长身份证号" required
+          <Form-item label="家长身份证号"
             :prop="`parent.${index}.identity_card`"
             :rules="[$rules.idcard]"
           >
