@@ -5,7 +5,7 @@
     title="分配教师"
     :loading="formLoading"
     @on-ok="beforeSubmit"
-    @on-cancle="closeModal"
+    @on-cancel="closeModal"
   >
     <Form ref="form" :model="form" :rules="rules" :label-width="100">
       <app-form-alert :errors="formErrors"></app-form-alert>

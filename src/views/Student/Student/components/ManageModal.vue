@@ -5,21 +5,34 @@
     title="分配学管师"
     :loading="formLoading"
     @on-ok="beforeSubmit"
-    @on-cancle="closeModal"
+    @on-cancel="closeModal"
+    :maskClosable="true"
   >
-    <Form ref="form" :model="form" :rules="rules" :label-width="100">
+    <Form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :label-width="100"
+    >
       <app-form-alert :errors="formErrors"></app-form-alert>
+
       <Form-item label="分配给" prop="relationships">
         <Select v-model="form.relationships" placeholder="请选择学管师...">
-          <Option v-for="manage in manages" :key="manage.id" :value="manage.id">{{ manage.username }}</Option>
+          <Option
+            v-for="manage in manages"
+            :key="manage.id"
+            :value="manage.id"
+          >{{ manage.username }}</Option>
         </Select>
       </Form-item>
+
       <Form-item label="通知该学管师" prop="send_type">
         <Radio-group v-model="form.send_type">
           <Radio :label="1">发送短信</Radio>
           <Radio :label="2">发送邮件</Radio>
         </Radio-group>
       </Form-item>
+
     </Form>
   </app-form-modal>
 </template>
@@ -28,12 +41,14 @@
 /**
  * 学员分配教师组件
  * @author  zhoumenglin
- * @version 2017-07-21
+ * @version 2017-10-10
  */
 
 import { form } from '@/mixins'
 
 export default {
+  name: 'student-student-manage-modal',
+
   mixins: [form],
 
   props: {
@@ -86,10 +101,10 @@ export default {
     },
 
     closeModal() {
-      this.$emit('closeManageModal')
-      this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
+      this.$refs.form.resetFields()
+      this.$emit('closeManageModal')
     },
   },
 

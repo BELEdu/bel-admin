@@ -5,7 +5,7 @@
     title="班级学员管理"
     :loading="formLoading"
     @on-ok="submit()"
-    @on-cancle="closeModal()"
+    @on-cancel="closeModal()"
   >
    <Form ref="form" :model="form"  :label-width="70">
       <app-form-alert :errors="formErrors"></app-form-alert>

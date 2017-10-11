@@ -7,7 +7,7 @@
       title="编辑章节"
       :loading="formLoading"
       @on-ok="beforeSubmit()"
-      @on-cancle="closeModal()"
+      @on-cancel="closeModal()"
       :maskClosable="true"
       :width='800'
       class="chapter-edit"

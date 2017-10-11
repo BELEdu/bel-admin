@@ -7,7 +7,7 @@
       title="管理收藏标签"
       :loading="loading.modal"
       @on-ok="closeModal()"
-      @on-cancle="closeModal()"
+      @on-cancel="closeModal()"
       :maskClosable="true"
       class="label-modal"
     >

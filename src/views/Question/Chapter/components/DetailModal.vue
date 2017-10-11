@@ -7,7 +7,7 @@
       title="查看详情"
       :loading="loading.modal"
       @on-ok="closeModal()"
-      @on-cancle="closeModal()"
+      @on-cancel="closeModal()"
       :maskClosable="true"
     >
       查看详情

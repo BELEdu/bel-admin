@@ -5,7 +5,7 @@
     :title="`取消预警信息 ID：${warningId}`"
     :loading="formLoading"
     @on-ok="beforeSubmit"
-    @on-cancle="closeModal"
+    @on-cancel="closeModal"
   >
    <Form ref="form" :model="form" :rules="rules" :label-width="70">
       <app-form-alert :errors="formErrors"></app-form-alert>
