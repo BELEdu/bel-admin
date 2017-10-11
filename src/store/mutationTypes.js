@@ -79,24 +79,30 @@ export const BUSINESS = {
   },
 }
 
-// 学员管理
+// 学员课程
 export const STUDENT = {
-  CLASSES: {// 班级管理
+  // 班级管理
+  CLASSES: {
     INIT: 'STUDENT.CLASSES.INIT',
     DELETE: 'STUDENT.CLASSES.DELETE',
   },
 
-  STUDENT: {// 学员信息
+  // 学员管理
+  STUDENT: {
     INIT: 'STUDENT.STUDENT.INIT',
     DELETE: 'STUDENT.STUDENT.DELETE',
 
-    MEETING: { // 交流会
+    MEETING: { // 交流会(旧)
       INIT: 'STUDENT.STUDENT.MEETING.INIT',
       DELETE: 'STUDENT.STUDENT.MEETING.DELETE',
     },
 
-    WARNING: {// 预警信息
+    WARNING: { // 预警信息(旧)
       INIT: 'STUDENT.STUDENT.WARNING.INIT',
+    },
+
+    PRODUCT: { // 签约产品
+      INIT: 'STUDENT.STUDENT.PRODUCT.INIT',
     },
   },
 
