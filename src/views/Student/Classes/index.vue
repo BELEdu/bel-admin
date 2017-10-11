@@ -2,28 +2,34 @@
   <div class="student-class">
 
     <Form inline class="app-search-form">
+      <!-- 关键字搜索 -->
       <Form-item>
         <Input v-model="likeValue" placeholder="请输入关键字">
-          <Select v-model="likeKey" slot="prepend" style="width:6em;">
-            <Option v-for="likeKey in likeKeys" :key="likeKey.value" :value="likeKey.value">{{ likeKey.label }}</Option>
+          <Select
+            v-model="likeKey"
+            slot="prepend"
+            style="width:6em;"
+          >
+            <Option
+              v-for="likeKey in likeKeys"
+              :key="likeKey.value"
+              :value="likeKey.value"
+            >{{ likeKey.label }}</Option>
           </Select>
         </Input>
       </Form-item>
-      <Form-item>
-        <Select v-model="query[`equal[product_type_id]`]" placeholder="请选择产品类型" style="width:9em;">
-          <Option v-for="productType in productTypes" :value="productType.value" :key="productType.display_name">{{ productType.display_name }}</Option>
-        </Select>
-      </Form-item>
+
+      <!-- 班级状态 -->
       <Form-item>
         <Select v-model="query[`equal[status]`]" placeholder="请选择状态" style="width:9em;">
-          <Option :value="1">未开班</Option>
-          <Option :value="2">开班中</Option>
-          <Option :value="3">已结束</Option>
+          <Option
+            v-for="status in classes_status"
+            :value="status.value"
+            :key="status.display_name"
+          >{{ status.display_name }}</Option>
         </Select>
       </Form-item>
-      <Form-item>
-        <Date-picker v-model="query[`between[start_at]`]" type="daterange" placeholder="请选择开办日期"></Date-picker>
-      </Form-item>
+
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
@@ -60,10 +66,20 @@
     ></manage-modal>
 
     <!--班级管理表格-->
-    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
+    <Table
+      class="app-table"
+      :columns="columns"
+      :data="list.data"
+      border
+      @on-sort-change="sort"
+    ></Table>
 
     <!--分页-->
-    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+    <app-pager
+      :data="list"
+      @on-change="goTo"
+      @on-page-size-change="pageSizeChange"
+    ></app-pager>
 
   </div>
 </template>
@@ -88,24 +104,25 @@ export default {
   data() {
     return {
       likeKeys: [
-        { label: '班级名称', value: 'display_name' },
-        { label: '班级编号', value: 'classes_number' },
-        { label: '产品名称', value: 'product_name' },
-        { label: '班主任', value: 'classes_director_name' },
+        { label: '班级名称', value: 'classes_name' },
+        { label: '排课专员', value: 'customer_relationships_name' },
+        { label: '教师', value: 'teacher_item' },
       ],
-      likeKey: 'display_name',
+      likeKey: 'classes_name',
       query: {
-        'equal[product_type_id]': null,
         'equal[status]': null,
-        'between[start_at]': [],
       },
 
       columns: [
-        { title: '班级名称', key: 'display_name', align: 'center' },
-        { title: '班级编号', key: 'classes_number', align: 'center', sortable: 'custom' },
-        { title: '产品名称', key: 'product_name', align: 'center' },
-        { title: '产品类型', key: 'product_type_id_name', align: 'center' },
-        { title: '班主任', key: 'classes_director_name', align: 'center' },
+        { title: '班级名称', key: 'classes_name', align: 'center', width: 250 },
+        { title: '教材版本', key: 'teach_material_name', align: 'center' },
+        { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
+        { title: '教师', key: 'teacher_item', align: 'center' },
+        { title: '上课人数', key: 'student_total', align: 'center' },
+        { title: '剩余可用课时', key: 'course_cost', align: 'center' },
+        { title: '计划课时', key: 'course_total', align: 'center' },
+        { title: '创建日期', key: 'created_at', align: 'center' },
+        { title: '状态', key: 'status_name', align: 'center' },
         // {
         //   title: '教师',
         //   key: 'teacher_item',
@@ -124,29 +141,13 @@ export default {
         //     return h('span', text)
         //   },
         // },
-        { title: '教师', key: 'teacher_item', align: 'center' },
-        { title: '学员人数', key: 'student_total', align: 'center', sortable: 'custom' },
-        {
-          title: '开办日期',
-          key: 'start_at',
-          align: 'center',
-          width: 180,
-          sortable: 'custom',
-          render: (h, params) => {
-            const { start_at, end_at } = params.row
-            const text = start_at ? `${start_at} ~ ${end_at}` : ''
-            return h('span', text)
-          },
-        },
-        { title: '创建日期', key: 'created_at', align: 'center', width: 180, sortable: 'custom' },
-        { title: '状态', key: 'status_name', align: 'center' },
         {
           title: '操作',
           key: 10,
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id) },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
             { text: '管理', type: 'primary', click: row => this.openManageModal(row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/classes/edit/${row.id}`) },
           ]),
@@ -173,7 +174,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.student.classes.list,
-      productTypes: state => state.dicts.product_type,
+      classes_status: state => state.dicts.classes_status,
     }),
   },
 
