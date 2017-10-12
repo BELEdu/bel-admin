@@ -10,6 +10,7 @@ import * as views from '@/views'
 const STUDENT = { name: '学员课程' }
 const STUDENT_STUDENT = { name: '学员管理', link: '/student/student' }
 const STUDENT_CLASSES = { name: '班级管理', link: '/student/classes' }
+const STUDENT_PLAN = { routeName: 'StudentPlan', name: '学习计划', link: '/student/plan' }
 
 export default [
 
@@ -345,4 +346,18 @@ export default [
       ],
     },
   },
+
+  // 学习计划
+  {
+    path: STUDENT_PLAN.link,
+    name: STUDENT_PLAN.routeName,
+    component: views[STUDENT_PLAN.routeName],
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_PLAN,
+      ],
+    },
+  },
+
 ]

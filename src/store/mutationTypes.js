@@ -124,6 +124,10 @@ export const STUDENT = {
   KNOWLEDGEPOINT: { // 学员知识点
     INIT: 'STUDENT.KNOWLEDGEPOINT.INIT',
   },
+
+  PLAN: { // 学习计划
+    INIT: 'STUDENT.PLAN.INIT',
+  },
 }
 
 // 管理收藏标签

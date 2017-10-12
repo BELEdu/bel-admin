@@ -103,6 +103,9 @@ export { default as StudentKnowledgepointDetail } from './Student/Knowledgepoint
 export { default as StudentClasses } from './Student/Classes'
 export { default as StudentClassesEdit } from './Student/Classes/Edit'
 
+// 学员课程-学习计划
+export { default as StudentPlan } from './Student/Plan'
+
 // 测试管理
 export { default as SmartExam } from './examination/SmartExam'
 export { default as StudentExam } from './examination/SmartExam/StudentExam'
@@ -123,6 +126,7 @@ export { default as Smartquestion } from './Prepare/Smartquestion'
 export { default as Question } from './Prepare/Question'
 export { default as PaperPreview } from './Prepare/Question/PaperPreview'
 export { default as QuestionAnalysis } from './Prepare/Question/QuestionAnalysis'
+
 
 // 404页面
 export { default as NotFound } from './NotFound'
