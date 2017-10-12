@@ -130,7 +130,7 @@
 
 import { parseDate } from '@/utils/date'
 import { goBack, form } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import { GLOBAL } from '@/store/mutationTypes'
 import { editInit } from './modules/config'
 
 export default {
@@ -198,36 +198,40 @@ export default {
 
     getPreConfig() {
       this.$http.get('/hotline/store_before')
-        .then((res) => {
-          this.preConfig = res
-        })
+        .then((res) => { this.preConfig = res })
+    },
+
+    fetchUpdationInfo(id) {
+      if (!id) return Promise.resolve()
+      return this.$http.get(`/hotline/${id}`)
+        .then((res) => { this.fdata = res })
+        .catch(() => {})
     },
 
     /* --- business ---  */
 
     submit() {
       this.loading = true
-      const fdata = { ...this.fdata }
 
-      if (this.$route.params.id) {
-        const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => {
-            this.loading = false
-            this.goBack()
-          })
-          .catch(this.errorHandler)
-      } else {
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => this.goBack())
-          .catch(this.errorHandler)
-          .then(() => { this.loading = false })
-      }
+      const id = this.$route.params.id
+
+      const fdata = this.fdata
+      const method = id ? 'patch' : 'post'
+      const uri = id ? `/hotline/${id}` : '/hotline'
+
+      return this.$http[method](uri, fdata)
     },
 
     handleSubmit(name) {
       this.$refs[name]
-        .validate((valid) => { if (valid) this.submit() })
+        .validate((valid) => {
+          if (valid) {
+            this.submit()
+              .then(() => this.goBack())
+              .catch(this.errorHandler)
+              .then(() => { this.loading = false })
+          }
+        })
     },
 
     // 表单验证函数
@@ -246,12 +250,8 @@ export default {
   created() {
     this.getPreConfig()
 
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => {
-        this.fdata = res
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
-      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    this.fetchUpdationInfo(this.$route.params.id)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>

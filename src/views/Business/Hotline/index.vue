@@ -94,7 +94,7 @@
 
     <Table border
       :columns="colConfig"
-      :data="buffer.data"
+      :data="tableInfo.data"
       @on-sort-change="sort"
     ></Table>
 
@@ -102,18 +102,8 @@
     <app-pager
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
-      :data="buffer"
+      :data="tableInfo"
     ></app-pager>
-
-    <!--删除提醒框-->
-    <app-warn-modal
-      v-model="warn.show"
-      :title="warn.title"
-      :loading="warn.loading"
-      @on-ok="doDelete()"
-    >
-      <p>删除该条记录后将无法再恢复，是否继续删除？</p>
-    </app-warn-modal>
   </div>
 </template>
 
@@ -124,39 +114,26 @@
  * @author huojinzhao
  */
 
-import { mapState } from 'vuex'
-import { list } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, searchConfig } from './modules/config'
+import { list, tableCommon } from '@/mixins'
+import {
+  colConfig,
+  searchConfig,
+} from './modules/config'
 
 export default {
-  name: 'business-hotline',
+  name: 'BusinessHotline',
 
-  mixins: [list],
+  mixins: [list, tableCommon],
 
   data() {
     return {
       // 搜索配置
       ...searchConfig(),
 
-      // 删除警告对话框数据
-      warn: {
-        show: false,
-        title: '确认删除',
-        row: null,
-        loading: false,
-      },
-
       colConfig: colConfig(this),
 
       preConfig: null,
     }
-  },
-
-  computed: {
-    ...mapState({
-      buffer: state => state.business.buffer.hotline,
-    }),
   },
 
   methods: {
@@ -172,45 +149,20 @@ export default {
 
     /* --- business --- */
 
-    // 进入新增编辑路由页，例子：/business/hotline/edit
+    // 进入新增编辑路由页
     toCreate() {
       this.$router.push('/business/hotline/edit')
     },
 
-    // 进入修改路由，例子：/business/hotline/edit/:id
     // row为createButton方法传入的参数，写死
     toUpdate(row) {
       this.$router.push(`/business/hotline/edit/${row.id}`)
-    },
-
-    // 删除某一列表项
-    toDelete(row) {
-      // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
-      this.warn.loading = false
-      this.warn.show = true
-      this.warn.row = row
-    },
-
-    doDelete() {
-      this.warn.loading = true
-      this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
-        .then(() => {
-          this.warn.show = false
-        })
     },
   },
 
   created() {
     this.getPreconfig()
-    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
-
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
-      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
-  },
-
 }
 </script>
 

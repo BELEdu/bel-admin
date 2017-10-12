@@ -33,26 +33,27 @@ const BUSINESS_PROMOTION = {
 }
 
 export default [
-  // 热线登记
+  /* 热线登记 */
+
+  // 列表页
   {
     path: '/business/hotline',
     name: 'BussinessHotline',
     component: views.Hotline,
     meta: {
-      uri: 'hotline',
+      uri: '/hotline',
       breadcrumb: [
         { name: '业务管理' },
         { name: '热线登记' },
       ],
     },
   },
-  // 热线登记 新建热线
+  // 新建热线
   {
     path: '/business/hotline/edit',
     name: 'BussinessHotlineCreate',
     component: views.HotlineEdit,
     meta: {
-      uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_HOTLINE,
@@ -60,13 +61,12 @@ export default [
       ],
     },
   },
-  // 热线登记 更新热线
+  // 更新热线
   {
     path: '/business/hotline/edit/:id',
     name: 'BussinessHotlineUpdate',
     component: views.HotlineEdit,
     meta: {
-      uri: 'hotline',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_HOTLINE,
@@ -74,6 +74,7 @@ export default [
       ],
     },
   },
+
   // 沟通记录
   {
     path: 'business/communication',

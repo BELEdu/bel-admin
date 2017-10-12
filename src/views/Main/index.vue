@@ -7,11 +7,21 @@
       <!--左侧导航-->
       <app-menu></app-menu>
       <!--右侧主内容区-->
-      <div class="app-main" :class="{'app-main--loading': $store.state.loading}" ref="appMain">
+      <div
+        class="app-main"
+        :class="{
+          'app-main--loading': $store.state.loading
+        }"
+        ref="appMain"
+      >
         <!--面包屑导航-->
         <div class="app-content">
           <Breadcrumb class="app-creadcrumb">
-            <Breadcrumb-item v-for="item in breadcrumb" :key="item.name" :href="item.link">
+            <Breadcrumb-item
+              v-for="item in breadcrumb"
+              :key="item.name"
+              :href="item.link"
+            >
               {{ item.name }}
             </Breadcrumb-item>
           </Breadcrumb>
@@ -28,6 +38,8 @@
         </Spin>
       </div>
     </div>
+
+    <TheListDeletion></TheListDeletion>
   </div>
 </template>
 
@@ -42,6 +54,7 @@ import { mapState } from 'vuex'
 import AppHeader from '@/components/AppHeader'
 import AppMenu from '@/components/AppMenu'
 import AppFooter from '@/components/AppFooter'
+import TheListDeletion from '@/components/TheListDeletion'
 import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
@@ -73,6 +86,7 @@ export default {
     AppHeader,
     AppMenu,
     AppFooter,
+    TheListDeletion,
   },
 
   created() {

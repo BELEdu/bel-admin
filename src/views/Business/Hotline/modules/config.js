@@ -121,8 +121,16 @@ export function colConfig(that) {
       width: 130,
       align: 'center',
       render: createButton([
-        { text: '删除', type: 'error', click: that.toDelete },
-        { text: '修改', type: 'primary', click: that.toUpdate },
+        {
+          text: '删除',
+          type: 'error',
+          click: ({ id }) => that.deleteItem(id),
+        },
+        {
+          text: '修改',
+          type: 'primary',
+          click: that.toUpdate,
+        },
       ]),
     },
   ]
