@@ -135,23 +135,34 @@ export default {
   methods: {
     // 创建合同跳转
     toCreate() {
-      this.$router.push('/business/contract/edit')
+      this.$router.push('contract/edit')
     },
     // 查看合同进度
     toCheck(row) {
-      this.$router.push(`/business/contract/audit/${row.id}`)
+      if (row.refund_tag) {
+        this.$router.push(`contract/refund/info/${row.id}`)
+      } else {
+        this.$router.push(`contract/info/${row.id}`)
+      }
+    },
+    toApprove(row) {
+      if (row.refund_tag) {
+        this.$router.push(`contract/refund/audit/${row.id}`)
+      } else {
+        this.$router.push(`contract/audit/${row.id}`)
+      }
     },
     // 重新提交操作
     toRecheck(row) {
       if (row.refund_tag) {
-        this.$router.push(`/business/contract/refund/edit/${row.id}`)
+        this.$router.push(`contract/refund/edit/${row.id}`)
       } else {
-        this.$router.push(`/business/contract/edit/${row.id}`)
+        this.$router.push(`contract/edit/${row.id}`)
       }
     },
     // 退费
     toRefund(row) {
-      this.$router.push(`/business/contract/refund/${row.id}`)
+      this.$router.push(`contract/refund/${row.id}`)
     },
     // 取消某项合同前
     toCancel(row) {

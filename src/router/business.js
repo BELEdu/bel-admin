@@ -115,7 +115,10 @@ export default [
       ],
     },
   },
-  // 合同审批
+
+  /* --- 签约审批 --- */
+
+  // 列表页
   {
     path: 'business/contract',
     name: 'BussinessContract',
@@ -128,7 +131,7 @@ export default [
       ],
     },
   },
-  // 合同审批 新建合同
+  // 创建普通合同
   {
     path: 'business/contract/edit',
     name: 'BussinessContractCreate',
@@ -142,7 +145,7 @@ export default [
       ],
     },
   },
-  // 合同审批 更新合同
+  // 更新合同（普通）
   {
     path: 'business/contract/edit/:id',
     name: 'BussinessContractUpdate',
@@ -156,7 +159,7 @@ export default [
       ],
     },
   },
-  // 合同审批 更新退费合同
+  // 更新合同（退费）
   {
     path: 'business/contract/refund/edit/:id',
     name: 'BussinessContractRefundUpdate',
@@ -171,7 +174,7 @@ export default [
       ],
     },
   },
-  // 合同审批 合同退费（创建退费合同）
+  // 创建退费合同
   {
     path: 'business/contract/refund/:id',
     name: 'BussinessContractRefundCreate',
@@ -182,17 +185,18 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_CONTRACT,
-        { name: '新建审批' },
+        { name: '退费审批' },
       ],
     },
   },
-  // 合同审批 查看合同（审批流程）
+  // 查看（退费）
   {
-    path: 'business/contract/audit/:id',
-    name: 'BussinessContractAudit',
+    path: 'business/contract/refund/info/:id',
+    name: 'BussinessContractRefundInfo',
     component: views.ContractAudit,
     meta: {
-      uri: 'contract/audit',
+      operationType: 'info',
+      contractType: 'refund',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_CONTRACT,
@@ -200,6 +204,54 @@ export default [
       ],
     },
   },
+  // 审批 （退费）
+  {
+    path: 'business/contract/refund/audit/:id',
+    name: 'BussinessContractRefundAudit',
+    component: views.ContractAudit,
+    meta: {
+      operationType: 'audit',
+      contractType: 'refund',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSINESS_CONTRACT,
+        { name: '审批详情' },
+      ],
+    },
+  },
+  // 查看（普通）
+  {
+    path: 'business/contract/info/:id',
+    name: 'BussinessContractInfo',
+    component: views.ContractAudit,
+    meta: {
+      operationType: 'info',
+      contractType: 'contract',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSINESS_CONTRACT,
+        { name: '审批详情' },
+      ],
+    },
+  },
+  // 审批 （普通）
+  {
+    path: 'business/contract/audit/:id',
+    name: 'BussinessContractAudit',
+    component: views.ContractAudit,
+    meta: {
+      operationType: 'audit',
+      contractType: 'contract',
+      breadcrumb: [
+        { name: '业务管理' },
+        BUSINESS_CONTRACT,
+        { name: '审批详情' },
+      ],
+    },
+  },
+
+  /* --- 产品管理 --- */
+
   // 产品管理
   {
     path: 'business/product',
