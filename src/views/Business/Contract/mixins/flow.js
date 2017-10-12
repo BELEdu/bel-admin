@@ -1,7 +1,7 @@
 /**
  * 合同审批 - 合同编辑、合同退费 - 流程相关mixin
- * @author hjz
- * @version 2017-07-11
+ *
+ * @author huojinzhao
  * @description flow中囊括了流程名称、合同模板、参与角色的信息
  */
 
@@ -74,36 +74,15 @@ export default {
     },
 
     // 流程步骤表单验证
-    checkFlowForm(formName, callback = () => {}) {
-      this.$refs[formName]
+    checkFlowForm(
+      callback = () => Promise.resolve(),
+    ) {
+      this.$refs.flowForm
         .validate((valid) => {
           if (valid) {
             callback().then(() => this.step(+1))
           }
         })
-    },
-
-    /* ！！调整表单结构，调整完退费，这部分可以删除 */
-
-    // v-for Form组（动态的、数据结构相同）验证
-    groupValidate(name) {
-      let groupValid = true
-      if (this.$refs[name]) {
-        this.$refs[name].forEach((item) => {
-          item.validate((valid) => {
-            if (!valid) groupValid = false
-          })
-        })
-      }
-      return groupValid
-    },
-
-    // 验证：静态表单中有动态表单
-    checkMulForm(container, inners) {
-      const innerValid = this.groupValidate(inners)
-      this.$refs[container].validate((valid) => {
-        if (innerValid && valid) this.step(+1)
-      })
     },
   },
 

@@ -21,7 +21,7 @@
       v-show="process === 1"
       :model="fdata"
       :rules="rules"
-      ref="infoForm"
+      ref="flowForm"
      >
       <Form-item label="学员编号" prop="student_number">
         <Input
@@ -37,23 +37,6 @@
         >
           <Option
             v-for="item in flowInfo.flow_list"
-            :value="item.id"
-            :key="item.id"
-          >
-            {{item.display_name}}
-           </Option>
-        </Select>
-      </Form-item>
-      <!-- 合同模板 -->
-      <Form-item
-        v-if="flowInfo.flow_template_list.length"
-        label="合同模板"
-        prop="template_type"
-      >
-        <Select
-          v-model="fdata.template_type">
-          <Option
-            v-for="item in flowInfo.flow_template_list"
             :value="item.id"
             :key="item.id"
           >
@@ -86,7 +69,7 @@
         <Button @click="goBack()">取消</Button>
         <Button
           type="primary"
-          @click="checkFlowForm('infoForm', fetchStudentInfo)"
+          @click="checkFlowForm(fetchStudentInfo)"
         >下一步</Button>
       </Form-item>
     </Form>
@@ -379,11 +362,11 @@ export default {
         school_list: [
           {
             display_name: '厦门一中',
-            value: 1,
+            value: 11,
           },
           {
             display_name: '双十中学',
-            value: 2,
+            value: 12,
           },
         ],
       }),
