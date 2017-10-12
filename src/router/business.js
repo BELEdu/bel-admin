@@ -23,7 +23,7 @@ const BUSINESS_PRODUCT = {
 }
 
 const BUSINESS_CONTRACT = {
-  name: '合同审批',
+  name: '签约审批',
   link: '/business/contract',
 }
 
