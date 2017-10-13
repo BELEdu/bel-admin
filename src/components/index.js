@@ -1,3 +1,4 @@
+import AppButtonRadio from './AppButtonRadio'
 import AppEditorTitle from './AppEditorTitle'
 import AppPager from './AppPager'
 import AppFormModal from './AppFormModal'
@@ -15,6 +16,7 @@ import AppQuestionAnalysis from './AppQuestionAnalysis'
 import AppQuestion from './AppQuestionAnalysis/components/AppQuestion'
 
 const rbdog = {
+  AppButtonRadio,
   AppEditorTitle,
   AppPager,
   AppFormModal,

@@ -36,13 +36,13 @@
         <Row>
           <Col span="12">
             <Form-item label="题型" prop="question_type_id">
-              <button-radio
+              <AppButtonRadio
                 v-if="!isUpdate"
                 v-model="form.question_type_id"
                 :data="questionTypes"
                 size="small"
                 @change="changeQuestionType"
-              ></button-radio>
+              />
               <!-- 如果是编辑状态，则只显示已选项 -->
               <Button v-if="isUpdate" size="small" type="primary">{{questionTypeFormat}}</Button>
             </Form-item>
@@ -65,20 +65,20 @@
         <Row>
           <Col span="12">
             <Form-item label="类型" prop="paper_type">
-              <button-radio
+              <AppButtonRadio
                 v-model="form.paper_type"
                 :data="paperTypes"
                 size="small"
-              ></button-radio>
+              ></AppButtonRadio>
             </Form-item>
           </Col>
           <Col span="12">
             <Form-item label="时间" prop="year">
-              <button-radio
+              <AppButtonRadio
                 v-model="form.year"
                 :data="years"
                 size="small"
-              ></button-radio>
+              ></AppButtonRadio>
             </Form-item>
           </Col>
         </Row>
@@ -226,7 +226,6 @@ import { mapState } from 'vuex'
 import Http from '@/utils/http'
 import { GLOBAL } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import ButtonRadio from '../components/ButtonRadio'
 
 // 默认单项答案
 const defaultAnswer = {
@@ -241,10 +240,6 @@ export default {
   name: 'question-question-edit',
 
   mixins: [form, goBack],
-
-  components: {
-    ButtonRadio,
-  },
 
   data() {
     return {

@@ -20,7 +20,7 @@
  */
 
 export default {
-  name: 'app-button-radio',
+  name: 'AppButtonRadio',
 
   props: {
     value: {},

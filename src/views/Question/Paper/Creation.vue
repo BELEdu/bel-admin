@@ -50,12 +50,12 @@
         :label="year.label"
         prop="year"
       >
-        <v-button-radio
+        <AppButtonRadio
           v-model="paper.year"
           :data="year.data"
           size="small"
           @change="autoName"
-        ></v-button-radio>
+        />
       </Form-item>
       <!-- 科目 -->
       <Form-item
@@ -215,7 +215,6 @@
 import mapData from '@/assets/china.json'
 import { form } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
-import vButtonRadio from '../components/ButtonRadio'
 import vQuestionAnalysis from './components/Analysis'
 import paperBiz from './mixins/paper'
 
@@ -225,7 +224,6 @@ export default {
   mixins: [paperBiz, form],
 
   components: {
-    vButtonRadio,
     vQuestionAnalysis,
   },
 

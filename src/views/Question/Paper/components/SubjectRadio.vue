@@ -1,13 +1,13 @@
 <template>
   <div class="v-subject-radio">
     <span class="title">学科</span>
-    <vButtonRadio
+    <AppButtonRadio
       class="options"
       v-model="subjectId"
       :data="data"
       size="small"
       @change="changeSubject"
-    ></vButtonRadio>
+    />
   </div>
 </template>
 
@@ -18,14 +18,8 @@
  * @author huojinzhao
  */
 
-import vButtonRadio from '../../components/ButtonRadio'
-
 export default {
   name: 'v-subject-radio',
-
-  components: {
-    vButtonRadio,
-  },
 
   props: {
     data: {
