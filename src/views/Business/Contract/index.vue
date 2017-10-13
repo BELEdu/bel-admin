@@ -71,25 +71,14 @@
 
     <Table border
       :columns="colConfig"
-      :data="buffer.data"
+      :data="tableInfo.data"
       @on-sort-change="sort"></Table>
 
     <app-pager
-      :data="buffer"
+      :data="tableInfo"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
     ></app-pager>
-
-    <!--删除提醒框-->
-    <app-warn-modal
-      v-model="warn.show"
-      :title="warn.title"
-      :loading="warn.loading"
-      action="确认取消"
-      @on-ok="doCancel"
-    >
-      <p>取消该审批后将无法重新提交，是否确认取消？</p>
-    </app-warn-modal>
   </div>
 </template>
 
@@ -100,34 +89,28 @@
  * @author huojinzhao
  */
 import { mapState } from 'vuex'
-import { list } from '@/mixins'
-import { Http } from '@/utils'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, searchConfig } from './modules/config'
+import { list, tableCommon } from '@/mixins'
+import {
+  colConfig,
+  searchConfig,
+} from './modules/config'
 
 export default {
-  name: 'business-contract',
+  name: 'BusinessContract',
 
-  mixins: [list],
+  mixins: [list, tableCommon],
 
   data() {
     return {
       // 搜索配置
       ...searchConfig(),
+
       colConfig: colConfig(this),
-      // 删除警告对话框数据
-      warn: {
-        show: false,
-        title: '确认取消合同',
-        row: null,
-        loading: false,
-      },
     }
   },
 
   computed: {
     ...mapState({
-      buffer: state => state.business.buffer.contract,
       apply_status: state => state.dicts.apply_status,
     }),
   },
@@ -137,6 +120,7 @@ export default {
     toCreate() {
       this.$router.push('contract/edit')
     },
+
     // 查看合同进度
     toCheck(row) {
       if (row.refund_tag) {
@@ -145,6 +129,8 @@ export default {
         this.$router.push(`contract/info/${row.id}`)
       }
     },
+
+    // 合同审批
     toApprove(row) {
       if (row.refund_tag) {
         this.$router.push(`contract/refund/audit/${row.id}`)
@@ -152,6 +138,7 @@ export default {
         this.$router.push(`contract/audit/${row.id}`)
       }
     },
+
     // 重新提交操作
     toRecheck(row) {
       if (row.refund_tag) {
@@ -160,37 +147,11 @@ export default {
         this.$router.push(`contract/edit/${row.id}`)
       }
     },
+
     // 退费
     toRefund(row) {
       this.$router.push(`contract/refund/${row.id}`)
     },
-    // 取消某项合同前
-    toCancel(row) {
-      // this.$store.dispatch(BUSINESS.EDIT.DELETE, row.id)
-      this.warn.loading = false
-      this.warn.show = true
-      this.warn.row = row
-    },
-    // 确定取消某合同
-    doCancel() {
-      this.warn.loading = true
-      // 取消成功后重新请求当页数据
-      Http.post(`/contract/cancel/${this.warn.row.id}`)
-        .then(() => {
-          this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
-            .then(() => { this.warn.show = false })
-        })
-    },
-  },
-
-  created() {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
-      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 }
 </script>

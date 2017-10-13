@@ -125,7 +125,7 @@ export default [
     name: 'BussinessContract',
     component: views.Contract,
     meta: {
-      uri: 'contract',
+      uri: '/contract',
       breadcrumb: [
         { name: '业务管理' },
         { name: '合同审批' },
@@ -138,7 +138,6 @@ export default [
     name: 'BussinessContractCreate',
     component: views.ContractEdit,
     meta: {
-      uri: 'contract',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_CONTRACT,
@@ -152,7 +151,6 @@ export default [
     name: 'BussinessContractUpdate',
     component: views.ContractEdit,
     meta: {
-      uri: 'contract/edit',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_CONTRACT,
@@ -166,7 +164,6 @@ export default [
     name: 'BussinessContractRefundUpdate',
     component: views.ContractRefund,
     meta: {
-      uri: 'contract/refund/edit',
       action: 'update',
       breadcrumb: [
         { name: '业务管理' },
@@ -181,7 +178,6 @@ export default [
     name: 'BussinessContractRefundCreate',
     component: views.ContractRefund,
     meta: {
-      uri: 'contract/refund',
       action: 'create',
       breadcrumb: [
         { name: '业务管理' },

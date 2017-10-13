@@ -5,7 +5,6 @@
  * @description flow中囊括了流程名称、合同模板、参与角色的信息
  */
 
-// import { GLOBAL } from '@/store/mutationTypes'
 import { Http } from '@/utils'
 
 export default {
@@ -20,7 +19,6 @@ export default {
   methods: {
     // flow_id改变时，通过select触发
     changeFlow(value) {
-      // this.$store.commit(GLOBAL.LOADING.SHOW)
       this.reqFlowInfo(value)
     },
 
@@ -35,7 +33,6 @@ export default {
           this.flowInfo = this.decodeFlowList(res)
           if (this.isDealAuthority) this.dealRoleKey()
           this.isDealAuthority = true
-          // this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
 

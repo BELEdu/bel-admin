@@ -10,7 +10,6 @@ import createPersistedState from 'vuex-persistedstate'
 
 import { Http } from '@/utils'
 import system from './system'
-import business from './business'
 import student from './student'
 import label from './label'
 import question from './question'
@@ -35,7 +34,6 @@ const store = new Vuex.Store({
   ],
 
   modules: {
-    business,
     student,
     system,
     label,
