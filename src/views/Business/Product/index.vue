@@ -98,7 +98,7 @@
     <!-- 列表展示 -->
     <Table border
       :columns="colConfig"
-      :data="buffer.data"
+      :data="tableInfo.data"
       @on-sort-change="sort"
     ></Table>
 
@@ -106,18 +106,8 @@
     <app-pager
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
-      :data="buffer"
+      :data="tableInfo"
      ></app-pager>
-
-    <!--删除提醒框-->
-    <app-warn-modal
-      v-model="warn.show"
-      :title="warn.title"
-      :loading="warn.loading"
-      @on-ok="doDelete()"
-    >
-      <p>删除该条记录后将无法再恢复，是否继续删除？</p>
-    </app-warn-modal>
   </div>
 </template>
 
@@ -128,40 +118,41 @@
  * @author huojinzhao
  */
 
-import Http from '@/utils/http'
-import { list } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, list_decode, searchConfig } from './modules/config'
+import { list, tableCommon } from '@/mixins'
+import {
+  colConfig,
+  searchConfig,
+} from './modules/config'
 
 export default {
-  name: 'business-product',
+  name: 'BusinessProduct',
 
-  mixins: [list],
+  mixins: [list, tableCommon],
 
   data() {
     return {
       // 搜索配置
       ...searchConfig(),
-      // 删除对话框数据
-      warn: {
-        show: false,
-        title: '确认删除',
-        row: null,
-        loading: false,
-      },
-      // Table配置
+
       colConfig: colConfig(this),
+
       preConfig: null,
     }
   },
 
-  computed: {
-    buffer() {
-      return list_decode(this.$store.state.business.buffer.product)
-    },
-  },
-
   methods: {
+    /* --- initialization --- */
+
+    getPreconfig() {
+      this.$http.get('/product/index_before')
+        .then(({ search_fields, ...rest }) => {
+          this.likeKeys = search_fields
+          this.preConfig = { ...rest }
+        })
+    },
+
+    /* --- business --- */
+
     toCreate() {
       this.$router.push('/business/product/edit')
     },
@@ -169,43 +160,10 @@ export default {
     toUpdate(row) {
       this.$router.push(`/business/product/edit/${row.id}`)
     },
-
-    // 提醒：预备删除某一列
-    toDelete(row) {
-      this.warn.loading = false
-      this.warn.show = true
-      this.warn.row = row
-    },
-
-    // 确认删除
-    doDelete() {
-      this.warn.loading = true
-      this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
-        .then(() => {
-          this.warn.show = false
-        })
-    },
-  },
-  beforeRouteEnter(to, from, next) {
-    Http.get('/product/index_before')
-      .then(({ search_fields, ...args }) => {
-        next((vm) => {
-          // eslint-disable-next-line
-          vm.likeKeys = search_fields
-          // eslint-disable-next-line
-          vm.preConfig = { ...args }
-        })
-      })
   },
 
   created() {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
-      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
+    this.getPreconfig()
   },
 }
 </script>

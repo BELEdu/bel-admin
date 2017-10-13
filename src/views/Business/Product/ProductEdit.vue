@@ -150,9 +150,8 @@
  */
 
 import { goBack, form } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { Http } from '@/utils'
-import { editInit, unit_encode, unit_decode } from './modules/config'
+import { GLOBAL } from '@/store/mutationTypes'
+import { editInit } from './modules/config'
 import vTableCheckbox from '../components/TableCheckbox'
 
 export default {
@@ -200,10 +199,28 @@ export default {
   },
 
   methods: {
+    /* --- Initialization --- */
+
+    getPreConfig() {
+      this.$http.get('/product/store_before')
+        .then((res) => { this.preConfig = res })
+    },
+
+    fetchUpdationInfo(id) {
+      if (!id) return Promise.resolve()
+
+      return this.$http.get(`/product/${id}`)
+        .then((res) => { this.fdata = res })
+        .catch(() => {})
+    },
+
     /* --- Assistance --- */
 
     autoName() {
-      const name = this.getName(this.fdata.grade, this.preConfig.grade)
+      const name = this.getName(
+        this.fdata.grade,
+        this.preConfig.grade,
+      )
         + this.getName(
           this.fdata.grade_range_subject_id,
           this.preConfig.grade_range_subject_list,
@@ -232,44 +249,36 @@ export default {
     // 提交编辑好的表单数据
     submit() {
       this.loading = true
-      const fdata = unit_encode(this.fdata)
-      // 产品名称非输入，而是自动生成
+
+      const id = this.$route.params.id
+
+      const fdata = this.fdata
       fdata.display_name = this.autoName()
-      if (this.$route.params.id) {
-        const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => this.goBack())
-          .catch(this.errorHandler)
-          .then(() => { this.loading = false })
-      } else {
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => {
-            this.goBack()
-          })
-          .catch(this.errorHandler)
-          .then(() => { this.loading = false })
-      }
+
+      const method = id ? 'patch' : 'post'
+      const uri = id ? `/product/${id}` : '/product'
+
+      return this.$http[method](uri, fdata)
     },
 
     handleSubmit(name) {
       this.$refs[name]
-        .validate((valid) => { if (valid) this.submit() })
+        .validate((valid) => {
+          if (valid) {
+            this.submit()
+              .then(() => this.goBack())
+              .catch(this.errorHandler)
+              .then(() => { this.loading = false })
+          }
+        })
     },
   },
 
-  beforeRouteEnter(to, from, next) {
-    Http.get('/product/store_before')
-      // eslint-disable-next-line
-      .then(data => next((vm) => { vm.preConfig = { ...data } }))
-  },
-
   created() {
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => {
-        this.fdata = unit_decode(res)
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
-      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    this.getPreConfig()
+
+    this.fetchUpdationInfo(this.$route.params.id)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>

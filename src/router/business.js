@@ -253,26 +253,25 @@ export default [
 
   /* --- 产品管理 --- */
 
-  // 产品管理
+  // 列表页
   {
     path: 'business/product',
     name: 'BussinessProduct',
     component: views.Product,
     meta: {
-      uri: 'product',
+      uri: '/product',
       breadcrumb: [
         { name: '业务管理' },
         { name: '产品管理' },
       ],
     },
   },
-  // 产品管理 新建产品
+  // 新建产品
   {
     path: 'business/Product/edit',
     name: 'BussinessProductCreate',
     component: views.ProductEdit,
     meta: {
-      uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_PRODUCT,
@@ -280,13 +279,12 @@ export default [
       ],
     },
   },
-  // 产品管理 更新产品
+  // 更新产品
   {
     path: 'business/Product/edit/:id',
     name: 'BussinessProductUpdate',
     component: views.ProductEdit,
     meta: {
-      uri: 'product',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_PRODUCT,
@@ -295,7 +293,9 @@ export default [
     },
   },
 
-  // 优惠活动
+  /* 优惠活动 */
+
+  // 列表页
   {
     path: BUSINESS_PROMOTION.link,
     name: 'BussinessProductPromotion',
