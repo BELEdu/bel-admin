@@ -162,8 +162,7 @@
  */
 
 import { goBack, form } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { Http } from '@/utils'
+import { GLOBAL } from '@/store/mutationTypes'
 import { editInit, encode } from './modules/config'
 
 export default {
@@ -234,6 +233,14 @@ export default {
         .then((res) => { this.preConfig = { ...res } })
     },
 
+    fetchUpdationInfo(id) {
+      if (!id) return Promise.resolve()
+
+      return this.$http.get(`/communication/${id}`)
+        .then((res) => { this.fdata = res })
+        .catch(() => {})
+    },
+
     /* --- assistance --- */
 
     // 表单项validator
@@ -275,7 +282,8 @@ export default {
     // 删除log项
     deleteLog(communication_id, id, index) {
       if (id && communication_id) {
-        Http.delete(`/communication/${communication_id}/log/${id}`)
+        const uri = `/communication/${communication_id}/log/${id}`
+        this.$http.delete(uri)
       }
       this.fdata.communication_logs.splice(index, 1)
     },
@@ -283,73 +291,84 @@ export default {
     // 新增log项
     addLog(name) {
       let result = false
+
       // log验证成功后
       this.$refs[name].validate((valid) => {
         if (valid) {
           const communication_at = this.comm_log
             .communication_at
             .toJSON().slice(0, 10)
+
           const comm_log = {
             communication_at,
             content: this.comm_log.content,
           }
+
           if (this.$route.params.id) {
-            Http.post(`/communication/${this.$route.params.id}/log`, comm_log)
+            const uri = `/communication/${this.$route.params.id}/log`
+            this.$http.post(uri, comm_log)
           }
+
           this.fdata.communication_logs.push(comm_log)
           this.$refs[name].resetFields()
         }
+
         result = valid
       })
+
       // 返回log验证结果
       return result
     },
 
     // 编辑提交表单数据
     submit() {
-      // 开启按钮loadding
       this.loading = true
-      // 根据接口文档转化数据
-      const fdata = encode(this.fdata)
-      // 判断新增还是修改
-      if (this.$route.params.id) {
-        const id = this.$route.params.id
-        this.$store.dispatch(BUSINESS.EDIT.UPDATE, { id, fdata })
-          .then(() => this.goBack())
-          .catch(this.errorHandler)
-          .then(() => { this.loading = false })
-      } else {
-        this.$store.dispatch(BUSINESS.EDIT.CREATE, fdata)
-          .then(() => this.goBack())
-          .catch(this.errorHandler)
-          .then(() => { this.loading = false })
+
+      const id = this.$route.params.id
+
+      const fdata = this.fdata
+      const method = id ? 'patch' : 'post'
+      const uri = id ? `/communication/${id}` : '/communication'
+
+      return this.$http[method](uri, encode(fdata))
+    },
+
+    // 验证和处理没有用"增加沟通记录"的comm_log表单
+    handleLog() {
+      let valid = true
+      const communication_at = this.comm_log.communication_at
+      const content = this.comm_log.content
+
+      if (communication_at !== '' || content !== '') {
+        valid = this.addLog('comm_log')
       }
+
+      return valid
     },
 
     // Form click提交表单事件handler
     handleSubmit(name) {
-      // 验证和处理没有用"增加沟通记录"的comm_log表单
-      const communication_at = this.comm_log.communication_at
-      const content = this.comm_log.content
-      let logValid = true
-      if (communication_at !== '' || content !== '') {
-        logValid = this.addLog('comm_log')
-      }
+      const logValid = this.handleLog()
+
       // 进行表单提交
       this.$refs[name]
-        .validate((valid) => { if (valid && logValid) this.submit() })
+        .validate((valid) => {
+          if (valid && logValid) {
+            this.submit()
+              .then(() => this.goBack())
+              .catch(this.errorHandler)
+              .then(() => { this.loading = false })
+          }
+        })
     },
   },
 
   created() {
     this.getPreconfig()
     // 编辑页面初始化以及loading页面关闭
-    this.$store.dispatch(BUSINESS.EDIT.INIT, this.$route)
-      .then((res) => {
-        this.fdata = res
-        this.$store.commit(GLOBAL.LOADING.HIDE)
-      })
-      .catch(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
+    this.fetchUpdationInfo(this.$route.params.id)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>

@@ -6,33 +6,31 @@
 import { createButton } from '@/utils'
 
 // 编辑字段初始化
-export function editInit() {
-  return {
-    // required|min:2|max:10
-    student_name: '',
-    // required|digits:11
-    mobile: '',
-    // 字典： gender
-    gender: null,
-    // min:2|max:20
-    school_name: '',
-    // min:2|max:10
-    rank: null,
-    // 字典： grade
-    grade: null,
-    // 偏科情况
-    tend_subject_description: '',
-    // 沟通类型
-    communication_type: null,
-    // 沟通时间： date_format:Y-m-d
-    communication_at: '',
-    // 沟通情况： min:2|max:200
-    communication_logs: [],
-  }
-}
+export const editInit = () => ({
+  // required|min:2|max:10
+  student_name: '',
+  // required|digits:11
+  mobile: '',
+  // 字典： gender
+  gender: null,
+  // min:2|max:20
+  school_name: '',
+  // min:2|max:10
+  rank: null,
+  // 字典： grade
+  grade: null,
+  // 偏科情况
+  tend_subject_description: '',
+  // 沟通类型
+  communication_type: null,
+  // 沟通时间： date_format:Y-m-d
+  communication_at: '',
+  // 沟通情况： min:2|max:200
+  communication_logs: [],
+})
 
 // 返还给服务器的数据处理
-export function encode(data) {
+export const encode = (data) => {
   const ectype = { ...data }
 
   // visited_at 处理首次时间
@@ -51,18 +49,16 @@ export function encode(data) {
 }
 
 // 搜索配置
-export function searchConfig() {
-  return {
-    // 关键字检索范围
-    likeKeys: [],
-    // 选择关键字
-    likeKey: 'student_name',
-    query: {
-      'equal[student_current_status]': null,
-      'equal[communication_type]': null,
-    },
-  }
-}
+export const searchConfig = () => ({
+  // 关键字检索范围
+  likeKeys: [],
+  // 选择关键字
+  likeKey: 'student_name',
+  query: {
+    'equal[student_current_status]': null,
+    'equal[communication_type]': null,
+  },
+})
 
 // 沟通情况render
 const buildLogs = (h, { row }) => h('div',
@@ -160,7 +156,7 @@ export function colConfig(that) {
         {
           text: '删除',
           type: 'error',
-          click: that.toDelete,
+          click: ({ id }) => that.deleteItem(id),
         },
         {
           text: '修改',

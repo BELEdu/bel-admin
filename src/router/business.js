@@ -75,26 +75,27 @@ export default [
     },
   },
 
-  // 沟通记录
+  /* 沟通记录 */
+
+  // 列表页
   {
     path: 'business/communication',
     name: 'BussinessCommunication',
     component: views.Communication,
     meta: {
-      uri: 'communication',
+      uri: '/communication',
       breadcrumb: [
         { name: '业务管理' },
         { name: '沟通记录' },
       ],
     },
   },
-  // 沟通记录 创建记录
+  // 创建记录
   {
     path: 'business/communication/edit',
     name: 'BussinenssCommunicationCreate',
     component: views.CommunicationEdit,
     meta: {
-      uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_COMMUNICATION,
@@ -102,13 +103,12 @@ export default [
       ],
     },
   },
-  // 沟通记录 更新记录
+  // 更新记录
   {
     path: 'business/communication/edit/:id',
     name: 'BussinenssCommunicationUpdate',
     component: views.CommunicationEdit,
     meta: {
-      uri: 'communication',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_COMMUNICATION,

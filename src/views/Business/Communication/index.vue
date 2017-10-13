@@ -76,27 +76,17 @@
     </Row>
 
     <Table border
-      v-if="buffer"
+      v-if="tableInfo"
       :columns="colConfig"
-      :data="buffer.data"
+      :data="tableInfo.data"
       @on-sort-change="sort"
     ></Table>
 
     <app-pager
-      :data="buffer"
+      :data="tableInfo"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
     ></app-pager>
-
-    <!--删除提醒框-->
-    <app-warn-modal
-      v-model="warn.show"
-      :title="warn.title"
-      :loading="warn.loading"
-      @on-ok="doDelete()"
-    >
-      <p>删除该条记录后将无法再恢复，是否继续删除？</p>
-    </app-warn-modal>
 
     <v-record
       :visible.sync="recordModal.active"
@@ -114,17 +104,18 @@
  * @author huojinzhao
  */
 
-import { mapState } from 'vuex'
-import { list } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
-import { colConfig, searchConfig } from './modules/config'
+import { list, tableCommon } from '@/mixins'
+import {
+  colConfig,
+  searchConfig,
+} from './modules/config'
 import vRecord from './components/record'
 
 
 export default {
   name: 'business-communication',
 
-  mixins: [list],
+  mixins: [list, tableCommon],
 
   components: {
     vRecord,
@@ -134,14 +125,6 @@ export default {
     return {
       // 搜索配置
       ...searchConfig(),
-
-      // 删除警告对话框数据
-      warn: {
-        show: false,
-        title: '确认删除',
-        row: null,
-        loading: false,
-      },
 
       // Table配置
       colConfig: colConfig(this),
@@ -154,12 +137,6 @@ export default {
         data: [],
       },
     }
-  },
-
-  computed: {
-    ...mapState({
-      buffer: state => state.business.buffer.communication,
-    }),
   },
 
   methods: {
@@ -183,22 +160,6 @@ export default {
       this.$router.push(`/business/communication/edit/${row.id}`)
     },
 
-    // 提醒：预备删除某一列
-    toDelete(row) {
-      this.warn.loading = false
-      this.warn.show = true
-      this.warn.row = row
-    },
-
-    // 确认删除
-    doDelete() {
-      this.warn.loading = true
-      this.$store.dispatch(BUSINESS.EDIT.DELETE, this.warn.row.id)
-        .then(() => {
-          this.warn.show = false
-        })
-    },
-
     showRecord(row) {
       this.$http.get(`/communication/${row.id}`)
         .then(({ communication_logs: logs }) => {
@@ -211,20 +172,13 @@ export default {
     },
 
     recordEditionSucceed() {
-      this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
+      this.fetchData()
     },
   },
 
   // 根据当前路由进行初始化
   created() {
     this.getPreconfig()
-    this.$store.dispatch(BUSINESS.PAGE.INIT, this.$route)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-  },
-
-  beforeRouteUpdate(to, from, next) {
-    this.$store.dispatch(BUSINESS.PAGE.INIT, to)
-      .then(() => { this.$store.commit(GLOBAL.LOADING.HIDE); next() })
   },
 }
 </script>

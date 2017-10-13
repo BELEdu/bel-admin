@@ -203,6 +203,7 @@ export default {
 
     fetchUpdationInfo(id) {
       if (!id) return Promise.resolve()
+
       return this.$http.get(`/hotline/${id}`)
         .then((res) => { this.fdata = res })
         .catch(() => {})
