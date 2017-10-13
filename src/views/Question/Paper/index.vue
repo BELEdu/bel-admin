@@ -36,13 +36,12 @@
     </Form>
 
     <!-- 科目过滤 -->
-    <v-subject-radio
+    <ConditionRadioSubject
       v-if="subjects"
       :data="subjects.data"
       :default="subjects.default"
       @change="getPrecondition"
-    >
-    </v-subject-radio>
+    />
 
     <!-- 上方条件过滤 -->
     <ConditionRadio
@@ -100,8 +99,10 @@
 
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
-import { ConditionRadio } from '@/views/components'
-import vSubjectRadio from './components/SubjectRadio'
+import {
+  ConditionRadio,
+  ConditionRadioSubject,
+} from '@/views/components'
 
 export default {
   name: 'question-paper',
@@ -110,7 +111,7 @@ export default {
 
   components: {
     ConditionRadio,
-    vSubjectRadio,
+    ConditionRadioSubject,
   },
 
   data() {

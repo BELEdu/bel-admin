@@ -97,7 +97,5 @@ export default {
 
 .condition-radio-group {
   .condition-radio-group();
-
-  font-size: 14px;
 }
 </style>

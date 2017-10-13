@@ -37,13 +37,12 @@
       <!-- 右：主体 -->
       <section>
         <!-- 科目过滤 -->
-        <v-subject-radio
+        <ConditionRadioSubject
           v-if="subjects"
           :data="subjects.data"
           :default="subjects.default"
           @change="getPrecondition"
-        >
-        </v-subject-radio>
+        />
         <!-- 上部：高级搜索 -->
         <ConditionRadio
           v-for="(condition, key) in advanceConditions"
@@ -159,9 +158,9 @@ import { list } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import {
   ConditionRadio,
+  ConditionRadioSubject,
   TreeSide,
 } from '@/views/components'
-import vSubjectRadio from './components/SubjectRadio'
 import vAnalysis from './components/Analysis'
 import paperBiz from './mixins/paper'
 
@@ -171,9 +170,9 @@ export default {
   mixins: [list, paperBiz],
 
   components: {
+    ConditionRadioSubject,
     ConditionRadio,
     TreeSide,
-    vSubjectRadio,
     vAnalysis,
   },
 

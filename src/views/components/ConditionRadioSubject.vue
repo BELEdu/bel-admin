@@ -1,8 +1,8 @@
 <template>
-  <div class="v-subject-radio">
-    <span class="title">学科</span>
+  <div class="condition-radio-subject">
+    <span class="condition-radio-subject__title">学科</span>
     <AppButtonRadio
-      class="options"
+      class="condition-radio-subject__options"
       v-model="subjectId"
       :data="data"
       size="small"
@@ -19,13 +19,14 @@
  */
 
 export default {
-  name: 'v-subject-radio',
+  name: 'ConditionRadioSubject',
 
   props: {
     data: {
       type: Array,
       required: true,
     },
+
     default: {
       type: Number,
       required: true,
@@ -38,10 +39,9 @@ export default {
 
   methods: {
     changeSubject(subject) {
-      /* eslint-disable prefer-template */
+      // eslint-disable-next-line
       const url = this.$route.path
         + `?equal[grade_range_subject_id]=${subject.id}`
-      /* eslint-enable */
       this.$emit('change', subject.id)
       this.$router.push(url)
     },
@@ -55,10 +55,9 @@ export default {
 </script>
 
 <style lang="less">
-@import '~vars';
-@import '../mixins/paper.less';
+@import './style/conditionRadio';
 
-.v-subject-radio {
-  .condition();
+.condition-radio-subject {
+  .condition-radio-group();
 }
 </style>
