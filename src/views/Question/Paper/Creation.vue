@@ -7,6 +7,7 @@
       ref="places"
       :model="paper.places | translateToObject"
     >
+      <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item
         v-for="(place, index) in paper.places"
         :key="index"
@@ -191,6 +192,7 @@
         @click="backToCompose"
       >返回组卷</Button>
       <Button
+        :loading="confirmLoading"
         type="primary"
         @click="prePaperCreation"
       >保存</Button>
@@ -211,6 +213,7 @@
  */
 
 import mapData from '@/assets/china.json'
+import { form } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import vButtonRadio from '../components/ButtonRadio'
 import vQuestionAnalysis from './components/Analysis'
@@ -219,7 +222,7 @@ import paperBiz from './mixins/paper'
 export default {
   name: 'question-paper-creation',
 
-  mixins: [paperBiz],
+  mixins: [paperBiz, form],
 
   components: {
     vButtonRadio,
@@ -295,6 +298,8 @@ export default {
         { required: true, message: '必须填写试卷标题' },
       ],
     },
+
+    confirmLoading: false,
   }),
 
   watch: {
@@ -498,7 +503,12 @@ export default {
       let trigger = true
       this.$refs.places.validate((valid) => { trigger = trigger && valid })
       this.$refs.paperConfig.validate((valid) => { trigger = trigger && valid })
-      if (trigger) this.createPaper()
+      if (trigger) {
+        this.createPaper()
+          .then(() => this.onCancel())
+          .catch(this.errorHandler)
+          .then(() => { this.confrimLoading = false })
+      }
     },
 
     createPaper() {

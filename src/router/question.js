@@ -156,7 +156,7 @@ export default [
   // 组卷页 - 新建
   {
     path: QUESTION_PAPER_CREATION_COMPOSITION.link,
-    name: 'QuestionPaperComposition',
+    name: 'QuestionPaperCompositionCreation',
     component: views.QuestionPaperComposition,
     meta: {
       source: 'paperCompose',
@@ -171,7 +171,7 @@ export default [
   // 组卷页 - 编辑
   {
     path: QUESTION_PAPER_EDITION_COMPOSITION.link,
-    name: 'QuestionPaperComposition',
+    name: 'QuestionPaperCompositionUpdation',
     component: views.QuestionPaperComposition,
     meta: {
       source: 'paperCompose',
