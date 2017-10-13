@@ -179,7 +179,7 @@
       v-model="structureModal.active"
       title="编辑知识点"
     >
-      <v-structure-tree
+      <TreeStructure
         keyword="知识点"
         :data="this.structureModal.data"
         :default-subject="this.subjects.default"
@@ -190,7 +190,7 @@
         <div slot="header">
           以下为当前学科的所有知识点及其结构，您可增加与删除知识点，也可以调整知识点的排序，排序的调整仅限同父级下的同级排序。
         </div>
-      </v-structure-tree>
+      </TreeStructure>
     </Modal>
   </div>
 </template>
@@ -205,15 +205,15 @@
 import Http from '@/utils/http'
 import { createButton } from '@/utils'
 import list from '@/mixins/list'
-import vStructureTree from '../components/StructureTree'
+import { TreeStructure } from '@/views/components'
 
 export default {
-  name: 'question-knowledge',
+  name: 'QuestionKnowledge',
 
   mixins: [list],
 
   components: {
-    vStructureTree,
+    TreeStructure,
   },
 
   data() {

@@ -48,7 +48,7 @@
 
 <script>
 /**
- * 边栏树形选择组件
+ * 公共组件 - 边栏树形选择组件
  *
  * @author huojinzhao
  *

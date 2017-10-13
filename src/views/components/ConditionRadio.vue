@@ -35,8 +35,14 @@
 </template>
 
 <script>
+/**
+ * 公共组件 - button式radio组件
+ *
+ * @author huojinzhao
+ */
+
 export default {
-  name: 'ConditionRadioAdvance',
+  name: 'ConditionRadio',
 
   props: {
     // 中文标识

@@ -1,8 +1,8 @@
 <template>
-  <div class="structure-tree">
+  <div class="tree-structure">
     <slot name="header"></slot>
 
-    <section class="structure-tree__content">
+    <section class="tree-structure__content">
       <Tree
         :data="tree"
         @on-select-change="seleteNode"
@@ -10,7 +10,7 @@
     </section>
 
     <footer
-      class="structure-tree__control"
+      class="tree-structure__control"
     >
       <Button
         type="success"
@@ -58,13 +58,13 @@
 
     <!-- 添加编辑框 -->
     <Modal
-      class="structure-tree__creation"
+      class="tree-structure__creation"
       :title="`添加${keyword}`"
       :width="400"
       v-model="creationModal.active"
       @on-cancel="deactivateCreation"
     >
-      <div class="structure-tree__creation-location">
+      <div class="tree-structure__creation-location">
         <span>选择添加位置：</span>
         <Button
           size="small"
@@ -85,7 +85,7 @@
         >子级</Button>
       </div>
 
-      <div class="structure-tree__creation-content">
+      <div class="tree-structure__creation-content">
         <p>输入{{keyword}}名称（每行一个）</p>
         <Input
           v-model="creationInfo.text"
@@ -95,7 +95,7 @@
         </Input>
       </div>
 
-      <div class="structure-tree__creation-control" slot="footer">
+      <div class="tree-structure__creation-control" slot="footer">
         <Button
           @click="deactivateCreation"
         >取消</Button>
@@ -110,8 +110,14 @@
 </template>
 
 <script>
+/**
+ * 公共组件 - 可调控结构的树形组件
+ *
+ * @author huojinzhao
+ */
+
 export default {
-  name: 'v-structure-tree',
+  name: 'TreeStructure',
 
   props: {
     // 操作目标：知识点、章节。。。
@@ -397,7 +403,7 @@ export default {
 <style lang="less">
 @import '~vars';
 
-.structure-tree {
+.tree-structure {
 
   &__control {
     text-align: center;
