@@ -35,7 +35,7 @@
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--计划弹窗-->
-    <plan-modal :visible.sync="planVisible" :item="currentItem" type="add"></plan-modal>
+    <plan-modal :visible.sync="planVisible"></plan-modal>
   </div>
 </template>
 
@@ -65,10 +65,13 @@
           { label: '班级名称', value: 'classes_name' },
           { label: '排课专员', value: 'customer_relationships_name' },
         ],
+
         likeKey: 'classes_name',
+
         query: {
           'equal[plan_status]': null,
         },
+
         columns: [
           { title: '班级名称', key: 'classes_name', align: 'center' },
           { title: '学员人数（个）', key: 'student_total', align: 'center' },
@@ -102,11 +105,7 @@
                 type: 'primary',
                 isShow: ({ row }) => row.plan_status === 0,
                 click: (row) => {
-                  // eslint-disable-next-line
-                  console.log(row)
-                  // TODO 晚辅导
-                  this.addPlan(row)
-                  // TODO 其它计划
+                  this.handlePlan(row, 'add')
                 },
               },
               // 计划中 || 已结束
@@ -114,8 +113,7 @@
                 type: 'primary',
                 isShow: ({ row }) => row.plan_status === 1 || row.plan_status === 4,
                 click: (row) => {
-                  // eslint-disable-next-line
-                  console.log(row)
+                  this.handlePlan(row, 'view')
                 },
               },
               // 计划中
@@ -123,14 +121,13 @@
                 type: 'primary',
                 isShow: ({ row }) => row.plan_status === 1,
                 click: (row) => {
-                  // eslint-disable-next-line
-                  console.log(row)
+                  this.handlePlan(row, 'edit')
                 },
               },
             ]),
           },
         ],
-        currentItem: {},
+
         planVisible: false,
       }
     },
@@ -146,8 +143,9 @@
         return this.$store.dispatch(STUDENT.PLAN.INIT, qs)
       },
 
-      addPlan(item) {
-        this.currentItem = { ...item }
+      handlePlan(item, type) {
+        this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_DATA, item)
+        this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_TYPE, type)
         this.planVisible = true
       },
     },

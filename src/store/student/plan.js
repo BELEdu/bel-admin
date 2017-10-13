@@ -12,14 +12,37 @@ export default {
     list: {
       data: [],
     },
+    currentItemData: {},
+    currentItemType: 'add',
   },
 
   mutations: {
     [STUDENT.PLAN.INIT](state, list) {
       state.list = {
-        ...state.list,
         ...list,
       }
+    },
+
+    [STUDENT.PLAN.UPDATE](state, update) {
+      state.list = state.list.map((item) => {
+        if (item.id === update.id) {
+          return {
+            ...item,
+            ...update,
+          }
+        }
+        return item
+      })
+    },
+
+    [STUDENT.PLAN.CURRENT_ITEM_DATA](state, item) {
+      state.currentItemData = {
+        ...item,
+      }
+    },
+
+    [STUDENT.PLAN.CURRENT_ITEM_TYPE](state, type) {
+      state.currentItemType = type
     },
   },
 
