@@ -1,0 +1,27 @@
+@item-height: 24px;
+
+.condition-radio-group() {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: @item-height;
+
+  &__title {
+    float: left;
+    margin-right: 10px;
+    padding: 0 10px;
+    font-weight: bold;
+  }
+
+  &__options {
+    overflow-x: hidden;
+
+    &--all {
+      padding: 0 10px;
+    }
+
+    &-item {
+      margin-left: 10px;
+      padding: 0 5px;
+    }
+  }
+}

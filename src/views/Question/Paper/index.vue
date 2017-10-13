@@ -43,14 +43,15 @@
       @change="getPrecondition"
     >
     </v-subject-radio>
+
     <!-- 上方条件过滤 -->
-    <v-advance-search
+    <ConditionRadio
       v-for="(condition, key) in advanceConditions"
       :key="key"
       :label="condition.label"
       :data="condition.data"
       :tag="`equal[${key}]`"
-    ></v-advance-search>
+    />
 
     <!-- 中部标题栏 -->
     <div
@@ -99,7 +100,7 @@
 
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
-import vAdvanceSearch from './components/AdvanceSearch'
+import { ConditionRadio } from '@/views/components'
 import vSubjectRadio from './components/SubjectRadio'
 
 export default {
@@ -108,7 +109,7 @@ export default {
   mixins: [list],
 
   components: {
-    vAdvanceSearch,
+    ConditionRadio,
     vSubjectRadio,
   },
 

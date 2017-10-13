@@ -45,14 +45,14 @@
         >
         </v-subject-radio>
         <!-- 上部：高级搜索 -->
-        <v-advance-search
+        <ConditionRadio
           v-for="(condition, key) in advanceConditions"
           :key="key"
           :label="condition.label"
           :data="condition.data"
           :tag="`equal[${key}]`"
           :readonly="tempory.active && key==='question_type_id'"
-        ></v-advance-search>
+        />
         <!-- 中部：帮助条 -->
         <div class="content__help"
           v-if="buffer.data"
@@ -157,8 +157,10 @@
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
-import { TreeSide } from '@/views/components'
-import vAdvanceSearch from './components/AdvanceSearch'
+import {
+  ConditionRadio,
+  TreeSide,
+} from '@/views/components'
 import vSubjectRadio from './components/SubjectRadio'
 import vAnalysis from './components/Analysis'
 import paperBiz from './mixins/paper'
@@ -169,8 +171,8 @@ export default {
   mixins: [list, paperBiz],
 
   components: {
+    ConditionRadio,
     TreeSide,
-    vAdvanceSearch,
     vSubjectRadio,
     vAnalysis,
   },

@@ -1,44 +1,42 @@
 <template>
-  <div class="v-advance-search">
-    <dl
-      class="condition"
-    >
-      <dt class="title">{{label}}</dt>
-      <dd class="options">
-        <Button
-          class="options__all"
-          size="small"
-          :type="
-            !$route.query[tag] ? 'primary' : 'text'
-          "
-          :disabled="$route.query[tag] && readonly"
-          @click="onChooseOption(tag)"
-        >全部</Button>
-        <Button
-          v-for="option in data"
-          class="options__item"
-          :type="
-            $route.query[tag] === String(option.value)
-              ? 'primary'
-              : 'text'
-          "
-          :disabled="
-            readonly
-            && $route.query[tag] !== String(option.value)
-          "
-          :key="option.value"
-          @click="onChooseOption(tag, String(option.value))"
-        >
-          {{option.display_name}}
-        </Button>
-      </dd>
-    </dl>
+  <div class="condition-radio-group">
+    <span class="condition-radio-group__title">{{label}}</span>
+    <div class="condition-radio-group__options">
+      <Button
+        class="condition-radio-group__options--all"
+        size="small"
+        :type="
+          !$route.query[tag] ? 'primary' : 'text'
+        "
+        :disabled="$route.query[tag] && readonly"
+        @click="onChooseOption(tag)"
+      >
+        全部
+      </Button>
+      <Button
+        v-for="option in data"
+        class="condition-radio-group__options-item"
+        :key="option.value"
+        :type="
+          $route.query[tag] === String(option.value)
+            ? 'primary'
+            : 'text'
+        "
+        :disabled="
+          readonly
+          && $route.query[tag] !== String(option.value)
+        "
+        @click="onChooseOption(tag, String(option.value))"
+      >
+        {{option.display_name}}
+      </Button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'v-advance-search',
+  name: 'ConditionRadioAdvance',
 
   props: {
     // 中文标识
@@ -46,16 +44,19 @@ export default {
       type: String,
       required: true,
     },
+
     // queryKey
     tag: {
       type: String,
       required: true,
     },
+
     // 高级搜索条件数据
     data: {
       type: Array,
       required: true,
     },
+
     // 是否禁止变更
     readonly: {
       type: Boolean,
@@ -92,14 +93,11 @@ export default {
 </script>
 
 <style lang="less">
-@import '~vars';
-@import '../mixins/paper.less';
+@import './style/conditionRadio';
 
-.v-advance-search {
+.condition-radio-group {
+  .condition-radio-group();
+
   font-size: 14px;
-
-  & .condition {
-    .condition();
-  }
 }
 </style>

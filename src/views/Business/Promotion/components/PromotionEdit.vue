@@ -32,12 +32,12 @@
         <i>元</i>
       </Form-item>
       <Form-item label="优惠类型" prop="promotion_type">
-        <v-button-radio
+        <AppButtonRadio
           :data="preConfig.promotion_type"
           v-model="fdata.promotion_type"
           :readonly="readonly"
           size="small"
-        ></v-button-radio>
+        />
       </Form-item>
       <!-- 立减金额 -->
       <template v-if="fdata.promotion_type===1">
@@ -123,7 +123,6 @@
 </template>
 
 <script>
-import vButtonRadio from '@/views/Question/components/ButtonRadio'
 import vTableCheckbox from '@/views/Business/components/TableCheckbox'
 import { formatDate } from '@/utils/date'
 import form from '@/mixins/form'
@@ -150,7 +149,6 @@ export default {
   mixins: [form],
 
   components: {
-    vButtonRadio,
     vTableCheckbox,
   },
 
