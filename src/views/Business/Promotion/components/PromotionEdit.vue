@@ -145,7 +145,7 @@ const initFdata = () => ({
 })
 
 export default {
-  name: 'v-business-promotion-edit',
+  name: 'BusinessPromotionEdit',
 
   mixins: [form],
 

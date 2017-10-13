@@ -301,7 +301,7 @@ export default [
     name: 'BussinessProductPromotion',
     component: views.Promotion,
     meta: {
-      uri: 'product',
+      uri: '/promotion',
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_PROMOTION,
