@@ -189,7 +189,7 @@
       >取消</Button>
       <Button
         type="ghost"
-        @click="backToCompose"
+        @click="() => backToCompose()"
       >返回组卷</Button>
       <Button
         :loading="confirmLoading"
