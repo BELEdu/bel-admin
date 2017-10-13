@@ -47,8 +47,17 @@
 </template>
 
 <script>
+/**
+ * 边栏树形选择组件
+ *
+ * @author huojinzhao
+ *
+ * @param   {String}  [type]  - 'single' | 'multiple' | 'all'
+ * @param   {Object}  data    - 树形结构数据
+ */
+
 export default {
-  name: 'v-side-tree',
+  name: 'vTreeSide',
 
   props: {
     type: {

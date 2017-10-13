@@ -17,22 +17,22 @@
             @click="myLabelTree = false"
           >按知识点</span>
         </nav>
-        <v-side-tree
+        <TreeSide
           v-show="myLabelTree"
           :key="`${currentSubject}label`"
           class="content__tree"
           :data="labelTree"
           @batch-select="ids => onTreeSelect('user_label_id', ids)"
           @single-select="ids => onTreeSelect('user_label_id', ids)"
-        ></v-side-tree>
-        <v-side-tree
+        />
+        <TreeSide
           v-show="!myLabelTree"
           :key="`${currentSubject}knowledge`"
           class="content__tree"
           :data="knowledgeTree"
           @batch-select="ids => onTreeSelect('knowledge_id', ids)"
           @single-select="ids => onTreeSelect('knowledge_id', ids)"
-        ></v-side-tree>
+        />
       </aside>
       <!-- 右：主体 -->
       <section>
@@ -157,9 +157,9 @@
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
+import { TreeSide } from '@/views/components'
 import vAdvanceSearch from './components/AdvanceSearch'
 import vSubjectRadio from './components/SubjectRadio'
-import vSideTree from '../components/SideTree'
 import vAnalysis from './components/Analysis'
 import paperBiz from './mixins/paper'
 
@@ -169,9 +169,9 @@ export default {
   mixins: [list, paperBiz],
 
   components: {
+    TreeSide,
     vAdvanceSearch,
     vSubjectRadio,
-    vSideTree,
     vAnalysis,
   },
 

@@ -30,9 +30,8 @@
 <script>
 /**
  * 测试管理 - 错题管理
- * @author hjz
- * @version 2017-06-22
- * @description
+ *
+ * @author huojinzhao
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import { colConfig, buffer } from './modules/config'

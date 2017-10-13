@@ -1,10 +1,10 @@
 <template>
   <div class="question-knowledge-edition">
     <aside>
-      <v-side-tree
+      <TreeSide
         :data="treeData"
         @batch-select="onBatchSelect"
-      ></v-side-tree>
+      />
     </aside>
     <section>
       <div
@@ -98,7 +98,7 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import vSideTree from '../components/SideTree'
+import TreeSide from '@/views/components/TreeSide'
 
 export default {
   name: 'question-knowledge-edition',
@@ -117,7 +117,7 @@ export default {
   }),
 
   components: {
-    vSideTree,
+    TreeSide,
   },
 
   computed: {
@@ -161,7 +161,6 @@ export default {
           })
         })
     },
-
 
     /* --- 批量 --- */
 
