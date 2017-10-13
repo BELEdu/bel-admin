@@ -21,7 +21,11 @@
 
       <!-- 班级状态 -->
       <Form-item>
-        <Select v-model="query[`equal[status]`]" placeholder="请选择状态" style="width:9em;">
+        <Select
+          v-model="query[`equal[classes_status]`]"
+          placeholder="请选择状态"
+          style="width:9em;"
+        >
           <Option
             v-for="status in classes_status"
             :value="status.value"
@@ -35,12 +39,14 @@
       </Form-item>
     </Form>
 
+    <!-- 操作 -->
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
         <h2><Icon type="ios-browsers"/> 班级管理</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级</Button>
+        <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级（旧）</Button>
+        <Button type="primary" @click="openEditModal('add')" >添加班级</Button>
       </Col>
     </Row>
 
@@ -54,16 +60,6 @@
     >
       <div class="text-center">删除该班级（{{classId}}）后将无法再回复，是否继续删除？</div>
     </app-warn-modal>
-
-    <!--学员管理组件-->
-    <manage-modal
-      v-model="modal.manage"
-      :classId="classId"
-      @closeManageModal="modal.manage=false"
-      :form="form"
-      :studentData="student_data"
-      @update="fetchData"
-    ></manage-modal>
 
     <!--班级管理表格-->
     <Table
@@ -81,6 +77,21 @@
       @on-page-size-change="pageSizeChange"
     ></app-pager>
 
+    <!-- 添加 & 编辑 & 查看 班级弹窗 -->
+    <edit-modal
+      v-model="editModal.active"
+      :title="editModal.title"
+      :classId="classId"
+      :form="editModal.form"
+      :isEdit="editModal.isEdit"
+      :isReview="editModal.isReview"
+      :productList="productList"
+      :teacherList="teacherList"
+      :courseList="courseList"
+      @closeEditModal="editModal.active = false"
+      @update="fetchData"
+    ></edit-modal>
+
   </div>
 </template>
 
@@ -94,12 +105,24 @@ import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import ManageModal from './components/ManageModal'
+import EditModal from './components/EditModal'
+
+const defaultClassesForm = {
+  product_id: null, // 产品id
+  teach_material: null, // 教材版本
+  customer_relationships_id: null, // 学管师id
+  students: [], // 老师
+  teachers: [], // 学生
+}
 
 export default {
   name: 'app-student-classes',
 
   mixins: [list],
+
+  components: {
+    EditModal,
+  },
 
   data() {
     return {
@@ -110,19 +133,19 @@ export default {
       ],
       likeKey: 'classes_name',
       query: {
-        'equal[status]': null,
+        'equal[classes_status]': null,
       },
 
       columns: [
-        { title: '班级名称', key: 'classes_name', align: 'center', width: 250 },
-        { title: '教材版本', key: 'teach_material_name', align: 'center' },
-        { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
+        { title: '班级名称', key: 'classes_name', align: 'center' },
+        { title: '教材版本', key: 'teach_material_name', align: 'center', width: 100 },
+        { title: '排课专员', key: 'customer_relationships_name', align: 'center', width: 110 },
         { title: '教师', key: 'teacher_item', align: 'center' },
-        { title: '上课人数', key: 'student_total', align: 'center' },
-        { title: '剩余可用课时', key: 'course_cost', align: 'center' },
-        { title: '计划课时', key: 'course_total', align: 'center' },
-        { title: '创建日期', key: 'created_at', align: 'center' },
-        { title: '状态', key: 'status_name', align: 'center' },
+        { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
+        { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 120, sortable: 'custom' },
+        { title: '计划课时', key: 'course_total', align: 'center', width: 100, sortable: 'custom' },
+        { title: '创建日期', key: 'created_at', align: 'center', width: 140, sortable: 'custom' },
+        { title: '状态', key: 'classes_status_name', align: 'center', width: 100 },
         // {
         //   title: '教师',
         //   key: 'teacher_item',
@@ -148,14 +171,14 @@ export default {
           width: 180,
           render: createButton([
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
-            { text: '管理', type: 'primary', click: row => this.openManageModal(row.id) },
+            { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
+            { text: '查看', type: 'primary', click: row => this.openEditModal('review', row.id) },
             { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/classes/edit/${row.id}`) },
           ]),
         },
       ],
 
       modal: { // 模态框
-        manage: false,
         delete: false,
       },
 
@@ -163,11 +186,21 @@ export default {
         delete: false,
       },
 
-      classId: 0, //  班级编号（管理班级学员用）
+      classId: null, //  班级编号
 
-      form: {}, // 班级表单数据（管理班级学员用）
+      productList: [], // 产品数据源
+      teacherList: [], // 教师数据源
+      courseList: [], // 排课专员数据源
 
-      student_data: [], // 学生数据源（管理班级学员用）
+      editModal: {
+        active: false, // 模态框控制
+        title: '', // 标题
+        form: { // 班级表单数据
+          ...defaultClassesForm,
+        },
+        isEdit: false, // 是否是编辑班级
+        isReview: false, // 是否是查看班级
+      },
     }
   },
 
@@ -178,32 +211,51 @@ export default {
     }),
   },
 
-  components: {
-    ManageModal,
-  },
-
   methods: {
-    openManageModal(id) { // 打开班级学员管理模态框
-      this.modal.manage = true
-      this.classId = id
+    // 打开添加 & 编辑班级弹窗
+    openEditModal(type, id) {
+      if (id) {
+        this.classId = id
+      }
+      this.editModal.isEdit = false
+      this.editModal.isReview = false
 
-      this.$http.get(`/classes/${id}`) // 获取班级表单数据
-        .then((res) => {
-          this.form = res
-        })
+      switch (type) {
+        case 'edit':
+          this.editModal.title = '编辑班级'
+          this.editModal.isEdit = true
+          this.getClasseData(id)
+          break
+        case 'review':
+          this.editModal.title = '查看班级'
+          this.editModal.isReview = true
+          this.getClasseData(id)
+          break
+        default:
+          this.editModal.active = true
+          this.editModal.title = '添加班级'
+          this.editModal.form = { ...defaultClassesForm }
+          break
+      }
+    },
 
-      this.$http.get('/student/student_source') // 获取学生数据源数据
+    // 获取班级详情通用方法
+    getClasseData(classId) {
+      return this.$http.get(`/classes/${classId}`)
         .then((res) => {
-          this.student_data = res
+          this.editModal.form = { ...res }
+          this.editModal.active = true
         })
     },
 
-    openDeleteModal(id) { // 打开删除班级模态框
+    // 打开删除班级模态框
+    openDeleteModal(id) {
       this.modal.delete = true
       this.classId = id
     },
 
-    deleteSubmit(id) { // 删除班级
+    // 删除班级
+    deleteSubmit(id) {
       this.classId = id
       this.loading.delete = true
       // 班级id用来请求删除接口
@@ -215,9 +267,40 @@ export default {
         })
     },
 
-    getData(qs) { // 根据接口和loaction.search（query）获取数据
+    // 根据接口和loaction.search（query）获取列表数据
+    getData(qs) {
       return this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
     },
+
+    // 获取产品数据源
+    getProductList() {
+      this.$http.get('/contract_step3?sale_status=1')
+        .then(({ product_list }) => {
+          this.productList = product_list
+        })
+    },
+
+    // 获取教师数据源
+    getTeachertList() {
+      this.$http.get('/teacher_list?attr=is_student_teac')
+        .then((res) => {
+          this.teacherList = res
+        })
+    },
+
+    // 获取排课专员数据源
+    getCourseList() {
+      this.$http.get('/teacher_list?attr=is_student_admin')
+        .then((res) => {
+          this.courseList = res
+        })
+    },
+  },
+
+  created() {
+    this.getProductList()
+    this.getTeachertList()
+    this.getCourseList()
   },
 }
 </script>
