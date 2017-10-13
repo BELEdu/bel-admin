@@ -62,36 +62,36 @@
         :label="subjects.label"
         prop="subject_type"
       >
-        <v-button-radio
+        <AppButtonRadio
           v-model="paper.subject_type"
           :data="subjects.data"
           size="small"
           @change="autoName"
-        ></v-button-radio>
+        />
       </Form-item>
       <!-- 年级 -->
       <Form-item
         :label="grade.label"
         prop="grade"
       >
-        <v-button-radio
+        <AppButtonRadio
           v-model="paper.grade"
           :data="grade.data"
           size="small"
           @change="autoName"
-        ></v-button-radio>
+        />
       </Form-item>
       <!-- 试卷类型 -->
       <Form-item
         :label="paper_type.label"
         prop="paper_type"
       >
-        <v-button-radio
+        <AppButtonRadio
           v-model="paper.paper_type"
           :data="paper_type.data"
           size="small"
           @change="autoName"
-        ></v-button-radio>
+        />
       </Form-item>
       <Form-item
         class="creation-info__title"
@@ -198,10 +198,10 @@
       >保存</Button>
     </footer>
 
-    <v-question-analysis
+    <QuestionAnalysisDialog
       :visible.sync="analysisModal.active"
       :data="analysisModal.data"
-    ></v-question-analysis>
+    />
   </div>
 </template>
 
@@ -215,7 +215,7 @@
 import mapData from '@/assets/china.json'
 import { form } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
-import vQuestionAnalysis from './components/Analysis'
+import { QuestionAnalysisDialog } from '@/views/components'
 import paperBiz from './mixins/paper'
 
 export default {
@@ -224,7 +224,7 @@ export default {
   mixins: [paperBiz, form],
 
   components: {
-    vQuestionAnalysis,
+    QuestionAnalysisDialog,
   },
 
   data: () => ({

@@ -53,10 +53,10 @@
       >返回</Button>
     </footer>
 
-    <v-analysis
+    <QuetionAnalysisDialog
       :visible.sync="analysisModal.active"
       :data="analysis"
-    ></v-analysis>
+    />
   </section>
 </template>
 
@@ -69,7 +69,7 @@
 
 import { GLOBAL } from '@/store/mutationTypes'
 import goBack from '@/mixins/goBack'
-import vAnalysis from './components/Analysis'
+import { QuestionAnalysisDialog } from '@/views/components'
 
 export default {
   name: 'question-paper-detail',
@@ -77,7 +77,7 @@ export default {
   mixins: [goBack],
 
   components: {
-    vAnalysis,
+    QuestionAnalysisDialog,
   },
 
   data: () => ({

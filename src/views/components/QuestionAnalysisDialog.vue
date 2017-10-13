@@ -1,6 +1,6 @@
 <template>
   <Modal
-    class="v-question-analysis"
+    class="question-analysis-dialog"
     :value="visible"
     @input="toggleAnalysis"
     title="试题解析"
@@ -35,7 +35,7 @@
  */
 
 export default {
-  name: 'v-question-analysis',
+  name: 'QuestionAnalysisDialog',
 
   props: {
     data: {
@@ -67,10 +67,7 @@ export default {
 </script>
 
 <style lang="less">
-@import '~vars';
-@import '../mixins/paper.less';
-
-.v-question-analysis {
+.question-analysis-dialog {
   & .ivu-modal {
     width: 600px !important;
   }

@@ -139,10 +139,10 @@
       </li>
     </ul>
 
-    <v-analysis
+    <QuestionAnalysisDialog
       :visible.sync="analysisModal.active"
       :data="analysis"
-    ></v-analysis>
+    />
   </div>
 </template>
 
@@ -159,9 +159,9 @@ import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import {
   ConditionRadio,
   ConditionRadioSubject,
+  QuestionAnalysisDialog,
   TreeSide,
 } from '@/views/components'
-import vAnalysis from './components/Analysis'
 import paperBiz from './mixins/paper'
 
 export default {
@@ -172,8 +172,8 @@ export default {
   components: {
     ConditionRadioSubject,
     ConditionRadio,
+    QuestionAnalysisDialog,
     TreeSide,
-    vAnalysis,
   },
 
   data: () => ({
