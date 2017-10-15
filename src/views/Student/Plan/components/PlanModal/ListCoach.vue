@@ -7,7 +7,7 @@
       </span>
       </div>
       <Button type="text" class="list-coach__add" icon="plus-round" @click="addList"></Button>
-      <Form class="list-coach__form" :model="coachList" :rules="coachRules" ref="coachForm">
+      <Form class="list-coach__form" :model="coachList" ref="coachForm">
         <div
           class="list-coach__form-item"
           v-for="(item, index) in coachList.items"
@@ -16,7 +16,7 @@
         >
           <Row :gutter="10">
             <Col :span="5">
-            <form-item :prop="'items.' + index + '.course_num'">
+            <form-item :prop="'items.' + index + '.course_num'" :rules="coachRules['course_num']">
               <Row>
                 <Col :span="16" style="padding: 0 1px;">
                 <Select v-model="item.course_num">
@@ -28,7 +28,7 @@
             </form-item>
             </Col>
             <Col :span="8">
-              <form-item :prop="'items.' + index + '.course_date'">
+              <form-item :prop="'items.' + index + '.course_date'" :rules="coachRules['course_date']">
                 <app-date-picker
                   v-model="item.course_date"
                   type="datetime"
@@ -39,7 +39,7 @@
               </form-item>
             </Col>
             <Col :span="10">
-              <form-item :prop="'items.' + index + '.teacher_id'">
+              <form-item :prop="'items.' + index + '.teacher_id'" :rules="coachRules['teacher_id']">
                 <template v-if="multiTeacher">
                   <Select v-model="item.teacher_id" multiple placeholder="请选择教师">
                     <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
@@ -58,7 +58,7 @@
           </Row>
           <Row :gutter="10" v-if="!isNightCoach" style="padding-top: 10px">
             <Col :span="23">
-            <form-item :prop="'items.' + index + '.course_chapter'">
+            <form-item :prop="'items.' + index + '.course_chapter'" :rules="coachRules['course_chapter']">
               <app-tree-select :data="currentChapter" v-model="item.course_chapter" multiple></app-tree-select>
             </form-item>
             </Col>
@@ -109,7 +109,7 @@
 
         coachRules: {
           course_num: [
-            { required: true, message: '请选择课时', trigger: 'change' },
+            { required: true, type: 'number', message: '请选择课时', trigger: 'change' },
           ],
 
           course_date: [
@@ -145,8 +145,6 @@
           listCost = this.list.map(item => item.course_num)
             .reduce((preValue, curvalue) => preValue + curvalue)
         }
-
-
         return courseTotal - listCost
       },
 
@@ -155,7 +153,6 @@
     watch: {
       list: {
         handler(val) {
-          console.log(val)
           this.coachList.items = [...val]
         },
         deep: true,
@@ -171,7 +168,7 @@
       },
 
       closeList(index) {
-        this.$emit('close-list', this.coachList.list.filter((item, key) => index !== key))
+        this.$emit('close-list', this.coachList.items.filter((item, key) => index !== key))
       },
 
       updateList() {
@@ -180,7 +177,6 @@
 
       submit() {
         this.$refs.coachForm.validate((valid) => {
-          console.log(this)
           if (valid) {
             // TODO 提交表单信息
             this.$emit('on-success')
