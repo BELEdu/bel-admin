@@ -89,7 +89,9 @@
         this.dateVal = val
       },
       dateVal(val) {
-        this.dateFormat(val)
+        if (Object.prototype.toString.call(val) === '[object Date]') {
+          this.dateFormat(val)
+        }
       },
     },
     methods: {
@@ -114,13 +116,11 @@
       dateFormat(val) {
         let date = val || ''
         if (date) {
-          if (this.dateType === 'string' && Object.prototype.toString.call(date) === '[object Date]' && (formatDate(date, this.format) !== this.value || !this.cycle)) {
+          if (this.dateType === 'string') {
             date = date ? formatDate(date, this.format) : ''
-          } else if (this.dateType === 'date' && (date !== this.value || !this.cycle || typeof date === 'string')) {
+          } else if (this.dateType === 'date' && typeof date === 'string') {
             date = new Date(date)
           }
-          // 初始周期结束
-          if (!this.cycle) this.cycle = 1
         } else if (!this.formItem.prop || !this.getFormRequired(this.formItem.prop)) {
           date = null
         } else {
