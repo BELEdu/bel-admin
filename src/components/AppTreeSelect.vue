@@ -14,7 +14,7 @@
     </div>
     <div class="ivu-select-dropdown" style="width: 100%;">
       <div class="app-tree-dropdown">
-        <Input class="original" v-model="keyword" size="small" placeholder="请输入搜索内容"></Input>
+        <Input class="app-tree-dropdown__input original" v-model="keyword" size="small" placeholder="请输入搜索内容"></Input>
         <Tree ref="tree" :data="filteredItems" @on-select-change="onSelectChange" :multiple="multiple"></Tree>
       </div>
     </div>
@@ -47,6 +47,7 @@ export default {
       items: [],
       selectedItems: [],
       keyword: '',
+      initSelected: false,
     }
   },
 
@@ -66,6 +67,14 @@ export default {
         return item.visible
       }
       return this.items.filter(handler)
+    },
+
+    formItem() {
+      return this.getParentCom('FormItem')
+    },
+
+    form() {
+      return this.getParentCom('iForm')
     },
   },
 
@@ -90,9 +99,37 @@ export default {
     data(tree) {
       this.init(tree)
     },
+
+    selectedItems(val) {
+      // update Form Validator
+      if ((val.length || this.isSelected) && this.formItem.prop && this.getFormRequired()) {
+        this.formItem.validate('', (valid) => {
+          this.$emit('on-validate', valid)
+        })
+      }
+      if (val.length && !this.isSelected) this.isSelected = true
+    },
+
   },
 
   methods: {
+    /**
+     * 获取父级指定组件对象
+     */
+    getParentCom(componentName) {
+      let parent = this.$parent
+      while (parent.$options.name !== componentName) {
+        parent = parent.$parent
+      }
+      return parent
+    },
+
+    // 获取该组件value字段是否必填
+    getFormRequired() {
+      const rules = this.formItem.getRules()
+      return rules.map(item => item.required).indexOf(true) > -1
+    },
+
     onDropdown() {
       this.dropdown = !this.dropdown
     },
@@ -112,6 +149,7 @@ export default {
           }
           return !item.children
         })
+
       this.updateValue()
     },
 
@@ -135,6 +173,7 @@ export default {
       } else if (this.selectedItems[0]) {
         value = this.selectedItems[0].id
       }
+
       this.$emit('change', value)
       this.$emit('input', value)
     },
@@ -182,6 +221,17 @@ export default {
 <style lang="less">
 .app-tree-dropdown {
   padding: 0 16px;
+
+  &__input {
+    .ivu-input {
+      border-color: #d7dde4;
+
+      &:hover, &:focus {
+        border-color: #33b9ff;
+        box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+      }
+    }
+  }
 }
 
 .app-tree-select {
