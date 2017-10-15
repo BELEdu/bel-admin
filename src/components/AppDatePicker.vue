@@ -70,31 +70,30 @@
     },
     computed: {
       formItem() {
-        let parent = this.$parent
-        while (parent.$options.name !== 'FormItem') {
-          parent = parent.$parent
-        }
-        return parent
+        return this.getParentCom('FormItem')
       },
       form() {
-        let parent = this.$parent
-        while (parent.$options.name !== 'iForm') {
-          parent = parent.$parent
-        }
-        return parent
+        return this.getParentCom('iForm')
       },
     },
     watch: {
       value(val) {
         this.dateVal = val
       },
-      dateVal(val) {
-        if (Object.prototype.toString.call(val) === '[object Date]') {
+      dateVal(val, oldVal) {
+        if (Object.prototype.toString.call(val) === '[object Date]' || (typeof val === 'string' && val !== oldVal)) {
           this.dateFormat(val)
         }
       },
     },
     methods: {
+      getParentCom(componentName) {
+        let parent = this.$parent
+        while (parent.$options.name !== componentName) {
+          parent = parent.$parent
+        }
+        return parent
+      },
       onChange(val) {
         this.$emit('on-change', val)
       },
@@ -107,9 +106,9 @@
       onClear() {
         this.$emit('on-clear')
       },
-      // 获取字段是否必填
-      getFormRequired(prop) {
-        const rules = this.form.rules ? this.form.rules[prop] : []
+      // 获取该组件value字段是否必填
+      getFormRequired() {
+        const rules = this.formItem.getRules()
         return rules.map(item => item.required).indexOf(true) > -1
       },
       // 日期格式转换
@@ -121,7 +120,7 @@
           } else if (this.dateType === 'date' && typeof date === 'string') {
             date = new Date(date)
           }
-        } else if (!this.formItem.prop || !this.getFormRequired(this.formItem.prop)) {
+        } else if (!this.formItem.prop || !this.getFormRequired()) {
           date = null
         } else {
           date = ''
