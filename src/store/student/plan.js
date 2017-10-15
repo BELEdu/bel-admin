@@ -12,8 +12,13 @@ export default {
     list: {
       data: [],
     },
-    currentItemData: {},
-    currentItemType: 'add',
+    currentItem: {
+      data: {},
+      type: 'add',
+      teacher: [],
+      isNightCoach: false,
+    },
+    currentChapter: [],
   },
 
   mutations: {
@@ -36,13 +41,22 @@ export default {
     },
 
     [STUDENT.PLAN.CURRENT_ITEM_DATA](state, item) {
-      state.currentItemData = {
+      state.currentItem.data = {
         ...item,
       }
+      state.currentItem.isNightCoach = item.coach_type === 2
     },
 
     [STUDENT.PLAN.CURRENT_ITEM_TYPE](state, type) {
-      state.currentItemType = type
+      state.currentItem.type = type
+    },
+
+    [STUDENT.PLAN.CURRENT_ITEM_TEACHER](state, list) {
+      state.currentItem.teacher = list
+    },
+
+    [STUDENT.PLAN.CURRENT_CHAPTER](state, list) {
+      state.currentChapter = list
     },
   },
 
@@ -51,6 +65,20 @@ export default {
       return Http.get(`/plan${query}`)
         .then((result) => {
           commit(STUDENT.PLAN.INIT, result)
+        })
+    },
+
+    [STUDENT.PLAN.CURRENT_ITEM_TEACHER]({ commit }, query = '') {
+      return Http.get(`/teacher_list${query}`)
+        .then((result) => {
+          commit(STUDENT.PLAN.CURRENT_ITEM_TEACHER, result)
+        })
+    },
+
+    [STUDENT.PLAN.CURRENT_CHAPTER]({ commit }, query = '') {
+      return Http.get(`/chapter/tree/3${query}`)
+        .then((result) => {
+          commit(STUDENT.PLAN.CURRENT_CHAPTER, result)
         })
     },
   },

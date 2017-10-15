@@ -146,6 +146,10 @@
       handlePlan(item, type) {
         this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_DATA, item)
         this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_TYPE, type)
+        if (type !== 'view') {
+          this.$store.dispatch(STUDENT.PLAN.CURRENT_ITEM_TEACHER, `?attr=is_student_teac&class_id=${item.classes_id}`)
+          this.$store.dispatch(STUDENT.PLAN.CURRENT_CHAPTER)
+        }
         this.planVisible = true
       },
     },

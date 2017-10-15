@@ -21,7 +21,12 @@
 
     </Row>
 
-    <div :is="currentCom.view" :key="currentCom.id"></div>
+    <div
+      class="plan-modal__body"
+      :is="currentCom.view"
+      :key="currentCom.id"
+      @on-success="onSuccess"
+    ></div>
 
     <div slot="footer" class="plan-modal__footer">
       <Button @click="cancel">取消</Button>
@@ -38,6 +43,7 @@
    */
 
   import { mapState } from 'vuex'
+  import { broadcast } from '@/mixins'
   import AddCoach from './add/Coach'
   import AddCoachNight from './add/CoachNight'
   import AddCoachList from './add/CoachList'
@@ -47,6 +53,8 @@
 
   export default {
     name: 'plan-modal',
+
+    mixins: [broadcast],
 
     components: { AddCoach, AddCoachNight, AddCoachList, ViewCoach, EditCoach, AppraiseCoach },
 
@@ -75,14 +83,13 @@
 
     computed: {
       ...mapState({
-        item: state => state.student.plan.currentItemData,
-        type: state => state.student.plan.currentItemType,
+        item: state => state.student.plan.currentItem,
       }),
 
       currentCom() {
-        const planStatus = this.item.plan_status
+        const planStatus = this.item.data.plan_status
         // TODO 目前为模拟字段（coachType）
-        const coachType = this.item.coach_type || 1 // 2为晚辅导班
+        const coachType = this.item.data.coach_type || 1 // 2为晚辅导班
         let viewId = 1
         const defAddCoach = { // 默认值
           prevStep: 0,
@@ -98,7 +105,7 @@
               break
             }
             case 1: {
-              viewId = this.type === 'view' ? 4 : 3
+              viewId = this.item.type === 'view' ? 4 : 3
               break
             }
             case 3: {
@@ -118,7 +125,7 @@
           let customParam = {}
           if (item.id === viewId) {
             customParam = { ...defAddCoach }
-            if (this.item.coach_type === 2) {
+            if (this.item.data.coach_type === 2) {
               // 晚辅导
               customParam = {
                 prevStep: 2,
@@ -148,8 +155,10 @@
 
       next() {
         // TODO 处理当前流程
+        this.broadcast(this.currentCom.view, 'on-submit', this.currentCom)
+      },
 
-        // TODO 处理当前流程成功回调
+      onSuccess() {
         this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep || this.currentComId
       },
     },
@@ -179,6 +188,10 @@
       &-right {
         text-align: right;
       }
+    }
+
+    &__body {
+      min-height: 460px;
     }
 
     &__footer {
