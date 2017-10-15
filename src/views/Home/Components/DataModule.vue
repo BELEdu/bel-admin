@@ -27,7 +27,7 @@
     <!--我的排课表-->
     <template v-if="$attrs.type==='course'">
       <home-calendar @day-changed="calendarDay" :date="$attrs.data.currentMonth">
-        <template scope="date">
+        <template slot-scope="date">
           <span class="calendar-event-icon" v-for="(list, index) in courseConvert(date)"
                 v-if="list.item.length"
                     :key="index">
