@@ -137,11 +137,11 @@
               :key="topic.question_id"
             >
               <!-- 题目内容 -->
-              <app-question
+              <question
                 :index="tindex + 1"
                 :data="topic"
                 :width="850"
-              ></app-question>
+              ></question>
               <!-- 操作条 -->
               <div class="topic-item__control">
                 <span>分值</span>
@@ -215,7 +215,7 @@
 import mapData from '@/assets/china.json'
 import { form } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
-import { QuestionAnalysisDialog } from '@/views/components'
+import { Question, QuestionAnalysisDialog } from '@/views/components'
 import paperBiz from './mixins/paper'
 
 export default {
@@ -224,6 +224,7 @@ export default {
   mixins: [paperBiz, form],
 
   components: {
+    Question,
     QuestionAnalysisDialog,
   },
 

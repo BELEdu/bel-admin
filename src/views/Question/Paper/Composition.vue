@@ -84,10 +84,10 @@
           v-for="topic in buffer.data" :key="topic.id"
         >
           <!-- 题目内容 -->
-          <app-question
+          <question
             class="content__topic-content"
             :data="topic" :width="850"
-          ></app-question>
+          ></question>
           <!-- 题目控件 -->
           <div class="content__topic-bar">
             <Button
@@ -161,6 +161,7 @@ import {
   ConditionRadioSubject,
   QuestionAnalysisDialog,
   TreeSide,
+  Question,
 } from '@/views/components'
 import paperBiz from './mixins/paper'
 
@@ -174,6 +175,7 @@ export default {
     ConditionRadio,
     QuestionAnalysisDialog,
     TreeSide,
+    Question,
   },
 
   data: () => ({

@@ -108,7 +108,11 @@
 
         <!-- 选择题 -->
         <div class="question-edit__answer" v-if="questionTemplateFormat === 1">
-          <Form-item label="选项及答案" class="question-edit__answer__choice" required  prop="question_answers">
+          <Form-item label="选项及答案"
+            class="question-edit__answer__choice"
+            required
+            prop="question_answers"
+          >
             <p class="question-edit__answer__tips">请选中
               <span class="color-primary">正确答案</span>
             </p>

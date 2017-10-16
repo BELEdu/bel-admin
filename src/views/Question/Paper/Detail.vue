@@ -29,11 +29,11 @@
             v-for="(item, index) in type.questions"
             class="topic-item"
           >
-            <app-question
+            <question
               :index="index + 1"
               :data="item"
               :width="850"
-            ></app-question>
+            ></question>
             <div class="topic-item__control">
               <Button
                 @click="activateAnalysis(item)"
@@ -53,7 +53,7 @@
       >返回</Button>
     </footer>
 
-    <QuetionAnalysisDialog
+    <QuestionAnalysisDialog
       :visible.sync="analysisModal.active"
       :data="analysis"
     />
@@ -69,7 +69,7 @@
 
 import { GLOBAL } from '@/store/mutationTypes'
 import goBack from '@/mixins/goBack'
-import { QuestionAnalysisDialog } from '@/views/components'
+import { Question, QuestionAnalysisDialog } from '@/views/components'
 
 export default {
   name: 'question-paper-detail',
@@ -77,6 +77,7 @@ export default {
   mixins: [goBack],
 
   components: {
+    Question,
     QuestionAnalysisDialog,
   },
 

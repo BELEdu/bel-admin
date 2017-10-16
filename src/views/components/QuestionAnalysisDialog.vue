@@ -13,9 +13,11 @@
       <p>来源: {{data.from_name}}</p>
       <p>知识点: {{data.knowledge_name}}</p>
     </header>
-    <app-question-analysis
+
+    <question-analysis
       :data="data"
-    ></app-question-analysis>
+    ></question-analysis>
+
     <div
       slot="footer"
     >
@@ -33,9 +35,14 @@
  *
  * @author huojinzhao
  */
+import { QuestionAnalysis } from '@/views/components'
 
 export default {
   name: 'QuestionAnalysisDialog',
+
+  components: {
+    QuestionAnalysis,
+  },
 
   props: {
     data: {

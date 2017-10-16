@@ -6,6 +6,9 @@
 
 export { default as ConditionRadio } from './ConditionRadio'
 export { default as ConditionRadioSubject } from './ConditionRadioSubject'
+export { default as Question } from './Question'
+export { default as QuestionAnalysis } from './QuestionAnalysis'
 export { default as QuestionAnalysisDialog } from './QuestionAnalysisDialog'
 export { default as TreeSide } from './TreeSide'
 export { default as TreeStructure } from './TreeStructure'
+

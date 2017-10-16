@@ -20,9 +20,9 @@
 
       <!-- 题目显示区域 -->
       <div class="question-detail__content">
-        <app-question-analysis
+        <question-analysis
           :data="questionDetail"
-        ></app-question-analysis>
+        ></question-analysis>
       </div>
 
       <h3 class="question-detail__log">操作历史</h3>
@@ -80,8 +80,14 @@
  * @version 2017-09-13
  */
 
+import { QuestionAnalysis } from '@/views/components'
+
 export default {
   name: 'question-question-detail-modal',
+
+  components: {
+    QuestionAnalysis,
+  },
 
   props: {
     value: {

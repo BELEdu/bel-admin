@@ -3,10 +3,10 @@
 
     <h3>【 题目 】</h3>
     <!-- 试题题目渲染组件 -->
-    <app-question
+    <question
       :data="data"
       :width="width"
-    ></app-question>
+    ></question>
 
     <h3>【 答案 】</h3>
     <article
@@ -32,8 +32,14 @@
   * @param {Number, String} width - 试题宽度，默认宽度500像素
   */
 
+import { Question } from '@/views/components'
+
 export default {
-  name: 'app-question-analysis',
+  name: 'question-analysis',
+
+  components: {
+    Question,
+  },
 
   props: {
     data: {

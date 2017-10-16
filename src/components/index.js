@@ -12,8 +12,8 @@ import AppTimePicker from './AppTimePicker'
 import AppMapCascader from './AppMapCascader'
 import AppEcharts from './AppEcharts'
 import AppEditor from './AppEditor'
-import AppQuestionAnalysis from './AppQuestionAnalysis'
-import AppQuestion from './AppQuestionAnalysis/components/AppQuestion'
+// import AppQuestionAnalysis from './AppQuestionAnalysis'
+// import AppQuestion from './AppQuestionAnalysis/components/AppQuestion'
 
 const rbdog = {
   AppButtonRadio,
@@ -30,8 +30,6 @@ const rbdog = {
   AppMapCascader,
   AppEcharts,
   AppEditor,
-  AppQuestionAnalysis,
-  AppQuestion,
 }
 
 const install = (Vue) => {

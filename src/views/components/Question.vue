@@ -1,6 +1,5 @@
 <template>
   <div class="app-question" :style="{width:`${width}px`}">
-
     <!-- 索引 -->
     <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span>
 
@@ -54,7 +53,7 @@
   */
 
 export default {
-  name: 'app-question',
+  name: 'question',
 
   props: {
     data: {
