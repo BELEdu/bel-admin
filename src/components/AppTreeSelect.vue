@@ -37,6 +37,7 @@ export default {
     },
     data: {
       type: Array,
+      default: [],
       required: true,
     },
   },
@@ -44,7 +45,7 @@ export default {
   data() {
     return {
       dropdown: false,
-      items: [],
+      items: JSON.parse(JSON.stringify(this.data)),
       selectedItems: [],
       keyword: '',
       initSelected: false,
@@ -76,6 +77,7 @@ export default {
     form() {
       return this.getParentCom('iForm')
     },
+
   },
 
   watch: {
@@ -97,7 +99,8 @@ export default {
     },
 
     data(tree) {
-      this.init(tree)
+      this.items = JSON.parse(JSON.stringify(tree))
+      this.init(this.items)
     },
 
     selectedItems(val) {
@@ -197,7 +200,7 @@ export default {
       }
       tree.forEach(handler)
 
-      this.items = tree
+      this.items = [...tree]
       this.$nextTick(() => {
         this.onSelectChange()
       })
@@ -209,7 +212,7 @@ export default {
   },
 
   mounted() {
-    this.init(this.data)
+    this.init(this.items)
   },
 
   beforeDestroy() {
