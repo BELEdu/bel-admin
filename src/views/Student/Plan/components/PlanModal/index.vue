@@ -30,7 +30,7 @@
 
     <div slot="footer" class="plan-modal__footer">
       <Button @click="cancel">取消</Button>
-      <Button type="primary" @click="next">{{currentCom.btnText}}</Button>
+      <Button type="primary" @click="next" :loading="loading">{{currentCom.btnText}}</Button>
     </div>
   </Modal>
 </template>
@@ -78,6 +78,8 @@
           { id: 4, name: 'view-coach', title: '学习进度', view: 'view-coach', btnName: '查看进度-查看评价', btnText: '查看评价', nextStep: 5 },
           { id: 5, name: 'appraise-coach', title: '学员评价', view: 'appraise-coach', btnName: '查看进度-返回进度', btnText: '返回进度', prevStep: 4, backBtn: true },
         ],
+
+        loading: false,
       }
     },
 
@@ -155,10 +157,12 @@
 
       next() {
         // TODO 处理当前流程
+        this.loading = true
         this.broadcast(this.currentCom.view, 'on-submit', this.currentCom)
       },
 
       onSuccess() {
+        this.loading = false
         this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep || this.currentComId
       },
     },

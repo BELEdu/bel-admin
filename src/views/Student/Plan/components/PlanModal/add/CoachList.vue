@@ -3,9 +3,7 @@
     <list-coach
       :list="list"
       :multi-teacher="isNightCoach"
-      @add-list="addItem"
-      @close-list="closeItem"
-      @on-success="() => this.$emit('on-success')"
+      @on-success="onSubmit"
     ></list-coach>
   </div>
 </template>
@@ -44,28 +42,18 @@
     },
 
     methods: {
-      init() {
-        this.addItem()
+      onSubmit(item) {
+        const { classes_id } = this.currentItem.data
+        this.$http.post('/plan', { classes_id, course: item })
+          .then(() => {
+            this.$Message.success('成功添加学习计划！')
+            this.$emit('on-success')
+          })
       },
 
-      addItem() {
-        this.list = [{
-          sort_value: 1, // 课顺序
-          course_num: 2, // 课时
-          course_date: null, // 课日期
-          teacher_id: [], // 教师id
-          course_chapter: [], // 章节数组id
-        }, ...this.list]
-      },
-
-      closeItem(item) {
-        this.list = item
-      },
     },
 
     mounted() {
-      this.init()
-
       this.$on('on-submit', (data) => {
         this.broadcast('list-coach', 'on-submit', data)
       })
