@@ -84,7 +84,7 @@ export default {
         align: 'center',
       },
       {
-        title: '产品总额',
+        title: '签约总额（元）',
         key: 'original_money',
         align: 'center',
       },
@@ -95,7 +95,7 @@ export default {
         render: renderSeriesName('promotion_name'),
       },
       {
-        title: '审批总额',
+        title: '最终签约总额（元）',
         key: 'money',
         align: 'center',
       },
