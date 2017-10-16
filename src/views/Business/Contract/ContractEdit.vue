@@ -529,7 +529,7 @@ export default {
     },
 
     calcDiscount(price, promotion) {
-      const result = (price * (promotion.discount / 100)).toFixed(2)
+      const result = (price * (1 - (promotion.discount / 100))).toFixed(2)
       return parseFloat(result)
     },
 
