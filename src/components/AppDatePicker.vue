@@ -23,12 +23,13 @@
    */
 
   import { formatDate } from '@/utils/date'
+  import isEqual from 'lodash/isEqual'
 
   export default {
     name: 'app-date-picker',
     data() {
       return {
-        dateVal: this.value,
+        dateVal: '',
         cycle: 0,
       }
     },
@@ -81,9 +82,10 @@
         this.dateVal = val
       },
       dateVal(val, oldVal) {
-        if (Object.prototype.toString.call(val) === '[object Date]' || (typeof val === 'string' && val !== oldVal)) {
-          this.dateFormat(val)
+        if (val && !isEqual(val, oldVal) && Object.prototype.toString.call(val) === '[object Date]') {
+          return this.dateFormat(val)
         }
+        return this.$emit('input', val)
       },
     },
     methods: {
@@ -113,18 +115,19 @@
       },
       // 日期格式转换
       dateFormat(val) {
-        let date = val || ''
-        if (date) {
-          if (this.dateType === 'string') {
-            date = date ? formatDate(date, this.format) : ''
-          } else if (this.dateType === 'date' && typeof date === 'string') {
-            date = new Date(date)
-          }
-        } else if (!this.formItem.prop || !this.getFormRequired()) {
-          date = null
-        } else {
-          date = ''
+        let date = val
+        if (this.dateType === 'string') {
+          date = formatDate(date, this.format)
+        } else if (this.dateType === 'date' && typeof date === 'string') {
+          date = new Date(date)
         }
+
+        if (date && this.formItem.prop && this.getFormRequired()) {
+          this.formItem.validate('', (valid) => {
+            this.$emit('on-validate', valid)
+          })
+        }
+
         this.$emit('input', date)
       },
     },
