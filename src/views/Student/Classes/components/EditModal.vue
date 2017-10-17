@@ -18,6 +18,7 @@
         <Select
           v-model="form.product_id"
           placeholder="请选择产品"
+          :disabled="hasData"
         >
           <Option
             v-for="product in productList"
@@ -335,6 +336,9 @@ export default {
             }
           })
       }
+
+      // 记得要重置数组
+      // this.test = []
     },
 
     submit() {

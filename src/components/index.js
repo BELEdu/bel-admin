@@ -12,8 +12,6 @@ import AppTimePicker from './AppTimePicker'
 import AppMapCascader from './AppMapCascader'
 import AppEcharts from './AppEcharts'
 import AppEditor from './AppEditor'
-// import AppQuestionAnalysis from './AppQuestionAnalysis'
-// import AppQuestion from './AppQuestionAnalysis/components/AppQuestion'
 
 const rbdog = {
   AppButtonRadio,

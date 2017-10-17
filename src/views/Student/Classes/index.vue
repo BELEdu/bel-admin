@@ -137,7 +137,21 @@ export default {
       },
 
       columns: [
-        { title: '班级名称', key: 'classes_name', align: 'center' },
+        {
+          title: '班级名称',
+          key: 'classes_name',
+          align: 'center',
+          render: (h, params) => {
+            const { classes_name } = params.row
+            return h('Tooltip', {
+              class: 'color-primary',
+              props: {
+                content: '学生1，学生2，学生3',
+                placement: 'bottom-start',
+              },
+            }, classes_name)
+          },
+        },
         { title: '教材版本', key: 'teach_material_name', align: 'center', width: 100 },
         { title: '排课专员', key: 'customer_relationships_name', align: 'center', width: 110 },
         { title: '教师', key: 'teacher_item', align: 'center' },
