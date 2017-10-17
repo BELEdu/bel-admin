@@ -1,12 +1,19 @@
 /**
  * 备课管理路由配置
- * @author hjz
- * @version 2017-06-26
+ *
+ * @author huojinzhao
  */
 
 import * as views from '@/views'
 
+const PREPARE_PAPERCENTER = {
+  name: '试卷中心',
+  link: '/prepare/papercenter',
+}
+
 export default [
+  /* 教案管理 */
+
   {
     path: '/prepare/prepareplan',
     name: 'PreparePrepareplan',
@@ -30,18 +37,23 @@ export default [
       ],
     },
   },
+
+  /* 试卷中心 */
+
+  // 列表页
   {
     path: '/prepare/papercenter',
     name: 'PreparePaperCenter',
     component: views.Papercenter,
     meta: {
+      uri: '/paper_center',
       breadcrumb: [
         { name: '备课管理' },
-        { name: '组卷中心' },
+        PREPARE_PAPERCENTER,
       ],
     },
   },
-  // 自定义路由，后期根据后端接口修改
+  // 智能组卷
   {
     path: '/prepare/papercenter/smartpaper',
     name: 'PrepareSmartpaper',
@@ -49,11 +61,12 @@ export default [
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '组卷中心' },
+        PREPARE_PAPERCENTER,
         { name: '学员智能组卷' },
       ],
     },
   },
+  // 编辑试卷
   {
     path: '/prepare/papercenter/:id',
     name: 'PreparePaperList',
@@ -62,11 +75,28 @@ export default [
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '个性题库' },
-        { name: '学员试卷列表' },
+        PREPARE_PAPERCENTER,
+        { name: '编辑试卷' },
       ],
     },
   },
+  // 查看试卷
+  {
+    path: '/prepare/papercenter/:id',
+    name: 'PreparePaperList',
+    // 使用个性题库组件
+    component: views.Papercenter,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        PREPARE_PAPERCENTER,
+        { name: '编辑试卷' },
+      ],
+    },
+  },
+
+  /* 智能组卷 */
+
   {
     path: '/prepare/smartquestion',
     name: 'PrepareSmartquestion',
