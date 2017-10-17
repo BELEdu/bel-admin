@@ -239,7 +239,8 @@ export default {
             {
               text: '删除',
               type: 'error',
-              isShow: ({ row }) => row.question_status === 1 || row.question_status === 3,
+              isShow: ({ row }) =>
+                row.question_status === 1 || row.question_status === 3 || row.question_status === 5,
               click: row => this.openDeleteModal(row.id, row.number),
             },
             {
@@ -252,7 +253,8 @@ export default {
             {
               text: '编辑',
               type: 'success',
-              isShow: ({ row }) => row.question_status === 1 || row.question_status === 3,
+              isShow: ({ row }) =>
+                row.question_status === 1 || row.question_status === 3 || row.question_status === 5,
               click: row => this.$router.push(`/question/question/${row.grade_range_subject_id}/${row.id}`),
             },
             {

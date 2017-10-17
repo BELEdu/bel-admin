@@ -315,8 +315,8 @@ export default {
 
     preDelete() {
       this.$Modal.confirm({
-        title: '删除知识点',
-        content: '删除的知识点无法恢复，确定删除么？',
+        title: '删除',
+        content: '删除该节点后将无法恢复，确定删除么？',
         okText: '确定',
         cancelText: '取消',
         onOk: this.delete,
