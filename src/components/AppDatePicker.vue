@@ -29,7 +29,7 @@
     name: 'app-date-picker',
     data() {
       return {
-        dateVal: '',
+        dateVal: this.value,
         cycle: 0,
       }
     },
@@ -43,7 +43,7 @@
         type: String,
         default: 'string',
       },
-      value: [String, Date],
+      value: [String, Array, Date],
       format: {
         type: String,
         default: 'yyyy-MM-dd',
@@ -82,7 +82,10 @@
         this.dateVal = val
       },
       dateVal(val, oldVal) {
-        if (val && !isEqual(val, oldVal) && Object.prototype.toString.call(val) === '[object Date]') {
+        if (val && !isEqual(val, oldVal) &&
+          (Object.prototype.toString.call(val) === '[object Date]' ||
+            (Object.prototype.toString.call(val) === '[object Array]' &&
+              Object.prototype.toString.call(val[0]) === '[object Date]'))) {
           return this.dateFormat(val)
         }
         return this.$emit('input', val)
@@ -118,6 +121,8 @@
         let date = val
         if (this.dateType === 'string') {
           date = formatDate(date, this.format)
+        } else if (this.dateType === 'daterange') {
+          date = [formatDate(date[0], this.format), formatDate(date[1], this.format)]
         } else if (this.dateType === 'date' && typeof date === 'string') {
           date = new Date(date)
         }
