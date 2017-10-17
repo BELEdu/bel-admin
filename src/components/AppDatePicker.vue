@@ -92,13 +92,6 @@
       },
     },
     methods: {
-      getParentCom(componentName) {
-        let parent = this.$parent
-        while (parent.$options.name !== componentName) {
-          parent = parent.$parent
-        }
-        return parent
-      },
       onChange(val) {
         this.$emit('on-change', val)
       },
@@ -111,6 +104,14 @@
       onClear() {
         this.$emit('on-clear')
       },
+      // 获取父级组件
+      getParentCom(componentName) {
+        let parent = this.$parent
+        while (parent.$options.name !== componentName) {
+          parent = parent.$parent
+        }
+        return parent
+      },
       // 获取该组件value字段是否必填
       getFormRequired() {
         const rules = this.formItem.getRules()
@@ -119,15 +120,17 @@
       // 日期格式转换
       dateFormat(val) {
         let date = val
+        const handlerFormatDate = data => formatDate(data, this.format)
         if (this.dateType === 'string') {
-          date = formatDate(date, this.format)
+          date = handlerFormatDate(date)
         } else if (this.dateType === 'daterange') {
-          date = [formatDate(date[0], this.format), formatDate(date[1], this.format)]
+          date = [handlerFormatDate(date[0]), handlerFormatDate(date[1])]
         } else if (this.dateType === 'date' && typeof date === 'string') {
           date = new Date(date)
         }
 
-        if (date && this.formItem.prop && this.getFormRequired()) {
+        if (((Object.prototype.toString.call(date) === '[object Array]' && date[0]) || date) &&
+          this.formItem.prop && this.getFormRequired()) {
           this.formItem.validate('', (valid) => {
             this.$emit('on-validate', valid)
           })
