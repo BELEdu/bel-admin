@@ -12,12 +12,19 @@ export default {
     list: {
       data: [],
     },
+
+    courseNum: 8,
+
+    multiTeacher: false,
+
     currentItem: {
       data: {},
       type: 'add',
       teacher: [],
+      courseList: [],
       isNightCoach: false,
     },
+
     currentChapter: [],
   },
 
@@ -55,8 +62,16 @@ export default {
       state.currentItem.teacher = list
     },
 
+    [STUDENT.PLAN.CURRENT_ITEM_COURSELIST](state, list) {
+      state.currentItem.courseList = list
+    },
+
     [STUDENT.PLAN.CURRENT_CHAPTER](state, list) {
       state.currentChapter = list
+    },
+
+    [STUDENT.PLAN.UPDATE_FIELD](state, field) {
+      state = { ...state, field }
     },
   },
 

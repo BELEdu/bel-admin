@@ -3,7 +3,7 @@
     :value="visible"
     :mask-closable="false"
     @input="(val) => this.$emit('update:visible', val)"
-    width="640"
+    width="660"
     class-name="plan-modal"
   >
     <Row slot="header" class="plan-modal__header">
@@ -26,6 +26,7 @@
       :is="currentCom.view"
       :key="currentCom.id"
       @on-success="onSuccess"
+      @on-error="onError"
     ></div>
 
     <div slot="footer" class="plan-modal__footer">
@@ -72,6 +73,7 @@
 
         // 计划组件页面信息
         coachCom: [
+          // add-coach-list
           { id: 1, name: 'add-coach-list', title: '添加计划', view: 'add-coach-list', btnName: '添加计划-提交', btnText: '提交', prevStep: 2, backBtn: false },
           { id: 2, name: 'add-coach-night', title: '添加计划', view: 'add-coach-night', btnName: '添加计划-下一步', btnText: '下一步', nextStep: 1 },
           { id: 3, name: 'edit-coach', title: '编辑计划', view: 'edit-coach', btnName: '编辑计划-确定', btnText: '确定' },
@@ -149,6 +151,12 @@
         // TODO 重置全部状态
         this.currentComId = -1
         this.$emit('update:visible', false)
+        this.loading = false
+        this.broadcast(this.currentCom.view, 'on-reset', this.currentCom)
+      },
+
+      onError() {
+        this.loading = false
       },
 
       prev() {

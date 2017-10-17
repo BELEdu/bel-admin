@@ -1,8 +1,6 @@
 <template>
   <div class="add-coach-list">
     <list-coach
-      :list="list"
-      :multi-teacher="isNightCoach"
       @on-success="onSubmit"
     ></list-coach>
   </div>
@@ -30,7 +28,7 @@
 
     data() {
       return {
-        list: [],
+
       }
     },
 
@@ -49,6 +47,9 @@
             this.$Message.success('成功添加学习计划！')
             this.$emit('on-success')
           })
+          .catch(() => {
+            this.$emit('on-error')
+          })
       },
 
     },
@@ -56,6 +57,9 @@
     mounted() {
       this.$on('on-submit', (data) => {
         this.broadcast('list-coach', 'on-submit', data)
+      })
+      this.$on('on-reset', (data) => {
+        this.broadcast('list-coach', 'on-reset', data)
       })
     },
   }

@@ -1,13 +1,14 @@
 <template>
   <div class="list-coach">
     <Row class="list-coach__header">
-      <Col :span="8" class="list-coach__header-course-remain">
+      <Col :span="8" :offset="8" class="list-coach__header-add">
+        <Button type="dashed" icon="plus-round" @click="addList" :disabled="this.courseRemain <= 0">新增计划</Button>
+      </Col>
+      <Col :span="7" class="list-coach__header-course-remain">
         剩余可用计划课时：{{ courseRemain }}
       </Col>
-      <Col :span="8" class="list-coach__header-add">
-        <Button type="dashed" icon="plus-round" @click="addList" :disabled="!this.courseRemain">新增计划</Button>
-      </Col>
     </Row>
+    <Alert type="warning" show-icon v-if="courseRemain <= 0">无可用计划课时，无法新增计划</Alert>
     <Form class="list-coach__form" :model="coachList" ref="coachForm">
       <div
         class="list-coach__form-item"
@@ -16,7 +17,7 @@
         :data-index="coachList.items.length - index"
       >
         <Row :gutter="10">
-          <Col :span="5">
+          <Col :span="4">
           <form-item :prop="'items.' + index + '.course_num'" :rules="coachRules['course_num']">
             <Row>
               <Col :span="16" style="padding: 0 1px;">
@@ -33,17 +34,30 @@
             </Row>
           </form-item>
           </Col>
-          <Col :span="8">
+          <Col :span="5">
             <form-item :prop="'items.' + index + '.course_date'" :rules="coachRules['course_date']">
-              <app-date-picker
-                v-model="item.course_date"
-                type="datetime"
+              <date-picker
+                :value="item.course_date"
                 :format="format"
-                placeholder="请选择开始时间"
-              ></app-date-picker>
+                @on-change="(val) => item.course_date = val"
+                @on-clear="() => item.course_date = null"
+                placeholder="请选择开始日期"
+              ></date-picker>
             </form-item>
           </Col>
-          <Col :span="10">
+          <Col :span="5">
+            <form-item :prop="'items.' + index + '.course_time'" :rules="coachRules['course_time']">
+              <time-picker
+                :value="item.course_time"
+                type="timerange"
+                format="HH:mm"
+                @on-change="(val) => item.course_time = val[0] ? val : []"
+                @on-clear="() => item.course_time = []"
+                placeholder="请选择时间"
+              ></time-picker>
+            </form-item>
+          </Col>
+          <Col :span="9">
             <form-item :prop="'items.' + index + '.teacher_id'" :rules="coachRules['teacher_id']">
               <template v-if="multiTeacher">
                 <Select v-model="item.teacher_id" multiple placeholder="请选择教师">
@@ -87,22 +101,8 @@
   export default {
     name: 'list-coach',
 
-    props: {
-      list: {
-        type: Array,
-        default: [],
-      },
-
-      multiTeacher: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
     data() {
       return {
-        courseNum: 8,
-
         coachList: {
           items: [],
         },
@@ -113,7 +113,11 @@
           ],
 
           course_date: [
-            { required: true, message: '请选择开始时间', trigger: 'change' },
+            { required: true, message: '请选择开始日期', trigger: 'change' },
+          ],
+
+          course_time: [
+            { required: true, type: 'array', message: '请选择时间', trigger: 'change' },
           ],
 
           teacher_id: [
@@ -125,7 +129,7 @@
           ],
         },
 
-        format: 'yyyy-MM-dd HH:mm',
+        format: 'yyyy-MM-dd',
       }
     },
 
@@ -134,28 +138,37 @@
         currentItem: state => state.student.plan.currentItem,
         isNightCoach: state => state.student.plan.currentItem.isNightCoach,
         currentChapter: state => state.student.plan.currentChapter,
+        courseNum: state => state.student.plan.courseNum,
+        multiTeacher: state => state.student.plan.multiTeacher,
       }),
 
       teacherList() {
         return this.currentItem.teacher
       },
 
+      editList() {
+        return this.currentItem.courseList
+      },
+
       courseRemain() {
-        const courseTotal = this.currentItem.data.course_total
+        const { course_total, course_cost } = this.currentItem.data
+        const courseRemain = course_total - course_cost
         let listCost = 0
-        if (this.coachList.items.length) {
+        if (courseRemain > 0 && this.coachList.items.length) {
           listCost = this.coachList.items.map(item => item.course_num)
             .reduce((preValue, curvalue) => preValue + curvalue)
+          return course_total - listCost
         }
-        return courseTotal - listCost
+        return courseRemain
       },
 
     },
 
     watch: {
-      list: {
-        handler(val) {
-          this.coachList.items = [this.coachList.items, ...val]
+      'currentItem.data': {
+        handler() {
+          this.coachList.items = [...this.editList]
+          this.handleAdd()
         },
         deep: true,
       },
@@ -167,14 +180,17 @@
       },
 
       handleAdd() {
-        this.coachList.items = [{
-          random_id: this.random(),
-          sort_value: 1, // 课顺序
-          course_num: this.courseRemain < 2 ? this.courseRemain : 2, // 课时
-          course_date: '', // 课日期
-          teacher_id: [], // 教师id
-          course_chapter: [], // 章节数组id
-        }, ...this.updateList()]
+        if (this.courseRemain > 0) {
+          this.coachList.items = [{
+            random_id: this.random(),
+            sort_value: 1, // 课顺序
+            course_num: this.courseRemain < 2 ? this.courseRemain : 2, // 课时
+            course_date: null, // 课日期
+            course_time: [], // 课时间
+            teacher_id: [], // 教师id
+            course_chapter: [], // 章节数组id
+          }, ...this.updateList()]
+        }
       },
 
       addList() {
@@ -224,11 +240,17 @@
         this.submit()
       })
 
-      this.$on('on-reset-form', () => {
-        this.$refs.coachForm.resetFields()
+      // 重置
+      this.$on('on-reset', () => {
+        this.coachList.items = []
       })
 
-      this.handleAdd()
+      if (this.editList.length) {
+        this.coachList.items = [...this.editList]
+      } else {
+        this.coachList.items = []
+        this.handleAdd()
+      }
     },
 
   }
@@ -244,7 +266,7 @@
       padding-bottom: 10px;
 
       &-course-remain {
-        text-align: left;
+        text-align: right;
         line-height: 30px;
       }
 
