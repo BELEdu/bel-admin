@@ -139,7 +139,6 @@ export default {
           display_name: '蔡塘学校',
         },
       ],
-
     }
   },
 
@@ -167,6 +166,8 @@ export default {
   },
 
   methods: {
+
+
     // 添加家长
     addParent() {
       this.form.parent.push({ ...defaultParent })
@@ -217,5 +218,4 @@ export default {
 </script>
 
 <style lang="less">
-
 </style>
