@@ -30,32 +30,11 @@ export default {
 
       return Http.get(`${baseUrl}${queryFlow}`)
         .then((res) => {
-          this.flowInfo = this.decodeFlowList(res)
+          // this.flowInfo = this.decodeFlowList(res)
+          this.flowInfo = res
           if (this.isDealAuthority) this.dealRoleKey()
           this.isDealAuthority = true
         })
-    },
-
-    // 普通合同和退费合同流程数据互斥需要过滤
-    decodeFlowList(res) {
-      const tmp = { ...res }
-      const uri = this.$route.meta.uri
-      let list = null
-
-      // 普通合同过滤退费合同流程
-      if (uri === 'contract/refund'
-        || uri === 'contract/refund/edit'
-      ) {
-        list = tmp.flow_list
-          .filter(item => item.flow_type_id === 4)
-      // 退费合同过滤普通合同流程
-      } else {
-        list = tmp.flow_list
-          .filter(item => item.flow_type_id !== 4)
-      }
-
-      tmp.flow_list = list
-      return tmp
     },
 
     // 使用请求回来的flowInfo重构表单角色数组结构
@@ -87,7 +66,7 @@ export default {
     Http.get('/contract/create')
       .then(res => next((vm) => {
         // eslint-disable-next-line
-        vm.flowInfo = vm.decodeFlowList(res)
+        vm.flowInfo = res
       }))
   },
 }

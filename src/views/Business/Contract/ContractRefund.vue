@@ -34,7 +34,7 @@
           @on-change="changeFlow"
         >
           <Option
-            v-for="item in flowInfo.flow_list"
+            v-for="item in filterFlow(flowInfo.flow_list)"
             :value="item.id"
             :key="item.id"
           >
@@ -200,6 +200,10 @@ export default {
     step(value) {
       if (this.process > 2 || this.process < 0) return
       this.process = this.process + value
+    },
+
+    filterFlow(flowList) {
+      return flowList.filter(item => item.flow_type_id === 4)
     },
 
     /* --- Business --- */
