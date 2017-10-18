@@ -41,7 +41,7 @@ export default [
   // 旧版添加学员（到时候要删除）
   {
     path: '/student/student/edit',
-    name: 'StudentStudentAdd',
+    name: 'StudentStudentAddOld',
     component: views.StudentStudentDetailEdit,
     meta: {
       breadcrumb: [
