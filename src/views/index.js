@@ -75,18 +75,17 @@ export { default as SystemDepartment } from './System/Department'
 export { default as SystemProcess } from './System/Process'
 export { default as SystemProcessEdit } from './System/Process/Edit'
 
-// 学员管理
+// 学员课程 - 学员管理
 export { default as StudentStudent } from './Student/Student'
+export { default as StudentStudentEdit } from './Student/Student/Edit'
+export { default as StudentStudentReview } from './Student/Student/Review'
+export { default as StudentStudentReviewProduct } from './Student/Student/Review/Product'
+// 旧版
 export { default as StudentStudentDetail } from './Student/Student/Detail'
 export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Edit'
 export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
 export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
 export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
-// 新版
-export { default as StudentStudentEdit } from './Student/Student/Edit'
-export { default as StudentStudentReview } from './Student/Student/Review'
-export { default as StudentStudentReviewProduct } from './Student/Student/Review/Product'
-
 
 export { default as StudentStudyprogress } from './Student/Studyprogress'
 export { default as StudentStudyprogressStudent } from './Student/Studyprogress/Student'
@@ -99,11 +98,10 @@ export { default as StudentStudyprogressDetailHistory } from './Student/Studypro
 
 export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
 export { default as StudentKnowledgepointDetail } from './Student/Knowledgepoint/Detail'
-
+// 学员课程 - 班级管理
 export { default as StudentClasses } from './Student/Classes'
 export { default as StudentClassesEdit } from './Student/Classes/Edit'
-
-// 学员课程-学习计划
+// 学员课程 - 学习计划
 export { default as StudentPlan } from './Student/Plan'
 
 // 测试管理
@@ -116,10 +114,8 @@ export { default as WrongQuestion } from './examination/WrongQuestion'
 export { default as StudentWrong } from './examination/WrongQuestion/StudentWrong'
 
 // 备课管理
-export { default as Prepareplan } from './Prepare/Prepareplan'
-export { default as StuPreList } from './Prepare/Prepareplan/StuPreList'
-export { default as StuPlanList } from './Prepare/Prepareplan/StuPlanList'
-export { default as PlanEdit } from './Prepare/Prepareplan/PlanEdit'
+export { default as PreparePrepareplan } from './Prepare/Prepareplan'
+export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detail'
 export { default as Papercenter } from './Prepare/Papercenter'
 export { default as Smartpaper } from './Prepare/Papercenter/Smartpaper'
 export { default as Smartquestion } from './Prepare/Smartquestion'

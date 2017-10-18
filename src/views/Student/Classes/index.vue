@@ -101,6 +101,7 @@
  * @author zml
  * @version 2017-07-20
  */
+
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
 import { STUDENT } from '@/store/mutationTypes'

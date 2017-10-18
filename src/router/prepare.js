@@ -10,7 +10,7 @@ export default [
   {
     path: '/prepare/prepareplan',
     name: 'PreparePrepareplan',
-    component: views.Prepareplan,
+    component: views.PreparePrepareplan,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
@@ -18,41 +18,15 @@ export default [
       ],
     },
   },
-  // 自定义路由，后期根据后端接口修改
   {
-    path: '/prepare/prepareplan/create',
-    name: 'PreparePrepareplanCreate',
-    component: views.PlanEdit,
+    path: '/prepare/prepareplan/:id',
+    name: 'PreparePrepareplanDetail',
+    component: views.PreparePrepareplanDetail,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        { name: '教案管理' },
-        { name: '添加教案' },
-      ],
-    },
-  },
-  {
-    path: '/prepare/prepareplan/:tutorid',
-    name: 'PrepareStuPreList',
-    component: views.StuPreList,
-    meta: {
-      breadcrumb: [
-        { name: '备课管理' },
-        { name: '教案管理' },
-        { name: '学员列表' },
-      ],
-    },
-  },
-  {
-    path: '/prepare/prepareplan/:tutorid/:stuid',
-    name: 'PrepareStuPlanList',
-    component: views.StuPlanList,
-    meta: {
-      breadcrumb: [
-        { name: '备课管理' },
-        { name: '教案管理' },
-        { name: '学员列表' },
-        { name: '学员教案' },
+        { name: '教案管理', link: '/prepare/prepareplan' },
+        { name: '教师教案' },
       ],
     },
   },
