@@ -68,7 +68,7 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import goBack from '@/mixins/goBack'
+import { goBack } from '@/mixins'
 import { Question, QuestionAnalysisDialog } from '@/views/components'
 
 export default {
@@ -89,8 +89,6 @@ export default {
     },
 
     analysis: {},
-
-    backRoute: '/question/paper',
   }),
 
   methods: {
@@ -102,7 +100,8 @@ export default {
 
   created() {
     const id = this.$route.params.id
-    this.$http.get(`/paper/${id}`)
+    const uri = this.$route.meta.uri
+    this.$http.get(`${uri}/${id}`)
       .then((res) => {
         this.paper = res
         this.$store.commit(GLOBAL.LOADING.HIDE)

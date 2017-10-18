@@ -221,6 +221,7 @@ export default [
     name: 'QuestionPaperDetail',
     component: views.QuestionPaperDetail,
     meta: {
+      uri: '/paper',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
