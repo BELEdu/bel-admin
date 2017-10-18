@@ -135,7 +135,9 @@
         <Button
           type="primary" size="small" long
           @click="toCreatePaper()"
-        >生成试卷</Button>
+        >
+          预览试卷
+        </Button>
       </li>
     </ul>
 
@@ -159,9 +161,9 @@ import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import {
   ConditionRadio,
   ConditionRadioSubject,
+  Question,
   QuestionAnalysisDialog,
   TreeSide,
-  Question,
 } from '@/views/components'
 import paperBiz from './mixins/paper'
 

@@ -240,35 +240,6 @@ export default {
       data: {},
     },
 
-    schoolsData: [
-      {
-        value: 'beijing',
-        display_name: '北京市',
-      },
-      {
-        value: 'shanghai',
-        display_name: '上海市',
-      },
-      {
-        value: 'shenzhen',
-        display_name: '深圳市',
-      },
-      {
-        value: 'hangzhou',
-        display_name: '杭州市',
-      },
-      {
-        value: 'nanjing',
-        display_name: '南京市',
-      },
-      {
-        value: 'chongqing',
-        display_name: '重庆市',
-      },
-    ],
-
-    schoolList: [],
-
     /* buttonRadio数据 */
 
     year: { label: '', data: [] },
