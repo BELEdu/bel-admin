@@ -1,7 +1,10 @@
 <template>
   <div class="list-coach">
     <Row class="list-coach__header">
-      <Col :span="8" :offset="8" class="list-coach__header-add">
+      <Col :span="8">
+        <Button type="dashed" icon="refresh" @click="updateList" :disabled="!coachList.items.length">刷新排序</Button>
+      </Col>
+      <Col :span="8" class="list-coach__header-add">
         <Button type="dashed" icon="plus-round" @click="addList" :disabled="this.courseRemain <= 0">新增计划</Button>
       </Col>
       <Col :span="7" class="list-coach__header-course-remain">
@@ -13,7 +16,7 @@
       <div
         class="list-coach__form-item"
         v-for="(item, index) in coachList.items"
-        :key="item.random_id"
+        :key="item.random_id || item.id"
         :data-index="coachList.items.length - index"
       >
         <Row :gutter="10">
@@ -41,6 +44,7 @@
                 :format="format"
                 @on-change="(val) => item.course_date = val"
                 @on-clear="() => item.course_date = null"
+                :options="dateOptions"
                 placeholder="请选择开始日期"
               ></date-picker>
             </form-item>
@@ -77,8 +81,8 @@
         </Row>
         <Row :gutter="10" v-if="!isNightCoach" style="padding-top: 10px">
           <Col :span="23">
-          <form-item :prop="'items.' + index + '.course_chapter'" :rules="coachRules['course_chapter']">
-            <app-tree-select :data="currentChapter" v-model="item.course_chapter" multiple></app-tree-select>
+          <form-item :prop="'items.' + index + '.chapter'" :rules="coachRules['chapter']">
+            <app-tree-select :data="currentChapter" v-model="item.chapter" multiple></app-tree-select>
           </form-item>
           </Col>
         </Row>
@@ -96,7 +100,7 @@
    */
 
   import { mapState } from 'vuex'
-  import { parseDate } from '@/utils/date'
+  import { formatDate, parseDate } from '@/utils/date'
 
   export default {
     name: 'list-coach',
@@ -124,12 +128,19 @@
             { required: true, type: 'array', message: '请选择教师', trigger: 'change' },
           ],
 
-          course_chapter: [
+          chapter: [
             { required: true, type: 'array', message: '请选择章节', trigger: 'change' },
           ],
         },
 
         format: 'yyyy-MM-dd',
+
+        dateOptions: {
+          disabledDate(date) {
+            return date && date.valueOf() < Date.now() - 86400000
+          },
+        },
+
       }
     },
 
@@ -137,27 +148,24 @@
       ...mapState({
         currentItem: state => state.student.plan.currentItem,
         isNightCoach: state => state.student.plan.currentItem.isNightCoach,
+        editList: state => state.student.plan.currentItem.courseList,
         currentChapter: state => state.student.plan.currentChapter,
         courseNum: state => state.student.plan.courseNum,
         multiTeacher: state => state.student.plan.multiTeacher,
+        currentCourseRemain: state => state.student.plan.courseRemain,
       }),
 
       teacherList() {
         return this.currentItem.teacher
       },
 
-      editList() {
-        return this.currentItem.courseList
-      },
-
       courseRemain() {
-        const { course_total, course_cost } = this.currentItem.data
-        const courseRemain = course_total - course_cost
+        const courseRemain = this.currentCourseRemain
         let listCost = 0
         if (courseRemain > 0 && this.coachList.items.length) {
           listCost = this.coachList.items.map(item => item.course_num)
             .reduce((preValue, curvalue) => preValue + curvalue)
-          return course_total - listCost
+          return courseRemain - listCost
         }
         return courseRemain
       },
@@ -169,6 +177,13 @@
         handler() {
           this.coachList.items = [...this.editList]
           this.handleAdd()
+        },
+        deep: true,
+      },
+
+      editList: {
+        handler(val) {
+          this.getCourseList(val)
         },
         deep: true,
       },
@@ -188,7 +203,7 @@
             course_date: null, // 课日期
             course_time: [], // 课时间
             teacher_id: [], // 教师id
-            course_chapter: [], // 章节数组id
+            chapter: [], // 章节数组id
           }, ...this.updateList()]
         }
       },
@@ -221,16 +236,41 @@
         return []
       },
 
+      // 获取计划详情
+      getCourseList(editList) {
+        if (editList.length) {
+          this.coachList.items = editList.map(item => ({
+            ...item,
+            course_time: [formatDate(new Date(item.course_start), 'HH:mm'), formatDate(new Date(item.course_end), 'HH:mm')],
+          }))
+        } else {
+          this.coachList.items = []
+          this.handleAdd()
+        }
+      },
+
       submit() {
-        this.$refs.coachForm.validate((valid) => {
-          if (valid) {
-            const len = this.updateList().length
-            this.$emit('on-success', this.updateList().map(({ random_id, ...arg }, index) => ({
-              ...arg,
-              sort_value: len - index,
-            })))
-          }
-        })
+        const list = this.coachList.items
+        const len = list.length
+        if (len) {
+          this.$refs.coachForm.validate((valid) => {
+            if (valid) {
+              const itemList = this.updateList()
+              this.$emit('on-success', itemList.map(({ course_date, random_id, course_time, ...arg }, index) => ({
+                ...arg,
+                course_date: formatDate(new Date(course_date), this.format),
+                course_start: course_time[0],
+                course_end: course_time[1],
+                sort_value: len - index,
+              })))
+            } else {
+              this.$emit('on-error')
+            }
+          })
+        } else {
+          this.$Message.error('计划列表不能为空')
+          this.$emit('on-error')
+        }
       },
 
     },
@@ -245,12 +285,7 @@
         this.coachList.items = []
       })
 
-      if (this.editList.length) {
-        this.coachList.items = [...this.editList]
-      } else {
-        this.coachList.items = []
-        this.handleAdd()
-      }
+      this.getCourseList(this.editList)
     },
 
   }

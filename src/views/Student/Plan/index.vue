@@ -35,7 +35,7 @@
     <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--计划弹窗-->
-    <plan-modal :visible.sync="planVisible"></plan-modal>
+    <plan-modal :visible.sync="planVisible" @on-success="fetchData"></plan-modal>
   </div>
 </template>
 
@@ -103,7 +103,7 @@
               // 未计划
               { text: '添加计划',
                 type: 'primary',
-                isShow: ({ row }) => row.plan_status === 0,
+                isShow: ({ row }) => row.operation.store,
                 click: (row) => {
                   this.handlePlan(row, 'add')
                 },
@@ -111,7 +111,7 @@
               // 计划中 || 已结束
               { text: '查看进度',
                 type: 'primary',
-                isShow: ({ row }) => row.plan_status === 1 || row.plan_status === 4,
+                isShow: ({ row }) => row.operation.show,
                 click: (row) => {
                   this.handlePlan(row, 'view')
                 },
@@ -119,7 +119,7 @@
               // 计划中
               { text: '编辑计划',
                 type: 'primary',
-                isShow: ({ row }) => row.plan_status === 1,
+                isShow: ({ row }) => row.operation.update,
                 click: (row) => {
                   this.handlePlan(row, 'edit')
                 },
@@ -149,6 +149,10 @@
         if (type !== 'view') {
           this.$store.dispatch(STUDENT.PLAN.CURRENT_ITEM_TEACHER, `?attr=is_student_teac&class_id=${item.classes_id}`)
           this.$store.dispatch(STUDENT.PLAN.CURRENT_CHAPTER)
+        }
+        if (type === 'edit') {
+          // 请求异步数据
+          this.$store.dispatch(STUDENT.PLAN.FETCH_COACH_LIST)
         }
         this.planVisible = true
       },

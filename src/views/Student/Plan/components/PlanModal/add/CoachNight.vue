@@ -13,14 +13,14 @@
           :value="form.date_range"
           @on-change="(val) => form.date_range = val[0] ? val : []"
           :disabled="courseRemain <= 0"
+          :options="dateOptions"
           placeholder="请选择起止日期"
         ></date-picker>
       </form-item>
       <form-item prop="course_time" label="上课时段：">
         <time-picker
           type="timerange"
-          :value="form.course_time"
-          @on-change="(val) => form.course_time = val[0] ? val : []"
+          v-model="form.course_time"
           @on-clear="() => form.course_time = []"
           format="HH:mm"
           :disabled="courseRemain <= 0"
@@ -82,12 +82,15 @@
   import { mapState } from 'vuex'
   import { STUDENT } from '@/store/mutationTypes'
   import { formatDate, parseDate } from '@/utils/date'
+  import { broadcast } from '@/mixins'
   import addDays from 'date-fns/add_days'
   import differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
   import getDay from 'date-fns/get_day'
 
   export default {
     name: 'add-coach-night',
+
+    mixins: [broadcast],
 
     data() {
       return {
@@ -123,11 +126,19 @@
           ],
         },
 
+        // 过滤起止日期限制大于等于今天
+        dateOptions: {
+          disabledDate(date) {
+            return date && date.valueOf() < Date.now() - 86400000
+          },
+        },
+
         // 过滤起止日期范围
         addOptions: {
           disabledDate: (date) => {
             const [startDate = new Date(), endDate = new Date()] = this.form.date_range
-            return differenceInCalendarDays(date, startDate) < 0 ||
+            return (date && date.valueOf() < Date.now() - 86400000) ||
+              differenceInCalendarDays(date, startDate) < 0 ||
               differenceInCalendarDays(date, endDate) > 0 ||
               this.isDay(date)
           },
@@ -140,12 +151,8 @@
         currentItemData: state => state.student.plan.currentItem.data,
         teacherList: state => state.student.plan.currentItem.teacher,
         courseNum: state => state.student.plan.courseNum,
+        courseRemain: state => state.student.plan.courseRemain,
       }),
-
-      courseRemain() {
-        const { course_total, course_cost } = this.currentItemData
-        return course_total - course_cost
-      },
 
       dateRangeNum() {
         const [startDate = new Date(), endDate = new Date()] = this.form.date_range
@@ -223,26 +230,27 @@
             } else {
               // TODO 处理计划
               const { course_num, teacher_id, course_time } = this.form
-              const { course_total, course_cost } = this.currentItemData
-              const listNum = course_total - course_cost
-              const coachListNum = Math.floor(listNum / course_num)
-              const mod = listNum % course_num
-              if (mod > 0) {
-                const coachNumArr = Array(coachListNum).fill(course_num)
-                const coachArr = [...coachNumArr, mod]
-                const itemDate = coachArr.map((val, key) => ({
-                  sort_value: key + 1,
-                  course_num: val,
-                  course_date: this.formDateRange[key],
-                  course_start: course_time[0],
-                  course_end: course_time[1],
-                  course_time,
-                  teacher_id,
-                }))
-                this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_COURSELIST,
-                  itemDate.sort((preVal, nextVal) =>
-                    this.parseTime(nextVal.course_date) - this.parseTime(preVal.course_date)))
-              }
+              const formLen = this.formDateRange.length
+              let coachListNum = Math.floor(this.courseRemain / course_num)
+              coachListNum = coachListNum > formLen ? formLen : coachListNum
+              const mod = this.courseRemain % course_num
+              const coachNumArr = Array(coachListNum).fill(course_num)
+              const coachArr = mod > 0 ? [...coachNumArr, mod] : [...coachNumArr]
+              const itemDate = coachArr.map((val, key) => ({
+                sort_value: key + 1,
+                course_num: val,
+                course_date: this.formDateRange[key],
+                course_start: course_time[0],
+                course_end: course_time[1],
+                chapter: [],
+                course_time: [
+                  formatDate(course_time[0], 'HH:mm'),
+                  formatDate(course_time[1], 'HH:mm')],
+                teacher_id,
+              })).sort((preVal, nextVal) =>
+                this.parseTime(nextVal.course_date) - this.parseTime(preVal.course_date))
+
+              this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_COURSELIST, itemDate)
               this.$emit('on-success')
             }
           } else {
@@ -283,16 +291,20 @@
       })
 
       // 下一步
-      this.$on('on-submit', () => {
+      this.$on('on-submit', (data) => {
         // TODO 处理晚辅导计划
         this.onSubmit()
+
+        this.broadcast('list-coach', 'on-submit', data)
       })
 
-      this.$on('on-reset', () => {
+      this.$on('on-reset', (data) => {
         // TODO 重置数据
         this.$refs.coachNight.resetFields()
         this.addForm.excludeDate = []
         this.$refs.addDateForm.resetFields()
+
+        this.broadcast('list-coach', 'on-reset', data)
       })
     },
   }

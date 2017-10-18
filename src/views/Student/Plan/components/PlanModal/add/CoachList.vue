@@ -2,6 +2,7 @@
   <div class="add-coach-list">
     <list-coach
       @on-success="onSubmit"
+      @on-error="() => this.$emit('on-error')"
     ></list-coach>
   </div>
 </template>
@@ -35,14 +36,13 @@
     computed: {
       ...mapState({
         currentItem: state => state.student.plan.currentItem,
-        isNightCoach: state => state.student.plan.currentItem.isNightCoach,
       }),
     },
 
     methods: {
       onSubmit(item) {
         const { classes_id } = this.currentItem.data
-        this.$http.post('/plan', { classes_id, course: item })
+        this.$http.post(`/plan/${classes_id}`, { classes_id, course: item })
           .then(() => {
             this.$Message.success('成功添加学习计划！')
             this.$emit('on-success')

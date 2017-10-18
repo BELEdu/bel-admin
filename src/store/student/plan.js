@@ -26,6 +26,9 @@ export default {
     },
 
     currentChapter: [],
+
+    // TODO mock可用课时
+    courseRemain: 100,
   },
 
   mutations: {
@@ -94,6 +97,14 @@ export default {
       return Http.get(`/chapter/tree/3${query}`)
         .then((result) => {
           commit(STUDENT.PLAN.CURRENT_CHAPTER, result)
+        })
+    },
+
+    // 获取计划详情
+    [STUDENT.PLAN.FETCH_COACH_LIST]({ commit, state }) {
+      return Http.get(`/plan/${state.currentItem.data.id}`)
+        .then((result) => {
+          commit(STUDENT.PLAN.CURRENT_ITEM_COURSELIST, result.course)
         })
     },
   },

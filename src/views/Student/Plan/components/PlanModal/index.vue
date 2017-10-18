@@ -45,10 +45,11 @@
 
   import { mapState } from 'vuex'
   import { broadcast } from '@/mixins'
+  import { STUDENT } from '@/store/mutationTypes'
   import AddCoach from './add/Coach'
   import AddCoachNight from './add/CoachNight'
   import AddCoachList from './add/CoachList'
-  import EditCoach from './EditCoach'
+  import EditCoachList from './EditCoach'
   import ViewCoach from './ViewCoach'
   import AppraiseCoach from './AppraiseCoach'
 
@@ -57,7 +58,7 @@
 
     mixins: [broadcast],
 
-    components: { AddCoach, AddCoachNight, AddCoachList, ViewCoach, EditCoach, AppraiseCoach },
+    components: { AddCoach, AddCoachNight, AddCoachList, ViewCoach, EditCoachList, AppraiseCoach },
 
     props: {
       visible: {
@@ -76,7 +77,7 @@
           // add-coach-list
           { id: 1, name: 'add-coach-list', title: '添加计划', view: 'add-coach-list', btnName: '添加计划-提交', btnText: '提交', prevStep: 2, backBtn: false },
           { id: 2, name: 'add-coach-night', title: '添加计划', view: 'add-coach-night', btnName: '添加计划-下一步', btnText: '下一步', nextStep: 1 },
-          { id: 3, name: 'edit-coach', title: '编辑计划', view: 'edit-coach', btnName: '编辑计划-确定', btnText: '确定' },
+          { id: 3, name: 'edit-coach-list', title: '编辑计划', view: 'edit-coach-list', btnName: '编辑计划-确定', btnText: '确定' },
           { id: 4, name: 'view-coach', title: '学习进度', view: 'view-coach', btnName: '查看进度-查看评价', btnText: '查看评价', nextStep: 5 },
           { id: 5, name: 'appraise-coach', title: '学员评价', view: 'appraise-coach', btnName: '查看进度-返回进度', btnText: '返回进度', prevStep: 4, backBtn: true },
         ],
@@ -151,8 +152,9 @@
         // TODO 重置全部状态
         this.currentComId = -1
         this.$emit('update:visible', false)
-        this.loading = false
         this.broadcast(this.currentCom.view, 'on-reset', this.currentCom)
+        this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_COURSELIST, [])
+        this.loading = false
       },
 
       onError() {
@@ -171,7 +173,14 @@
 
       onSuccess() {
         this.loading = false
-        this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep || this.currentComId
+        if (this.currentCom.nextStep || this.currentCom.prevStep) {
+          this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep
+        } else {
+          if (this.item.type !== 'view') {
+            this.$emit('on-success')
+          }
+          this.$emit('update:visible', false)
+        }
       },
     },
   }
