@@ -9,6 +9,7 @@
     >
       <!-- 头部信息展示 -->
       <div class="text-center prepareplan-edit-modal__header">
+
         <p>
           <strong>{{step}}</strong> Of <strong>{{stepLength}}</strong>
         </p>
@@ -212,7 +213,7 @@ export default {
           }
         })
       } else {
-        this.step = this.step + 1
+        this.step += this.step + 1
       }
     },
 
