@@ -105,7 +105,7 @@ import {
 } from '@/views/components'
 
 export default {
-  name: 'PreparePapercenter',
+  name: 'PreparePaper',
 
   mixins: [list, tableCommon],
 
@@ -227,15 +227,15 @@ export default {
     /* --- Control --- */
 
     v_toCompose() {
-      //
+      this.$router.push('/prepare/papercenter/smartpaper')
     },
 
     v_toUpdate() {
       //
     },
 
-    v_toCheck() {
-      //
+    v_toCheck({ id }) {
+      this.$router.push(`/prepare/papercenter/check/${id}`)
     },
   },
 

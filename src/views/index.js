@@ -118,12 +118,20 @@ export { default as StudentAnalyse } from './examination/SmartAnalyse/StudentAna
 export { default as WrongQuestion } from './examination/WrongQuestion'
 export { default as StudentWrong } from './examination/WrongQuestion/StudentWrong'
 
-// 备课管理
+/* 备课管理 */
+
+// 教案管理
 export { default as PreparePrepareplan } from './Prepare/Prepareplan'
 export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detail'
-export { default as Papercenter } from './Prepare/Papercenter'
-export { default as Smartpaper } from './Prepare/Papercenter/Smartpaper'
+
+// 试卷中心
+export { default as PreparePaper } from './Prepare/Paper'
+export { default as PreparePaperSmartpaper } from './Prepare/Paper/Smartpaper'
+
+// 智能组卷
 export { default as Smartquestion } from './Prepare/Smartquestion'
+
+// 试题中心
 export { default as Question } from './Prepare/Question'
 export { default as PaperPreview } from './Prepare/Question/PaperPreview'
 export { default as QuestionAnalysis } from './Prepare/Question/QuestionAnalysis'

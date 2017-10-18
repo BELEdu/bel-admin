@@ -6,7 +6,7 @@
 
 import * as views from '@/views'
 
-const PREPARE_PAPERCENTER = {
+const PREPARE_PAPER = {
   name: '试卷中心',
   link: '/prepare/papercenter',
 }
@@ -43,53 +43,57 @@ export default [
   // 列表页
   {
     path: '/prepare/papercenter',
-    name: 'PreparePaperCenter',
-    component: views.Papercenter,
+    name: 'PreparePaper',
+    component: views.PreparePaper,
     meta: {
       uri: '/paper_center',
       breadcrumb: [
         { name: '备课管理' },
-        PREPARE_PAPERCENTER,
+        PREPARE_PAPER,
       ],
     },
   },
+
   // 智能组卷
   {
     path: '/prepare/papercenter/smartpaper',
-    name: 'PrepareSmartpaper',
-    component: views.Smartpaper,
+    name: 'PreparePaperSmartpaper',
+    component: views.PreparePaperSmartpaper,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        PREPARE_PAPERCENTER,
-        { name: '学员智能组卷' },
+        PREPARE_PAPER,
+        { name: '智能组卷' },
       ],
     },
   },
+
   // 编辑试卷
   {
-    path: '/prepare/papercenter/:id',
-    name: 'PreparePaperList',
+    path: '/prepare/papercenter/edit/:id',
+    name: 'PreparePaperEdition',
     // 使用个性题库组件
-    component: views.Papercenter,
+    component: views.PreparePaper,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
-        PREPARE_PAPERCENTER,
+        PREPARE_PAPER,
         { name: '编辑试卷' },
       ],
     },
   },
+
   // 查看试卷
   {
-    path: '/prepare/papercenter/:id',
-    name: 'PreparePaperList',
-    // 使用个性题库组件
-    component: views.Papercenter,
+    path: '/prepare/papercenter/check/:id',
+    name: 'PreparePaperDetail',
+    // 调用题库中心的组件
+    component: views.QuestionPaperDetail,
     meta: {
+      uri: '/paper_center',
       breadcrumb: [
         { name: '备课管理' },
-        PREPARE_PAPERCENTER,
+        PREPARE_PAPER,
         { name: '编辑试卷' },
       ],
     },
