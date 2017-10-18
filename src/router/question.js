@@ -146,6 +146,7 @@ export default [
     name: 'QuestionPaper',
     component: views.QuestionPaper,
     meta: {
+      uri: '/paper',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,

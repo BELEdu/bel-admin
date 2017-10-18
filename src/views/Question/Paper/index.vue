@@ -67,26 +67,16 @@
     <Table
       border
       :columns="colConfig"
-      :data="buffer.data"
+      :data="tableInfo.data"
       @on-sort-change="sort"
     ></Table>
 
     <!-- 底部分页 -->
     <app-pager
-      :data="buffer"
+      :data="tableInfo"
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
     ></app-pager>
-
-    <!-- 删除警告框 -->
-    <app-warn-modal
-      v-model="deletionModal.active"
-      :title="deletionModal.title"
-      :loading="deletionModal.confirmLoading"
-      @on-ok="deletePaper"
-    >
-      <div>该试卷删除后将无法恢复，是否继续删除？</div>
-    </app-warn-modal>
   </div>
 </template>
 
@@ -97,7 +87,7 @@
  * @author huojinzhao
  */
 
-import { list } from '@/mixins'
+import { list, tableCommon } from '@/mixins'
 import { createButton } from '@/utils'
 import {
   ConditionRadio,
@@ -107,7 +97,7 @@ import {
 export default {
   name: 'question-paper',
 
-  mixins: [list],
+  mixins: [list, tableCommon],
 
   components: {
     ConditionRadio,
@@ -167,7 +157,7 @@ export default {
             {
               text: '删除',
               type: 'error',
-              click: this.activatePaperDeletion,
+              click: ({ id }) => this.deleteItem(id),
             },
             {
               text: '编辑',
@@ -182,16 +172,6 @@ export default {
           ]),
         },
       ],
-
-      buffer: {},
-
-      deletionModal: {
-        active: false,
-        confirmLoading: false,
-        title: '删除确认',
-      },
-
-      deletionTarget: null,
     }
   },
 
@@ -242,15 +222,6 @@ export default {
         })
     },
 
-    getData(queryUrl, to) {
-      const url = to.fullPath
-        .split('/')
-        .splice(2)
-        .join('/')
-      return this.$http.get(`/${url}`)
-        .then((res) => { this.buffer = res })
-    },
-
     toComposePaper() {
       const url = '/question/paper/composition'
         + `?equal[grade_range_subject_id]=${this.subjectId}`
@@ -270,34 +241,6 @@ export default {
     onEditPaper(row) {
       const url = `/question/paper/creation/${row.id}?${this.currentSubject}`
       this.$router.push(url)
-    },
-
-    /* delete */
-
-    activatePaperDeletion(row) {
-      this.deletionTarget = row
-      this.deletionModal.active = true
-    },
-
-    deactivatePaperDeletion() {
-      this.deletionTarget = null
-      this.deletionModal.active = false
-      this.deletionModal.confirmLoading = false
-    },
-
-    deletePaper() {
-      this.deletionModal.confirmLoading = true
-      const id = this.deletionTarget.id
-      this.$http.delete(`/paper/${id}`)
-        .then(() => {
-          this.buffer.data = this.buffer.data
-            .filter(data => data.id !== id)
-          this.$Message.success('删除成功')
-        })
-        .catch(() => {
-          this.$Message.error('删除失败')
-        })
-        .then(() => this.deactivatePaperDeletion())
     },
   },
 
