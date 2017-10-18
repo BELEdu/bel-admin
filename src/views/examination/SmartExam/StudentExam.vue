@@ -1,5 +1,10 @@
 <template>
   <div class="studentexam">
+    <RadioGroup v-model="button1" type="button">
+        <Radio label="1"><Icon type="checkmark-round"></Icon></Radio>
+        <Radio label="2"><Icon type="help"></Icon></Radio>
+        <Radio label="0"><Icon type="close-round"></Icon></Radio>
+    </RadioGroup>
     <!-- 顶部 搜索栏 -->
     <Form class="app-search-form">
       <form-item>
@@ -52,6 +57,8 @@ export default {
       colConfig: colConfig(this),
       // 添加测试开关
       switcher: false,
+
+      button1: '北京',
     }
   },
 

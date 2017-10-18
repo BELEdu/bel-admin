@@ -14,14 +14,17 @@ import {
   StudentWrong,
 } from '@/views'
 
+const EXAMINATION = { name: '测试管理' }
+const EXAMINATION_SMARTEXAM = { name: '智能测试', link: '/examination/smartexam' }
+
 export default [
   {
-    path: '/examination/smartexam',
+    path: EXAMINATION_SMARTEXAM.link,
     component: SmartExam,
     meta: {
       breadcrumb: [
-        { name: '测试管理' },
-        { name: '智能测试' },
+        EXAMINATION,
+        EXAMINATION_SMARTEXAM,
       ],
     },
   },
@@ -48,6 +51,7 @@ export default [
       ],
     },
   },
+
   {
     path: '/examination/smartanalyse',
     component: SmartAnalyse,
