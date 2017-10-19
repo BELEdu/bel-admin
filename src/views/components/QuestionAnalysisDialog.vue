@@ -14,9 +14,9 @@
       <p>知识点: {{data.knowledge_name}}</p>
     </header>
 
-    <question-analysis
+    <QuestionAnalysis
       :data="data"
-    ></question-analysis>
+    />
 
     <div
       slot="footer"
@@ -35,7 +35,7 @@
  *
  * @author huojinzhao
  */
-import { QuestionAnalysis } from '@/views/components'
+import QuestionAnalysis from './QuestionAnalysis'
 
 export default {
   name: 'QuestionAnalysisDialog',

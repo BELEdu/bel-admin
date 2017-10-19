@@ -32,7 +32,7 @@
   * @param {Number, String} width - 试题宽度，默认宽度500像素
   */
 
-import { Question } from '@/views/components'
+import Question from './Question'
 
 export default {
   name: 'question-analysis',
