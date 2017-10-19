@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="student-schedule-manage">
     <Tabs :value="tabActive" type="card" :animated="false" @on-click="tabSwitch" class="app-tabs">
       <template v-for="tab in $route.meta.tabName">
         <Tab-pane :label="tab.name" :name="tab.value"></Tab-pane>

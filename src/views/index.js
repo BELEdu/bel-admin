@@ -105,6 +105,7 @@ export { default as StudentClassesEdit } from './Student/Classes/Edit'
 export { default as StudentPlan } from './Student/Plan'
 // 学员课程 - 教师课表
 export { default as StudentSchedule } from './Student/Schedule/'
+export { default as StudentScheduleManage } from './Student/Schedule/Manage'
 export { default as StudentScheduleManageWeek } from './Student/Schedule/ManageWeek'
 export { default as StudentScheduleManageDay } from './Student/Schedule/ManageDay'
 
