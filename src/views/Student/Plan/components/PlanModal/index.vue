@@ -81,12 +81,12 @@
     computed: {
       ...mapState({
         item: state => state.student.plan.currentItem,
+        itemData: state => state.student.plan.currentItem.data,
+        isNightCoach: state => state.student.plan.currentItem.isNightCoach,
       }),
 
       currentCom() {
-        const planStatus = this.item.data.plan_status
-        // TODO 目前为模拟字段（coachType）
-        const coachType = this.item.data.coach_type || 1 // 2为晚辅导班
+        const planStatus = this.itemData.plan_status
         let viewId = 1
         const defAddCoach = { // 默认值
           prevStep: 0,
@@ -98,7 +98,7 @@
           switch (planStatus) {
             case 0: {
               // 判断晚辅导班
-              viewId = coachType === 2 ? 2 : 1
+              viewId = this.isNightCoach ? 2 : 1
               break
             }
             case 1: {
@@ -124,7 +124,7 @@
             if (item.id === 1) {
               customParam = { ...defAddCoach }
             }
-            if (this.item.data.coach_type === 2) {
+            if (this.isNightCoach) {
               // 晚辅导
               customParam = {
                 prevStep: 2,

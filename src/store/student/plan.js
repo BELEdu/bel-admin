@@ -54,7 +54,7 @@ export default {
       state.currentItem.data = {
         ...item,
       }
-      state.currentItem.isNightCoach = item.coach_type === 2
+      state.currentItem.isNightCoach = item.product_type === 5
     },
 
     [STUDENT.PLAN.CURRENT_ITEM_TYPE](state, type) {

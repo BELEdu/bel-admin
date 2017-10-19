@@ -24,7 +24,7 @@
           <form-item :prop="'items.' + index + '.course_num'" :rules="coachRules['course_num']">
             <Row>
               <Col :span="16" style="padding: 0 1px;">
-              <Select v-model="item.course_num">
+              <Select v-model="item.course_num" :disabled="!item.random_id && !item.operation.update">
                 <Option
                   v-for="(period, key) in courseNum"
                   :key="key"
@@ -46,6 +46,7 @@
                 @on-clear="() => item.course_date = null"
                 :options="dateOptions"
                 placeholder="请选择开始日期"
+                :disabled="!item.random_id && !item.operation.update"
               ></date-picker>
             </form-item>
           </Col>
@@ -58,31 +59,32 @@
                 @on-change="(val) => item.course_time = val[0] ? val : []"
                 @on-clear="() => item.course_time = []"
                 placeholder="请选择时间"
+                :disabled="!item.random_id && !item.operation.update"
               ></time-picker>
             </form-item>
           </Col>
           <Col :span="9">
             <form-item :prop="'items.' + index + '.teacher_id'" :rules="coachRules['teacher_id']">
               <template v-if="multiTeacher">
-                <Select v-model="item.teacher_id" multiple placeholder="请选择教师">
+                <Select v-model="item.teacher_id" multiple placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
                   <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
                 </Select>
               </template>
               <template v-else>
-                <Select v-model="item.teacher_id[0]" placeholder="请选择教师">
+                <Select v-model="item.teacher_id[0]" placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
                   <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
                 </Select>
               </template>
             </form-item>
           </Col>
-          <Col :span="1" class="list-coach__close" v-if="coachList.items.length > 1">
+          <Col :span="1" class="list-coach__close" v-if="item.random_id || item.operation.destroy">
             <Button type="text" icon="close" @click="closeList(index)"></Button>
           </Col>
         </Row>
         <Row :gutter="10" v-if="!isNightCoach" style="padding-top: 10px">
           <Col :span="23">
           <form-item :prop="'items.' + index + '.chapter'" :rules="coachRules['chapter']">
-            <app-tree-select :data="currentChapter" v-model="item.chapter" multiple></app-tree-select>
+            <app-tree-select :data="currentChapter" v-model="item.chapter" multiple :disabled="!item.random_id && !item.operation.update"></app-tree-select>
           </form-item>
           </Col>
         </Row>

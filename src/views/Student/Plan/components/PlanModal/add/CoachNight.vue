@@ -237,6 +237,7 @@
               const coachNumArr = Array(coachListNum).fill(course_num)
               const coachArr = mod > 0 ? [...coachNumArr, mod] : [...coachNumArr]
               const itemDate = coachArr.map((val, key) => ({
+                random_id: this.random(),
                 sort_value: key + 1,
                 course_num: val,
                 course_date: this.formDateRange[key],
