@@ -13,6 +13,18 @@ export {
 } from './ConditionRadioSubject'
 
 export {
+  default as PaperComposition,
+} from './PaperComposition'
+
+export {
+  default as PaperCompositionPanel,
+} from './PaperCompositionPanel'
+
+export {
+  default as PaperCompositionQuestion,
+} from './PaperCompositionQuestion'
+
+export {
   default as PaperPreview,
 } from './PaperPreview'
 
