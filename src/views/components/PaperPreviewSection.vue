@@ -90,7 +90,7 @@ export default {
 </template>
 
 <style lang="less">
-@import './style/question';
+@import './style/paper';
 
 .paper-preview-section {
   .section();
