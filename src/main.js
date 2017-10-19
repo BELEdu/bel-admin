@@ -17,6 +17,7 @@ import Vue from 'vue'
 import iView from 'iview'
 import { Acl, Http, Rules } from '@/utils'
 import rbDog from '@/components'
+import dirDog from '@/directives'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -25,6 +26,7 @@ import store from './store'
 Vue
   .use(iView)
   .use(rbDog)
+  .use(dirDog)
   .use(Acl)
   .use(Http)
   .use(Rules)

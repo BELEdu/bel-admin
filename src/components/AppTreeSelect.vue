@@ -1,6 +1,6 @@
 <template>
-  <div class="app-tree-select" @click.stop>
-    <div class="ivu-select ivu-select-multiple" :class="{'ivu-select-visible': dropdown}" @click="onDropdown">
+  <div class="app-tree-select" v-clickoutside="clickOutSide">
+    <div class="ivu-select ivu-select-multiple" :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled}" @click="onDropdown">
       <div class="ivu-select-selection">
         <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}">请选择...</span>
         <div v-if="multiple" class="ivu-tag" v-for="item in selectedItems">
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="ivu-select-dropdown" style="width: 100%;">
-      <div class="app-tree-dropdown">
+      <div class="app-tree-dropdown" @click.stop>
         <Input class="app-tree-dropdown__input original" v-model="keyword" size="small" placeholder="请输入搜索内容"></Input>
         <Tree ref="tree" :data="filteredItems" @on-select-change="onSelectChange" :multiple="multiple"></Tree>
       </div>
@@ -37,15 +37,18 @@ export default {
     },
     data: {
       type: Array,
-      default: [],
       required: true,
+    },
+    disabled: {
+      type: Boolean,
+      defalut: false,
     },
   },
 
   data() {
     return {
       dropdown: false,
-      items: JSON.parse(JSON.stringify(this.data)),
+      items: [],
       selectedItems: [],
       keyword: '',
       initSelected: false,
@@ -99,8 +102,7 @@ export default {
     },
 
     data(tree) {
-      this.items = JSON.parse(JSON.stringify(tree))
-      this.init(this.items)
+      this.copyData(tree)
     },
 
     selectedItems(val) {
@@ -116,6 +118,17 @@ export default {
   },
 
   methods: {
+    clickOutSide() {
+      this.onClickDocument()
+    },
+
+    /**
+     * 拷贝数据
+     */
+    copyData(tree) {
+      this.init(JSON.parse(JSON.stringify(tree)))
+    },
+
     /**
      * 获取父级指定组件对象
      */
@@ -134,7 +147,7 @@ export default {
     },
 
     onDropdown() {
-      this.dropdown = !this.dropdown
+      this.dropdown = this.disabled ? false : !this.dropdown
     },
 
     /**
@@ -208,15 +221,15 @@ export default {
   },
 
   created() {
-    document.body.addEventListener('click', this.onClickDocument)
+    // document.body.addEventListener('click', this.onClickDocument)
   },
 
   mounted() {
-    this.init(this.items)
+    this.copyData(this.data)
   },
 
   beforeDestroy() {
-    document.body.removeEventListener('click', this.onClickDocument)
+    // document.body.removeEventListener('click', this.onClickDocument)
   },
 }
 </script>
