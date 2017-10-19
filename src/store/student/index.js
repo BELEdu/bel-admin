@@ -9,6 +9,7 @@ import student from './student'
 import product from './product'
 import classes from './classes'
 import plan from './plan'
+import schedule from './schedule'
 import meeting from './meeting'
 import warning from './warning'
 import studyprogress from './studyprogress'
@@ -20,6 +21,7 @@ export default {
     product,
     classes,
     plan,
+    schedule,
     meeting,
     warning,
     studyprogress,

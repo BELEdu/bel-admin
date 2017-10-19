@@ -103,6 +103,10 @@ export { default as StudentClasses } from './Student/Classes'
 export { default as StudentClassesEdit } from './Student/Classes/Edit'
 // 学员课程 - 学习计划
 export { default as StudentPlan } from './Student/Plan'
+// 学员课程 - 教师课表
+export { default as StudentSchedule } from './Student/Schedule/'
+export { default as StudentScheduleManageWeek } from './Student/Schedule/ManageWeek'
+export { default as StudentScheduleManageDay } from './Student/Schedule/ManageDay'
 
 // 测试管理
 export { default as SmartExam } from './examination/SmartExam'
