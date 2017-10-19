@@ -283,6 +283,8 @@ export default {
         ],
       },
 
+      current_question_template: null, // 当前选中的题型，4种
+
       subjects: [], // 年级学科数据源
       questionTypes: [], // 题型数据源
       difficulty: [], // 难度数据源
@@ -319,6 +321,7 @@ export default {
       return question_type_id ?
         this.questionTypes.find(item => item.value === question_type_id).question_template : null
     },
+
   },
 
   methods: {
@@ -411,22 +414,28 @@ export default {
         })
     },
 
-    changeQuestionType() { // 切换题型重置答案
-      switch (this.questionTemplateFormat) {
-        case 1:
-          this.form.question_answers = [
-            { ...defaultAnswer, option: 'A' },
-            { ...defaultAnswer, option: 'B' },
-            { ...defaultAnswer, option: 'C' },
-            { ...defaultAnswer, option: 'D' },
-          ]
-          break
-        case 3:
-          this.form.question_answers = Array(3).fill({ ...defaultAnswer })
-          break
-        default:
-          this.form.question_answers = [{ ...defaultAnswer }]
-          break
+    changeQuestionType(item) { // 切换题型重置答案
+      // 如果切换后的题型跟当前题型不一致的话，则重置答案
+      if (this.current_question_template !== item.question_template) {
+        // 设置当前题型
+        this.current_question_template = item.question_template
+        // 重置答案
+        switch (this.questionTemplateFormat) {
+          case 1:
+            this.form.question_answers = [
+              { ...defaultAnswer, option: 'A' },
+              { ...defaultAnswer, option: 'B' },
+              { ...defaultAnswer, option: 'C' },
+              { ...defaultAnswer, option: 'D' },
+            ]
+            break
+          case 3:
+            this.form.question_answers = Array(3).fill({ ...defaultAnswer })
+            break
+          default:
+            this.form.question_answers = [{ ...defaultAnswer }]
+            break
+        }
       }
     },
 
