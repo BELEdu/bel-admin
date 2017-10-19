@@ -29,6 +29,10 @@ export {
 } from './PaperPreview'
 
 export {
+  default as PaperPreviewDialog,
+} from './PaperPreviewDialog'
+
+export {
   default as PaperPreviewForm,
 } from './PaperPreviewForm'
 

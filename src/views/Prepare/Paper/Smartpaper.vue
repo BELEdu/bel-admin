@@ -58,33 +58,13 @@
       </Form-item>
     </Form>
 
-    <!--  -->
-    <Modal
-      v-model="previewModal.visible"
-      title="试卷预览"
-      :styles="{ top: '50px', width: '950px' }"
-    >
-      <PaperPreview
-        ref="paperPreview"
-        :data="previewModal.data"
-        in-modal
-      />
-      <div slot="footer">
-        <Button
-          type="text"
-          @click="vm_closePreview"
-        >
-          取消
-        </Button>
-        <Button
-          type="primary"
-          :loading="previewModal.loading"
-          @click="v_createPaper"
-        >
-          保存
-        </Button>
-      </div>
-    </Modal>
+    <!-- 试卷预览弹窗 -->
+    <PaperPreviewDialog
+      :visible.sync="previewModal.visible"
+      :data="previewModal.data"
+      :loading="previewModal.loading"
+      @on-ok="vm_createPaper"
+    />
   </div>
 </template>
 
@@ -96,7 +76,7 @@
  */
 import { GLOBAL } from '@/store/mutationTypes'
 import {
-  PaperPreview,
+  PaperPreviewDialog,
 } from '@/views/components'
 
 const initFdata = subject_id => ({
@@ -110,7 +90,7 @@ export default {
   name: 'PreparePaperSmartpaper',
 
   components: {
-    PaperPreview,
+    PaperPreviewDialog,
   },
 
   data: () => ({
@@ -193,15 +173,10 @@ export default {
       this.m_openPreview()
     },
 
-    v_createPaper() {
-      this.$refs.paperPreview
-        .$_formValidate(valid => valid && this.m_createPaper())
-    },
-
-    m_createPaper() {
+    vm_createPaper(paper) {
       this.previewModal.loading = true
 
-      this.$http.post('/paper_center', this.previewModal.data)
+      this.$http.post('/paper_center', paper)
         .then(() => this.v_cancel())
         .catch(() => {
           this.$Notice.error({
