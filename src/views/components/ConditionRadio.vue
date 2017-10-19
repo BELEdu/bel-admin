@@ -1,6 +1,10 @@
 <template>
   <div class="condition-radio-group">
-    <span class="condition-radio-group__title">{{label}}</span>
+    <span
+      class="condition-radio-group__title"
+    >
+      {{label}}
+    </span>
     <div class="condition-radio-group__options">
       <Button
         class="condition-radio-group__options--all"
@@ -74,25 +78,14 @@ export default {
     onChooseOption(key, value) {
       // 重复点击无动作
       if (this.$route.query[key] === value) return
+
       // 数据初始化
-      const query = this.$route.query
-      const path = this.$route.path
-      // 选择全部则移除条件
-      if (!value) {
-        // 更新路由
-        const { [key]: filter, ...rest } = query
-        this.$router.push({
-          path,
-          query: { ...rest },
-        })
-      // 有效更新条件
-      } else {
-        // 更新路由
-        this.$router.push({
-          path,
-          query: { ...query, ...{ [key]: value } },
-        })
-      }
+      const { [key]: filter, ...rest } = this.$route.query
+      const query = value
+        ? { ...rest, [key]: value, page: 1 }
+        : { ...rest, page: 1 }
+
+      this.$router.push({ query })
     },
   },
 }
