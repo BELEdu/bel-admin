@@ -2,7 +2,7 @@
   <app-form-modal
     :value="value"
     @input="value => $emit('input', value)"
-    title="开始测试"
+    :title="`开始测试：${testNumber}`"
     :loading="formLoading"
     @on-ok="submit()"
     @on-cancel="closeModal()"
@@ -34,6 +34,8 @@
       </Form>
     </div>
 
+    <p class="color-error">注意：请确保要选择的设备已开机</p>
+
   </app-form-modal>
 </template>
 
@@ -53,6 +55,10 @@ export default {
   props: {
     value: {
       type: Boolean,
+      required: true,
+    },
+    testNumber: {
+      type: String,
       required: true,
     },
   },
