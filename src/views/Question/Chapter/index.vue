@@ -86,7 +86,6 @@
     <!-- 编辑章节弹窗 -->
     <edit-modal
       v-model="modal.edit"
-      v-if="form"
       :form="form"
       :default-subject="current_grade_range_subject_id"
       @closeEditModal="modal.edit = false"
@@ -228,7 +227,11 @@ export default {
 
       chapterTree: [], // 章节树数据
 
-      form: null, // 章节详细数据（编辑时用）
+      // 章节详细数据（编辑时用）
+      form: {
+        grade_range_subject_id: null,
+        data: [],
+      },
     }
   },
 

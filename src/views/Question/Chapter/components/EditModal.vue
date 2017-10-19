@@ -9,7 +9,7 @@
       @on-ok="beforeSubmit()"
       @on-cancel="closeModal()"
       :maskClosable="true"
-      :width='800'
+      :width='850'
       class="chapter-edit"
     >
       <!-- 表单 -->
@@ -29,7 +29,7 @@
               <table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
                 <thead>
                   <tr>
-                    <th class="ivu-table-column-left" width="220">
+                    <th class="ivu-table-column-left" width="260">
                       <div class="ivu-table-cell">
                         <span>知识点</span>
                       </div>
@@ -79,7 +79,7 @@
                   <tr class="ivu-table-row"
                     v-for="(item,index) in form.data" :key="index"
                   >
-                    <td class="ivu-table-column-left" width="280">
+                    <td class="ivu-table-column-left" width="260">
                       <div class="ivu-table-cell">
                         <FormItem
                           :prop="`data.${index}.id`"
@@ -89,7 +89,7 @@
                             <Col span="20">
                               <app-tree-select
                                 v-model="item.id"
-                                :data="JSON.parse(JSON.stringify(knowledgeTree))"
+                                :data="knowledgeTree"
                                 @change="(value) => changeKnowledge(value, index)"
                               ></app-tree-select>
                             </Col>
@@ -299,11 +299,15 @@ export default {
     },
 
     changeKnowledge(value, index) { // 更改&选择知识点时获取该知识点详情
+      // console.log(`value:${value}`)
+      // console.log(`index:${index}`)
       const { data } = this.form
+      // console.log(data.filter(item => item.id === value).length)
       if (data.filter(item => item.id === value).length > 1) {
         this.$Message.error('该知识点已添加过')
         // this.removeKnowledge(index)
       } else if (value) {
+        // console.log('请求知识点详情')
         this.$http.get(`/knowledge/${value}`)
           .then(({
             duration,
