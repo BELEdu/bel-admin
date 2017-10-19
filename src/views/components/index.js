@@ -7,34 +7,47 @@
 export {
   default as ConditionRadio,
 } from './ConditionRadio'
+
 export {
   default as ConditionRadioSubject,
 } from './ConditionRadioSubject'
+
 export {
   default as PaperPreview,
 } from './PaperPreview'
+
 export {
   default as PaperPreviewForm,
 } from './PaperPreviewForm'
+
 export {
   default as PaperPreviewQuestion,
 } from './PaperPreviewQuestion'
+
 export {
   default as PaperPreviewSection,
 } from './PaperPreviewSection'
+
 export {
   default as Question,
 } from './Question'
+
 export {
   default as QuestionAnalysis,
 } from './QuestionAnalysis'
+
 export {
   default as QuestionAnalysisDialog,
 } from './QuestionAnalysisDialog'
+
 export {
   default as TreeSide,
 } from './TreeSide'
+
+export {
+  default as TreeSideSearch,
+} from './TreeSideSearch'
+
 export {
   default as TreeStructure,
 } from './TreeStructure'
-
