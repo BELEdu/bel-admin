@@ -10,6 +10,7 @@
         v-for="(list, index) in progressList"
         :key="list.sort_value"
         :data-index="progressList.length - index"
+        :class="{over: list.course_status === 2}"
       >
         <div class="view-coach__list-time">
           {{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}
@@ -90,6 +91,8 @@
 </script>
 
 <style lang="less" scoped>
+  @import "~vars.less";
+
   .view-coach {
     padding: 0 10px;
 
@@ -98,20 +101,46 @@
     }
 
     &__list {
-      padding: 10px 0;
+      padding: 10px 0 0 14px;
       max-height: 500px;
       overflow-y: auto;
-      overflow-x: hidden;
 
       > li {
         position: relative;
-        padding-left: 20px;
+        padding-left: 30px;
+        font-size: 14px;
+        border-left: 1px solid #ccc;
 
         &:before {
           content: attr(data-index);
+          display: block;
+          width: 26px;
+          height: 26px;
+          line-height: 24px;
+          margin-right: 8px;
+          text-align: center;
+          border: 1px solid @disabled-color;
+          border-radius: 50%;
+          font-size: 14px;
+          color: #fff;
+          background-color: @disabled-color;
           position: absolute;
-          left: 0;
+          left: -13px;
         }
+
+        &.over {
+          border-color: @info-color;
+
+          &:before {
+            border-color: @primary-color;
+            background-color: @primary-color;
+          }
+        }
+      }
+
+      &-name {
+        padding-left: 10px;
+        padding-bottom: 14px;
       }
     }
   }

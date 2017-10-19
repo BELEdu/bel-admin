@@ -7,16 +7,7 @@
     class-name="plan-modal"
   >
     <Row slot="header" class="plan-modal__header">
-      <Col span="6" class="plan-modal__header-left">
-        <Button
-          v-show="currentCom.backBtn"
-          type="text"
-          icon="chevron-left"
-          size="small"
-          @click="prev"
-        >返回</Button>&nbsp;
-      </Col>
-      <Col span="12" class="plan-modal__header-center">{{currentCom.title}}</Col>
+      <Col span="12" :offset="6" class="plan-modal__header-center">{{currentCom.title}}</Col>
       <Col span="6" class="plan-modal__header-right"></Col>
 
     </Row>
@@ -31,7 +22,8 @@
 
     <div slot="footer" class="plan-modal__footer">
       <Button @click="cancel">取消</Button>
-      <Button type="primary" @click="next" :loading="loading">{{currentCom.btnText}}</Button>
+      <Button type="primary" @click="prev" v-if="currentCom.backBtn">返回</Button>
+      <Button type="primary" @click="next" :loading="loading" v-if="currentCom.btnText">{{currentCom.btnText}}</Button>
     </div>
   </Modal>
 </template>
@@ -79,7 +71,7 @@
           { id: 2, name: 'add-coach-night', title: '添加计划', view: 'add-coach-night', btnName: '添加计划-下一步', btnText: '下一步', nextStep: 1 },
           { id: 3, name: 'edit-coach-list', title: '编辑计划', view: 'edit-coach-list', btnName: '编辑计划-确定', btnText: '确定' },
           { id: 4, name: 'view-coach', title: '学习进度', view: 'view-coach', btnName: '查看进度-查看评价', btnText: '查看评价', nextStep: 5 },
-          { id: 5, name: 'appraise-coach', title: '学员评价', view: 'appraise-coach', btnName: '查看进度-返回进度', btnText: '返回进度', prevStep: 4, backBtn: true },
+          { id: 5, name: 'appraise-coach', title: '学员评价', view: 'appraise-coach', btnName: '查看进度-返回进度', btnText: '', prevStep: 4, backBtn: true },
         ],
 
         loading: false,
@@ -129,7 +121,9 @@
         this.coachCom = this.coachCom.map((item) => {
           let customParam = {}
           if (item.id === viewId) {
-            customParam = { ...defAddCoach }
+            if (item.id === 1) {
+              customParam = { ...defAddCoach }
+            }
             if (this.item.data.coach_type === 2) {
               // 晚辅导
               customParam = {
@@ -168,7 +162,11 @@
       next() {
         // TODO 处理当前流程
         this.loading = true
-        this.broadcast(this.currentCom.view, 'on-submit', this.currentCom)
+        if (this.item.type === 'view') {
+          this.onSuccess()
+        } else {
+          this.broadcast(this.currentCom.view, 'on-submit', this.currentCom)
+        }
       },
 
       onSuccess() {
