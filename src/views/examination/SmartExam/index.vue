@@ -137,12 +137,14 @@
       v-model="deviceModal.active"
       :test-number="currentNumber"
       @closeDeviceModal="deviceModal.active = false"
+      @update="fetchData"
     ></device-modal>
 
     <!-- 添加测试弹窗 -->
     <add-modal
       v-model="addModal.active"
       @closeAddModal="addModal.active = false"
+      @update="fetchData"
     ></add-modal>
 
   </div>
@@ -154,7 +156,9 @@
  * @author zhoumenglin
  * @version 2017-10-18
  */
-import { GLOBAL } from '@/store/mutationTypes'
+
+import { mapState } from 'vuex'
+import { EXAMINATION } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import DeviceModal from './components/DeviceModal'
@@ -197,7 +201,7 @@ export default {
           title: '操作',
           align: 'center',
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.test_number) },
+            { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id, row.test_number) },
             { text: '查看试卷', type: 'primary', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
             { text: '阅卷', type: 'warning', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
             { text: '开始测试（线上）', type: 'success', click: row => this.openStartModal(row.id, 'online', row.test_number) },
@@ -207,7 +211,7 @@ export default {
       ],
 
       // 列表假数据
-      list: {
+      list2: {
         data: Array(10).fill(null).map(() => ({
           id: 34,
           test_number: 100010,
@@ -220,54 +224,6 @@ export default {
           test_status_name: '待阅卷',
         })),
       },
-
-      // 测试类型假数据源
-      test_type: [
-        {
-          display_name: '日常测试',
-          value: 1,
-        },
-        {
-          display_name: '课堂练习',
-          value: 2,
-        },
-        {
-          display_name: '课后练习',
-          value: 3,
-        },
-        {
-          display_name: '入学测试',
-          value: 4,
-        },
-      ],
-
-      // 答题方式假数据源
-      answer_type: [
-        {
-          display_name: '线上',
-          value: 1,
-        },
-        {
-          display_name: '线下',
-          value: 2,
-        },
-      ],
-
-      // 测试状态假数据源
-      test_status: [
-        {
-          display_name: '待测试',
-          value: 1,
-        },
-        {
-          display_name: '待阅卷',
-          value: 2,
-        },
-        {
-          display_name: '已阅卷',
-          value: 3,
-        },
-      ],
 
       currentId: null, // 当前选中的测试id
       currentNumber: '', // 当前选中的测试编号
@@ -296,6 +252,15 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      list: state => state.examination.smartexam.list,
+      test_type: state => state.dicts.test_type,
+      test_status: state => state.dicts.test_status,
+      answer_type: state => state.dicts.answer_type, //
+    }),
+  },
+
   methods: {
     // 打开添加测试弹窗
     openAddModal() {
@@ -313,11 +278,13 @@ export default {
     deleteSubmit() {
       // 这里到时候走删除store
       this.deleteModal.loading = true
-      setTimeout(() => {
-        this.deleteModal.active = false
-        this.deleteModal.loading = false
-        this.$Message.warning('删除成功')
-      }, 1500)
+
+      this.$store.dispatch(EXAMINATION.SMARTEXAM.DELETE, this.currentId)
+        .then(() => {
+          this.deleteModal.active = false
+          this.deleteModal.loading = false
+          this.$Message.warning('删除成功！')
+        })
     },
 
     // 打开开始测试弹窗
@@ -341,10 +308,15 @@ export default {
         this.$Message.warning('测试已开始')
       }, 1500)
     },
+
+    // 获取测试数据
+    getData(qs) {
+      return this.$store.dispatch(EXAMINATION.SMARTEXAM.INIT, qs)
+    },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+    // this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 }
 </script>
