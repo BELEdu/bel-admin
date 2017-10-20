@@ -23,15 +23,18 @@ export default {
   name: 'AppButtonRadio',
 
   props: {
-    value: {},
+    value: [String, Number],
+
     data: {
       type: Array,
       required: true,
     },
+
     size: {
       type: String,
       default: () => 'default',
     },
+
     readonly: {
       type: Boolean,
       default: false,
