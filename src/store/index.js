@@ -14,6 +14,7 @@ import student from './student'
 import label from './label'
 import question from './question'
 import algorithm from './algorithm'
+import examination from './examination'
 import utils from './utils'
 import { GLOBAL } from './mutationTypes'
 
@@ -39,6 +40,7 @@ const store = new Vuex.Store({
     label,
     question,
     algorithm,
+    examination,
     utils,
   },
 

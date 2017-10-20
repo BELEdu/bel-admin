@@ -5,9 +5,8 @@
  * @description
  */
 import {
-  SmartExam,
-  StudentExam,
-  ExamCollation,
+  ExaminationSmartExam,
+  ExaminationSmartExamCheck,
   SmartAnalyse,
   StudentAnalyse,
   WrongQuestion,
@@ -16,11 +15,12 @@ import {
 
 const EXAMINATION = { name: '测试管理' }
 const EXAMINATION_SMARTEXAM = { name: '智能测试', link: '/examination/smartexam' }
+const EXAMINATION_SMARTEXAM_CHECK = { name: '阅卷', link: '/examination/smartexam/:id' }
 
 export default [
   {
     path: EXAMINATION_SMARTEXAM.link,
-    component: SmartExam,
+    component: ExaminationSmartExam,
     meta: {
       breadcrumb: [
         EXAMINATION,
@@ -29,25 +29,13 @@ export default [
     },
   },
   {
-    path: '/examination/smartexam/:id',
-    component: StudentExam,
+    path: EXAMINATION_SMARTEXAM_CHECK.link,
+    component: ExaminationSmartExamCheck,
     meta: {
       breadcrumb: [
-        { name: '测试管理' },
-        { name: '智能测试' },
-        { name: '学员测试' },
-      ],
-    },
-  },
-  {
-    path: '/examination/smartexam/:stuid/collation/:textid',
-    component: ExamCollation,
-    meta: {
-      breadcrumb: [
-        { name: '测试管理' },
-        { name: '智能测试' },
-        { name: '学员测试' },
-        { name: '试卷批阅' },
+        EXAMINATION,
+        EXAMINATION_SMARTEXAM,
+        EXAMINATION_SMARTEXAM_CHECK,
       ],
     },
   },
