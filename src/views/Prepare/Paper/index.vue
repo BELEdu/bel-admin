@@ -191,10 +191,9 @@ export default {
     /* --- initialization --- */
 
     getPrecondition(subjectId) {
-      /* eslint-disable prefer-template */
-      const url = '/paper_center/index_before'
-        + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
-      /* eslint-enable */
+      const host = '/paper_center/index_before'
+      const url = subjectId
+        ? `${host}?grade_range_subject_id=${subjectId}` : host
 
       this.$http.get(url)
         .then(({
@@ -230,8 +229,8 @@ export default {
       this.$router.push('/prepare/papercenter/smartpaper')
     },
 
-    v_toUpdate() {
-      //
+    v_toUpdate({ id }) {
+      this.$router.push(`/prepare/papercenter/edit/${id}`)
     },
 
     v_toCheck({ id }) {

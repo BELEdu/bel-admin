@@ -13,7 +13,7 @@ import PaperCompositionQuestion from './PaperCompositionQuestion'
 import QuestionAnalysisDialog from './QuestionAnalysisDialog'
 
 export default {
-  name: 'PaperCompositionAssistance',
+  name: 'PaperComposition',
 
   components: {
     PaperCompositionPanel,
@@ -23,7 +23,7 @@ export default {
 
   props: {
     // 服务端返回的列表数据
-    data: {
+    buffer: {
       type: Object,
       required: true,
     },
@@ -103,12 +103,12 @@ export default {
 
     vm_batchInsertQuestions() {
       this.vm_batchRemoveQuestions()
-      this.data.data
+      this.buffer.data
         .forEach(topic => this.vm_insertQuestion(topic))
     },
 
     vm_batchRemoveQuestions() {
-      this.data.data
+      this.buffer.data
         .forEach(topic => this.vm_removeQuestion(topic))
     },
   },
@@ -118,11 +118,11 @@ export default {
 <template>
   <div class="paper-composition">
     <div class="paper-composition-assistance"
-      v-if="data && data.data"
+      v-if="buffer && buffer.data"
     >
       <Button
-        v-if="data.data.length
-          && data.data.every(question => v_questionSelected(question))
+        v-if="buffer.data.length
+          && buffer.data.every(question => v_questionSelected(question))
         "
         type="text"
         @click="vm_batchRemoveQuestions"
@@ -137,27 +137,30 @@ export default {
         本页全部加入
       </Button>
       <span>
-        总共<em>{{data.data.length}}</em>题
+        总共<em>{{buffer.data.length}}</em>题
       </span>
       <Page
         class="app-page-small"
-        :total="data.total"
-        :page-size="data.per_page"
-        :current="data.current_page"
+        :total="buffer.total"
+        :page-size="buffer.per_page"
+        :current="buffer.current_page"
         placement="top"
         @on-change="v_changePage"
       ></Page>
     </div>
 
-    <PaperCompositionQuestion
-      v-for="(question, qIndex) in data.data"
-      :key="question.id"
-      :data="question"
-      :selected="v_questionSelected(question)"
-      @on-insert="vm_insertQuestion"
-      @on-remove="vm_removeQuestion"
-      @on-analyse="vm_onAnalysis"
-    />
+    <template v-if="buffer.data.length > 0">
+      <PaperCompositionQuestion
+        v-for="(question, qIndex) in buffer.data"
+        :data-key="question.number"
+        :key="question.number"
+        :data="question"
+        :selected="v_questionSelected(question)"
+        @on-insert="vm_insertQuestion"
+        @on-remove="vm_removeQuestion"
+        @on-analyse="vm_onAnalysis"
+      />
+    </template>
 
     <QuestionAnalysisDialog
       :visible.sync="analysisDialog.active"

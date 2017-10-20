@@ -28,7 +28,7 @@
 
       <!-- 下部：组卷 -->
       <PaperComposition
-        :data="buffer"
+        :buffer="buffer"
         :paper.sync="paper"
         @on-preview="vm_onPaperPreview"
       />
@@ -62,7 +62,7 @@ import {
 } from '@/views/components'
 
 export default {
-  name: 'question-paper-composition',
+  name: 'PrepareQuestion',
 
   mixins: [list],
 
@@ -91,7 +91,7 @@ export default {
     advanceConditions: null,
 
     // server: 题目数据
-    buffer: {},
+    buffer: { data: [] },
 
     // 组卷试题数据
     paper: {
@@ -135,15 +135,73 @@ export default {
   },
 
   created() {
-    const currentSubject = this.$route.query['equal[grade_range_subject_id]']
-    this.v_getPrecondition(currentSubject)
+    const { action } = this.$route.meta
+
+    return action === 'post'
+      ? this.initCreation()
+      : this.initUpdation()
   },
 
   methods: {
     /* --- Initialization --- */
+    initCreation() {
+      const currentSubject = this.$route.query['equal[grade_range_subject_id]']
+      this.v_getPrecondition(currentSubject)
+    },
+
+    initUpdation() {
+      this.fetchUpdationInfo()
+        .then(res => this.m_dealUpdationInfo(res))
+        .catch(() => {
+          this.$Notice.error({
+            title: '无法访问数据，请稍后再试',
+            duration: 0,
+          })
+        })
+    },
+
+    fetchUpdationInfo() {
+      return this.$http.get(this.$route.meta.putUri)
+    },
+
+    m_dealUpdationInfo(paper) {
+      this.resetUrlSubject(paper.grade_range_subject_id)
+
+      this.v_getPrecondition(paper.grade_range_subject_id)
+        .then(() => {
+          this.paper = this.paperUpdation(paper)
+          this.vm_onPaperPreview()
+        })
+    },
+
+    resetUrlSubject(subjectId) {
+      const query = {
+        'equal[grade_range_subject_id]': subjectId,
+      }
+
+      this.$router.push({ query })
+    },
+
+    paperUpdation(paper) {
+      const question_types = this.sectionsUpdation(paper.question_types)
+
+      return { ...this.paper, ...paper, question_types }
+    },
+
+    sectionsUpdation(sections) {
+      return this.paper.question_types
+        .map((type) => {
+          const target = type.question_type_id
+
+          const section = sections
+            .find(({ question_type_id }) => question_type_id === target)
+
+          return section || type
+        })
+    },
 
     v_getPrecondition(subjectId) {
-      // this.$route.meta.beforeUri
+      // route配置：this.$route.meta.beforeUri
       const host = '/question_center/index_before'
 
       const url = subjectId
@@ -196,9 +254,13 @@ export default {
     },
 
     getData(queryUrl) {
+      // route配置：this.$route.meta.getUrl
+      const host = '/question_center'
+
       const url = queryUrl
-        ? `/question/for_paper${queryUrl}&per_page=20`
-        : '/question/for_paper?perpage=20'
+        ? `${host}${queryUrl}&per_page=20`
+        : `${host}?per_page=20`
+
       return this.$http.get(url)
         .then((res) => { this.buffer = res })
     },
@@ -244,7 +306,9 @@ export default {
     vm_createPaper(paper) {
       this.previewModal.loading = true
 
-      this.$http.post('/paper_center', paper)
+      const { action, putUri } = this.$route.meta
+
+      this.$http[action](putUri, paper)
         .then(() => this.v_cancel())
         .catch(() => {
           this.$Notice.error({

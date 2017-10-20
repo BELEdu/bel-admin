@@ -72,14 +72,21 @@ export default [
   {
     path: '/prepare/papercenter/edit/:id',
     name: 'PreparePaperEdition',
-    // 使用个性题库组件
-    component: views.PreparePaper,
+    // 直接复用试题中心
+    component: views.Question,
     meta: {
+      action: 'patch',
+      putUri: '钩子中生成',
       breadcrumb: [
         { name: '备课管理' },
         PREPARE_PAPER,
         { name: '编辑试卷' },
       ],
+    },
+    beforeEnter(to, from, next) {
+      // eslint-disable-next-line
+      to.meta.putUri = `/paper_center/${to.params.id}`
+      next()
     },
   },
 
@@ -99,20 +106,6 @@ export default [
     },
   },
 
-  /* 智能组卷 */
-
-  {
-    path: '/prepare/smartquestion',
-    name: 'PrepareSmartquestion',
-    component: views.Smartquestion,
-    meta: {
-      breadcrumb: [
-        { name: '备课管理' },
-        { name: '个性题库' },
-      ],
-    },
-  },
-
   /* 试题中心 */
 
   // 试题组卷
@@ -121,6 +114,8 @@ export default [
     name: 'PrepareQuestion',
     component: views.Question,
     meta: {
+      action: 'post',
+      putUri: '/paper_center',
       breadcrumb: [
         { name: '备课管理' },
         { name: '题库列表' },
@@ -128,7 +123,7 @@ export default [
     },
   },
 
-  // 题库列表 试卷预览
+  // abolish 题库列表 试卷预览
   {
     path: '/prepare/question/paperpreview',
     name: 'PrepareQuestionPaperpreview',
@@ -138,6 +133,20 @@ export default [
         { name: '备课管理' },
         { name: '题库列表' },
         { name: '试卷预览' },
+      ],
+    },
+  },
+
+  /* abolish 智能组卷 */
+
+  {
+    path: '/prepare/smartquestion',
+    name: 'PrepareSmartquestion',
+    component: views.Smartquestion,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '个性题库' },
       ],
     },
   },
