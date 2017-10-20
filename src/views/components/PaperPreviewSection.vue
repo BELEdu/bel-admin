@@ -44,6 +44,8 @@ export default {
   },
 
   methods: {
+    /* --- Business --- */
+
     vm_sortQuestion(qIndex, sortType) {
       const list = this.data.questions
       if (sortType === 'up') {

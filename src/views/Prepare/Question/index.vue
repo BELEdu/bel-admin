@@ -200,19 +200,7 @@ export default {
         ? `/question/for_paper${queryUrl}&per_page=20`
         : '/question/for_paper?perpage=20'
       return this.$http.get(url)
-        .then((res) => {
-          this.buffer = this.initQuestions(res)
-        })
-    },
-
-    // 设置 score 字段，重置 id 字段为 question_id
-    initQuestions(buffer) {
-      const data = buffer.data.map(question => ({
-        ...question,
-        question_id: question.id,
-        score: 0,
-      }))
-      return { ...buffer, ...{ data } }
+        .then((res) => { this.buffer = res })
     },
 
     v_singleSelect(key, id) {

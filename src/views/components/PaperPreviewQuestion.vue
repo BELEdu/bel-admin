@@ -31,7 +31,21 @@ export default {
     },
   },
 
+  created() {
+    this.m_initQuestion()
+  },
+
   methods: {
+    /* --- Initialization --- */
+
+    // 设置 score 字段，重置 id 字段为 question_id
+    m_initQuestion() {
+      this.$set(this.data, 'question_id', this.data.id)
+      this.$set(this.data, 'score', this.data.score || 0)
+    },
+
+    /* --- Business --- */
+
     v_changeScore(score) {
       this.$emit('input', score)
     },
