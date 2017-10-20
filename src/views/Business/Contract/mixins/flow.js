@@ -6,6 +6,7 @@
  */
 
 import { Http } from '@/utils'
+import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
 
@@ -24,16 +25,27 @@ export default {
 
     // 请求flowInfo
     reqFlowInfo(flow_id) {
+      this.$store.commit(GLOBAL.LOADING.SHOW)
+
       // 更新flowInfo，主要是合同模板和角色信息
       const baseUrl = '/contract/create'
       const queryFlow = flow_id ? `?flow_id=${flow_id}` : ''
 
       return Http.get(`${baseUrl}${queryFlow}`)
         .then((res) => {
-          // this.flowInfo = this.decodeFlowList(res)
+        // this.flowInfo = this.decodeFlowList(res)
           this.flowInfo = res
           if (this.isDealAuthority) this.dealRoleKey()
           this.isDealAuthority = true
+
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+        .catch((error) => {
+          this.$Notice.error({
+            title: '请求审批角色信息出错',
+            desc: error.message,
+            duration: 0,
+          })
         })
     },
 
