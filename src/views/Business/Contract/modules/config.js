@@ -23,14 +23,16 @@ export const searchConfig = () => ({
   // 关键字检索范围
   likeKeys: [
     { label: '学员名字', value: 'student_name' },
-    { label: '审批编号', value: 'approval_number' },
+    { label: '审批编号', value: 'contract_number' },
     { label: '合同名称', value: 'display_name' },
     { label: '申请人', value: 'username' },
   ],
+
   // 选择关键字
   likeKey: 'student_name',
+
   query: {
-    'between[apply_time]': [],
+    'between[apply_date]': [],
   },
 })
 
