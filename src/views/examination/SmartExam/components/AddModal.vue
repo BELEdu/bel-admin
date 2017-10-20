@@ -8,133 +8,159 @@
       width="950"
     >
       <!-- 头部信息展示 -->
-      <div class="text-center">
+      <div class="text-center" >
         <p>
           <strong>{{step}}</strong> Of <strong>{{stepLength}}</strong>
         </p>
       </div>
 
-      <div class="smartexam-add-modal__form">
-        <!-- 表单 -->
-        <Form
-          v-show="step===1"
-          ref="form"
-          :model="form"
-          :rules="rules"
-          :label-width="80"
-        >
-          <app-form-alert :errors="formErrors"></app-form-alert>
+      <!-- 表单 -->
+      <Form
+        ref="form"
+        v-if="value"
+        :model="form"
+        :rules="rules"
+        :label-width="80"
+      >
+        <app-form-alert
+          class="smartexam-add-modal__alert"
+          :errors="formErrors"
+          fullWidth
+        ></app-form-alert>
+
+        <!-- 第一步信息填写 -->
+        <div v-show="step===1" class="smartexam-add-modal__form">
 
           <Form-item label="测试类型">
             <RadioGroup
-              v-model="form.exam_type"
+              v-model="form.test_type"
               type="button"
               @on-change="changeExamType"
             >
-              <Radio :label="0">日常测试</Radio>
-              <Radio :label="1">课后练习</Radio>
+              <Radio :label="1">日常测试</Radio>
+              <Radio :label="4">课后练习</Radio>
             </RadioGroup>
           </Form-item>
 
           <Form-item
             label="测试对象"
-            prop="id"
+            prop="model_id"
             v-if="value"
           >
             <Select
-              placeholder="请选择测试对象..."
-              v-model="form.id"
+              placeholder="请输入关键字检索测试对象..."
+              v-model="form.model_id"
               filterable
+              remote
+              :remote-method="remoteMethodClasses"
+              :loading="loading.classes"
             >
               <Option
-                v-for="item in classData"
-                :value="item.value"
-                :key="item.value"
-              >{{ item.display_name }}</Option>
+                v-for="item in classesData"
+                :value="item.id"
+                :key="item.id"
+              >{{ item.classes_name }}</Option>
             </Select>
           </Form-item>
 
-          <Form-item label="课序" prop="order">
+          <Form-item label="课序" prop="course_id">
             <Select
               placeholder="请选择课序..."
-              v-model="form.order"
+              v-model="form.course_id"
             >
               <Option
-                v-for="item in orderData"
-                :value="item.value"
-                :key="item.value"
-              >{{ item.display_name }}</Option>
+                v-for="item in courseInfo"
+                :value="item.id"
+                :key="item.id"
+              >第{{ item.sort_value }}节课</Option>
             </Select>
           </Form-item>
 
-          <Form-item label="考试时长" prop="duraction">
+          <Form-item label="考试时长" prop="duration">
             <InputNumber
               :step="5"
               :min="0"
-              v-model="form.duraction"
+              v-model="form.duration"
             ></InputNumber>
             &nbsp;&nbsp;分钟
           </Form-item>
 
           <Form-item label="答题方式">
             <RadioGroup v-model="form.answer_type" type="button">
-              <Radio :label="0" :disabled="isPractice">线上答题</Radio>
-              <Radio :label="1" :disabled="isPractice">线下答题</Radio>
+              <Radio :label="1" :disabled="isPractice">线上答题</Radio>
+              <Radio :label="2" :disabled="isPractice">线下答题</Radio>
             </RadioGroup>
           </Form-item>
 
           <Form-item label="试卷来源">
-            <RadioGroup v-model="form.paper_from" type="button">
-              <Radio :label="0" :disabled="isPractice">智能组卷</Radio>
-              <Radio :label="1" :disabled="isPractice">选择试卷</Radio>
+            <RadioGroup v-model="form.paper_source" type="button">
+              <Radio :label="1" :disabled="isPractice">智能组卷</Radio>
+              <Radio :label="2" :disabled="isPractice">选择试卷</Radio>
             </RadioGroup>
           </Form-item>
 
           <Form-item
             label="选择试卷"
-            prop="peper_select"
-            v-show="form.paper_from === 1"
+            prop="paper_id"
+            v-show="!isSmartPaper"
             required
           >
             <Select
-              placeholder="请选择试卷..."
-              v-model="form.peper_select"
+              placeholder="请输入关键字检索试卷..."
+              v-model="form.paper_id"
               filterable
+              remote
+              :remote-method="remoteMethodPaper"
+              :loading="loading.paper"
             >
               <Option
                 v-for="item in paperData"
-                :value="item.value"
-                :key="item.value"
+                :value="item.id"
+                :key="item.id"
               >{{ item.display_name }}</Option>
             </Select>
           </Form-item>
 
           <Form-item
             label="题型题量"
-            v-show="form.paper_from === 0"
-            prop="question_type"
+            v-show="isSmartPaper && form.param.length>0"
+            prop="param"
           >
             <Row>
               <Col span="8"
                 class="smartexam-add-modal__questionType"
-                v-for="(item,index) in form.question_type"
+                v-for="(item,index) in form.param"
                 :key="index"
               >
-                <span>{{form.question_type[index].name}}</span>
+                <span>{{form.param[index].display_name}}</span>
                 <InputNumber
                   :min="0"
-                  v-model="form.question_type[index].amount"
+                  v-model="form.param[index].value"
                 ></InputNumber>
               </Col>
             </Row>
           </Form-item>
-        </Form>
 
-      </div>
+        </div>
+      </Form>
 
-
-      <!-- 试卷展示 -->
+      <!-- 第二步试卷展示 -->
       <div v-if="step===2">
+        <div v-for="( student , index ) in form.question_info" :key="index">
+          <div>
+          姓名：{{student.display_name}}<br>
+          学员id: {{student.student_id}}
+            <paper-preview-section
+              v-for="( section , sindex ) in student.question_types"
+              v-if="section.questions.length>0"
+              :key="sindex"
+              :data="section"
+              :s-index="sindex+1"
+              :v-index="v_figureViewIndex(sindex, student.question_types)"
+            ></paper-preview-section>
+          </div>
+
+        </div>
         题目展示组件
       </div>
 
@@ -181,11 +207,16 @@
  * @version 2017-10-18
  */
 import { form } from '@/mixins'
+import { PaperPreviewSection } from '@/views/components'
 
 export default {
   name: 'app-examination-smartexam-add-modal',
 
   mixins: [form],
+
+  components: {
+    PaperPreviewSection,
+  },
 
   props: {
     value: {
@@ -200,119 +231,146 @@ export default {
       stepLength: 2,
 
       form: {
-        exam_type: 0, // 测试类型
-        id: null, // 测试对象（班级）
-        order: null, // 课序
-        duraction: 0, // 考试时长
-        answer_type: 0, // 答题方式
-        paper_from: 0, // 试卷来源
-        peper_select: null, // 选择试卷
-        question_type: [
-          {
-            id: 1,
-            name: '选择题',
-            amount: 0,
-          },
-          {
-            id: 2,
-            name: '判断题',
-            amount: 0,
-          },
-          {
-            id: 3,
-            name: '填空题',
-            amount: 0,
-          },
-          {
-            id: 4,
-            name: '计算题',
-            amount: 0,
-          },
-          {
-            id: 5,
-            name: '解答题',
-            amount: 0,
-          },
-        ],
+        model_type: 'classes', // 不知道干嘛的，固定写这个
+        test_type: 1, // 测试类型 1：日常测试 4：课后练习
+        model_id: null, // 测试对象（班级）
+        course_sort: null, // 课序
+        course_id: null, // 该课序的id
+        duration: 0, // 考试时长
+        answer_type: 1, // 答题方式 1：线上 2：线下
+        paper_source: 1, // 试卷来源 1：智能组卷 2：选择试卷
+        paper_id: null, // 选择试卷
+        question_info: [], // 试题信息
+        param: [], // 题型题量
       },
 
       rules: {
-        id: [
+        model_id: [
           this.$rules.required('测试对象', 'number', 'change'),
         ],
-        order: [
+        course_id: [
           this.$rules.required('课序', 'number', 'change'),
         ],
-        duraction: [
-          { validator: this.duractionCheck, trigger: 'change' },
+        duration: [
+          { validator: this.durationCheck, trigger: 'change' },
         ],
-        peper_select: [
+        paper_id: [
           { validator: this.peperSelectCheck, trigger: 'change' },
         ],
-        question_type: [
+        param: [
           { validator: this.questionTypeCheck, trigger: 'change' },
         ],
       },
 
-      // 测试对象假数据源
-      classData: [
-        {
-          display_name: '初一数学加强尖子一对一班 000001',
-          value: 1,
-        },
-        {
-          display_name: '初三物理衔接基础班一对多  000002',
-          value: 2,
-        },
-        {
-          display_name: '初二化学同步基础班一对多  000003',
-          value: 3,
-        },
-      ],
+      loading: {
+        classes: false,
+        paper: false,
+      },
 
-      // 测试对象假数据源
-      orderData: [
-        {
-          display_name: '第1节课',
-          value: 1,
-        },
-        {
-          display_name: '第2节课',
-          value: 2,
-        },
-        {
-          display_name: '第3节课',
-          value: 3,
-        },
-      ],
+      // 测试对象数据源
+      classesData: [],
 
-      // 测试对象假数据源
-      paperData: [
-        {
-          display_name: '2017初三上学期市质检',
-          value: 1,
-        },
-        {
-          display_name: '2017年3月全市模拟考',
-          value: 2,
-        },
-        {
-          display_name: '2016中考真题',
-          value: 3,
-        },
-      ],
+      // 选择试卷数据源
+      paperData: [],
+
+      // 课序假数据源
+      courseInfo: [],
     }
   },
 
   computed: {
-    isPractice() { // 是否是课堂练习
-      return this.form.exam_type === 1
+    isPractice() { // 是否是课后练习
+      return this.form.test_type === 4
+    },
+
+    currentSubjectType() { // 当前选中班级的学科id
+      if (this.form.model_id) {
+        return this.classesData.find(item => item.id === this.form.model_id).subject_type
+      }
+      return null
+    },
+
+    isSmartPaper() { // 试卷来源是否为智能组卷
+      return this.form.paper_source === 1
+    },
+  },
+
+  watch: {
+    // 每当测试对象变化时重新获取题型题量和课序
+    'form.model_id': function formModelId(val) {
+      if (val) {
+        this.form.course_id = null
+        this.form.course_sort = null
+
+        this.$http.get(`/test/classes_info/${val}`)
+          .then((res) => {
+            this.courseInfo = res.courseInfo
+            this.form.param = res.questionInfo.map(({ id, display_name }) => ({
+              id,
+              display_name,
+              value: 0,
+            }))
+          })
+      }
+    },
+
+    // 每当课序改变时，从课时数据源中查出这个课序的id
+    'form.course_id': function formCourseSort(val) {
+      if (val) {
+        this.form.course_sort = this.courseInfo.find(item => item.id === val).sort_value
+      }
     },
   },
 
   methods: {
-    // 考试时长校验
-    duractionCheck(rule, value, callback) {
+    // 处理题型模板中的index
+    v_figureViewIndex(sIndex, data) {
+      return data.reduce((
+        acc,
+        section,
+        index,
+      ) => {
+        if (section.questions.length && sIndex > index) {
+          return acc + 1
+        }
+        return acc
+      }, 1)
+    },
+
+    // 测试对象select远程搜索（自动补全）
+    remoteMethodClasses(query) {
+      if (query !== '') {
+        this.loading.classes = true
+        this.$http.get(`/test/classes_autocomplete?classes_name=${query}`)
+          .then((res) => {
+            this.classesData = res
+            this.loading.classes = false
+          })
+      } else {
+        this.classesData = []
+      }
+    },
+
+    // 试卷select远程搜索（自动补全）
+    remoteMethodPaper(query) {
+      if (query !== '') {
+        if (this.currentSubjectType) {
+          this.loading.paper = true
+          this.$http.get(`/test/paper_autocomplete?subject_type=${this.currentSubjectType}&display_name=${query}`)
+            .then((res) => {
+              this.paperData = res
+              this.loading.paper = false
+            })
+        } else {
+          this.$Message.warning('请先选择测试对象')
+        }
+      } else {
+        this.paperData = []
+      }
+    },
+
+    // 考试时长表单自定义校验
+    durationCheck(rule, value, callback) {
       if (value < 1) {
         callback(new Error('请设置考试时长'))
       } else {
@@ -320,10 +378,10 @@ export default {
       }
     },
 
-    // 题型题量校验
+    // 题型题量表单自定义校验
     questionTypeCheck(rule, value, callback) {
-      if (this.form.paper_from === 0) {
-        if (value.some(item => item.amount !== 0)) {
+      if (this.form.paper_source === 1) {
+        if (value.some(item => item.value !== 0)) {
           callback()
         }
         callback(new Error('请至少分配一种题型题量'))
@@ -332,9 +390,9 @@ export default {
       }
     },
 
-    // 选择试卷校验
+    // 选择试卷表单自定义校验
     peperSelectCheck(rule, value, callback) {
-      if (this.form.paper_from === 1) {
+      if (this.form.paper_source === 2) {
         if (value) {
           callback()
         } else {
@@ -347,16 +405,32 @@ export default {
 
     // 选择课后练习时，当前答题方式固定为线下、试卷来源固定为智能组卷
     changeExamType(item) {
-      if (item === 1) {
-        this.form.answer_type = 1
-        this.form.paper_from = 0
+      if (item === 4) {
+        this.form.answer_type = 2
+        this.form.paper_source = 1
       }
     },
 
+    // 提交
     submit() {
-      this.$Message.success('提交！')
+      if (this.step === 1) {
+        this.getQuestionInfo()
+      } else {
+        this.$http.post('/test', this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
     },
 
+    // 提交成功回调
+    successHandler() {
+      this.$Message.success('测试添加成功')
+      this.formLoading = false
+      this.closeModal()
+      this.$emit('update')
+    },
+
+    // 重置表单
     handleReset() {
       this.$refs.form.resetFields()
       this.formErrors = {}
@@ -364,6 +438,7 @@ export default {
       this.step = 1
     },
 
+    // 关闭模态框
     closeModal() {
       this.$emit('closeAddModal')
       this.handleReset()
@@ -372,14 +447,7 @@ export default {
     // 下一步
     nextStep() {
       if (this.step === 1) {
-        // 在这里用算法获取试题数据
-        // this.questionList = qdata
-        // 先校验
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.step = this.step + 1
-          }
-        })
+        this.beforeSubmit()
       } else {
         this.step = this.step + 1
       }
@@ -389,12 +457,28 @@ export default {
     lastStep() {
       this.step = this.step - 1
     },
+
+    // 根据第一步的参数获取试题数据
+    getQuestionInfo() {
+      return this.$http.post('/test/next', this.form)
+        .then((res) => {
+          this.formLoading = false
+          this.form.question_info = res.question_info
+          this.step = this.step + 1
+        })
+        .catch(this.errorHandler)
+    },
   },
 }
 </script>
 
 <style lang="less">
 .smartexam-add-modal{
+
+  &__alert{
+    margin-top: 15px;
+  }
+
   &__form{
     margin: auto;
     width: 500px;
