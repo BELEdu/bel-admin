@@ -35,8 +35,7 @@ export default {
   },
 
   methods: {
-    v_closeDialog(value) {
-      if (value) return
+    v_closeDialog() {
       this.$emit('update:visible', false)
     },
 
@@ -51,7 +50,7 @@ export default {
 <template>
   <Modal
     :value="visible"
-    @input="v_closeDialog"
+    @on-cancel="v_closeDialog"
     title="试卷预览"
     :styles="{ top: '50px', width: '950px' }"
   >
