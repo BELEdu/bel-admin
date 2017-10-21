@@ -21,8 +21,8 @@ const STUDENT_SCHEDULE_MANAGE = {
     { name: '日课表', value: 'day' },
   ],
 }
-const STUDENT_SCHEDULE_MANAGE_WEEK = { routeName: 'StudentScheduleManageWeek', name: '周课表', link: '/student/schedule/manage/week/:id' }
-const STUDENT_SCHEDULE_MANAGE_DAY = { routeName: 'StudentScheduleManageDay', name: '周课表', link: '/student/schedule/manage/day/:id' }
+const STUDENT_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/schedule/manage/weekly/:id' }
+const STUDENT_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '周课表', link: '/student/schedule/manage/daily/:id' }
 
 export default [
 
@@ -388,7 +388,7 @@ export default [
     path: STUDENT_SCHEDULE_MANAGE.link,
     name: STUDENT_SCHEDULE_MANAGE.routeName,
     component: views[STUDENT_SCHEDULE_MANAGE.routeName],
-    redirect: STUDENT_SCHEDULE_MANAGE_WEEK.link,
+    redirect: STUDENT_SCHEDULE_MANAGE_WEEKLY.link,
     meta: {
       breadcrumb: [
         STUDENT,
@@ -398,28 +398,28 @@ export default [
     },
     children: [
       {
-        path: STUDENT_SCHEDULE_MANAGE_WEEK.link,
-        name: STUDENT_SCHEDULE_MANAGE_WEEK.routeName,
-        component: views[STUDENT_SCHEDULE_MANAGE_WEEK.routeName],
+        path: STUDENT_SCHEDULE_MANAGE_WEEKLY.link,
+        name: STUDENT_SCHEDULE_MANAGE_WEEKLY.routeName,
+        component: views[STUDENT_SCHEDULE_MANAGE_WEEKLY.routeName],
         meta: {
           tabName: STUDENT_SCHEDULE_MANAGE.tabName,
           breadcrumb: [
             STUDENT,
             STUDENT_SCHEDULE,
-            STUDENT_SCHEDULE_MANAGE_WEEK,
+            STUDENT_SCHEDULE_MANAGE_WEEKLY,
           ],
         },
       },
       {
-        path: STUDENT_SCHEDULE_MANAGE_DAY.link,
-        name: STUDENT_SCHEDULE_MANAGE_DAY.routeName,
-        component: views[STUDENT_SCHEDULE_MANAGE_DAY.routeName],
+        path: STUDENT_SCHEDULE_MANAGE_DAILY.link,
+        name: STUDENT_SCHEDULE_MANAGE_DAILY.routeName,
+        component: views[STUDENT_SCHEDULE_MANAGE_DAILY.routeName],
         meta: {
           tabName: STUDENT_SCHEDULE_MANAGE.tabName,
           breadcrumb: [
             STUDENT,
             STUDENT_SCHEDULE,
-            STUDENT_SCHEDULE_MANAGE_DAY,
+            STUDENT_SCHEDULE_MANAGE_DAILY,
           ],
         },
       },

@@ -11,16 +11,21 @@
 
 <script>
   /**
-   * 切换标签 - 公用
+   * 排课管理 - 切换标签 - 公用
    * @author  chenliangshan
    * @version 2017-10-19
    */
 
+  import { list } from '@/mixins'
+
   export default {
     name: 'student-schedule-manage',
+
+    mixins: [list],
+
     data() {
       return {
-        currentType: [],
+
       }
     },
     computed: {
@@ -37,6 +42,7 @@
       tabSwitch(name) {
         return this.updateRoute(name)
       },
+
       // 更新路由
       updateRoute(name) {
         const pathArry = this.$route.path.split('/')
