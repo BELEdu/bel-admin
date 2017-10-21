@@ -17,8 +17,8 @@ const STUDENT_SCHEDULE_MANAGE = {
   name: '排课管理',
   link: '/student/schedule/manage/:id',
   tabName: [
-    { name: '周课表', value: 'week' },
-    { name: '日课表', value: 'day' },
+    { name: '周课表', value: 'weekly' },
+    { name: '日课表', value: 'daily' },
   ],
 }
 const STUDENT_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/schedule/manage/weekly/:id' }
