@@ -7,6 +7,7 @@
 
 // 试卷原始数据，在外面准备
 // paper: {
+//   grade_range_subject_id: null,
 //   places: [[]],
 //   grade: null,
 //   subject_type: null,
@@ -33,6 +34,7 @@ export default {
       type: Object,
       required: true,
     },
+
     // 是否放在模态框中
     inModal: {
       type: Boolean,
@@ -46,12 +48,10 @@ export default {
         acc,
         section,
         index,
-      ) => {
-        if (section.questions.length && sIndex > index) {
-          return acc + 1
-        }
-        return acc
-      }, 1)
+      ) => (
+        section.questions.length && index < sIndex
+          ? acc + 1 : acc
+      ), 1)
     },
 
     /**
