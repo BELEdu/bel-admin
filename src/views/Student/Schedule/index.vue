@@ -19,7 +19,7 @@
       </Col>
     </Row>
 
-    <!--班级管理表格-->
+    <!--教师课表-->
     <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
     <!--分页-->

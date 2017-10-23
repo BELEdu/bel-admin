@@ -22,7 +22,18 @@ const STUDENT_SCHEDULE_MANAGE = {
   ],
 }
 const STUDENT_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/schedule/manage/weekly/:id' }
-const STUDENT_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '周课表', link: '/student/schedule/manage/daily/:id' }
+const STUDENT_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '日课表', link: '/student/schedule/manage/daily/:id' }
+const STUDENT_MY_SCHEDULE_MANAGE = {
+  routeName: 'StudentScheduleManage',
+  name: '管理课表',
+  link: '/student/myschedule',
+  tabName: [
+    { name: '周课表', value: 'weekly' },
+    { name: '日课表', value: 'daily' },
+  ],
+}
+const STUDENT_MY_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/myschedule/manage/weekly' }
+const STUDENT_MY_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '日课表', link: '/student/myschedule/manage/daily' }
 
 export default [
 
@@ -426,4 +437,46 @@ export default [
     ],
   },
 
+  // 我的课表
+  {
+    path: STUDENT_MY_SCHEDULE_MANAGE.link,
+    name: STUDENT_MY_SCHEDULE_MANAGE.routeName,
+    component: views[STUDENT_MY_SCHEDULE_MANAGE.routeName],
+    redirect: STUDENT_MY_SCHEDULE_MANAGE_WEEKLY.link,
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_SCHEDULE,
+        STUDENT_MY_SCHEDULE_MANAGE,
+      ],
+    },
+    children: [
+      {
+        path: STUDENT_MY_SCHEDULE_MANAGE_WEEKLY.link,
+        name: STUDENT_MY_SCHEDULE_MANAGE_WEEKLY.routeName,
+        component: views[STUDENT_MY_SCHEDULE_MANAGE_WEEKLY.routeName],
+        meta: {
+          tabName: STUDENT_MY_SCHEDULE_MANAGE.tabName,
+          breadcrumb: [
+            STUDENT,
+            STUDENT_SCHEDULE,
+            STUDENT_MY_SCHEDULE_MANAGE_WEEKLY,
+          ],
+        },
+      },
+      {
+        path: STUDENT_MY_SCHEDULE_MANAGE_DAILY.link,
+        name: STUDENT_MY_SCHEDULE_MANAGE_DAILY.routeName,
+        component: views[STUDENT_MY_SCHEDULE_MANAGE_DAILY.routeName],
+        meta: {
+          tabName: STUDENT_MY_SCHEDULE_MANAGE.tabName,
+          breadcrumb: [
+            STUDENT,
+            STUDENT_SCHEDULE,
+            STUDENT_MY_SCHEDULE_MANAGE_DAILY,
+          ],
+        },
+      },
+    ],
+  },
 ]

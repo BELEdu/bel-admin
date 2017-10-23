@@ -18,9 +18,12 @@ export default {
       data: [],
     },
 
-    dayList: {
+    dailyList: {
       data: [],
     },
+
+    // 未完成课时数
+    tip: 0,
 
   },
 
@@ -34,7 +37,11 @@ export default {
     },
 
     [STUDENT.SCHEDULE.DAILY_LIST](state, list) {
-      state.dayList = { ...list }
+      state.dailyList = { ...list }
+    },
+
+    [STUDENT.SCHEDULE.GET_TIP](state, data) {
+      state.tip = data
     },
   },
 
@@ -60,6 +67,14 @@ export default {
       return Http.get(`/schedule/daily/${query}`)
         .then((result) => {
           commit(STUDENT.SCHEDULE.DAILY_LIST, result)
+        })
+    },
+
+    // 获取教师未完成课时数
+    [STUDENT.SCHEDULE.GET_TIP]({ commit }, query = '') {
+      return Http.get(`/schedule/tip/${query}`)
+        .then(({ ready_courses }) => {
+          commit(STUDENT.SCHEDULE.GET_TIP, ready_courses)
         })
     },
   },

@@ -16,7 +16,9 @@
    * @version 2017-10-19
    */
 
+  import { mapState } from 'vuex'
   import { list } from '@/mixins'
+  import { STUDENT } from '@/store/mutationTypes'
 
   export default {
     name: 'student-schedule-manage',
@@ -28,7 +30,12 @@
 
       }
     },
+
     computed: {
+      ...mapState({
+        uesrId: state => state.user.id,
+      }),
+
       tabActive() {
         const pathArry = this.$route.path.split('/')
         return pathArry[pathArry.length - this.currentId]
@@ -37,6 +44,15 @@
         return this.$route.params.id ? 2 : 1
       },
     },
+
+    watch: {
+      uesrId(val) {
+        if (!this.$route.params.id) {
+          this.getTip(val)
+        }
+      },
+    },
+
     methods: {
       // 标签切换事件
       tabSwitch(name) {
@@ -49,6 +65,23 @@
         pathArry[pathArry.length - this.currentId] = name
         this.$router.push(`${pathArry.join('/')}`)
       },
+
+      // 获取当前教师未完成课时数
+      getTip(id) {
+        const cId = id || this.userId
+        if (cId) {
+          this.$store.dispatch(STUDENT.SCHEDULE.GET_TIP, `${cId}`)
+        }
+      },
+    },
+
+    created() {
+      this.getTip(this.$route.params.id)
+    },
+
+    beforeRouteUpdate(to, from, next) {
+      this.getTip(to.params.id)
+      next()
     },
   }
 </script>

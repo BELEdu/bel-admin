@@ -17,10 +17,10 @@
       <Form-item>
         <Select v-model="query['equal[course_status]']">
           <Option value="">全部</Option>
-          <Option value="1">待确认</Option>
-          <Option value="2">待上课</Option>
-          <Option value="3">已上课</Option>
-          <Option value="4">已评价</Option>
+          <Option value="0">待确认</Option>
+          <Option value="1">待上课</Option>
+          <Option value="2">已上课</Option>
+          <Option value="3">已评价</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -31,6 +31,9 @@
       <Col :span="12">
         <h2><Icon type="ios-browsers"/> 教师课表</h2>
       </Col>
+      <Col :span="12" style="text-align: right">
+        待上课总数：{{ courseTip }}
+      </Col>
     </Row>
     <div class="manage-weekly__content">
       <Row>
@@ -40,9 +43,6 @@
           </Button>
         </Col>
         <Col :span="20">
-          <div class="manage-weekly__content-header">
-            <h3>待上课总数：11</h3>
-          </div>
           <Row>
             <Col :span="3" v-for="(item, index) in currentDaily" :key="item.random_id" class="weekly-item">
               <ul class="weekly-list">
@@ -81,8 +81,10 @@
    */
 
   import { mapState } from 'vuex'
-  import { list } from '@/mixins'
   import { STUDENT } from '@/store/mutationTypes'
+  import { list } from '@/mixins'
+  import { startOfWeek, endOfWeek } from 'date-fns'
+  import { formatDate } from '@/utils/date'
   import week from './mixins/week'
 
   export default {
@@ -94,7 +96,7 @@
       return {
         likeKeys: [
           { label: '班级名称', value: 'classes_name' },
-          { label: '排课专员', value: 'customer_relationships_name' },
+          { label: '排课专员', value: 'schedule_teacher_name' },
         ],
 
         likeKey: 'classes_name',
@@ -110,13 +112,33 @@
     computed: {
       ...mapState({
         weeklyList: state => state.student.schedule.weekList,
+        courseTip: state => state.student.schedule.tip,
+        userId: state => state.user.id,
       }),
+    },
+
+    watch: {
+      userId() {
+        if (!this.$route.params.id) {
+          this.getData(this.parse(this.$route.query), this.$route)
+        }
+      },
     },
 
     methods: {
       // 获取班级周课表数据
-      getData(qs) {
-        return this.$store.dispatch(STUDENT.SCHEDULE.WEEKLY_LIST, `${this.$route.params.id}${qs}`)
+      getData(qs, to) {
+        // 默认请求当天所属一周开始结束日期
+        const query = to.query['between[course_date]'] ? qs : this.parse({ ...to.query,
+          'between[course_date]': [
+            formatDate(startOfWeek(new Date(), { weekStartsOn: 1 })),
+            formatDate(endOfWeek(new Date(), { weekStartsOn: 1 })),
+          ] })
+        const cId = to.params.id || this.userId
+        if (cId) {
+          return this.$store.dispatch(STUDENT.SCHEDULE.WEEKLY_LIST, `${cId}${query}`)
+        }
+        return false
       },
     },
   }

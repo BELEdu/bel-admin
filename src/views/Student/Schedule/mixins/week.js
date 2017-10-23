@@ -7,7 +7,7 @@ export default {
       startDate: '',
       baseDate: new Date(),
       query: {
-        'between[created_at]': [],
+        'between[course_date]': [],
       },
     }
   },
@@ -38,7 +38,7 @@ export default {
     baseDate(val) {
       const date = val || new Date()
       this.startDate = formatDate(startOfWeek(date, { weekStartsOn: 1 }))
-      this.query['between[created_at]'] = [
+      this.query['between[course_date]'] = [
         this.startDate,
         endOfWeek(date, { weekStartsOn: 1 }),
       ]
@@ -71,10 +71,10 @@ export default {
   },
 
   created() {
-    const startDate = this.query['between[created_at]'][0]
+    const startDate = this.query['between[course_date]'][0]
+    this.startDate = formatDate(startOfWeek(startDate || new Date(), { weekStartsOn: 1 }))
     if (startDate) {
       this.baseDate = startDate
     }
-    this.startDate = formatDate(startOfWeek(startDate || new Date(), { weekStartsOn: 1 }))
   },
 }
