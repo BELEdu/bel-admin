@@ -3,14 +3,8 @@
  *
  * @author huojinzhao
  */
-import {
-  ExaminationSmartExam,
-  ExaminationSmartExamCheck,
-  SmartAnalyse,
-  StudentAnalyse,
-  ExaminationWrongQuestion,
-  ExaminationWrongQuestionDetail,
-} from '@/views'
+
+import * as views from '@/views'
 
 const EXAMINATION = { name: '测试管理' }
 
@@ -34,7 +28,7 @@ export default [
 
   {
     path: EXAMINATION_SMARTEXAM.link,
-    component: ExaminationSmartExam,
+    component: views.SmartExam,
     meta: {
       breadcrumb: [
         EXAMINATION,
@@ -43,8 +37,19 @@ export default [
     },
   },
   {
-    path: EXAMINATION_SMARTEXAM_CHECK.link,
-    component: ExaminationSmartExamCheck,
+    path: '/examination/smartexam/:id',
+    component: views.StudentExam,
+    meta: {
+      breadcrumb: [
+        { name: '测试管理' },
+        { name: '智能测试' },
+        { name: '学员测试' },
+      ],
+    },
+  },
+  {
+    path: '/examination/smartexam/:stuid/collation/:textid',
+    component: views.ExamCollation,
     meta: {
       breadcrumb: [
         EXAMINATION,
@@ -58,7 +63,7 @@ export default [
 
   {
     path: '/examination/smartanalyse',
-    component: SmartAnalyse,
+    component: views.SmartAnalyse,
     meta: {
       breadcrumb: [
         { name: '测试管理' },
@@ -68,7 +73,7 @@ export default [
   },
   {
     path: '/examination/smartanalyse/:id',
-    component: StudentAnalyse,
+    component: views.StudentAnalyse,
     meta: {
       breadcrumb: [
         { name: '测试管理' },
@@ -83,7 +88,7 @@ export default [
   // 列表页
   {
     path: EXAMINATION_WRONGQUESTION.link,
-    component: ExaminationWrongQuestion,
+    component: views.ExaminationWrongQuestion,
     meta: {
       uri: '/wrongquestion',
       breadcrumb: [
@@ -96,7 +101,7 @@ export default [
   // 学员错题详情
   {
     path: '/examination/wrongquestion/:id',
-    component: ExaminationWrongQuestionDetail,
+    component: views.ExaminationWrongQuestionDetail,
     meta: {
       breadcrumb: [
         { name: '测试管理' },

@@ -28,10 +28,16 @@
 
       <!-- 下部：组卷 -->
       <PaperComposition
+        v-bind="$attrs"
         :buffer="buffer"
         :paper.sync="paper"
         @on-preview="vm_onPaperPreview"
       />
+
+      <slot
+        name="improvement"
+        :data="buffer.data"
+      ></slot>
     </section>
 
     <!-- 试卷预览 -->
@@ -73,6 +79,8 @@ export default {
     PaperPreviewDialog,
     TreeSideSearch,
   },
+
+  inheritAttrs: false,
 
   data: () => ({
     // server: 学科选择数据
@@ -137,13 +145,14 @@ export default {
   created() {
     const { action } = this.$route.meta
 
-    return action === 'post'
-      ? this.initCreation()
-      : this.initUpdation()
+    return action === 'patch'
+      ? this.initUpdation()
+      : this.initCreation()
   },
 
   methods: {
     /* --- Initialization --- */
+
     initCreation() {
       const currentSubject = this.$route.query['equal[grade_range_subject_id]']
       this.v_getPrecondition(currentSubject)

@@ -134,12 +134,12 @@ export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detai
 export { default as PreparePaper } from './Prepare/Paper'
 export { default as PreparePaperSmartpaper } from './Prepare/Paper/Smartpaper'
 
-// 智能组卷
+// abolish 智能组卷
 export { default as Smartquestion } from './Prepare/Smartquestion'
 
 // 试题中心
-export { default as Question } from './Prepare/Question'
-export { default as PaperPreview } from './Prepare/Question/PaperPreview'
+export { default as PrepareQuestion } from './Prepare/Question'
+export { default as PreparePaperPreview } from './Prepare/Question/PaperPreview'
 
 // 404页面
 export { default as NotFound } from './NotFound'

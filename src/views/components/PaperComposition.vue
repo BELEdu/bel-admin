@@ -21,6 +21,8 @@ export default {
     QuestionAnalysisDialog,
   },
 
+  inheritAttrs: false,
+
   props: {
     // 服务端返回的列表数据
     buffer: {
@@ -152,8 +154,8 @@ export default {
     <template v-if="buffer.data.length > 0">
       <PaperCompositionQuestion
         v-for="(question, qIndex) in buffer.data"
-        :data-key="question.number"
         :key="question.number"
+        v-bind="$attrs"
         :data="question"
         :selected="v_questionSelected(question)"
         @on-insert="vm_insertQuestion"
@@ -168,6 +170,7 @@ export default {
     />
 
     <PaperCompositionPanel
+      v-if="$attrs.compositionType !== 'readOnly'"
       :data="paper"
       @on-preview="$emit('on-preview')"
     />

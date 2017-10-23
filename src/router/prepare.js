@@ -73,7 +73,7 @@ export default [
     path: '/prepare/papercenter/edit/:id',
     name: 'PreparePaperEdition',
     // 直接复用试题中心
-    component: views.Question,
+    component: views.PrepareQuestion,
     meta: {
       action: 'patch',
       putUri: '钩子中生成',
@@ -112,7 +112,7 @@ export default [
   {
     path: '/prepare/question',
     name: 'PrepareQuestion',
-    component: views.Question,
+    component: views.PrepareQuestion,
     meta: {
       action: 'post',
       putUri: '/paper_center',
@@ -127,7 +127,7 @@ export default [
   {
     path: '/prepare/question/paperpreview',
     name: 'PrepareQuestionPaperpreview',
-    component: views.PaperPreview,
+    component: views.PreparePaperPreview,
     meta: {
       breadcrumb: [
         { name: '备课管理' },
