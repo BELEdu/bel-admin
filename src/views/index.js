@@ -109,15 +109,20 @@ export { default as StudentScheduleManage } from './Student/Schedule/Manage'
 export { default as StudentScheduleManageWeekly } from './Student/Schedule/ManageWeekly'
 export { default as StudentScheduleManageDaily } from './Student/Schedule/ManageDaily'
 
-// 测试管理
+/* 测试管理 */
+
+// 智能测试
 export { default as ExaminationSmartExam } from './examination/SmartExam'
 export { default as ExaminationSmartExamCheck } from './examination/SmartExam/Check'
 export { default as ExaminationSmartExamReview } from './examination/SmartExam/Review'
 
+// abolish 智能分析
 export { default as SmartAnalyse } from './examination/SmartAnalyse'
 export { default as StudentAnalyse } from './examination/SmartAnalyse/StudentAnalyse'
-export { default as WrongQuestion } from './examination/WrongQuestion'
-export { default as StudentWrong } from './examination/WrongQuestion/StudentWrong'
+
+// 错题管理
+export { default as ExaminationWrongQuestion } from './examination/WrongQuestion'
+export { default as ExaminationWrongQuestionDetail } from './examination/WrongQuestion/Detail'
 
 /* 备课管理 */
 

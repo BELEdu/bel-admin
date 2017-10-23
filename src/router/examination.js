@@ -1,23 +1,37 @@
 /**
  * 测试管理路由模块
- * @author hjz
- * @version 2017-06-22
- * @description
+ *
+ * @author huojinzhao
  */
 import {
   ExaminationSmartExam,
   ExaminationSmartExamCheck,
   SmartAnalyse,
   StudentAnalyse,
-  WrongQuestion,
-  StudentWrong,
+  ExaminationWrongQuestion,
+  ExaminationWrongQuestionDetail,
 } from '@/views'
 
 const EXAMINATION = { name: '测试管理' }
-const EXAMINATION_SMARTEXAM = { name: '智能测试', link: '/examination/smartexam' }
-const EXAMINATION_SMARTEXAM_CHECK = { name: '阅卷', link: '/examination/smartexam/:id' }
+
+const EXAMINATION_SMARTEXAM = {
+  name: '智能测试',
+  link: '/examination/smartexam',
+}
+
+const EXAMINATION_SMARTEXAM_CHECK = {
+  name: '阅卷',
+  link: '/examination/smartexam/:id',
+}
+
+const EXAMINATION_WRONGQUESTION = {
+  name: '错题管理',
+  link: '/examination/wrongquestion',
+}
 
 export default [
+  /* 智能测试 */
+
   {
     path: EXAMINATION_SMARTEXAM.link,
     component: ExaminationSmartExam,
@@ -40,6 +54,8 @@ export default [
     },
   },
 
+  /* abolish 智能分析 */
+
   {
     path: '/examination/smartanalyse',
     component: SmartAnalyse,
@@ -61,23 +77,30 @@ export default [
       ],
     },
   },
+
+  /* 错题管理 */
+
+  // 列表页
   {
-    path: '/examination/wrongquestion',
-    component: WrongQuestion,
+    path: EXAMINATION_WRONGQUESTION.link,
+    component: ExaminationWrongQuestion,
     meta: {
+      uri: '/wrongquestion',
       breadcrumb: [
         { name: '测试管理' },
-        { name: '错题管理' },
+        EXAMINATION_WRONGQUESTION,
       ],
     },
   },
+
+  // 学员错题详情
   {
     path: '/examination/wrongquestion/:id',
-    component: StudentWrong,
+    component: ExaminationWrongQuestionDetail,
     meta: {
       breadcrumb: [
         { name: '测试管理' },
-        { name: '错题管理' },
+        EXAMINATION_WRONGQUESTION,
         { name: '错题库' },
       ],
     },
