@@ -108,6 +108,9 @@ export { default as StudentSchedule } from './Student/Schedule/'
 export { default as StudentScheduleManage } from './Student/Schedule/Manage'
 export { default as StudentScheduleManageWeekly } from './Student/Schedule/ManageWeekly'
 export { default as StudentScheduleManageDaily } from './Student/Schedule/ManageDaily'
+export { default as StudentMyScheduleManage } from './Student/Schedule/Manage'
+export { default as StudentMyScheduleManageWeekly } from './Student/Schedule/ManageWeekly'
+export { default as StudentMyScheduleManageDaily } from './Student/Schedule/ManageDaily'
 
 /* 测试管理 */
 

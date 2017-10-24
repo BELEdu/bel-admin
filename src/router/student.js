@@ -24,7 +24,7 @@ const STUDENT_SCHEDULE_MANAGE = {
 const STUDENT_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/schedule/manage/weekly/:id' }
 const STUDENT_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '日课表', link: '/student/schedule/manage/daily/:id' }
 const STUDENT_MY_SCHEDULE_MANAGE = {
-  routeName: 'StudentScheduleManage',
+  routeName: 'StudentMyScheduleManage',
   name: '管理课表',
   link: '/student/myschedule',
   tabName: [
@@ -32,8 +32,8 @@ const STUDENT_MY_SCHEDULE_MANAGE = {
     { name: '日课表', value: 'daily' },
   ],
 }
-const STUDENT_MY_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentScheduleManageWeekly', name: '周课表', link: '/student/myschedule/manage/weekly' }
-const STUDENT_MY_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentScheduleManageDaily', name: '日课表', link: '/student/myschedule/manage/daily' }
+const STUDENT_MY_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentMyScheduleManageWeekly', name: '周课表', link: '/student/myschedule/manage/weekly' }
+const STUDENT_MY_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentMyScheduleManageDaily', name: '日课表', link: '/student/myschedule/manage/daily' }
 
 export default [
 
