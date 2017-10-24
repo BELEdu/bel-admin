@@ -199,13 +199,15 @@
           <Button type="dashed" icon="plus-round" @click="addKnowledge">点击添加知识点</Button>
         </div>
 
-        <!-- 解析 -->
-        <!-- <FormItem label="解析：">
-          <Input type="textarea" :autosize="{minRows: 5,maxRows: 10}" placeholder="请输入章节解析..."></Input>
-        </FormItem> -->
-
       </Form>
       <!-- 表单END -->
+
+      <!-- 章节解析 -->
+      <app-editor
+        :height="180"
+        v-if="value"
+        v-model="analysis"
+      ></app-editor>
 
     </app-form-modal>
 
@@ -258,6 +260,8 @@ export default {
         modal: false,
       },
       knowledgeTree: [], // 知识点树
+
+      analysis: '',
     }
   },
 

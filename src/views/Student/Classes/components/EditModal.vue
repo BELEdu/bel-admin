@@ -11,6 +11,7 @@
       :model="form"
       :rules="rules"
       :label-width="80"
+      v-if="value"
     >
       <app-form-alert :errors="formErrors"></app-form-alert>
 

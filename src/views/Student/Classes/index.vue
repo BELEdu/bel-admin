@@ -157,7 +157,7 @@ export default {
         { title: '排课专员', key: 'customer_relationships_name', align: 'center', width: 110 },
         { title: '教师', key: 'teacher_item', align: 'center' },
         { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
-        { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 120, sortable: 'custom' },
+        { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 130, sortable: 'custom' },
         { title: '计划课时', key: 'course_total', align: 'center', width: 100, sortable: 'custom' },
         { title: '创建日期', key: 'created_at', align: 'center', width: 140, sortable: 'custom' },
         { title: '状态', key: 'classes_status_name', align: 'center', width: 100 },
