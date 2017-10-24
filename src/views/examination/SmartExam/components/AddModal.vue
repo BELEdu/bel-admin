@@ -146,10 +146,24 @@
 
       <!-- 第二步试卷展示 -->
       <div v-if="step===2">
+
+        <!-- 选择学员 -->
+        <Select v-model="currentStudent" filterable>
+          <Option
+            v-for="student in form.question_info"
+            :value="student.student_id"
+            :key="student.student_id"
+          >{{ student.display_name }}</Option>
+        </Select>
+
+        <!-- 全部学生的试卷 -->
         <div v-for="( student , index ) in form.question_info" :key="index">
-          <div>
-          姓名：{{student.display_name}}<br>
-          学员id: {{student.student_id}}
+
+          <!-- 学生个人试卷区域 -->
+          <div
+            class="smartexam-add-modal__paper-ection"
+            v-show="student.student_id === currentStudent"
+          >
             <paper-preview-section
               v-for="( section , sindex ) in student.question_types"
               v-if="section.questions.length>0"
@@ -161,7 +175,7 @@
           </div>
 
         </div>
-        题目展示组件
+
       </div>
 
       <!-- 自定义底部 -->
@@ -275,6 +289,8 @@ export default {
 
       // 课序假数据源
       courseInfo: [],
+
+      currentStudent: null,
     }
   },
 
@@ -464,6 +480,8 @@ export default {
         .then((res) => {
           this.formLoading = false
           this.form.question_info = res.question_info
+          // 筛选出第一项的学生的id
+          this.currentStudent = this.form.question_info[0].student_id
           this.step = this.step + 1
         })
         .catch(this.errorHandler)
@@ -473,13 +491,13 @@ export default {
 </script>
 
 <style lang="less">
-.smartexam-add-modal{
+.smartexam-add-modal {
 
-  &__alert{
+  &__alert {
     margin-top: 15px;
   }
 
-  &__form{
+  &__form {
     margin: auto;
     width: 500px;
     margin-top: 15px;
@@ -489,12 +507,16 @@ export default {
     width: 200px;
   }
 
-  &__questionType{
+  &__questionType {
     margin-bottom: 10px;
 
     &>span {
       margin-right: 10px;
     }
+  }
+
+  &__paper-ection {
+    margin-top: 15px;
   }
 }
 </style>
