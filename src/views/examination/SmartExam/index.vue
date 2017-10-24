@@ -132,9 +132,11 @@
       <div class="text-center">测试编号 <span class="color-primary">{{currentNumber}}</span>， 是否确定开始测试？</div>
     </app-warn-modal>
 
-    <!-- 选择设备弹窗 -->
+    <!-- 选择设备（开始测试）弹窗 -->
     <device-modal
       v-model="deviceModal.active"
+      :students="currentStudents"
+      :answer-type='currentAnswerType'
       :test-number="currentNumber"
       @closeDeviceModal="deviceModal.active = false"
       @update="fetchData"
@@ -203,9 +205,8 @@ export default {
           render: createButton([
             { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id, row.test_number) },
             { text: '查看试卷', type: 'primary', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
-            { text: '阅卷', type: 'warning', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
-            { text: '开始测试（线上）', type: 'success', click: row => this.openStartModal(row.id, 'online', row.test_number) },
-            { text: '开始测试（线下）', type: 'success', click: row => this.openStartModal(row.id, 'offline', row.test_number) },
+            { text: '阅卷', type: 'warning', click: row => this.$router.push(`/examination/smartexam/${row.id}/check`) },
+            { text: '开始测试', type: 'success', click: row => this.openStartModal(row.id, row.test_number, row.answer_type) },
           ]),
         },
       ],
@@ -227,6 +228,8 @@ export default {
 
       currentId: null, // 当前选中的测试id
       currentNumber: '', // 当前选中的测试编号
+      currentAnswerType: 1, // 当前测试的答题方式 1：线上 2：线下
+      currentStudents: [], // 参加该测试的学生信息
 
       // 删除弹窗
       deleteModal: {
@@ -257,7 +260,7 @@ export default {
       list: state => state.examination.smartexam.list,
       test_type: state => state.dicts.test_type,
       test_status: state => state.dicts.test_status,
-      answer_type: state => state.dicts.answer_type, //
+      answer_type: state => state.dicts.answer_type,
     }),
   },
 
@@ -285,20 +288,28 @@ export default {
           this.deleteModal.loading = false
           this.$Message.warning('删除成功！')
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
     // 打开开始测试弹窗
-    openStartModal(id, type, number) {
+    openStartModal(id, number, answerType) {
       this.currentNumber = number
       this.currentId = id
-      if (type === 'offline') {
-        this.startModal.active = true
-      } else {
-        this.deviceModal.active = true
-      }
+      this.currentAnswerType = answerType
+
+      this.$http.get(`/test/paper/${id}`)
+        .then((res) => {
+          this.currentStudents = res
+          this.deviceModal.active = true
+        })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
-    // 确认开始线下测试
+    // 确认开始测试（线下）
     startSubmit() {
       // 这里到时候走开始线下测试store
       this.startModal.loading = true
@@ -316,7 +327,7 @@ export default {
   },
 
   created() {
-    // this.$store.commit(GLOBAL.LOADING.HIDE)
+
   },
 }
 </script>

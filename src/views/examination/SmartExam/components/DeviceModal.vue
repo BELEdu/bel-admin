@@ -4,37 +4,49 @@
     @input="value => $emit('input', value)"
     :title="`开始测试：${testNumber}`"
     :loading="formLoading"
-    @on-ok="submit()"
-    @on-cancel="closeModal()"
+    @on-ok="submit"
+    @on-cancel="closeModal"
   >
     <div class="smartexam-device">
-      <Form ref="form" :model="form" :label-width="70">
+      <Form
+        ref="form"
+        :rules="rules"
+        :model="form"
+        :label-width="70"
+        v-if="isOnline"
+      >
         <app-form-alert :errors="formErrors"></app-form-alert>
 
         <!-- 学生设备 -->
         <Form-item
-          v-for="(item,index) in form.studentData"
+          v-for="(item,index) in students"
           :key="index"
-          :label="item.name"
+          :label="item.student.display_name"
         >
           <Select
-            v-model="form.studentData[index].device_number"
+            v-model="form.start_test[index].equipment_id"
             placeholder="请输入或选择设备编号"
             filterable
+            remote
+            :remote-method="remoteMethodDevice"
+            :loading="loading.device"
+            transfer
           >
             <Option
               v-for="item in deviceData"
-              :value="item.value"
-              :disabled="hasSelected(item.value)"
-              :key="item.display_name"
-            >{{ item.display_name }}</Option>
+              :value="item.id"
+              :disabled="hasSelected(item.id)"
+              :key="item.id"
+            >{{ item.equipment_display_number }}</Option>
           </Select>
         </Form-item>
 
       </Form>
     </div>
 
-    <p class="color-error">注意：请确保要选择的设备已开机</p>
+    <p class="text-center"  v-if="!isOnline">是否确定开始测试？</p>
+
+    <p class="color-error" v-else>注意：请确保要选择的设备已开机</p>
 
   </app-form-modal>
 </template>
@@ -61,38 +73,69 @@ export default {
       type: String,
       required: true,
     },
+    students: {
+      type: Array,
+      required: true,
+    },
+    answerType: {
+      type: Number,
+      required: true,
+    },
   },
 
   data() {
     return {
-      deviceData: [
-        {
-          value: 10010,
-          display_name: 10010,
-        },
-        {
-          value: 10011,
-          display_name: 10011,
-        },
-        {
-          value: 20010,
-          display_name: 20010,
-        },
-      ],
+      // 设备编号数据
+      deviceData: [],
 
+      // 远程搜索loading
+      loading: {
+        device: false,
+      },
 
       // 表单
       form: {
-        studentData: Array(12).fill(null).map(() => ({
-          name: '张三',
-          device_number: null,
-        })),
+        start_test: [],
       },
 
+      rules: {},
     }
   },
 
+  computed: {
+    isOnline() {
+      return this.answerType === 1
+    },
+  },
+
+  watch: {
+    students(val) {
+      this.form.start_test = val.map(({ id }) => ({
+        id,
+        equipment_id: '',
+      }))
+    },
+  },
+
   methods: {
+    // 提交
+    submit() {
+      const data = this.form
+      this.formLoading = true
+      this.$http.post(`/test/start_test/${this.answerType}`, data)
+        .then(this.successHandler)
+        .catch(this.errorHandler)
+    },
+
+    // 提交成功
+    successHandler() {
+      this.$Message.success('开始测试！')
+      this.formLoading = false
+      this.closeModal()
+      this.$emit('update')
+    },
+
+    // 关闭弹窗
     closeModal() {
       this.$emit('closeDeviceModal')
       this.$refs.form.resetFields()
@@ -102,7 +145,21 @@ export default {
 
     // 判断列表中的设备是否已经被其他学员选择
     hasSelected(value) {
-      return this.form.studentData.some(item => item.device_number === value)
+      return this.form.start_test.some(item => item.equipment_id === value)
+    },
+
+    // 设备编号远程搜索（自动补全）
+    remoteMethodDevice(query) {
+      if (query !== '') {
+        this.loading.device = true
+        this.$http.get(`/test/equipment_autocomplete?equipment_display_number=${query}`)
+          .then((res) => {
+            this.deviceData = res
+            this.loading.device = false
+          })
+      } else {
+        this.deviceData = []
+      }
     },
   },
 }
