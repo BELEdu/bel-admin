@@ -155,14 +155,14 @@ export const LABEL = {
 
 // 题库中心
 export const QUESTION = {
-  CHAPTER: { // 章节
+  // 章节
+  CHAPTER: {
     INIT: 'QUESTION.CHAPTER.INIT',
   },
-
-  QUESTION: { // 试题
+  // 试题
+  QUESTION: {
     INIT: 'QUESTION.QUESTION.INIT',
   },
-
   // 试卷
   PAPER: {
     COMPOSE: 'QUESTION.PAPER.COMPOSE',
@@ -175,8 +175,20 @@ export const QUESTION = {
 
 // 测试管理
 export const EXAMINATION = {
+  // 智能测试
   SMARTEXAM: {
     INIT: 'EXAMINATION.SMARTEXAM.INIT',
     DELETE: 'EXAMINATION.SMARTEXAM.DELETE',
+  },
+}
+
+// 备课管理
+export const PREPARE = {
+  // 教案管理
+  PREPAREPLAN: {
+    INIT: 'PREPARE.PREPAREPLAN.INIT',
+    DETAIL: {
+      INIT: 'PREPARE.PREPAREPLAN.DETAIL.INIT',
+    },
   },
 }

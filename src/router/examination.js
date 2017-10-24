@@ -13,9 +13,19 @@ const EXAMINATION_SMARTEXAM = {
   link: '/examination/smartexam',
 }
 
-const EXAMINATION_SMARTEXAM_CHECK = {
+const EXAMINATION_SMARTEXAM_DETAIL = {
+  name: '测试主组件',
+  link: '/examination/smartexam/:testid',
+}
+
+const EXAMINATION_SMARTEXAM_DETAIL_CHECK = {
   name: '阅卷',
-  link: '/examination/smartexam/:id',
+  link: '/examination/smartexam/:testid/check',
+}
+
+const EXAMINATION_SMARTEXAM_DETAIL_CHECK_PAPER = {
+  name: '阅卷',
+  link: '/examination/smartexam/:testid/check/:id',
 }
 
 const EXAMINATION_WRONGQUESTION = {
@@ -37,26 +47,42 @@ export default [
     },
   },
   {
-    path: '/examination/smartexam/:id',
-    component: views.StudentExam,
-    meta: {
-      breadcrumb: [
-        { name: '测试管理' },
-        { name: '智能测试' },
-        { name: '学员测试' },
-      ],
-    },
-  },
-  {
-    path: '/examination/smartexam/:stuid/collation/:textid',
-    component: views.ExamCollation,
+    path: EXAMINATION_SMARTEXAM_DETAIL.link,
+    component: views.ExaminationSmartExamDetail,
     meta: {
       breadcrumb: [
         EXAMINATION,
         EXAMINATION_SMARTEXAM,
-        EXAMINATION_SMARTEXAM_CHECK,
+        EXAMINATION_SMARTEXAM_DETAIL,
       ],
     },
+    children: [
+      {
+        path: EXAMINATION_SMARTEXAM_DETAIL_CHECK.link,
+        component: views.ExaminationSmartExamDetailCheck,
+        meta: {
+          breadcrumb: [
+            EXAMINATION,
+            EXAMINATION_SMARTEXAM,
+            EXAMINATION_SMARTEXAM_DETAIL_CHECK,
+          ],
+        },
+        children: [
+          {
+            path: EXAMINATION_SMARTEXAM_DETAIL_CHECK_PAPER.link,
+            component: views.QuestionPaperDetail,
+            meta: {
+              uri: '/test/paperinspection',
+              breadcrumb: [
+                EXAMINATION,
+                EXAMINATION_SMARTEXAM,
+                EXAMINATION_SMARTEXAM_DETAIL_CHECK_PAPER,
+              ],
+            },
+          },
+        ],
+      },
+    ],
   },
 
   /* abolish 智能分析 */
