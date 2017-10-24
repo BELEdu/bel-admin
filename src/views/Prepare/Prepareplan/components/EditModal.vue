@@ -24,8 +24,12 @@
         :rules="rules"
         :label-width="0"
       >
-        <app-form-alert :errors="formErrors"></app-form-alert>
+        <app-form-alert
+          :errors="formErrors"
+          fullWidth
+        ></app-form-alert>
 
+        <!-- 教案内容 -->
         <Form-item v-show="step === 1" prop="content">
           <app-editor
             :height="250"
@@ -56,7 +60,7 @@
             :index="index+1"
             :data="item"
             :width="500"
-          /></question>
+          ></question>
 
           <!-- 试题操作 -->
           <div class="prepareplan-edit-modal__action">
@@ -105,7 +109,7 @@
         >下一步</Button>
 
         <Button
-          v-show="!isReview && step === stepLength"
+          v-show="!isShow && step === stepLength"
           type="primary"
           size="large"
           :loading="formLoading"
@@ -149,10 +153,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    title: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
@@ -161,11 +161,15 @@ export default {
       type: Object,
       required: true,
     },
+    isCreate: {
+      type: Boolean,
+      required: true,
+    },
     isEdit: {
       type: Boolean,
       required: true,
     },
-    isReview: {
+    isShow: {
       type: Boolean,
       required: true,
     },
@@ -188,9 +192,32 @@ export default {
     }
   },
 
+  computed: {
+    title() {
+      if (this.isCreate) {
+        return '添加教案'
+      } else if (this.isEdit) {
+        return '编辑教案'
+      }
+      return '查看教案'
+    },
+  },
+
   methods: {
     submit() {
-      this.$Message.success('提交！')
+      if (this.step === 1) {
+        this.getQuestionInfo()
+      } else {
+        this.formLoading = false
+        this.$Message.success('提交！')
+      }
+    },
+
+    // 智能推题
+    getQuestionInfo() {
+      this.step = this.step + 1
+      this.formLoading = false
+      this.$Message.success('获取习题')
     },
 
     closeModal() {
@@ -206,14 +233,9 @@ export default {
       if (this.step === 1) {
         // 在这里用算法获取试题数据
         this.questionList = qdata
-        // 先校验
-        this.$refs.form.validate((valid) => {
-          if (valid) {
-            this.step = this.step + 1
-          }
-        })
+        this.beforeSubmit()
       } else {
-        this.step += this.step + 1
+        this.step = this.step + 1
       }
     },
 
