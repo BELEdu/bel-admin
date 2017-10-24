@@ -50,7 +50,7 @@
     watch: {
       currentItemData: {
         handler() {
-          this.getCourseList()
+          this.getPlanProgress()
         },
         deep: true,
       },

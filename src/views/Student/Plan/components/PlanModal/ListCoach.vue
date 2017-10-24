@@ -52,7 +52,7 @@
           </Col>
           <Col :span="5">
             <form-item :prop="'items.' + index + '.course_time'" :rules="coachRules['course_time']">
-              <time-picker
+              <TimePicker
                 :value="item.course_time"
                 type="timerange"
                 format="HH:mm"
@@ -60,7 +60,7 @@
                 @on-clear="() => item.course_time = []"
                 placeholder="请选择时间"
                 :disabled="!item.random_id && !item.operation.update"
-              ></time-picker>
+              ></TimePicker>
             </form-item>
           </Col>
           <Col :span="9">

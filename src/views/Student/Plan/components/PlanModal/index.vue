@@ -124,7 +124,7 @@
             if (item.id === 1) {
               customParam = { ...defAddCoach }
             }
-            if (this.isNightCoach) {
+            if (this.isNightCoach && this.type === 'add') {
               // 晚辅导
               customParam = {
                 prevStep: 2,
@@ -143,7 +143,6 @@
 
     methods: {
       cancel() {
-        // TODO 重置全部状态
         this.currentComId = -1
         this.$emit('update:visible', false)
         this.broadcast(this.currentCom.view, 'on-reset', this.currentCom)
@@ -160,7 +159,6 @@
       },
 
       next() {
-        // TODO 处理当前流程
         this.loading = true
         if (this.item.type === 'view') {
           this.onSuccess()
