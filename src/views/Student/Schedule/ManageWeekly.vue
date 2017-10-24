@@ -35,10 +35,11 @@
         待上课总数：{{ courseTip }}
       </Col>
     </Row>
+    <!--周课表-->
     <div class="manage-weekly__content">
       <Row>
         <Col :span="2" class="weekly-prev">
-          <Button type="dashed" size="small">
+          <Button type="dashed" size="small" @click="prevWeekly">
             <Icon type="chevron-left"></Icon> 上一周
           </Button>
         </Col>
@@ -48,16 +49,53 @@
               <ul class="weekly-list">
                 <li class="weekly-list__header">{{ item.value }}</li>
                 <li class="weekly-list__course">
-                  <div class="weekly-list__course-time" v-if="!index">
-                    <div class="time-scale" v-for="(time, key) in timeScale" :key="time" :style="{top: `${key * 60 - 9}px`}">{{ time }}</div>
+                  <!--时间刻度及刻线-->
+                  <div class="weekly-list__course-time">
+                    <div class="time-scale" v-if="!index" v-for="(time, key) in timeScale" :key="time" :style="{top: `${key * 60 - 9}px`}">{{ time }}</div>
+                    <div class="time-line" v-if="key" v-for="(time, key) in timeScale" :key="time" :style="{top: `${key * 60}px`}"></div>
                   </div>
-                  <!--TODO 判断时间定位时间刻度-->
+                  <!--课表模块-->
+                  <Tooltip
+                    placement="right"
+                    v-for="list in weeklyList[item.value]"
+                    :key="list.id"
+                    :style="{
+                      top: `${courseTop(list.schedule_range)}`,
+                    }"
+                  >
+                    <!--课表标题-->
+                    <div
+                      class="weekly-list__course-list"
+                      :class="courseStatus(list.course_status)"
+                      :style="{
+                        height: `${(list.course_fact || list.course_num || 1) * 30}px`,
+                      }"
+                    >
+                      <div class="weekly-list__course-list-content">
+                        {{`${list.classes_name}【第${list.sort_value}节课】`}}
+                      </div>
+                    </div>
+                    <!--课表详细内容-->
+                    <div slot="content">
+                      <p><span class="text-right">上课时间：</span>{{list.schedule_range}}</p>
+                      <div v-if="list.chapter_name"><span class="text-right" style="display: inline-block;min-width: 5em">内容：</span><br/><p style="padding-left: 5em;" v-html="list.chapter_name"></p></div>
+                      <p><span class="text-right">计划课时：</span>{{list.course_num}}</p>
+                      <p v-if="list.course_fact"><span class="text-right">实际课时：</span>{{list.course_fact}}</p>
+                      <p><span class="text-right">上课状态：</span>{{list.course_status_name}}</p>
+                      <p><span class="text-right">排课专员：</span>{{list.schedule_teacher_name}}</p>
+                      <!--评价-->
+                      <p v-if="list.course_status >= 2">
+                        <span class="text-right">评价：</span>
+                        <Button size="small" type="primary" icon="ios-chatboxes-outline" @click="comment(list)"></Button>
+                      </p>
+                    </div>
+                  </Tooltip>
                 </li>
               </ul>
             </Col>
           </Row>
         </Col>
-        <Col :span="2" class="weekly-next">
+        <Col :span="2" class="weekly-next" @click="nextWeekly">
           <Button type="dashed" size="small">
             下一周 <Icon type="chevron-right"></Icon>
           </Button>
@@ -83,8 +121,8 @@
   import { mapState } from 'vuex'
   import { STUDENT } from '@/store/mutationTypes'
   import { list } from '@/mixins'
-  import { startOfWeek, endOfWeek } from 'date-fns'
-  import { formatDate } from '@/utils/date'
+  import { startOfWeek, endOfWeek, differenceInHours } from 'date-fns'
+  import { formatDate, setTime } from '@/utils/date'
   import week from './mixins/week'
 
   export default {
@@ -140,11 +178,47 @@
         }
         return false
       },
+
+      // 当前上课状态
+      courseStatus(status) {
+        return {
+          // 已评价
+          end: status === 3,
+          // 待确认
+          confirm: status === 0,
+          // 待上课
+          notend: status === 1,
+          // 已上课
+          finish: status === 2,
+        }
+      },
+
+      // 课程时间刻度位置
+      courseTop(rangTime) {
+        // 与最小时间比较08:00
+        const dis = differenceInHours(setTime(rangTime.split('-')[0]), setTime('08:00'))
+        return `${(dis >= 0 ? dis : 0) * 30}px`
+      },
+
+      // 操作弹窗
+      handlerDialog() {
+        // TODO 操作弹窗
+      },
+
+      // 上一周
+      prevWeekly() {
+        // TODO 上一周
+      },
+
+      // 下一周
+      nextWeekly() {
+        // TODO 下一周
+      },
     },
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   @import "~vars.less";
 
   .manage-weekly {
@@ -194,9 +268,13 @@
     }
 
     .weekly-item {
-      border-width: 1px 0 1px 1px;
+      border-width: 1px 1px 1px 0;
       border-style: solid;
       border-color: @border-color-base;
+
+      &:first-child {
+        border-left-width: 1px;
+      }
 
       &:last-child {
         border-right-width: 1px;
@@ -226,12 +304,65 @@
         position: relative;
 
         &-time {
+          width: 100%;
           position: absolute;
-          left: -40px;
+          left: 0;
+
+          .time-line {
+            width: 100%;
+            border-bottom: 1px solid @border-color-base;
+            position: absolute;
+
+            &:last-child {
+              border: 0;
+            }
+          }
 
           .time-scale {
             position: absolute;
-            left: 0;
+            left: -40px;
+          }
+        }
+
+        &-list {
+          color: #fff;
+          border-radius: 4px 4px 0 0;
+          background-color: @cancel-color;
+          margin-bottom: 1px;
+          border-bottom: 4px solid rgba(0, 0, 0, 0.2);
+
+          &.end {
+            background: @cancel-color;
+          }
+
+          &.confirm {
+            background: @warning-color;
+          }
+
+          &.notend {
+            background: @primary-color;
+          }
+
+          &.finish {
+            background: @success-color;
+          }
+
+          &-content {
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+          }
+        }
+
+        .ivu-tooltip {
+          width: 100%;
+          position: absolute;
+          left: 0;
+
+          .ivu-tooltip-rel {
+            width: 100%;
           }
         }
       }

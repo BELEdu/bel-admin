@@ -42,11 +42,7 @@
     <app-pager :data="dailyList" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--操作弹窗-->
-    <app-form-modal
-      v-model="dialog.visible"
-    >
-      <div :is="currentCom"></div>
-    </app-form-modal>
+    <course-modal :visible.sync="dialog.visible" :is-repeal="isRepeal" v-if="isDialogRender"></course-modal>
   </div>
 </template>
 
@@ -56,10 +52,16 @@
   import { list } from '@/mixins'
   import { createButton } from '@/utils'
 
+  const courseModal = () => import('./modal')
+
   export default {
     name: 'manage-daily',
 
     mixins: [list],
+
+    components: {
+      courseModal,
+    },
 
     data() {
       return {
@@ -101,36 +103,36 @@
               { text: '确认排课',
                 isShow: ({ row }) => row.schedule_operation.confirm,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.handlerModal(row)
                 },
               },
               { text: '确认上课',
                 isShow: ({ row }) => row.schedule_operation.finish,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.handlerModal(row)
                 },
               },
               { text: '撤销',
                 isShow: ({ row }) => row.schedule_operation.cancel,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.handlerModal(row, true)
                 },
               },
               { text: '评价',
                 isShow: ({ row }) => row.schedule_operation.comment,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.handlerModal(row)
                 },
               },
               { text: '查看评价',
                 isShow: ({ row }) => row.schedule_operation.showComment,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.handlerModal(row)
                 },
               },
             ]),
@@ -140,6 +142,10 @@
         dialog: {
           visible: false,
         },
+
+        isDialogRender: false,
+
+        isRepeal: false,
       }
     },
 
@@ -166,6 +172,23 @@
           return this.$store.dispatch(STUDENT.SCHEDULE.DAILY_LIST, `${cId}${qs}`)
         }
         return false
+      },
+
+      // 操作排课
+      handlerModal(row, status = false) {
+        if (status) {
+          this.isRepeal = true
+        } else {
+          this.isRepeal = false
+        }
+        this.dialog.visible = true
+        this.isDialogRender = true
+        this.$store.commit(STUDENT.SCHEDULE.COURSE_ITEM, row)
+      },
+
+      // 撤销排课
+      repeal() {
+
       },
     },
   }

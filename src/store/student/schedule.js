@@ -25,6 +25,9 @@ export default {
     // 未完成课时数
     tip: 0,
 
+    // 当前编辑的课表
+    currentCourseItem: {},
+
   },
 
   mutations: {
@@ -42,6 +45,10 @@ export default {
 
     [STUDENT.SCHEDULE.GET_TIP](state, data) {
       state.tip = data
+    },
+
+    [STUDENT.SCHEDULE.COURSE_ITEM](state, item) {
+      state.currentCourseItem = item
     },
   },
 
