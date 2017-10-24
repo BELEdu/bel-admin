@@ -1,10 +1,10 @@
 <template>
   <div class="question-paper-composition">
     <!-- 左：树形搜索 -->
-    <TreeSideSearch
+    <TreeCondition
+      v-if="treeEntries"
       class="question-paper-composition__tree"
       :entries="treeEntries"
-      @on-single-select="v_singleSelect"
     />
 
     <!-- 右：主体 -->
@@ -64,7 +64,7 @@ import {
   ConditionRadioSubject,
   PaperComposition,
   PaperPreviewDialog,
-  TreeSideSearch,
+  TreeCondition,
 } from '@/views/components'
 
 export default {
@@ -77,7 +77,7 @@ export default {
     ConditionRadio,
     PaperComposition,
     PaperPreviewDialog,
-    TreeSideSearch,
+    TreeCondition,
   },
 
   inheritAttrs: false,
@@ -117,6 +117,8 @@ export default {
       visible: false,
       loading: false,
     },
+
+    treeEntries: null,
   }),
 
   computed: {
@@ -124,21 +126,6 @@ export default {
       const url = this.$route.fullPath
       const index = url.indexOf('?')
       return index > -1 ? url.slice(index) : ''
-    },
-
-    treeEntries() {
-      return [
-        {
-          label: '按知识点',
-          key: 'knowledge_id',
-          data: this.treeData.knowledge_tree,
-        },
-        {
-          label: '按章节',
-          key: 'chapter_id',
-          data: this.treeData.chapter_tree,
-        },
-      ]
     },
   },
 
@@ -242,11 +229,30 @@ export default {
             chapter_tree,
           }
 
+          this.m_initTreeEntries()
+
           this.m_generatePaper(
             subjectId || current_grade_range_subject_id,
             question_type_id.data,
           )
         })
+    },
+
+    m_initTreeEntries() {
+      this.treeEntries = [
+        {
+          label: '按知识点',
+          key: 'equal[knowledge_id]',
+          tree: this.treeData.knowledge_tree,
+          selectedLeafId: '',
+        },
+        {
+          label: '按章节',
+          key: 'equal[chapter_id]',
+          tree: this.treeData.chapter_tree,
+          selectedLeafId: '',
+        },
+      ]
     },
 
     // 生成试卷信息，变换学科，重置选题;
@@ -272,11 +278,6 @@ export default {
 
       return this.$http.get(url)
         .then((res) => { this.buffer = res })
-    },
-
-    v_singleSelect(key, id) {
-      const fragment = id ? `equal[${key}]=${id}` : ''
-      this.searchData(this.recombineQuery(fragment))
     },
 
     recombineQuery(fragment) {

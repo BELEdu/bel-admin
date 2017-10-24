@@ -2,38 +2,12 @@
   <div class="question-paper-composition">
     <div class="content">
       <!-- 左：树形搜索 -->
-      <aside>
-        <nav class="clearfix">
-          <span
-            :class="{
-              active: myLabelTree
-            }"
-            @click="myLabelTree = true"
-          >按我的标签</span>
-          <span
-            :class="{
-              active: !myLabelTree
-            }"
-            @click="myLabelTree = false"
-          >按知识点</span>
-        </nav>
-        <TreeSide
-          v-show="myLabelTree"
-          :key="`${currentSubject}label`"
-          class="content__tree"
-          :data="labelTree"
-          @batch-select="ids => onTreeSelect('user_label_id', ids)"
-          @single-select="ids => onTreeSelect('user_label_id', ids)"
-        />
-        <TreeSide
-          v-show="!myLabelTree"
-          :key="`${currentSubject}knowledge`"
-          class="content__tree"
-          :data="knowledgeTree"
-          @batch-select="ids => onTreeSelect('knowledge_id', ids)"
-          @single-select="ids => onTreeSelect('knowledge_id', ids)"
-        />
-      </aside>
+      <TreeCondition
+        v-if="treeEntries"
+        class="question-paper-composition__tree"
+        :entries="treeEntries"
+      />
+
       <!-- 右：主体 -->
       <section>
         <!-- 科目过滤 -->
@@ -163,7 +137,7 @@ import {
   ConditionRadioSubject,
   Question,
   QuestionAnalysisDialog,
-  TreeSide,
+  TreeCondition,
 } from '@/views/components'
 import paperBiz from './mixins/paper'
 
@@ -176,7 +150,7 @@ export default {
     ConditionRadioSubject,
     ConditionRadio,
     QuestionAnalysisDialog,
-    TreeSide,
+    TreeCondition,
     Question,
   },
 
@@ -184,14 +158,16 @@ export default {
     // server: 学科选择数据
     subjects: null,
 
-    // server: 知识点树
-    knowledgeTree: [],
+    // server：树结构数据
+    treeData: {
+      // 知识点树
+      knowledge_tree: [],
 
-    // server: 标签树
-    labelTree: [],
+      // 章节树
+      label_tree: [],
+    },
 
-    // 切换树的数据类型
-    myLabelTree: true,
+    treeEntries: null,
 
     // server: 高级搜索数据
     advanceConditions: null,
@@ -257,14 +233,21 @@ export default {
             data: grade_range_subject_id,
             default: current_grade_range_subject_id,
           }
+
           this.advanceConditions = {
             question_type_id,
             paper_type,
             question_difficulty,
           }
+
+          this.treeData = {
+            label_tree: user_label_list,
+            knowledge_tree,
+          }
+
+          this.m_initTreeEntries()
+
           this.generatePaper(question_type_id.data)
-          this.knowledgeTree = knowledge_tree
-          this.labelTree = user_label_list
         })
     },
 
@@ -276,6 +259,23 @@ export default {
           display_name: type.display_name,
           questions: [],
         }))
+    },
+
+    m_initTreeEntries() {
+      this.treeEntries = [
+        {
+          label: '按我的标签',
+          key: 'equal[user_label_id]',
+          tree: this.treeData.label_tree,
+          selectedLeafId: '',
+        },
+        {
+          label: '按知识点',
+          key: 'equal[knowledge_id]',
+          tree: this.treeData.knowledge_tree,
+          selectedLeafId: '',
+        },
+      ]
     },
 
     getData(queryUrl) {
