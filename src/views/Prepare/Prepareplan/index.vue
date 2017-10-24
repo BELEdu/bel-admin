@@ -56,7 +56,8 @@
  * @version 2017-10-17
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { PREPARE } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 
@@ -68,17 +69,17 @@ export default {
   data() {
     return {
       likeKeys: [
-        { label: '教师姓名', value: 'display_name' },
+        { label: '教师姓名', value: 'realname' },
       ],
-      likeKey: 'display_name',
+      likeKey: 'realname',
 
       columns: [
-        { title: '教师姓名', key: 'display_name', align: 'center' },
-        { title: '班级总数量', key: 'classes_count', align: 'center', sortable: 'custom' },
-        { title: '课程总数', key: 'subject_count', align: 'center', sortable: 'custom' },
-        { title: '已完成教案', key: 'prepareplan_finish', align: 'center', sortable: 'custom' },
-        { title: '待添加教案', key: 'prepareplan_wait', align: 'center', sortable: 'custom' },
-        { title: '未完成教案', key: 'prepareplan_no', align: 'center', sortable: 'custom' },
+        { title: '教师姓名', key: 'realname', align: 'center' },
+        { title: '班级总数量', key: 'classes', align: 'center', sortable: 'custom' },
+        { title: '课程总数', key: 'schedules', align: 'center', sortable: 'custom' },
+        { title: '已完成教案', key: 'with_schemes', align: 'center', sortable: 'custom' },
+        { title: '待添加教案', key: 'without_schemes', align: 'center', sortable: 'custom' },
+        { title: '未完成教案', key: 'miss_schemes', align: 'center', sortable: 'custom' },
         {
           title: '操作',
           align: 'center',
@@ -88,29 +89,24 @@ export default {
           ]),
         },
       ],
-
-      // 列表假数据
-      list: {
-        data: Array(10).fill(null).map(() => ({
-          id: 10086,
-          display_name: '张老师',
-          classes_count: 3,
-          subject_count: 18,
-          prepareplan_finish: 7,
-          prepareplan_wait: 5,
-          prepareplan_no: 2,
-        })),
-      },
-
     }
   },
 
-  methods: {
+  computed: {
+    ...mapState({
+      list: state => state.prepare.prepareplan.teachers,
+    }),
+  },
 
+  methods: {
+    // 获取教师数据
+    getData(qs) {
+      return this.$store.dispatch(PREPARE.PREPAREPLAN.INIT, qs)
+    },
   },
 
   created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
+
   },
 }
 </script>
