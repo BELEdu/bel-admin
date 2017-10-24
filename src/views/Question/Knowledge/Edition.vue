@@ -4,6 +4,7 @@
       <TreeSide
         :data="treeData"
         @batch-select="onBatchSelect"
+        type="multiple"
       />
     </aside>
     <section>

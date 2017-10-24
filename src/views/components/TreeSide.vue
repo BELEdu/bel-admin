@@ -39,7 +39,7 @@
     <!-- 树形结构 -->
     <Tree
       ref="tree"
-      :show-checkbox="multiple"
+      :show-checkbox="multiple || type === 'multiple'"
       :data="data"
       @on-select-change="singleSelect"
     ></Tree>
