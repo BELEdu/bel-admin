@@ -117,7 +117,7 @@
  */
 
 export default {
-  name: 'TreeStructure',
+  name: 'TreeEditor',
 
   props: {
     // 操作目标：知识点、章节。。。

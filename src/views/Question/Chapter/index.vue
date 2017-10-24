@@ -104,7 +104,7 @@
       v-model="modal.chapter"
       title="编辑章节"
     >
-      <TreeStructure
+      <TreeEditor
         keyword="章节"
         :data="chapterTree"
         :default-subject="current_grade_range_subject_id"
@@ -115,7 +115,7 @@
         <div slot="header">
           以下为当前学科的各个教材版本的章节及其结构，您可增加与删除章节，也可以调整掌控额的排序，排序的调整仅限同父级下的同级排序，所有操作仅在确认后才生效。
         </div>
-      </TreeStructure>
+      </TreeEditor>
       <div slot="footer"></div>
     </Modal>
 
@@ -135,7 +135,7 @@ import { list } from '@/mixins'
 // import { GLOBAL } from '@/store/mutationTypes'
 // import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
-import { TreeStructure } from '@/views/components'
+import { TreeEditor } from '@/views/components'
 import EditModal from './components/EditModal'
 import DetailModal from './components/DetailModal'
 
@@ -147,7 +147,7 @@ export default {
   components: {
     EditModal,
     DetailModal,
-    TreeStructure,
+    TreeEditor,
   },
 
   data() {

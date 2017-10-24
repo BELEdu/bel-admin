@@ -57,13 +57,13 @@ export {
 } from './QuestionAnalysisDialog'
 
 export {
+  default as TreeEditor,
+} from './TreeEditor'
+
+export {
   default as TreeSide,
 } from './TreeSide'
 
 export {
   default as TreeSideSearch,
 } from './TreeSideSearch'
-
-export {
-  default as TreeStructure,
-} from './TreeStructure'
