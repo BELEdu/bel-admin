@@ -129,7 +129,6 @@ import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import { TreeEditor } from '@/views/components'
 import EditModal from './components/EditModal'
-import DetailModal from './components/DetailModal'
 
 export default {
   name: 'question-chapter',
@@ -138,7 +137,6 @@ export default {
 
   components: {
     EditModal,
-    DetailModal,
     TreeEditor,
   },
 
