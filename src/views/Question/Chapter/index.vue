@@ -83,21 +83,6 @@
       @on-page-size-change="pageSizeChange"
     ></app-pager>
 
-    <!-- 编辑章节弹窗 -->
-    <edit-modal
-      v-model="modal.edit"
-      :form="form"
-      :default-subject="current_grade_range_subject_id"
-      @closeEditModal="modal.edit = false"
-      @fetchData="fetchData"
-    ></edit-modal>
-
-    <!-- 查看弹窗 -->
-    <detail-modal
-      v-model="modal.detail"
-      @closeDetailModal="modal.detail = false"
-    ></detail-modal>
-
     <!-- 编辑章节树弹窗 -->
     <Modal
       class="question-knowledge__structure"
@@ -119,6 +104,16 @@
       <div slot="footer"></div>
     </Modal>
 
+    <!-- 编辑章节弹窗 -->
+    <edit-modal
+      v-model="modal.edit"
+      :form="form"
+      :default-subject="current_grade_range_subject_id"
+      :is-edit="isEdit"
+      @closeEditModal="modal.edit = false"
+      @fetchData="fetchData"
+    ></edit-modal>
+
   </div>
 </template>
 
@@ -131,9 +126,6 @@
 
 import Http from '@/utils/http'
 import { list } from '@/mixins'
-// import { mapState } from 'vuex'
-// import { GLOBAL } from '@/store/mutationTypes'
-// import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import { TreeEditor } from '@/views/components'
 import EditModal from './components/EditModal'
@@ -211,8 +203,8 @@ export default {
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '编辑', type: 'success', click: row => this.openEditModal(row.id) },
-            { text: '查看', type: 'primary', click: row => this.openDetailModal(row.id) },
+            { text: '编辑', type: 'success', click: row => this.openEditModal(row.id, 'edit') },
+            { text: '查看', type: 'primary', click: row => this.openEditModal(row.id, 'show') },
           ]),
         },
       ],
@@ -221,7 +213,6 @@ export default {
 
       modal: { // 弹窗控制
         edit: false,
-        detail: false,
         chapter: false,
       },
 
@@ -231,7 +222,10 @@ export default {
       form: {
         grade_range_subject_id: null,
         data: [],
+        analysis: '',
       },
+
+      isEdit: false, // 是否是编辑弹窗
     }
   },
 
@@ -245,16 +239,18 @@ export default {
         })
     },
 
-    openEditModal(id) { // 打开编辑章节弹窗
+    openEditModal(id, type) { // 打开编辑章节 & 查看章节弹窗
+      if (type === 'edit') {
+        this.isEdit = true
+      } else {
+        this.isEdit = false
+      }
+
       this.$http.get(`/chapter/${id}`)
         .then((res) => {
           this.form = res
           this.modal.edit = true
         })
-    },
-
-    openDetailModal() { // 打开查看弹窗
-      this.modal.detail = true
     },
 
     getData(query, to) { // 获取列表数据

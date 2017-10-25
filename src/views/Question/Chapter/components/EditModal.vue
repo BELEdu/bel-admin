@@ -1,12 +1,9 @@
 <template>
   <div>
-
-    <app-form-modal
+    <Modal
       :value="value"
       @input="value => $emit('input', value)"
-      title="编辑章节"
-      :loading="formLoading"
-      @on-ok="beforeSubmit()"
+      :title="title"
       @on-cancel="closeModal()"
       :maskClosable="true"
       :width='850'
@@ -19,7 +16,7 @@
         <app-form-alert :errors="formErrors"></app-form-alert>
 
         <!-- 标题 -->
-        <h3 class="chapter-edit__title">章节：{{form.display_name}}</h3>
+        <h3 class="chapter-edit__title color-primary">章节：{{form.display_name}}</h3>
 
         <!-- 表格 -->
         <div class="app-table point-table ivu-table-wrapper">
@@ -88,13 +85,23 @@
                           <Row>
                             <Col span="20">
                               <app-tree-select
+                                v-if="isEdit"
                                 v-model="item.id"
                                 :data="knowledgeTree"
                                 @change="(value) => changeKnowledge(value, index)"
                               ></app-tree-select>
+
+                              <span v-else>{{item.display_name}}</span>
+
                             </Col>
                             <Col span="4">
-                              <Button type="text" icon="close" size="small" @click="removeKnowledge(index)"></Button>
+                              <Button
+                                v-if="isEdit"
+                                type="text"
+                                icon="close"
+                                size="small"
+                                @click="removeKnowledge(index)"
+                              ></Button>
                             </Col>
                           </Row>
                         </FormItem>
@@ -102,77 +109,107 @@
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.duration`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.duration`"
+                        >
                           <InputNumber
                             v-model="item.duration"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.duration}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.frequency`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.frequency`"
+                        >
                           <InputNumber
                             v-model="item.frequency"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.frequency}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.score`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.score`"
+                        >
                           <InputNumber
                             v-model="item.score"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.score}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.art_duration`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.art_duration`"
+                        >
                           <InputNumber
                             v-model="item.art_duration"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.art_duration}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.art_frequency`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.art_frequency`"
+                        >
                           <InputNumber
                             v-model="item.art_frequency"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.art_frequency}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" v-if="hasDepartment">
                       <div class="ivu-table-cell">
-                        <FormItem :prop="`data.${index}.art_score`">
+                        <FormItem
+                          v-if="isEdit"
+                          :prop="`data.${index}.art_score`"
+                        >
                           <InputNumber
                             v-model="item.art_score"
                             :min="0"
                             :disabled="item.chapter_knowledge_type === 0"
                           ></InputNumber>
                         </FormItem>
+                        <span v-else>{{item.art_score}}</span>
                       </div>
                     </td>
                     <td class="ivu-table-column-center" width="80">
                       <div class="ivu-table-cell">
                         <Checkbox
+                          v-if="isEdit"
+                          :disabled="!isEdit"
                           :true-value="1"
                           :false-value="0"
                           v-model="item.chapter_knowledge_type"
                         ></Checkbox>
+                        <span v-else>
+                          <Icon v-if="item.chapter_knowledge_type === 1" class="color-success" type="checkmark" />
+                          <Icon v-if="item.chapter_knowledge_type === 0" class="color-error" type="close-round" />
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -196,20 +233,44 @@
 
         <!-- 添加按钮 -->
         <div class="chapter-edit__add">
-          <Button type="dashed" icon="plus-round" @click="addKnowledge">点击添加知识点</Button>
+          <Button
+            v-if="isEdit"
+            type="dashed"
+            icon="plus-round"
+            @click="addKnowledge"
+          >点击添加知识点</Button>
         </div>
 
       </Form>
       <!-- 表单END -->
 
       <!-- 章节解析 -->
-      <app-editor
-        :height="180"
-        v-if="value"
-        v-model="analysis"
-      ></app-editor>
+      <div v-if="value">
+        <h3 class="chapter-edit__title color-primary">章节解析</h3>
+        <app-editor
+          :height="250"
+          v-model="form.analysis"
+        ></app-editor>
+      </div>
 
-    </app-form-modal>
+      <!-- 自定义底部 -->
+      <div slot="footer">
+        <Button
+          type="ghost"
+          size="large"
+          @click="closeModal"
+        >取消</Button>
+
+        <Button
+          v-if="isEdit"
+          type="primary"
+          size="large"
+          :loading="formLoading"
+          @click="beforeSubmit"
+        >确认</Button>
+      </div>
+
+    </Modal>
 
   </div>
 </template>
@@ -252,6 +313,10 @@ export default {
     defaultSubject: {
       type: Number,
     },
+    isEdit: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   data() {
@@ -260,23 +325,29 @@ export default {
         modal: false,
       },
       knowledgeTree: [], // 知识点树
-
-      analysis: '',
     }
   },
 
   computed: {
+    // 弹窗标题
+    title() {
+      return this.isEdit ? '编辑章节' : '查看章节'
+    },
+
+    // 是否有文理分科（这里暂时只处理了高中数学）
     hasDepartment() {
       return this.form.grade_range_subject_id === 5
     },
 
+    // 年级学科
     subjectId() {
       return +this.$route.query['equal[grade_range_subject_id]'] || this.defaultSubject
     },
   },
 
   watch: {
-    subjectId(val) { // 每当父组件的年级学科改变时，预请求知识点树数据
+    // 每当父组件的年级学科改变时，预请求知识点树数据
+    subjectId(val) {
       this.getKnowledgeTree(val)
     },
   },
@@ -305,13 +376,14 @@ export default {
     changeKnowledge(value, index) { // 更改&选择知识点时获取该知识点详情
       // console.log(`value:${value}`)
       // console.log(`index:${index}`)
-      const { data } = this.form
       // console.log(data.filter(item => item.id === value).length)
-      if (data.filter(item => item.id === value).length > 1) {
-        this.$Message.error('该知识点已添加过')
-        // this.removeKnowledge(index)
-      } else if (value) {
-        // console.log('请求知识点详情')
+      // if (value && data.filter(item => item.id === value).length > 0) {
+      //   this.$Message.error('该知识点已添加过')
+      //   this.removeKnowledge(index)
+      // }
+
+      const { data } = this.form
+      if (value) {
         this.$http.get(`/knowledge/${value}`)
           .then(({
             duration,
@@ -368,7 +440,6 @@ export default {
       border-color: @primary-color;
     }
   }
-
 
   .ivu-table-body,
   .ivu-table,
