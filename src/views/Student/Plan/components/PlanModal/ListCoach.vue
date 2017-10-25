@@ -64,15 +64,15 @@
             </form-item>
           </Col>
           <Col :span="9">
-            <form-item :prop="'items.' + index + '.teacher_id'" :rules="coachRules['teacher_id']">
-              <template v-if="multiTeacher">
+            <form-item>
+              <template v-if="isNightCoach">
                 <Select v-model="item.teacher_id" multiple placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
                   <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
                 </Select>
               </template>
               <template v-else>
                 <Select v-model="item.teacher_id[0]" placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
-                  <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
+                  <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.realname }}</Option>
                 </Select>
               </template>
             </form-item>
@@ -148,18 +148,14 @@
 
     computed: {
       ...mapState({
-        currentItem: state => state.student.plan.currentItem,
+        currentItemData: state => state.student.plan.currentItem.Data,
         isNightCoach: state => state.student.plan.currentItem.isNightCoach,
         editList: state => state.student.plan.currentItem.courseList,
-        currentChapter: state => state.student.plan.currentChapter,
+        currentChapter: state => state.student.plan.currentItem.chapter,
         courseNum: state => state.student.plan.courseNum,
-        multiTeacher: state => state.student.plan.multiTeacher,
-        currentCourseRemain: state => state.student.plan.courseRemain,
+        currentCourseRemain: state => state.student.plan.currentItem.courseRemain,
+        teacherList: state => state.student.plan.currentItem.teacher,
       }),
-
-      teacherList() {
-        return this.currentItem.teacher
-      },
 
       courseRemain() {
         const courseRemain = this.currentCourseRemain
@@ -175,17 +171,9 @@
     },
 
     watch: {
-      'currentItem.data': {
-        handler() {
-          this.coachList.items = [...this.editList]
-          this.handleAdd()
-        },
-        deep: true,
-      },
-
       editList: {
-        handler(val) {
-          this.getCourseList(val)
+        handler() {
+          this.getCourseList(this.editList)
         },
         deep: true,
       },
@@ -211,7 +199,6 @@
       },
 
       addList() {
-        // TODO 当前表单填写完整才能再添加
         this.$refs.coachForm.validate((valid) => {
           if (valid) {
             if (this.courseRemain) {
@@ -241,8 +228,11 @@
       // 获取计划详情
       getCourseList(editList) {
         if (editList.length) {
-          this.coachList.items = editList.map(item => ({
+          this.coachList.items = editList.map(({ chapter, teacher_id, operation, ...item }) => ({
             ...item,
+            chapter: [...chapter],
+            teacher_id: [...teacher_id],
+            operation: { ...operation },
             course_time: [formatDate(new Date(item.course_start), 'HH:mm'), formatDate(new Date(item.course_end), 'HH:mm')],
           }))
         } else {

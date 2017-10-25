@@ -34,7 +34,7 @@
       </form-item>
       <form-item prop="teacher_id" label="授课教师：">
         <Select v-model="form.teacher_id" multiple placeholder="请选择授课教师" :disabled="courseRemain <= 0">
-          <Option v-for="(item, index) in teacherList" :key="index" :value="item.id">{{ item.username }}</Option>
+          <Option v-for="(item, index) in teacherList" :key="index" :value="item.id">{{ item.realname }}</Option>
         </Select>
       </form-item>
       <form-item label="排除日期：">
@@ -151,7 +151,7 @@
         currentItemData: state => state.student.plan.currentItem.data,
         teacherList: state => state.student.plan.currentItem.teacher,
         courseNum: state => state.student.plan.courseNum,
-        courseRemain: state => state.student.plan.courseRemain,
+        courseRemain: state => state.student.plan.currentItem.courseRemain,
       }),
 
       dateRangeNum() {
@@ -286,11 +286,6 @@
     },
 
     mounted() {
-      // 设置多选状态
-      this.$store.commit(STUDENT.PLAN.UPDATE_FIELD, {
-        multiTeacher: true,
-      })
-
       // 下一步
       this.$on('on-submit', (data) => {
         // TODO 处理晚辅导计划

@@ -124,7 +124,7 @@
             if (item.id === 1) {
               customParam = { ...defAddCoach }
             }
-            if (this.isNightCoach && this.type === 'add') {
+            if (this.isNightCoach && this.item.type === 'add' && viewId === 1) {
               // 晚辅导
               customParam = {
                 prevStep: 2,

@@ -15,20 +15,15 @@ export default {
 
     courseNum: 8,
 
-    multiTeacher: false,
-
     currentItem: {
       data: {},
       type: 'add',
       teacher: [],
       courseList: [],
       isNightCoach: false,
+      chapter: [],
+      courseRemain: 0,
     },
-
-    currentChapter: [],
-
-    // TODO mock可用课时
-    courseRemain: 100,
   },
 
   mutations: {
@@ -61,20 +56,12 @@ export default {
       state.currentItem.type = type
     },
 
-    [STUDENT.PLAN.CURRENT_ITEM_TEACHER](state, list) {
-      state.currentItem.teacher = list
-    },
-
     [STUDENT.PLAN.CURRENT_ITEM_COURSELIST](state, list) {
       state.currentItem.courseList = list
     },
 
-    [STUDENT.PLAN.CURRENT_CHAPTER](state, list) {
-      state.currentChapter = list
-    },
-
-    [STUDENT.PLAN.UPDATE_FIELD](state, field) {
-      state = { ...state, field }
+    [STUDENT.PLAN.CURRENT_ITEM_UPDATE](state, field) {
+      state.currentItem = { ...state.currentItem, ...field }
     },
   },
 
@@ -86,17 +73,14 @@ export default {
         })
     },
 
-    [STUDENT.PLAN.CURRENT_ITEM_TEACHER]({ commit }, query = '') {
-      return Http.get(`/teacher_list${query}`)
-        .then((result) => {
-          commit(STUDENT.PLAN.CURRENT_ITEM_TEACHER, result)
-        })
-    },
-
-    [STUDENT.PLAN.CURRENT_CHAPTER]({ commit }, query = '') {
-      return Http.get(`/chapter/tree/3${query}`)
-        .then((result) => {
-          commit(STUDENT.PLAN.CURRENT_CHAPTER, result)
+    [STUDENT.PLAN.CURRENT_ITEM_STORE]({ commit }, query = '') {
+      return Http.get(`/plan/store_before/${query}`)
+        .then(({ mini, chapterTree, teacher }) => {
+          commit(STUDENT.PLAN.CURRENT_ITEM_UPDATE, {
+            teacher: [...teacher],
+            chapter: [...chapterTree],
+            courseRemain: mini || 0,
+          })
         })
     },
 
