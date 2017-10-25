@@ -7,7 +7,7 @@
     <!-- 底部 进阶学习 -->
     <template
       slot="improvement"
-      scope="props"
+      slot-scope="props"
     >
       <h1
         class="examination-wrongquestion-detail__title"
