@@ -26,6 +26,17 @@ export default [
     },
   },
   {
+    path: '/prepare/myprepareplan',
+    name: 'PreparePrepareplanMyPrepareplan',
+    component: views.PreparePrepareplanDetail,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '我的教案' },
+      ],
+    },
+  },
+  {
     path: '/prepare/prepareplan/:id',
     name: 'PreparePrepareplanDetail',
     component: views.PreparePrepareplanDetail,
@@ -37,6 +48,7 @@ export default [
       ],
     },
   },
+
 
   /* 试卷中心 */
 
