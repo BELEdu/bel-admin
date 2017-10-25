@@ -13,7 +13,7 @@
         <p>
           <strong>{{step}}</strong> Of <strong>{{stepLength}}</strong>
         </p>
-        <p>{{name}}</p>
+        <p class="color-primary">{{form.classes_name}} —— 第{{form.sort_value}}节课</p>
       </div>
 
       <!-- 表单 -->
@@ -45,17 +45,18 @@
         <!-- 刷新按钮 -->
         <div class="right prepareplan-edit-modal__refresh">
           <Button
+            v-if="!isShow"
             class="color-primary"
             type="dashed"
             shape="circle"
             icon="refresh"
             size="small"
-            @click="refreshQuestion()"
+            @click="getQuestionInfo()"
           >换一批</Button>
         </div>
 
         <!-- 试题列表 -->
-        <div v-for="(item,index) in questionList" :key="index">
+        <div v-for="(item,index) in form.questions" :key="index">
           <question
             :index="index+1"
             :data="item"
@@ -74,6 +75,7 @@
             >查看解析</Button>
 
             <Button
+              v-if="!isShow"
               class="color-error right"
               type="text"
               shape="circle"
@@ -115,6 +117,7 @@
           :loading="formLoading"
           @click="beforeSubmit"
         >提交</Button>
+
       </div>
     </Modal>
 
@@ -122,7 +125,9 @@
     <question-analysis-dialog
       :visible.sync="modalActive"
       :data="currentQuestion"
-    ></question-analysis-dialog>
+    >
+      <span></span>
+    </question-analysis-dialog>
 
   </div>
 </template>
@@ -136,7 +141,6 @@
 
 import { form } from '@/mixins'
 import { Question, QuestionAnalysisDialog } from '@/views/components'
-import qdata from './qdata'
 
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
@@ -151,10 +155,6 @@ export default {
   props: {
     value: {
       type: Boolean,
-      required: true,
-    },
-    name: {
-      type: String,
       required: true,
     },
     form: {
@@ -180,7 +180,6 @@ export default {
       step: 1,
       stepLength: 2,
 
-      questionList: qdata, // 试题假数据
       currentQuestion: {},
       modalActive: false,
 
@@ -206,18 +205,50 @@ export default {
   methods: {
     submit() {
       if (this.step === 1) {
-        this.getQuestionInfo()
+        if (this.isCreate) {
+          this.getQuestionInfo()
+        } else {
+          this.step = this.step + 1
+          this.formLoading = false
+        }
       } else {
-        this.formLoading = false
-        this.$Message.success('提交！')
+        this.submitHandler()
       }
+    },
+
+    submitHandler() {
+      if (this.isEdit) {
+        this.$http.patch(`/scheme/${this.form.id}/edit`, this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      } else {
+        this.$http.post(`/scheme/${this.form.id}/create`, this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
+    },
+
+    successHandler() {
+      this.$Message.success('提交成功')
+      this.formLoading = false
+      this.closeModal()
+      this.$emit('update')
     },
 
     // 智能推题
     getQuestionInfo() {
-      this.step = this.step + 1
-      this.formLoading = false
-      this.$Message.success('获取习题')
+      return this.$http.post('/scheme/intelligence')
+        .then((res) => {
+          this.form.questions = res
+          this.formLoading = false
+          if (this.step === 1) {
+            this.step = this.step + 1
+          }
+        })
+        .catch(this.errorHandler)
+      // this.step = this.step + 1
+      // this.formLoading = false
+      // this.$Message.success('获取习题')
     },
 
     closeModal() {
@@ -231,8 +262,6 @@ export default {
     // 下一步
     nextStep() {
       if (this.step === 1) {
-        // 在这里用算法获取试题数据
-        this.questionList = qdata
         this.beforeSubmit()
       } else {
         this.step = this.step + 1
@@ -247,12 +276,12 @@ export default {
     // 打开解析弹窗
     openModal(index) {
       this.modalActive = true
-      this.currentQuestion = this.questionList[index]
+      this.currentQuestion = this.form.questions[index]
     },
 
     // 移除试题
     removeQuestion(index) {
-      this.questionList.splice(index, 1)
+      this.form.questions.splice(index, 1)
     },
 
     // 换一批试题

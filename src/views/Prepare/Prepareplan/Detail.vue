@@ -90,9 +90,9 @@ import { createButton } from '@/utils'
 import EditModal from './components/EditModal'
 
 const defaultPlanForm = {
-  plan_course_id: null,
+  id: null, // 教案id
   content: '', // 教案富文本
-  question_id: [], // 课堂练习 习题id
+  questions: [], // 课堂练习 习题id
 }
 
 export default {
@@ -119,16 +119,19 @@ export default {
         { title: '班级名称', key: 'classes_name', align: 'center' },
         { title: '课序', key: 'sort_value', align: 'center', sortable: 'custom' },
         { title: '上课内容', key: 'chapter_name', align: 'center' },
-        { title: '课堂题量', key: 'question_count', align: 'center', sortable: 'custom' },
+        { title: '课堂题量', key: 'practice_immediately', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'course_status_name', align: 'center' },
         {
           title: '操作',
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '添加', type: 'warning', click: row => this.openEditModal('create', row.id) },
-            { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
-            { text: '查看', type: 'primary', click: row => this.openEditModal('show', row.id) },
+            // { text: '添加', type: 'warning', click: row => this.openEditModal('create', row.id) },
+            // { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
+            // { text: '查看', type: 'primary', click: row => this.openEditModal('show', row.id) },
+            { text: '添加', type: 'warning', isShow: ({ row }) => row.scheme_operation.create, click: row => this.openEditModal('create', row.id) },
+            { text: '编辑', type: 'success', isShow: ({ row }) => row.scheme_operation.edit, click: row => this.openEditModal('edit', row.id) },
+            { text: '查看', type: 'primary', isShow: ({ row }) => row.scheme_operation.show, click: row => this.openEditModal('show', row.id) },
           ]),
         },
       ],
@@ -136,7 +139,6 @@ export default {
       // 编辑教案弹窗
       editModal: {
         active: false, // 模态框控制
-        name: '',
         form: { // 教案表单数据
           ...defaultPlanForm,
         },
@@ -152,11 +154,25 @@ export default {
     ...mapState({
       list: state => state.prepare.prepareplan.plans,
       course_status: state => state.dicts.course_status,
+      userId: state => state.user.id,
     }),
 
     // 教师id
     teacherId() {
+      const pathArry = this.$route.path.split('/')
+      const lastWord = pathArry[pathArry.length - 1]
+      // 如果进入的入口是“我的教案”则返回当前用的id
+      if (lastWord === 'myprepareplan') {
+        return this.userId
+      }
       return +this.$router.currentRoute.params.id
+    },
+  },
+
+
+  watch: {
+    teacherId() {
+      this.fetchData()
     },
   },
 
@@ -166,9 +182,7 @@ export default {
       // 先重置
       this.editModal.isCreate = false
       this.editModal.isEdit = false
-      this.editModal.isReview = false
-
-      this.getPlanData(id, type)
+      this.editModal.isShow = false
 
       switch (type) {
         case 'create':
@@ -183,20 +197,18 @@ export default {
         default:
           break
       }
+
+      this.getPlanData(id, type)
     },
 
     // 获取教案数据
     getPlanData(id, type) {
-      // 这里到时候调用教案详情接口
-      this.editModal.name = '初一数学加强尖子一对一班 000001  第二节课'
-
-      // this.editModal.active = true
-      // console.log(type)
-
       this.$http.get(`/scheme/${id}/${type}`)
         .then((res) => {
+          // 如果是新建教案，要拼接章节解析给content
           this.editModal.form = {
             ...defaultPlanForm,
+            content: this.editModal.isCreate ? res.course_chapter.map(item => item.analysis).join('</br>') : '',
             ...res,
           }
           this.editModal.active = true

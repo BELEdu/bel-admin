@@ -24,7 +24,7 @@
     </ul>
 
     <!-- 选择展示用数据，调试用 -->
-    <ul v-if="isChoice">
+    <!-- <ul v-if="isChoice">
       <br><br>
       <li><b>【 选择题选项调试用数据 】</b></li>
       <br>
@@ -37,7 +37,7 @@
       <li>如果放一行，每项最多几个字：{{ Math.floor(wordsPerLine / answerLength)}}</li>
       <li>每行放几个（图片除外）：{{choiceCountPerLine}}</li>
       <li>百分比：{{choiceItemWidth}}</li>
-    </ul>
+    </ul> -->
 
   </div>
 </template>

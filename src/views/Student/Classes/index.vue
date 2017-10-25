@@ -4,7 +4,10 @@
     <Form inline class="app-search-form">
       <!-- 关键字搜索 -->
       <Form-item>
-        <Input v-model="likeValue" placeholder="请输入关键字">
+        <Input
+          v-model="likeValue"
+          placeholder="请输入关键字"
+        >
           <Select
             v-model="likeKey"
             slot="prepend"
