@@ -38,7 +38,7 @@ export default [
 
   {
     path: EXAMINATION_SMARTEXAM.link,
-    component: views.SmartExam,
+    component: views.ExaminationSmartExam,
     meta: {
       breadcrumb: [
         EXAMINATION,
