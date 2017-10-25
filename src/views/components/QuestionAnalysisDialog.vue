@@ -5,7 +5,7 @@
     @input="toggleAnalysis"
     title="试题解析"
   >
-    <header>
+    <header v-if="Object.keys($slots).length === 0">
       <span>题目ID: {{data.question_id}}</span>
       <span>题型: {{data.question_type_name}}</span>
       <span>难度: {{data.question_difficulty_name}}</span>
@@ -13,6 +13,8 @@
       <p>来源: {{data.from_name}}</p>
       <p>知识点: {{data.knowledge_name}}</p>
     </header>
+
+    <slot></slot>
 
     <QuestionAnalysis
       :data="data"
