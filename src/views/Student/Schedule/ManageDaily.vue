@@ -42,7 +42,12 @@
     <app-pager :data="dailyList" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
 
     <!--操作弹窗-->
-    <course-modal :visible.sync="dialog.visible" :is-repeal="isRepeal" v-if="isDialogRender"></course-modal>
+    <course-modal
+      :visible.sync="dialog.visible"
+      :is-repeal="isRepeal"
+      v-if="isDialogRender"
+      @on-update="fetchData"
+    ></course-modal>
   </div>
 </template>
 

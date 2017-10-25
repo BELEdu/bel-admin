@@ -34,24 +34,29 @@
         </Form-item>
       </Col>
     </Row>
-    <Row v-if="formData.course_status === 1">
+    <Row v-if="currentCourseItem.course_status === 1">
       <Col :span="10">
-        <Form-item prop="course_chapter" label="实际上课课时：">
+        <Form-item prop="course_chapter" label="实际课时：">
           <Select v-model="formData.course_fact">
             <Option v-for="item in 16" :key="item" :disabled="item > formData.course_num" :value="item">{{ item }}</Option>
           </Select>
         </Form-item>
       </Col>
     </Row>
-    <Row v-if="formData.course_status === 1">
+    <Row v-if="currentCourseItem.course_status === 1">
       <Col>
-        <Form-item label="学员考勤：">
-          <Row>
-            <Col :span="4">
-            <Checkbox :true-value="1" :false-value="0">学员</Checkbox>
+        <Form-item label="学员考勤：" prop="attendance">
+          <Row v-for="list in formData.attendance" :key="list.student_id">
+            <Col :span="6">
+            <Checkbox
+              :true-value="1"
+              :false-value="0"
+              v-model="list.is_attend"
+              @on-change="(val) => list.is_valid = val || 1"
+            >{{list.display_name}}</Checkbox>
             </Col>
-            <Col :span="6" :offset="2">
-            <Checkbox :true-value="1" :false-value="0">算课时</Checkbox>
+            <Col :span="6" :offset="2" v-if="!list.is_attend">
+            <Checkbox :true-value="1" :false-value="0" v-model="list.is_valid">算课时</Checkbox>
             </Col>
           </Row>
         </Form-item>
@@ -68,6 +73,7 @@
    */
 
   import { mapState } from 'vuex'
+  import { STUDENT } from '@/store/mutationTypes'
 
   export default {
     name: 'confirm-modal',
@@ -77,6 +83,7 @@
         formData: {
           course_chapter: [],
           course_num: 0,
+          attendance: [],
         },
 
         formRules: {
@@ -86,16 +93,27 @@
           course_num: [
             { required: true, type: 'number', message: '实际课时不能为空' },
           ],
-
+          attendance: [
+            { required: true, type: 'array', message: '学员考勤不能为空' },
+            {
+              type: 'array',
+              validator: (rule, value, callback) => {
+                if (value.filter(({ is_attend }) => is_attend === 1).length) {
+                  callback([])
+                } else {
+                  callback(['学员考勤不能为空'])
+                }
+              },
+            },
+          ],
         },
-
-        currentChapter: [],
       }
     },
 
     computed: {
       ...mapState({
         currentCourseItem: state => state.student.schedule.currentCourseItem,
+        currentChapter: state => state.student.schedule.currentChapter,
       }),
 
       url() {
@@ -121,9 +139,20 @@
         this.$http.get(`${this.url}${this.currentCourseItem.id}`)
           .then(({ course_chapter, ...result }) => {
             this.formData = {
+              ...this.formData,
               ...result,
+              course_fact: result.course_num,
               course_chapter: course_chapter.map(({ id }) => id),
             }
+            if (result.student && result.student.length) {
+              this.formData.attendance = result.student.map(item => ({
+                student_id: item.id,
+                is_attend: 1,
+                is_valid: 1,
+                display_name: item.display_name,
+              }))
+            }
+            this.$store.dispatch(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, this.currentCourseItem)
           })
       },
 
@@ -131,9 +160,9 @@
       submit() {
         this.$refs.form.validate((valid) => {
           if (valid) {
-            const { course_chapter } = this.formData
+            const { course_chapter, student, ...arg } = this.formData
             this.$http.post(`${this.url}${this.currentCourseItem.id}`, {
-              ...this.formData,
+              ...arg,
               course_chapter: course_chapter.map(id => ({
                 id,
               })),
@@ -148,6 +177,10 @@
             this.$emit('on-reset')
           }
         })
+      },
+
+      getDisPlayName(id) {
+        return this.formData.student.find(({ student_id }) => student_id === id).display_name
       },
     },
 

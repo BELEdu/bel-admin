@@ -6,16 +6,23 @@
     :title="currentCom.title"
     :loading="formLoading"
     :width="width"
+    :ok-value="currentCom.okValue"
+    :cancel-value="currentCom.cancelValue || '取消'"
+    :ok-btn="currentCom.okBtn"
     @on-ok="onOk"
     @on-cancel="onCancel"
   >
+    <Form>
+      <app-form-alert :errors="formErrors"></app-form-alert>
+    </Form>
     <div
       :is="currentCom.view"
       v-if="!isRepeal"
       @on-success="onSuccess"
       @on-error="onError"
       @on-reset="onReset"
-    ></div>
+    >
+    </div>
     <div v-else class="text-center">撤销后，课表将回到待确认状态，是否继续？</div>
   </div>
 </template>
@@ -56,10 +63,10 @@
     data() {
       return {
         comInfo: [
-          { course_status: 0, title: '确认排课', name: 'confirm-modal', view: 'confirm-modal', okValue: '确认排课', okBtn: true, cancelBtn: true },
-          { course_status: 1, title: '确认上课', name: 'confirm-modal', view: 'confirm-modal', okValue: '确认上课', okBtn: true, cancelBtn: true },
-          { course_status: 2, title: '课堂评价', name: 'comment-modal', view: 'comment-modal', okValue: '完成评价', okBtn: true, cancelBtn: true },
-          { course_status: 3, title: '课堂评价', name: 'comment-modal', view: 'comment-modal', cancelBtn: true, cancelValue: '关闭' },
+          { course_status: 0, title: '确认排课', name: 'confirm-modal', view: 'confirm-modal', okValue: '确认排课', okBtn: true },
+          { course_status: 1, title: '确认上课', name: 'confirm-modal', view: 'confirm-modal', okValue: '确认上课', okBtn: true },
+          { course_status: 2, title: '课堂评价', name: 'comment-modal', view: 'comment-modal', okValue: '完成评价', okBtn: true },
+          { course_status: 3, title: '课堂评价', name: 'comment-modal', view: 'comment-modal', okBtn: false, cancelValue: '关闭' },
         ],
 
         parentCom: '',
@@ -114,11 +121,12 @@
 
       onReset() {
         this.formLoading = false
+        this.formErrors = {}
       },
 
       onError(errors) {
         this.errorHandler(errors)
-        this.onReset()
+        this.formLoading = false
       },
 
       onSuccess() {

@@ -28,6 +28,9 @@ export default {
     // 当前编辑的课表
     currentCourseItem: {},
 
+    // 当前班级章节数据
+    currentChapter: [],
+
   },
 
   mutations: {
@@ -49,6 +52,10 @@ export default {
 
     [STUDENT.SCHEDULE.COURSE_ITEM](state, item) {
       state.currentCourseItem = item
+    },
+
+    [STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER](state, chapterTree) {
+      state.currentChapter = chapterTree
     },
   },
 
@@ -82,6 +89,14 @@ export default {
       return Http.get(`/schedule/tip/${query}`)
         .then(({ ready_courses }) => {
           commit(STUDENT.SCHEDULE.GET_TIP, ready_courses)
+        })
+    },
+
+    // 获取当前班级数据源
+    [STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER]({ commit }, { classes_id }) {
+      return Http.get(`/plan/store_before/${classes_id}`)
+        .then(({ chapterTree }) => {
+          commit(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, chapterTree)
         })
     },
   },
