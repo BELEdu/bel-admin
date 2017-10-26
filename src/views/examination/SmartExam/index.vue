@@ -121,21 +121,10 @@
       </div>
     </app-warn-modal>
 
-    <!-- 开始测试确认弹窗 -->
-    <app-warn-modal
-      v-model="startModal.active"
-      title="开始测试"
-      :loading="startModal.loading"
-      @on-ok="startSubmit()"
-      action="确定"
-    >
-      <div class="text-center">测试编号 <span class="color-primary">{{currentNumber}}</span>， 是否确定开始测试？</div>
-    </app-warn-modal>
-
     <!-- 选择设备（开始测试）弹窗 -->
     <device-modal
       v-model="deviceModal.active"
-      :students="currentStudents"
+      :students="student_data"
       :answer-type='currentAnswerType'
       :test-number="currentNumber"
       @closeDeviceModal="deviceModal.active = false"
@@ -229,16 +218,9 @@ export default {
       currentId: null, // 当前选中的测试id
       currentNumber: '', // 当前选中的测试编号
       currentAnswerType: 1, // 当前测试的答题方式 1：线上 2：线下
-      currentStudents: [], // 参加该测试的学生信息
 
       // 删除弹窗
       deleteModal: {
-        active: false,
-        loading: false,
-      },
-
-      // 开始测试弹窗
-      startModal: {
         active: false,
         loading: false,
       },
@@ -258,6 +240,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.examination.smartexam.list,
+      student_data: state => state.examination.smartexam.student_data,
       test_type: state => state.dicts.test_type,
       test_status: state => state.dicts.test_status,
       answer_type: state => state.dicts.answer_type,
@@ -296,10 +279,9 @@ export default {
     // 打开开始测试弹窗
     openStartModal(id, number, answerType) {
       this.currentNumber = number
-      this.currentId = id
       this.currentAnswerType = answerType
 
-      this.$http.get(`/test/paper/${id}`)
+      this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, id)
         .then((res) => {
           this.currentStudents = res
           this.deviceModal.active = true
@@ -307,17 +289,6 @@ export default {
         .catch(({ message }) => {
           this.$Message.error(message)
         })
-    },
-
-    // 确认开始测试（线下）
-    startSubmit() {
-      // 这里到时候走开始线下测试store
-      this.startModal.loading = true
-      setTimeout(() => {
-        this.startModal.active = false
-        this.startModal.loading = false
-        this.$Message.warning('测试已开始')
-      }, 1500)
     },
 
     // 获取测试数据
