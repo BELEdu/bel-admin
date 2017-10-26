@@ -8,7 +8,7 @@
 // 试卷原始数据，在外面准备
 // paper: {
 //   grade_range_subject_id: null,
-//   places: [[]],
+//   campuses: [[]],
 //   grade: null,
 //   subject_type: null,
 //   paper_type: null,

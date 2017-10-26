@@ -15,7 +15,7 @@ export default {
     from: {},
 
     paper: {
-      places: [[]],
+      campuses: [[]],
       grade: null,
       subject_type: null,
       paper_type: null,

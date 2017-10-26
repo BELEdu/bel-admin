@@ -101,7 +101,7 @@ export default {
     previewModal: {
       visible: false,
       data: {
-        places: [[]],
+        campuses: [[]],
         grade: null,
         subject_type: null,
         paper_type: null,

@@ -5,8 +5,6 @@
  * @author  huojinzhao
  */
 
-import mapData from '@/assets/china.json'
-
 export default {
   name: 'PaperPreviewForm',
 
@@ -25,6 +23,8 @@ export default {
   },
 
   data: () => ({
+    // 来源
+    campuses: null,
 
     /* before：buttonRadio数据 */
 
@@ -35,9 +35,6 @@ export default {
     subjects: { label: '', data: [] },
 
     paper_type: { label: '', data: [] },
-
-    // 来源的假数据
-    mapData,
 
     // 表单验证规则
     paperRules: {
@@ -76,11 +73,13 @@ export default {
 
       return this.$http.get(url)
         .then(({
+          campuses,
           year,
           grade,
           subject_type,
           paper_type,
         }) => {
+          this.campuses = campuses
           this.year = year
           this.grade = grade
           this.paper_type = paper_type
@@ -92,19 +91,19 @@ export default {
 
     vm_addSource() {
       this.$refs.sources.validate((valid) => {
-        if (valid) this.data.places.push([])
+        if (valid) this.data.campuses.push([])
       })
     },
 
     vm_removePlace(index) {
-      this.data.places.splice(index, 1)
+      this.data.campuses.splice(index, 1)
     },
 
     /* --- Assistance --- */
 
     validateSource(index) {
       return (rule, value, callback) => {
-        if (!this.data.places[index].length) {
+        if (!this.data.campuses[index].length) {
           callback(new Error('来源信息不能为空'))
           return false
         }
@@ -120,19 +119,19 @@ export default {
     },
 
     /**
-     * 通过places[0]，兑换cascader数据的displayname
+     * 通过campuses[0]，兑换cascader数据的displayname
      *
-     * @param {Array} place - cascader绑定的值
+     * @param {Array} campuses - cascader绑定的值
      */
-    getPlaceName(index = 0, source = this.mapData) {
-      const place = source
-        .find(item => item.value === this.data.places[0][index])
+    getPlaceName(index = 0, source = this.campuses) {
+      const campus = source
+        .find(item => item.value === this.data.campuses[0][index])
 
-      if (place.children) {
-        return `${place.label}${this.getPlaceName(index + 1, place.children)}`
+      if (campus.children) {
+        return `${campus.label}${this.getPlaceName(index + 1, campus.children)}`
       }
 
-      return place.label
+      return campus.label
     },
 
     /* --- Business --- */
@@ -142,12 +141,12 @@ export default {
 
       const paper = this.data
       const display = this.getDisplayName
-      const placeName = this.data.places[0].length
+      const campusName = this.data.campuses[0].length
         ? this.getPlaceName()
         : ''
 
       paper.display_name = `${display(paper.year, this.year.data, '', '年')}`
-        + ` ${placeName}`
+        + ` ${campusName}`
         + ` ${display(paper.grade, this.grade.data)}`
         + ` ${display(paper.paper_type, this.paper_type.data)}`
         + `${display(paper.subject_type, this.subjects.data, '(', ')')}`
@@ -176,21 +175,22 @@ export default {
   <div class="paper-preview-form">
     <!-- 来源 -->
     <Form
+      v-if="campuses"
       class="paper-preview-form__source"
       :label-width="80"
       ref="sources"
-      :model="data.places | translateToObject"
+      :model="data.campuses | translateToObject"
     >
       <Form-item
-        v-for="(place, index) in data.places"
+        v-for="(campus, index) in data.campuses"
         :key="index"
         :prop="`${index}`"
         label="来源"
         :rules="[{ required: true, validator: validateSource(index) }]"
       >
         <Cascader
-          :data="mapData"
-          v-model="data.places[index]"
+          :data="campuses"
+          v-model="data.campuses[index]"
           :clearable="false"
           @input="() => vm_autoName(index === 0)"
         ></Cascader>

@@ -104,7 +104,7 @@ export default {
     // 组卷试题数据
     paper: {
       grade_range_subject_id: null,
-      places: [[]],
+      campuses: [[]],
       grade: null,
       subject_type: null,
       paper_type: null,
@@ -239,20 +239,25 @@ export default {
     },
 
     m_initTreeEntries() {
-      this.treeEntries = [
-        {
+      this.treeEntries = []
+
+      if (this.treeData.knowledge_tree) {
+        this.treeEntries.push({
           label: '按知识点',
           key: 'equal[knowledge_id]',
           tree: this.treeData.knowledge_tree,
           selectedLeafId: '',
-        },
-        {
+        })
+      }
+
+      if (this.treeData.knowledge_tree) {
+        this.treeEntries.push({
           label: '按章节',
           key: 'equal[chapter_id]',
           tree: this.treeData.chapter_tree,
           selectedLeafId: '',
-        },
-      ]
+        })
+      }
     },
 
     // 生成试卷信息，变换学科，重置选题;
@@ -269,8 +274,7 @@ export default {
     },
 
     getData(queryUrl) {
-      // route配置：this.$route.meta.getUrl
-      const host = '/question_center'
+      const host = this.$route.meta.fetchUri
 
       const url = queryUrl
         ? `${host}${queryUrl}&per_page=20`

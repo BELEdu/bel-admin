@@ -25,7 +25,7 @@ export default {
       display_name: '',
       question_types: [],
       grade_range_subject_id: null,
-      places: [[]],
+      campuses: [[]],
     },
   },
 

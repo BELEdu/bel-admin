@@ -4,35 +4,37 @@
     <Form
       class="creation-source"
       :label-width="80"
-      ref="places"
-      :model="paper.places | translateToObject"
+      ref="campuses"
+      :model="paper.campuses | translateToObject"
     >
       <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item
-        v-for="(place, index) in paper.places"
+        v-if="campus"
+        v-for="(campus, index) in paper.campuses"
         :key="index"
         :prop="`${index}`"
         label="来源"
-        :rules="[{ required: true, validator: validatePlace(index) }]"
+        :rules="[{ required: true, validator: validateCampus(index) }]"
       >
         <Cascader
-          :data="mapData"
-          v-model="paper.places[index]"
+          :data="campuses"
+          v-model="paper.campuses[index]"
           :clearable="false"
           @input="() => autoName(index === 0)"
         ></Cascader>
         <Icon
           v-show="index"
           type="android-delete"
-          @click.native="deletePlace(index)"
+          @click.native="deleteCampus(index)"
         ></Icon>
       </Form-item>
     </Form>
+
     <!-- 添加来源 -->
     <div class="creation-source__add">
       <Button
         type="dashed"
-        @click="addPlace"
+        @click="addCampus"
       >+增加来源</Button>
     </div>
 
@@ -212,7 +214,6 @@
  * @author huojinzhao
  */
 
-import mapData from '@/assets/china.json'
 import { form } from '@/mixins'
 import { GLOBAL, QUESTION } from '@/store/mutationTypes'
 import { Question, QuestionAnalysisDialog } from '@/views/components'
@@ -229,9 +230,6 @@ export default {
   },
 
   data: () => ({
-    // 模拟来源数据
-    mapData,
-
     // 题型试题渲染数据 { 总分, 索引 }
     sectionsView: [],
 
@@ -239,6 +237,10 @@ export default {
       active: false,
       data: {},
     },
+
+    /* 来源数据 */
+
+    campus: null,
 
     /* buttonRadio数据 */
 
@@ -293,12 +295,13 @@ export default {
 
       return this.$http.get(url)
         .then(({
-          // 高级搜索
+          campuses,
           year,
           grade,
           subject_type,
           paper_type,
         }) => {
+          this.campuses = campuses
           this.year = year
           this.grade = grade
           this.paper_type = paper_type
@@ -353,9 +356,9 @@ export default {
       this.$set(this.sectionsView, sindex, { score, vindex })
     },
 
-    validatePlace(index) {
+    validateCampus(index) {
       return (rule, value, callback) => {
-        if (!this.paper.places[index].length) {
+        if (!this.paper.campuses[index].length) {
           return callback(new Error('来源信息不能为空'))
         }
         return callback()
@@ -369,17 +372,17 @@ export default {
     },
 
     /**
-     * 通过places[0]，兑换cascader数据的displayname
+     * 通过campuses[0]，兑换cascader数据的displayname
      *
-     * @param {Array} place - cascader绑定的值
+     * @param {Array} campuses - cascader绑定的值
      */
-    getPlaceName(index = 0, source = this.mapData) {
-      const place = source
-        .find(item => item.value === this.paper.places[0][index])
-      if (place.children) {
-        return `${place.label}${this.getPlaceName(index + 1, place.children)}`
+    getCampusName(index = 0, source = this.campuses) {
+      const campus = source
+        .find(item => item.value === this.paper.campuses[0][index])
+      if (campus.children) {
+        return `${campus.label}${this.getCampusName(index + 1, campus.children)}`
       }
-      return place.label
+      return campus.label
     },
 
     /* --- Control --- */
@@ -388,14 +391,14 @@ export default {
       this.$router.push(`/question/paper?${this.currentSubject}`)
     },
 
-    addPlace() {
-      this.$refs.places.validate((valid) => {
-        if (valid) this.paper.places.push([])
+    addCampus() {
+      this.$refs.campuses.validate((valid) => {
+        if (valid) this.paper.campuses.push([])
       })
     },
 
-    deletePlace(index) {
-      this.paper.places.splice(index, 1)
+    deleteCampus(index) {
+      this.paper.campuses.splice(index, 1)
     },
 
     backToCompose(question_type) {
@@ -420,11 +423,11 @@ export default {
       if (!switcher) return
       const paper = this.paper
       const display = this.getDisplayName
-      const placeName = this.paper.places[0].length
-        ? this.getPlaceName()
+      const campusName = this.paper.campuses[0].length
+        ? this.getCampusName()
         : ''
       paper.display_name = `${display(paper.year, this.year.data, '', '年')}`
-        + ` ${placeName}`
+        + ` ${campusName}`
         + ` ${display(paper.grade, this.grade.data)}`
         + ` ${display(paper.paper_type, this.paper_type.data)}`
         + `${display(paper.subject_type, this.subjects.data, '(', ')')}`
@@ -471,7 +474,7 @@ export default {
 
     prePaperCreation() {
       let trigger = true
-      this.$refs.places.validate((valid) => { trigger = trigger && valid })
+      this.$refs.campuses.validate((valid) => { trigger = trigger && valid })
       this.$refs.paperConfig.validate((valid) => { trigger = trigger && valid })
       if (trigger) {
         this.createPaper()
