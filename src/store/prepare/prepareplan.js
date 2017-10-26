@@ -18,6 +18,8 @@ export default {
     plans: {
       data: [],
     },
+    // 教师姓名
+    teachername: '',
   },
 
   mutations: {
@@ -28,6 +30,10 @@ export default {
     // 教案列表
     [PREPARE.PREPAREPLAN.DETAIL.INIT](state, plans) {
       state.plans = plans
+    },
+    // 获取教师姓名
+    [PREPARE.PREPAREPLAN.TEACHERNAME](state, teachername) {
+      state.teachername = teachername
     },
   },
 

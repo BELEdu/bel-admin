@@ -42,7 +42,7 @@
 
     <!-- 标题 -->
     <Row class="app-content-header">
-      <h2 icon="">【张老师】教案管理</h2>
+      <h2 icon="">【{{currentName}}】教案管理</h2>
     </Row>
 .
     <!--教师教案表格-->
@@ -118,7 +118,16 @@ export default {
       columns: [
         { title: '班级名称', key: 'classes_name', align: 'center' },
         { title: '课序', key: 'sort_value', align: 'center', sortable: 'custom' },
-        { title: '上课内容', key: 'chapter_name', align: 'center' },
+        {
+          title: '上课内容',
+          key: 'chapter_name',
+          align: 'center',
+          render: (h, params) => h('p', {
+            domProps: {
+              innerHTML: params.row.chapter_name,
+            },
+          }),
+        },
         { title: '课堂题量', key: 'practice_immediately', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'course_status_name', align: 'center' },
         {
@@ -155,17 +164,31 @@ export default {
       list: state => state.prepare.prepareplan.plans,
       course_status: state => state.dicts.course_status,
       userId: state => state.user.id,
+      username: state => state.user.username,
+      teachername: state => state.prepare.prepareplan.teachername,
     }),
+
+    // url最后一个字段
+    urllastWord() {
+      const pathArry = this.$route.path.split('/')
+      return pathArry[pathArry.length - 1]
+    },
 
     // 教师id
     teacherId() {
-      const pathArry = this.$route.path.split('/')
-      const lastWord = pathArry[pathArry.length - 1]
       // 如果进入的入口是“我的教案”则返回当前用的id
-      if (lastWord === 'myprepareplan') {
+      if (this.urllastWord === 'myprepareplan') {
         return this.userId
       }
       return +this.$router.currentRoute.params.id
+    },
+
+    // 当前教案教师姓名
+    currentName() {
+      if (this.urllastWord === 'myprepareplan') {
+        return this.username
+      }
+      return this.teachername
     },
   },
 

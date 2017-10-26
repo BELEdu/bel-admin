@@ -85,7 +85,7 @@ export default {
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '查看', type: 'primary', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
+            { text: '查看', type: 'primary', click: row => this.goTo(row.id, row.realname) },
           ]),
         },
       ],
@@ -102,6 +102,12 @@ export default {
     // 获取教师数据
     getData(qs) {
       return this.$store.dispatch(PREPARE.PREPAREPLAN.INIT, qs)
+    },
+
+    // 查看教案
+    goTo(id, name) {
+      this.$store.commit(PREPARE.PREPAREPLAN.TEACHERNAME, name)
+      this.$router.push(`/prepare/prepareplan/${id}`)
     },
   },
 
