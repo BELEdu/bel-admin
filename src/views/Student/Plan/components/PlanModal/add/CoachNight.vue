@@ -228,7 +228,6 @@
               this.$Message.warning('无可用课时无法添加计划')
               this.$emit('on-error')
             } else {
-              // TODO 处理计划
               const { course_num, teacher_id, course_time } = this.form
               const formLen = this.formDateRange.length
               let coachListNum = Math.floor(this.courseRemain / course_num)
@@ -288,14 +287,12 @@
     mounted() {
       // 下一步
       this.$on('on-submit', (data) => {
-        // TODO 处理晚辅导计划
         this.onSubmit()
 
         this.broadcast('list-coach', 'on-submit', data)
       })
 
       this.$on('on-reset', (data) => {
-        // TODO 重置数据
         this.$refs.coachNight.resetFields()
         this.addForm.excludeDate = []
         this.$refs.addDateForm.resetFields()
