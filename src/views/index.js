@@ -116,8 +116,7 @@ export { default as StudentMyScheduleManageDaily } from './Student/Schedule/Mana
 
 // 智能测试
 export { default as ExaminationSmartExam } from './examination/SmartExam'
-export { default as ExaminationSmartExamDetail } from './examination/SmartExam/Detail'
-export { default as ExaminationSmartExamDetailCheck } from './examination/SmartExam/Detail/Check'
+export { default as ExaminationSmartExamCheck } from './examination/SmartExam/Check'
 
 // abolish 智能分析
 export { default as SmartAnalyse } from './examination/SmartAnalyse'

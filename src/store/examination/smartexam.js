@@ -14,6 +14,8 @@ export default {
     list: {
       data: [],
     },
+    // 测试的学员数据
+    student_data: [],
   },
 
   mutations: {
@@ -25,6 +27,10 @@ export default {
     [EXAMINATION.SMARTEXAM.DELETE](state, id) {
       state.list.data = state.list.data
         .filter(item => item.id !== id)
+    },
+    // 测试的学员数据
+    [EXAMINATION.SMARTEXAM.STUDENT_DATA](state, student_data) {
+      state.student_data = student_data
     },
   },
 
@@ -41,6 +47,13 @@ export default {
       return Http.delete(`/test/${id}`)
         .then(() => {
           commit(EXAMINATION.SMARTEXAM.DELETE, id)
+        })
+    },
+    // 测试的学员数据接口
+    [EXAMINATION.SMARTEXAM.STUDENT_DATA]({ commit }, id) {
+      return Http.get(`/test/paper/${id}`)
+        .then((res) => {
+          commit(EXAMINATION.SMARTEXAM.STUDENT_DATA, res)
         })
     },
   },
