@@ -122,8 +122,9 @@
         v-model="form.question_types[tindex].questions[qindex].answer_score"
       />
       <Checkbox
-        v-for="item in form.question_types[tindex].questions[qindex].question_knowledge"
+        v-for="(item,index) in form.question_types[tindex].questions[qindex].question_knowledge"
         v-model="item.right_wrong"
+        :key="index"
         :true-value="1"
         :false-value="2"
       >{{item.display_name}}</Checkbox>
@@ -237,7 +238,7 @@ export default {
     changeQuestionAnswer(value, tindex, qindex) {
       this.tindex = tindex
       this.qindex = qindex
-      console.log(`对错：${value}，tindex：${tindex}，qindex：${qindex}`)
+      // console.log(`对错：${value}，tindex：${tindex}，qindex：${qindex}`)
 
       const currentQuestion = this.form.question_types[tindex].questions[qindex]
       const { score, question_knowledge } = currentQuestion
