@@ -56,17 +56,12 @@
   import { STUDENT } from '@/store/mutationTypes'
   import { list } from '@/mixins'
   import { createButton } from '@/utils'
-
-  const courseModal = () => import('./modal')
+  import modal from './mixins/modal'
 
   export default {
     name: 'manage-daily',
 
-    mixins: [list],
-
-    components: {
-      courseModal,
-    },
+    mixins: [list, modal],
 
     data() {
       return {
@@ -177,23 +172,6 @@
           return this.$store.dispatch(STUDENT.SCHEDULE.DAILY_LIST, `${cId}${qs}`)
         }
         return false
-      },
-
-      // 操作排课
-      handlerModal(row, status = false) {
-        if (status) {
-          this.isRepeal = true
-        } else {
-          this.isRepeal = false
-        }
-        this.dialog.visible = true
-        this.isDialogRender = true
-        this.$store.commit(STUDENT.SCHEDULE.COURSE_ITEM, row)
-      },
-
-      // 撤销排课
-      repeal() {
-
       },
     },
   }

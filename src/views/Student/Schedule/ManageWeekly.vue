@@ -39,7 +39,7 @@
     <div class="manage-weekly__content">
       <Row>
         <Col :span="2" class="weekly-prev">
-          <Button type="dashed" size="small" @click="prevWeekly">
+          <Button type="dashed" size="small" @click="getPrevWeek">
             <Icon type="chevron-left"></Icon> 上一周
           </Button>
         </Col>
@@ -83,10 +83,14 @@
                       <p v-if="list.course_fact"><span class="text-right">实际课时：</span>{{list.course_fact}}</p>
                       <p><span class="text-right">上课状态：</span>{{list.course_status_name}}</p>
                       <p><span class="text-right">排课专员：</span>{{list.schedule_teacher_name}}</p>
-                      <!--评价-->
-                      <p v-if="list.course_status >= 2">
-                        <span class="text-right">评价：</span>
-                        <Button size="small" type="primary" icon="ios-chatboxes-outline" @click="comment(list)"></Button>
+                      <!--操作-->
+                      <p>
+                        <span class="text-right">操作：</span>
+                        <Button size="small" v-if="list.schedule_operation.confirm" type="primary" @click="handlerModal(list)">确认排课</Button>
+                        <Button size="small" v-if="list.schedule_operation.finish" type="primary" @click="handlerModal(list)">确认上课</Button>
+                        <Button size="small" v-if="list.schedule_operation.cancel" type="primary" @click="handlerModal(list, true)">撤销</Button>
+                        <Button size="small" v-if="list.schedule_operation.comment" type="primary" @click="handlerModal(list)">评价</Button>
+                        <Button size="small" v-if="list.schedule_operation.showComment" type="primary" @click="handlerModal(list)">查看评价</Button>
                       </p>
                     </div>
                   </Tooltip>
@@ -95,8 +99,8 @@
             </Col>
           </Row>
         </Col>
-        <Col :span="2" class="weekly-next" @click="nextWeekly">
-          <Button type="dashed" size="small">
+        <Col :span="2" class="weekly-next">
+          <Button type="dashed" size="small" @click="getNextWeek">
             下一周 <Icon type="chevron-right"></Icon>
           </Button>
         </Col>
@@ -108,6 +112,14 @@
         <span class="finish">已上课</span>
       </div>
     </div>
+
+    <!--操作弹窗-->
+    <course-modal
+      :visible.sync="dialog.visible"
+      :is-repeal="isRepeal"
+      v-if="isDialogRender"
+      @on-update="fetchData"
+    ></course-modal>
   </div>
 </template>
 
@@ -124,11 +136,12 @@
   import { startOfWeek, endOfWeek, differenceInHours } from 'date-fns'
   import { formatDate, setTime } from '@/utils/date'
   import week from './mixins/week'
+  import modal from './mixins/modal'
 
   export default {
     name: 'manage-weekly',
 
-    mixins: [list, week],
+    mixins: [list, week, modal],
 
     data() {
       return {
@@ -198,21 +211,6 @@
         // 与最小时间比较08:00
         const dis = differenceInHours(setTime(rangTime.split('-')[0]), setTime('08:00'))
         return `${(dis >= 0 ? dis : 0) * 30}px`
-      },
-
-      // 操作弹窗
-      handlerDialog() {
-        // TODO 操作弹窗
-      },
-
-      // 上一周
-      prevWeekly() {
-        // TODO 上一周
-      },
-
-      // 下一周
-      nextWeekly() {
-        // TODO 下一周
       },
     },
   }

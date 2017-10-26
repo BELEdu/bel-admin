@@ -38,6 +38,7 @@
   import { emitter, form } from '@/mixins'
 
   const confirmModal = () => import('./confirm')
+  const commentModal = () => import('./comment')
 
   export default {
     name: 'schedule-modal',
@@ -46,6 +47,7 @@
 
     components: {
       confirmModal,
+      commentModal,
     },
 
     props: {
