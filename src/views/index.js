@@ -143,5 +143,8 @@ export { default as Smartquestion } from './Prepare/Smartquestion'
 export { default as PrepareQuestion } from './Prepare/Question'
 export { default as PreparePaperPreview } from './Prepare/Question/PaperPreview'
 
+// 业务配置
+export { default as SettingSchool } from './Setting/School'
+
 // 404页面
 export { default as NotFound } from './NotFound'

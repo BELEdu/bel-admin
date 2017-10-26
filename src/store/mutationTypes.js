@@ -195,3 +195,10 @@ export const PREPARE = {
     },
   },
 }
+
+export const SETTING = {
+  // 学校管理
+  SCHOOL: {
+    LIST: 'SETTING.SCHOOL.LIST',
+  },
+}
