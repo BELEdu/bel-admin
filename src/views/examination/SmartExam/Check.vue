@@ -1,12 +1,24 @@
 <template>
-  <div class="clearfix">
+  <div
+    class="smartexam-check clearfix"
+    v-if="form"
+  >
 
     <!-- 阅卷区域 -->
     <div class="smartexam-check__aside left">
 
       <!-- 学员列表 -->
-      <Card dis-hover>
+      <Card class="smartexam-check__aside__card" dis-hover>
         <p slot="title">学员列表</p>
+        <!-- 小贴士 -->
+        <div class="smartexam-check__aside__tips">
+          <Tag>未考试</Tag>
+          <Tag type="border">待交卷</Tag>
+          <Tag type="border" color="blue">待阅卷</Tag>
+          <Tag color="green">已阅卷</Tag>
+          <Tag color="blue">已选中</Tag>
+        </div>
+        <!-- 学员按钮 -->
         <Row :gutter="15">
           <Col
             span="12"
@@ -18,13 +30,13 @@
               :type="buttonFormat(item.test_status,item.id)"
               long
               class="text-right"
-              :disabled="item.test_status === 1"
+              :disabled="item.test_status === 2"
               @click="changeStudentTestId(item.id)"
             >
               <!-- 姓名 -->
               <span class="left">{{item.id}}</span>
               <!-- 未选择设备显示未考试 -->
-              <span v-if="item.test_status === 1">(未考)</span>
+              <span v-if="item.test_status === 2">(未考)</span>
               <!-- 待阅卷和已阅卷显示得分 -->
               <span >{{item.total_score}}分</span>
               <!-- 已阅卷显示打钩 -->
@@ -34,11 +46,14 @@
         </Row>
       </Card>
 
-      <br>
-
       <!-- 试卷试题 -->
       <Card dis-hover>
-        <p slot="title">试题（{{currentStudentName}}）</p>
+        <p slot="title">
+          试题（{{currentStudentName}}）
+          <span class="right">
+            得分：<span class="color-error">{{currentStudentTotalScore}} / {{currentPaperTotalScore}}</span>
+          </span>
+        </p>
         <Form
           ref="form"
           class="smartexam-check__form"
@@ -46,21 +61,26 @@
           :rules="rules"
           :label-width="0"
         >
-          <!-- 题型 -->
+          <app-form-alert :errors="formErrors"></app-form-alert>
+
+          <!-- 题型区域 -->
           <div
             v-for="(question_type,tindex) in form.question_types"
             :key="tindex"
           >
-            <!-- 题型和得分 -->
+            <!-- 题型名称 & 题型得分 -->
             <p class="smartexam-check__form__title">
               {{tindex+1}}.{{question_type.display_name}}
-              <span class="color-primary">（得分：{{questionTypeScoreFormat(question_type.questions)}}分）</span>
+              <span class="color-primary ">
+                （得分：{{questionTypeScoreFormat(question_type.questions)}} / {{question_type.total_score}}）
+              </span>
             </p>
             <!-- 题目 -->
             <Row>
               <Col span="12"
                 v-for="(question,qindex) in question_type.questions"
                 :key="qindex"
+                class="smartexam-check__form__item"
               >
                 <Form-item>
                   <!-- 题目下标 -->
@@ -89,17 +109,22 @@
             </Row>
           </div>
 
+          <!-- 提交阅卷 -->
           <Button
+            class="smartexam-check__form__submit"
             type="primary"
             long
-            @click="beforeSubmit"
+            :loading="formLoading"
+            @click="submit"
           >提交阅卷</Button>
 
-          <!-- <Button
+          <Button
+            class="smartexam-check__form__submit"
             type="warning"
             long
-            @click="beforeSubmit"
-          >未交卷</Button> -->
+            :loading="formLoading"
+            @click="submit"
+          >未交卷</Button>
 
         </Form>
       </Card>
@@ -109,25 +134,47 @@
     <!-- 试卷区域 -->
     <div class="smartexam-check__sidebar">
 
+      <!-- 试卷公共头部 -->
+      <paper-preview-header
+        :data="form"
+      ></paper-preview-header>
+
+      <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
+      <paper-preview-detail
+        :data="form"
+      ></paper-preview-detail>
     </div>
 
+    <!-- 半对错得分弹窗 -->
     <Modal
       v-model="modal.check"
       title="得分与错误知识点"
       width="320"
+      class="smartexam-check__modal"
     >
+      <!-- 得分 -->
+      <p class="color-primary">请给出该题得分（总分：{{form.question_types[tindex].questions[qindex].score}}）</p>
       <InputNumber
+        :step="1"
         :min="0"
         :max="form.question_types[tindex].questions[qindex].score"
         v-model="form.question_types[tindex].questions[qindex].answer_score"
       />
-      <Checkbox
-        v-for="(item,index) in form.question_types[tindex].questions[qindex].question_knowledge"
-        v-model="item.right_wrong"
-        :key="index"
-        :true-value="1"
-        :false-value="2"
-      >{{item.display_name}}</Checkbox>
+      <!-- 关联知识点 -->
+      <p class="color-primary">请选择该题错误的知识点</p>
+      <ul>
+        <li
+          v-for="(item,index) in form.question_types[tindex].questions[qindex].question_knowledge"
+          :key="index"
+        >
+          <Checkbox
+            v-model="item.right_wrong"
+            :true-value="2"
+            :false-value="1"
+          >{{item.display_name}}</Checkbox>
+        </li>
+      </ul>
+
     </Modal>
 
   </div>
@@ -143,19 +190,25 @@
 import { form } from '@/mixins'
 import { mapState } from 'vuex'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
-
+import PaperPreviewDetail from './components/PaperPreviewDetail'
+import PaperPreviewHeader from './components/PaperPreviewHeader'
 
 export default {
+  name: 'app-examination-smartexam-check',
 
   mixins: [form],
 
+  components: {
+    PaperPreviewHeader,
+    PaperPreviewDetail,
+  },
+
   data() {
     return {
-      button1: 0,
 
       currentStudentTestId: null, // 当前选中的测试学员的测试id
 
-      form: {},
+      form: null,
 
       rules: {},
 
@@ -166,49 +219,6 @@ export default {
       modal: {
         check: false,
       },
-
-      // student_data2: [
-      //   {
-      //     id: 101,
-      //     total_score: 0,
-      //     test_status: 1,
-      //     student: {
-      //       display_name: '未考试',
-      //     },
-      //   },
-      //   {
-      //     id: 102,
-      //     total_score: 10,
-      //     test_status: 2,
-      //     student: {
-      //       display_name: '待阅卷',
-      //     },
-      //   },
-      //   {
-      //     id: 103,
-      //     total_score: 79,
-      //     test_status: 3,
-      //     student: {
-      //       display_name: '已阅卷',
-      //     },
-      //   },
-      //   {
-      //     id: 104,
-      //     total_score: 0,
-      //     test_status: 4,
-      //     student: {
-      //       display_name: '参加未提交',
-      //     },
-      //   },
-      //   {
-      //     id: 105,
-      //     total_score: 20,
-      //     test_status: 2,
-      //     student: {
-      //       display_name: '待阅卷',
-      //     },
-      //   },
-      // ],
     }
   },
 
@@ -231,9 +241,61 @@ export default {
       return ''
     },
 
+    // 当前学员的所有试题组成的数组
+    currentQuestionArray() {
+      return this.form.question_types
+        .map(question_type => question_type.questions)
+        .reduce((acc, arr) => [...acc, ...arr], [])
+    },
+
+    // 当前选中的学员的得分总分
+    currentStudentTotalScore() {
+      if (this.currentQuestionArray) {
+        return this.currentQuestionArray
+          .map(question => question.answer_score)
+          .reduce((total, score) => total + score, 0)
+      }
+      return 0
+    },
+
+    // 当前选中的学员的试卷总分
+    currentPaperTotalScore() {
+      if (this.form.question_types) {
+        return this.form.question_types
+          .map(question_type => question_type.total_score)
+          .reduce((total, score) => total + score, 0)
+      }
+      return 0
+    },
+
+    // 是否已经阅完了所有的题目
+    needToCheckContinue() {
+      return this.currentQuestionArray
+        .map(question => question.answer_right_wrong)
+        .some(item => item === 0)
+    },
   },
 
   methods: {
+    // 提交阅卷
+    submit() {
+      if (this.needToCheckContinue) {
+        this.$Message.error('尚未批改全部试题！')
+      } else {
+        this.formLoading = true
+        this.$http.post(`/test/doinspection/${this.currentStudentTestId}`, this.form)
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
+    },
+
+    // 提交成功回调
+    successHandler() {
+      this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
+      this.formLoading = false
+      this.$Message.success('提交成功！')
+    },
+
     // 批改答案
     changeQuestionAnswer(value, tindex, qindex) {
       this.tindex = tindex
@@ -259,9 +321,10 @@ export default {
           }))
           break
         case 3:
+          currentQuestion.answer_score = 0
           currentQuestion.question_knowledge = question_knowledge.map(item => ({
             ...item,
-            right_wrong: item.right_wrong === 0 ? 2 : item.right_wrong,
+            right_wrong: 1,
           }))
           this.modal.check = true
           break
@@ -276,7 +339,7 @@ export default {
         case 4:
           return true
         default:
-          return true
+          return false
       }
     },
 
@@ -296,8 +359,12 @@ export default {
 
     // 题型得分求和
     questionTypeScoreFormat(questions) {
-      // eslint-disable-next-line
-      return eval(questions.map(item => item.answer_score).join('+'))
+      if (questions) {
+        return questions
+          .map(question => question.answer_score)
+          .reduce((total, score) => total + score, 0)
+      }
+      return 0
     },
 
     // 学员测试状态 1：待测试（未考试，未选择设备） 2：待阅卷 3：已阅卷 4：待提交
@@ -306,8 +373,12 @@ export default {
         return 'primary'
       }
       switch (test_status) {
-        case 1:
+        // 待阅卷
+        case 0:
           return 'ghost'
+        // 已阅卷
+        case 1:
+          return 'success'
         case 2:
           return 'ghost'
         case 3:
@@ -315,11 +386,11 @@ export default {
         case 4:
           return 'dashed'
         default:
-          return 'error'
+          return 'ghost'
       }
     },
 
-    // 切换学员测试
+    // 切换测试学员
     changeStudentTestId(student_test_id) {
       this.currentStudentTestId = student_test_id
       this.getPaperData(student_test_id)
@@ -334,14 +405,13 @@ export default {
     },
   },
 
-
   created() {
     this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
       .then(() => {
         // 这里还有待优化，先取第一个学生
-        const firstId = this.student_data[0].id
-        this.currentStudentTestId = firstId
-        this.getPaperData(firstId)
+        const firstStudentId = this.student_data[0].id
+        this.currentStudentTestId = firstStudentId
+        this.getPaperData(firstStudentId)
           .then(() => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
           })
@@ -354,11 +424,19 @@ export default {
 <style lang="less">
 .smartexam-check {
   &__aside {
-    width: 360px;
-    padding-right: 20px;
+    width: 366px;
+    padding-right: 30px;
 
     &__btn{
-      margin-bottom: 15px;
+      margin: 7.5px 0;
+    }
+
+    &__card{
+      margin-bottom: 20px;
+    }
+
+    &__tips{
+      margin-bottom: 10px;
     }
   }
 
@@ -377,6 +455,23 @@ export default {
 
     .ivu-radio-group-button.ivu-radio-group-small .ivu-radio-wrapper{
        padding: 0 8px;
+    }
+
+    &__item{
+      padding-left: 12px;
+    }
+
+    &__submit{
+      margin-top: 15px;
+    }
+  }
+
+  &__modal{
+    .ivu-input-number {
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 10px;
     }
 
   }
