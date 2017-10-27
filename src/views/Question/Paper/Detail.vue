@@ -5,12 +5,13 @@
   >
     <header>
       <h2>{{paper.display_name}}</h2>
-      <span>年级: {{paper.grade_name}}</span>
+      <span>年份: {{paper.year}}</span>
+      <span>| 年级: {{paper.grade_name}}</span>
       <span>| 类型: {{paper.paper_type_name}}</span>
       <span>| 区域: {{paper.area_name}}</span>
-      <span>| 年份: {{paper.year}}</span>
       <span>| 题数: {{paper.question_count}}</span>
-      <span>总分: {{paper.total_score}}分</span>
+      <span>| 总分: {{paper.total_score}}分</span>
+      <span>| 考试时长: {{paper.exam_time}}分钟</span>
     </header>
     <article>
       <div
