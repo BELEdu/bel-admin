@@ -17,6 +17,10 @@ const EXAMINATION_SMARTEXAM_CHECK = {
   name: '阅卷',
   link: '/examination/smartexam/:testid/check',
 }
+const EXAMINATION_SMARTEXAM_PREVIEW = {
+  name: '查看试卷',
+  link: '/examination/smartexam/:testid/preview',
+}
 
 const EXAMINATION_WRONGQUESTION = {
   name: '错题管理',
@@ -44,6 +48,17 @@ export default [
         EXAMINATION,
         EXAMINATION_SMARTEXAM,
         EXAMINATION_SMARTEXAM_CHECK,
+      ],
+    },
+  },
+  {
+    path: EXAMINATION_SMARTEXAM_PREVIEW.link,
+    component: views.ExaminationSmartExamPreview,
+    meta: {
+      breadcrumb: [
+        EXAMINATION,
+        EXAMINATION_SMARTEXAM,
+        EXAMINATION_SMARTEXAM_PREVIEW,
       ],
     },
   },

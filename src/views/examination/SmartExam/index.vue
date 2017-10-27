@@ -193,7 +193,7 @@ export default {
           align: 'center',
           render: createButton([
             { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id, row.test_number) },
-            { text: '查看试卷', type: 'primary', click: row => this.$router.push(`/prepare/prepareplan/${row.id}`) },
+            { text: '查看试卷', type: 'primary', click: row => this.$router.push(`/examination/smartexam/${row.id}/preview`) },
             { text: '阅卷', type: 'warning', click: row => this.$router.push(`/examination/smartexam/${row.id}/check`) },
             { text: '开始测试', type: 'success', click: row => this.openStartModal(row.id, row.test_number, row.answer_type) },
           ]),
