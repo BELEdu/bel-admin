@@ -127,7 +127,7 @@
               },
               { text: '删除',
                 isShow: ({ row }) => row.operation.delete,
-                type: 'primary',
+                type: 'error',
                 click: (row) => {
                   this.deleteHandler(row)
                 },
