@@ -48,7 +48,7 @@
         <h2><Icon type="ios-browsers"/> 班级管理</h2>
       </Col>
       <Col>
-        <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级（旧）</Button>
+        <!-- <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级（旧）</Button> -->
         <Button type="primary" @click="openEditModal('add')" >添加班级</Button>
       </Col>
     </Row>
@@ -90,6 +90,7 @@
       :isReview="editModal.isReview"
       :productList="productList"
       :teacherList="teacherList"
+      :teachMaterialList="teachMaterialList"
       :courseList="courseList"
       @closeEditModal="editModal.active = false"
       @update="fetchData"
@@ -145,6 +146,7 @@ export default {
           title: '班级名称',
           key: 'classes_name',
           align: 'center',
+          width: 320,
           render: (h, params) => {
             const { classes_name } = params.row
             return h('Tooltip', {
@@ -156,14 +158,14 @@ export default {
             }, classes_name)
           },
         },
-        { title: '教材版本', key: 'teach_material_name', align: 'center', width: 100 },
-        { title: '排课专员', key: 'customer_relationships_name', align: 'center', width: 110 },
+        { title: '教材版本', key: 'teach_material_name', align: 'center' },
+        { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
         { title: '教师', key: 'teacher_item', align: 'center' },
-        { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
-        { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 130, sortable: 'custom' },
-        { title: '计划课时', key: 'course_total', align: 'center', width: 100, sortable: 'custom' },
-        { title: '创建日期', key: 'created_at', align: 'center', width: 140, sortable: 'custom' },
-        { title: '状态', key: 'classes_status_name', align: 'center', width: 100 },
+        // { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
+        // { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 130, sortable: 'custom' },
+        { title: '计划课时', key: 'course_total', align: 'center', sortable: 'custom' },
+        { title: '创建日期', key: 'created_at', align: 'center', sortable: 'custom' },
+        { title: '状态', key: 'classes_status_name', align: 'center' },
         // {
         //   title: '教师',
         //   key: 'teacher_item',
@@ -186,12 +188,10 @@ export default {
           title: '操作',
           key: 10,
           align: 'center',
-          width: 180,
           render: createButton([
             { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
             { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
             { text: '查看', type: 'primary', click: row => this.openEditModal('review', row.id) },
-            { text: '编辑', type: 'primary', click: row => this.$router.push(`/student/classes/edit/${row.id}`) },
           ]),
         },
       ],
@@ -209,6 +209,7 @@ export default {
       productList: [], // 产品数据源
       teacherList: [], // 教师数据源
       courseList: [], // 排课专员数据源
+      teachMaterialList: {}, // 教材版本数据源
 
       editModal: {
         active: false, // 模态框控制
@@ -293,8 +294,9 @@ export default {
     // 获取产品数据源
     getProductList() {
       this.$http.get('/contract_step3?sale_status=1')
-        .then(({ product_list }) => {
+        .then(({ product_list, teach_material_list }) => {
           this.productList = product_list
+          this.teachMaterialList = teach_material_list
         })
     },
 
@@ -306,7 +308,7 @@ export default {
         })
     },
 
-    // 获取排课专员数据源
+    // 获取排课专员数据源（先取学管师）
     getCourseList() {
       this.$http.get('/teacher_list?attr=is_student_admin')
         .then((res) => {

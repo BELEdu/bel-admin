@@ -35,7 +35,7 @@
           placeholder="请选择教材"
         >
           <Option
-            v-for="material in teach_material"
+            v-for="material in currentTeachMaterialList"
             :value="material.value"
             :key="material.display_name"
           >{{ material.display_name }}</Option>
@@ -168,6 +168,10 @@ export default {
       type: Array,
       required: true,
     },
+    teachMaterialList: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -249,8 +253,22 @@ export default {
       return this.isEdit || this.isReview
     },
 
-    productId() {
+    productId() { // 已选中的产品id
       return this.form.product_id ? this.form.product_id : null
+    },
+
+    currentProductSubject() { // 已选中的产品的班级学科id
+      if (this.productId) {
+        return this.productList.find(item => item.id === this.productId).grade_range_subject_id
+      }
+      return null
+    },
+
+    currentTeachMaterialList() { // 已选中的产品对应的班级学科的教材版本
+      if (this.currentProductSubject) {
+        return this.teachMaterialList[this.currentProductSubject]
+      }
+      return null
     },
   },
 
@@ -315,28 +333,15 @@ export default {
 
     // 根据产品和班级筛选出符合条件可以进班的学生
     getStudentList(productId) {
-      if (this.hasData) {
-        // 这里到时候要加上班级id
-        this.$http.get(`/student/student_product/${productId}`)
-          .then((res) => {
-            this.studentList = res
-            if (res.length > 0) {
-              this.showStudentSelect = true
-            } else {
-              this.showStudentSelect = false
-            }
-          })
-      } else {
-        this.$http.get(`/student/student_product/${productId}`)
-          .then((res) => {
-            this.studentList = res
-            if (res.length > 0) {
-              this.showStudentSelect = true
-            } else {
-              this.showStudentSelect = false
-            }
-          })
-      }
+      this.$http.get(`/student/student_product/${productId}`)
+        .then((res) => {
+          this.studentList = res
+          if (res.length > 0) {
+            this.showStudentSelect = true
+          } else {
+            this.showStudentSelect = false
+          }
+        })
 
       // 记得要重置数组
       // this.test = []
