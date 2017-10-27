@@ -95,6 +95,7 @@
           @change="autoName"
         />
       </Form-item>
+      <!-- 试卷标题 -->
       <Form-item
         class="creation-info__title"
         label="试卷标题"
@@ -103,6 +104,18 @@
         <Input
           v-model="paper.display_name"
         ></Input>
+      </Form-item>
+      <!-- 考试时长 -->
+      <Form-item
+        class="creation-info__duration"
+        label="考试时长"
+        prop="exam_time"
+      >
+        <InputNumber
+          v-model="paper.exam_time"
+          :min="0"
+        ></InputNumber>
+        <span>分钟</span>
       </Form-item>
     </Form>
 
@@ -268,6 +281,9 @@ export default {
       ],
       display_name: [
         { required: true, message: '必须填写试卷标题' },
+      ],
+      exam_time: [
+        { required: true, message: '必须填写考试时长' },
       ],
     },
 
@@ -577,6 +593,14 @@ export default {
         & .ivu-input-wrapper {
           margin-left: 8px;
           width: 500px;
+        }
+      }
+
+      &__duration {
+
+        & .ivu-input-number {
+          margin: 0 8px;
+          width: 200px;
         }
       }
     }

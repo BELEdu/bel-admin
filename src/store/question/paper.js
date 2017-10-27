@@ -26,6 +26,7 @@ export default {
       question_types: [],
       grade_range_subject_id: null,
       campuses: [[]],
+      exam_time: 0,
     },
   },
 

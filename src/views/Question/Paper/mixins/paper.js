@@ -21,6 +21,7 @@ export default {
       paper_type: null,
       year: null,
       display_name: '',
+      exam_time: 0,
       question_types: [],
     },
   }),
