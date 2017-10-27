@@ -180,6 +180,7 @@
       // 获取班级周课表数据
       getData(qs, to) {
         // 默认请求当天所属一周开始结束日期
+        this.startDate = formatDate(startOfWeek(this.baseDate, { weekStartsOn: 1 }))
         const query = to.query['between[course_date]'] ? qs : this.parse({ ...to.query,
           'between[course_date]': [
             formatDate(startOfWeek(new Date(), { weekStartsOn: 1 })),
@@ -299,6 +300,7 @@
 
       &__course {
         height: calc(8 * 60px);
+        max-height: calc(8 * 60px);
         position: relative;
 
         &-time {
@@ -323,6 +325,7 @@
         }
 
         &-list {
+          max-height: calc(8 * 60px);
           color: #fff;
           border-radius: 4px 4px 0 0;
           background-color: @cancel-color;

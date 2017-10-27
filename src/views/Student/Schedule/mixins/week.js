@@ -37,9 +37,8 @@ export default {
     // 根据baseDate计算出一周的首天与末天，并赋值给query
     baseDate(val) {
       const date = val || new Date()
-      this.startDate = formatDate(startOfWeek(date, { weekStartsOn: 1 }))
       this.query['between[course_date]'] = [
-        this.startDate,
+        formatDate(startOfWeek(date, { weekStartsOn: 1 })),
         endOfWeek(date, { weekStartsOn: 1 }),
       ]
     },

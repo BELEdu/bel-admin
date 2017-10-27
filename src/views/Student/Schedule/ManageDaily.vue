@@ -116,7 +116,7 @@
               },
               { text: '撤销',
                 isShow: ({ row }) => row.schedule_operation.cancel,
-                type: 'primary',
+                type: 'warning',
                 click: (row) => {
                   this.handlerModal(row, true)
                 },
