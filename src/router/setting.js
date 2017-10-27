@@ -18,4 +18,26 @@ export default [
       ],
     },
   },
+  {
+    path: '/setting/classroom',
+    name: 'SettingClassroom',
+    component: views.SettingClassroom,
+    meta: {
+      breadcrumb: [
+        { name: '业务配置' },
+        { name: '教室管理', link: '/setting/classroom' },
+      ],
+    },
+  },
+  {
+    path: '/setting/equipment',
+    name: 'SettingEquipment',
+    component: views.SettingEquipment,
+    meta: {
+      breadcrumb: [
+        { name: '业务配置' },
+        { name: '设备管理', link: '/setting/equipment' },
+      ],
+    },
+  },
 ]

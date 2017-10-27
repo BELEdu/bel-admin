@@ -145,6 +145,8 @@ export { default as PreparePaperPreview } from './Prepare/Question/PaperPreview'
 
 // 业务配置
 export { default as SettingSchool } from './Setting/School'
+export { default as SettingClassroom } from './Setting/Classroom'
+export { default as SettingEquipment } from './Setting/Classroom/Equipment'
 
 // 404页面
 export { default as NotFound } from './NotFound'
