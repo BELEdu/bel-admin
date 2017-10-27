@@ -1,7 +1,8 @@
 <template>
   <Cascader
-    :data="mapdata" :placeholder="placeholder"
+    :data="mapData" :placeholder="placeholder"
     :value="area" @on-change="changeValue"
+    :change-on-select="changeOnSelect"
    ></Cascader>
 </template>
 
@@ -25,11 +26,19 @@ export default {
       type: String,
       default: '请选择地区...',
     },
+    changeOnSelect: {
+      type: Boolean,
+      default: false,
+    },
+    level: {
+      type: Number,
+      default: 3,
+    },
   },
 
   data() {
     return {
-      mapdata,
+      mapData: [],
     }
   },
 
@@ -43,6 +52,12 @@ export default {
     },
   },
 
+  watch: {
+    level() {
+      this.setMapData()
+    },
+  },
+
   methods: {
     changeValue(nv) {
       const value = nv.map(item => parseInt(item, 10))
@@ -51,6 +66,41 @@ export default {
     decodeArea(data) {
       return data.map(item => item.toString())
     },
+
+    // 过滤层级
+    filterData(child, level = 1, data = []) {
+      // eslint-disable-next-line
+      let pushData = data
+      child.forEach(({ children = [], ...item }, key) => {
+        if (level <= this.level) {
+          let currentData = {}
+          if (level === 1) {
+            pushData.push({ children: [], ...item })
+            currentData = pushData[key]
+          } else {
+            pushData.children.push({ children: [], ...item })
+            currentData = pushData.children[key]
+          }
+          if (children.length) {
+            this.filterData(children, level + 1, currentData)
+          }
+        }
+      })
+      this.mapData = [...pushData]
+    },
+
+    // 设置地区数据
+    setMapData() {
+      if (this.level === 3) {
+        this.mapData = [...mapdata]
+      } else {
+        this.filterData(mapdata)
+      }
+    },
+  },
+
+  mounted() {
+    this.setMapData()
   },
 }
 </script>
