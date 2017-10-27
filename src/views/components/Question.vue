@@ -3,6 +3,9 @@
     <!-- 索引 -->
     <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span>
 
+    <!-- 分数 -->
+    <span class="left" v-if="score || score === 0 ">（{{score}}分）&nbsp;&nbsp;</span>
+
     <!-- 题目 -->
     <article
       class="clearfix"
@@ -65,6 +68,9 @@ export default {
       default: 500,
     },
     index: {
+      type: Number,
+    },
+    score: {
       type: Number,
     },
   },
