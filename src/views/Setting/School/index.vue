@@ -1,9 +1,8 @@
 <template>
   <div class="setting-school">
     <Form inline class="app-search-form">
-      <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item>
-        <app-map-cascader v-model="query['equal[areas_code]']" change-on-select></app-map-cascader>
+        <app-map-cascader v-model="areaCode" :level="2"></app-map-cascader>
       </Form-item>
       <Form-item>
         <Input v-model="query['equal[display_name]']" placeholder="请输入学校名称"/>
@@ -36,8 +35,9 @@
       @on-ok="addSubmit"
     >
       <Form :model="dialog.addForm" ref="addForm" :rules="dialog.rulesForm" class="setting-school__dialog">
+        <app-form-alert :errors="formErrors"></app-form-alert>
         <FormItem prop="area" label="地区">
-          <app-map-cascader v-model="dialog.addForm.area" change-on-select :tree="2"></app-map-cascader>
+          <app-map-cascader v-model="dialog.addForm.area" :level="2"></app-map-cascader>
         </FormItem>
         <FormItem prop="displayName" label="输入学校名称<每行新增一个学校>">
           <Input
@@ -54,10 +54,12 @@
       title="编辑学校"
       v-model="dialog.edit"
       :loading="dialog.editLoading"
+      @on-ok="editSubmit"
     >
       <Form :model="dialog.editForm" ref="editForm" :rules="dialog.rulesForm" class="setting-school__dialog">
+        <app-form-alert :errors="formErrors"></app-form-alert>
         <FormItem prop="area" label="地区">
-          <app-map-cascader v-model="dialog.editForm.area" change-on-select :tree="2"></app-map-cascader>
+          <app-map-cascader v-model="dialog.editForm.area" :level="2"></app-map-cascader>
         </FormItem>
         <FormItem prop="displayName" label="输入学校名称<每行新增一个学校>">
           <Input
@@ -67,6 +69,16 @@
         </FormItem>
       </Form>
     </app-form-modal>
+
+    <!--删除-->
+    <app-warn-modal
+      title="删除学校"
+      v-model="dialog.delete"
+      :loading="dialog.deleteLoading"
+      @on-ok="deleteForm"
+    >
+      <div class="text-center">该学校删除后将无法恢复，是否继续删除？</div>
+    </app-warn-modal>
   </div>
 </template>
 
@@ -91,8 +103,12 @@
     data() {
       return {
         qurey: {
-          'equal[areas_code]': [],
+          'equal[province_code]': '',
+          'equal[city_code]': '',
+          'equal[display_name]': '',
         },
+
+        areaCode: [],
 
         columns: [
           { title: '学校名称', key: 'display_name', align: 'center' },
@@ -112,8 +128,8 @@
               { text: '删除',
                 isShow: ({ row }) => row.operation.delete,
                 type: 'primary',
-                click: () => {
-
+                click: (row) => {
+                  this.deleteHandler(row)
                 },
               },
             ]),
@@ -157,10 +173,15 @@
 
           edit: false,
           editLoading: false,
+          editItem: {},
           editForm: {
             area: [],
             displayName: '',
           },
+
+          delete: false,
+          deleteLoading: false,
+          deleteItem: {},
         },
       }
     },
@@ -169,6 +190,13 @@
       ...mapState({
         list: state => state.setting.school.list,
       }),
+    },
+
+    watch: {
+      areaCode(val) {
+        this.query['equal[province_code]'] = val[0] || ''
+        this.query['equal[city_code]'] = val[1] || ''
+      },
     },
 
     methods: {
@@ -215,6 +243,7 @@
 
       // 编辑学校
       edit(item) {
+        this.dialog.editItem = { ...item }
         this.dialog.edit = true
         this.$http.get(`/setting/school/${item.id}`)
           .then(({ province_code, city_code, display_name }) => {
@@ -231,7 +260,62 @@
 
       // 更新学校
       editSubmit() {
+        this.$refs.editForm.validate((valid) => {
+          const { displayName, area } = this.dialog.editForm
+          const [province_code, city_code] = area
+          if (valid && trim(displayName)) {
+            this.dialog.editLoading = true
+            this.$http.patch(`/setting/school/${this.dialog.editItem.id}`, {
+              id: this.dialog.editItem.id,
+              province_code,
+              city_code,
+              display_name: displayName,
+            })
+              .then(() => {
+                this.$Message.success({
+                  content: '编辑成功',
+                  onClose: () => {
+                    this.$refs.editForm.resetFields()
+                    this.dialog.editLoading = false
+                    this.dialog.edit = false
+                    this.dialog.editItem = {}
+                    this.fetchData()
+                  },
+                })
+              })
+              .catch((errors) => {
+                this.dialog.editLoading = false
+                this.errorHandler(errors)
+              })
+          }
+        })
+      },
 
+      // 删除操作
+      deleteHandler(item) {
+        this.dialog.deleteItem = item
+        this.dialog.delete = true
+      },
+
+      // 删除学校
+      deleteForm() {
+        this.dialog.deleteLoading = true
+        this.$http.delete(`/setting/school/${this.dialog.deleteItem.id}`)
+          .then(() => {
+            this.$Message.success({
+              content: '删除成功',
+              onClose: () => {
+                this.dialog.deleteLoading = false
+                this.dialog.delete = false
+                this.dialog.deleteItem = {}
+                this.fetchData()
+              },
+            })
+          })
+          .catch((errors) => {
+            this.dialog.deleteLoading = false
+            this.errorHandler(errors)
+          })
       },
     },
 
