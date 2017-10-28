@@ -19,7 +19,7 @@
         <Select
           placeholder="请选择......"
           v-model="fdata.product_type"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         >
           <Option
             v-for="item in preConfig.product_type"
@@ -35,7 +35,7 @@
         <Select
           placeholder="请选择......"
           v-model="fdata.study_target"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         >
           <Option
             v-for="item in preConfig.study_target"
@@ -51,7 +51,7 @@
         <Select
           placeholder="请选择......"
           v-model="fdata.grade"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         >
           <Option
             v-for="item in preConfig.grade"
@@ -67,7 +67,7 @@
         <Select
           placeholder="请选择......"
           v-model="fdata.grade_range_subject_id"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         >
           <Option
             v-for="item in preConfig.grade_range_subject_list"
@@ -83,7 +83,7 @@
         <Select
           placeholder="请选择......"
           v-model="fdata.class_capacity"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         >
           <Option
             v-for="item in preConfig.class_capacity"
@@ -102,7 +102,7 @@
             v-for="item in preConfig.sale_type"
             :label="item.value"
             :key="item.display_name"
-            :disabled="$route.params.id"
+            :disabled="$route.params.id && fdata.is_used"
           >
             <span>{{item.display_name}}</span>
           </Radio>
@@ -117,7 +117,7 @@
           placeholder="输入每课时单价"
           v-model="fdata.price"
           style="width: 250px;"
-          :disabled="$route.params.id"
+          :disabled="$route.params.id && fdata.is_used"
         ></InputNumber>
         <span>元</span>
       </Form-item>
