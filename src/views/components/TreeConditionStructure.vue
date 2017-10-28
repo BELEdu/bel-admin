@@ -23,6 +23,10 @@ export default {
     value(to, from) {
       if (to === '') this.m_revertLeaf(from)
     },
+
+    data(to, from) {
+      if (to !== from) this.tree = this.tree2way(to)
+    },
   },
 
   created() {
