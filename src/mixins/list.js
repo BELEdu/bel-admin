@@ -32,7 +32,7 @@ export default {
           const value = this.query[key]
 
           // 日期范围无值时不处理
-          if (typeof value === 'object' && value.length === 0) {
+          if (value === null || (typeof value === 'object' && value.length === 0)) {
             // 清空路由日期字段值
             return { ...result, [key]: [] }
           }
