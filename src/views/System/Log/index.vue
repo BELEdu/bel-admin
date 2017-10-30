@@ -2,21 +2,18 @@
   <div>
     <Form inline class="app-search-form">
       <Form-item>
-        <Row>
-          <Col span="11">
-            <Date-picker type="date" v-model="form.start" placeholder="选择日期"></Date-picker>
-          </Col>
-          <Col span="2" style="text-align: center">至</Col>
-          <Col span="11">
-            <Date-picker type="date" v-model="form.end" placeholder="选择日期"></Date-picker>
-          </Col>
-        </Row>
+        <app-date-picker
+          type="daterange"
+          date-type="daterange"
+          v-model="query['between[created_at]']"
+          @on-change="val => query['between[created_at]'] = !val[0] ? [] : val"
+          placeholder="选择日期"></app-date-picker>
       </Form-item>
       <Form-item>
-        <Input type="text" v-model="form.keyword" placeholder="请输入关键字"></Input>
+        <Input type="text" v-model="query['equal[model_name]']" placeholder="请输入关键字"></Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" icon="ios-search">查询</Button>
+        <Button type="primary" icon="ios-search" @click="search">查询</Button>
       </Form-item>
     </Form>
 
@@ -32,62 +29,121 @@
       </Col>
     </Row>
 
-    <Table class="app-table" :columns="columns" :data="data" border></Table>
+    <!--列表-->
+    <Table class="app-table" :columns="columns" :data="list.data" border @on-sort-change="sort"></Table>
 
-    <app-pager :data="pager" @on-change="() => {}"></app-pager>
+    <!--分页-->
+    <app-pager :data="list" @on-change="goTo" @on-page-size-change="pageSizeChange"></app-pager>
+
+    <!--查看详细-->
+    <app-form-modal
+      title="查看"
+      v-model="dialog.view"
+      :loading="false"
+      :ok-btn="false"
+      cancel-value="关闭"
+    >
+      <Table class="app-table" :columns="viewColumns" :data="dialog.currentItem.log_list" border></Table>
+    </app-form-modal>
   </div>
 </template>
 
 <script>
-import { GLOBAL } from '@/store/mutationTypes'
+  /**
+   * 系统日志
+   * @author chenliangshan
+   * @version 2017-10-30
+   */
 
-export default {
-  name: 'app-system-log',
+  import { GLOBAL } from '@/store/mutationTypes'
+  import { list } from '@/mixins'
+  import { createButton } from '@/utils'
 
-  data: () => ({
-    form: {
-      start: '',
-      end: '',
-      keyword: '',
+  export default {
+    name: 'app-system-log',
+
+    mixins: [list],
+
+    data() {
+      return {
+        query: {
+          'equal[model_name]': '',
+          'between[created_at]': [],
+        },
+
+        columns: [
+          { title: '操作时间', key: 'created_at', align: 'center' },
+          { title: '用户名', key: 'username', align: 'center' },
+          { title: '姓名', key: 'user_realname', align: 'center' },
+          { title: '模块', key: 'model_name', align: 'center' },
+          { title: '部门角色', key: 'department_name', align: 'center' },
+          {
+            title: '操作',
+            align: 'center',
+            width: 140,
+            render: createButton([
+              { text: '查看',
+                type: 'primary',
+                click: (row) => {
+                  this.viewHandler(row)
+                },
+              },
+            ]),
+          },
+        ],
+
+        list: {},
+
+        dialog: {
+          view: false,
+          currentItem: {},
+        },
+
+        viewColumns: [
+          {
+            title: '字段名(中)',
+            align: 'center',
+            render: (h, { row }) => h('div', null, `${row.field_cn}`),
+          },
+          {
+            title: '字段名(英)',
+            align: 'center',
+            render: (h, { row }) => h('div', null, `${row.field_en}`),
+          },
+          {
+            title: '旧值',
+            align: 'center',
+            render: (h, { row }) => h('span', null, `${row.old_value || '-'}`),
+          },
+          {
+            title: '新值',
+            align: 'center',
+            render: (h, { row }) => h('span', null, `${row.new_value}`),
+          },
+        ],
+      }
     },
 
-    columns: [
-      { title: '操作时间', key: 1, align: 'center' },
-      { title: '用户名', key: 2, align: 'center' },
-      { title: '姓名', key: 3, align: 'center' },
-      { title: '部门角色', key: 4, align: 'center' },
-      { title: '操作功能模块', key: 5, align: 'center' },
-      { title: '操作内容描述', key: 6, align: 'center', width: '30%' },
-    ],
-
-    data: [
-      {
-        1: '2017-04-05 18:22',
-        2: 'JSBH1000',
-        3: '侯晓辉',
-        4: '厦门分公司/教学部-教师',
-        5: '排课管理-教师排课-教师排课表',
-        6: '确认了【李加航】2017/4/30 10：00-12:00 的排课',
+    methods: {
+      getData(qs) {
+        return this.$http.get(`/log${qs}`)
+          .then((result) => {
+            this.list = { ...result }
+          })
       },
-      {
-        1: '2017-04-05 18:22',
-        2: 'JSBH1000',
-        3: '侯晓辉',
-        4: '厦门分公司/教学部-教师',
-        5: '排课管理-教师排课-教师排课表',
-        6: '确认了【李加航】2017/4/30 10：00-12:00 的排课',
+
+      viewHandler(row) {
+        this.dialog.currentItem = { ...row }
+        this.dialog.view = true
       },
-    ],
+    },
 
-    pager: undefined,
-  }),
-
-  created() {
-    this.$store.commit(GLOBAL.LOADING.HIDE)
-  },
-}
+    created() {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    },
+  }
 </script>
 
-<style>
+<style lang="postcss" scoped>
 
 </style>
