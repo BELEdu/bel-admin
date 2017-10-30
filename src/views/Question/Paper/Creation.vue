@@ -253,7 +253,7 @@ export default {
 
     /* 来源数据 */
 
-    campus: null,
+    campuses: [],
 
     /* buttonRadio数据 */
 
@@ -349,8 +349,7 @@ export default {
       ) {
         this.$http.get(`/paper/${id}`)
           .then((res) => {
-            // eslint-disable-next-line
-            this.paper = { ...res }
+            this.paper = { ...this.paper, ...res }
             this.$store.commit(GLOBAL.LOADING.HIDE)
           })
       } else {
