@@ -31,9 +31,10 @@ export default {
         .reduce((result, key) => {
           const value = this.query[key]
 
-          // 无值时不处理
-          if (value == null || (typeof value === 'object' && value.length === 0)) {
-            return result
+          // 日期范围无值时不处理
+          if (typeof value === 'object' && value.length === 0) {
+            // 清空路由日期字段值
+            return { ...result, [key]: [] }
           }
 
           // 处理值为日期的情况
@@ -49,7 +50,7 @@ export default {
             return { ...result, [key]: [start, end] }
           }
 
-          return { ...result, [key]: value }
+          return { ...result, [key]: value || '' }
         }, {})
     },
   },
@@ -67,7 +68,7 @@ export default {
           const value = query[key]
 
           // between查询必须做特殊处理
-          if (typeof value === 'object') {
+          if (typeof value === 'object' && value.length > 0) {
             const [start, end] = value
             return `${result}&${key}[]=${start}&${key}[]=${end}`
           }
