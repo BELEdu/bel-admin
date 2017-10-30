@@ -50,14 +50,6 @@
       },
     },
 
-    watch: {
-      uesrId(val) {
-        if (!this.$route.params.id) {
-          this.getTip(val)
-        }
-      },
-    },
-
     methods: {
       // 标签切换事件
       tabSwitch(name = this.$route.meta.tabName[0].value) {
