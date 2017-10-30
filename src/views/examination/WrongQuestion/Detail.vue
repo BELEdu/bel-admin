@@ -1,45 +1,60 @@
 <template>
-  <PrepareQuestion
-    class="examination-wrongquestion-detail"
-    ref="composition"
-    compositionType="readOnly"
-  >
-    <!-- 底部 进阶学习 -->
-    <template
-      slot="improvement"
-      slot-scope="props"
+  <div class="examination-wrongquestion-detail">
+    <PrepareQuestion
+      ref="composition"
+      compositionType="readOnly"
     >
-      <h1
-        class="examination-wrongquestion-detail__title"
+      <!-- 上部 学生信息条 -->
+      <template
+        slot="header"
+        scope="props"
       >
-        进阶学习
-      </h1>
-      <!--
-        等进阶学习的接口出来后，去掉slot
-        直接在这个组件里拿数据，控制分页数量为5
-      -->
-      <PaperCompositionQuestion
-        v-for="question in props.data"
-        :key="question.number"
-        :data="question"
-        compositionType="readOnly"
-      />
-
-      <div
-        style="
-          padding-top: 10px;
-          text-align: right;
-        "
-      >
-        <Button
-          type="text"
-          @click="$router.push('/prepare/question')"
+        <h2
+          v-if="props.data.student_name"
+          class="examination-wrongquestion-detail__student"
         >
-          查看更多 》》
-        </Button>
-      </div>
-    </template>
-  </PrepareQuestion>
+          <span>学员姓名：{{props.data.student_name}}</span>
+          <span>学员编号：{{props.data.student_number}}</span>
+        </h2>
+        </template>>
+
+      <!-- 底部 进阶学习 -->
+      <template
+        slot="improvement"
+        scope="props"
+      >
+        <h1
+          class="examination-wrongquestion-detail__title"
+        >
+          进阶学习
+        </h1>
+        <!--
+          等进阶学习的接口出来后，去掉slot
+          直接在这个组件里拿数据，控制分页数量为5
+        -->
+        <PaperCompositionQuestion
+          v-for="question in props.data"
+          :key="question.number"
+          :data="question"
+          compositionType="readOnly"
+        />
+
+        <div
+          style="
+            padding-top: 10px;
+            text-align: right;
+          "
+        >
+          <Button
+            type="text"
+            @click="$router.push('/prepare/question')"
+          >
+            查看更多 》》
+          </Button>
+        </div>
+      </template>
+    </PrepareQuestion>
+  </div>
 </template>
 
 <script>
@@ -67,6 +82,16 @@ export default {
 @import '~vars';
 
 .examination-wrongquestion-detail {
+  width: 1160px;
+
+  &__student {
+    border-bottom: 1px solid @border-color-base;
+    text-align: right;
+
+    & span {
+      margin-left: 10px;
+    }
+  }
 
   &__title {
     margin-top: 20px;

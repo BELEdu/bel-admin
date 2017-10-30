@@ -83,6 +83,9 @@ export default {
         :class="{
           active: entry.key === keyType
         }"
+        :style="{
+          width: `${(1 / entries.length) * 100}%`
+        }"
         @click="keyType = entry.key"
       >{{entry.label}}</span>
     </nav>
@@ -116,7 +119,6 @@ export default {
 
     & > span {
       float: left;
-      width: 50%;
       line-height: 35px;
       text-align: center;
 

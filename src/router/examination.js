@@ -107,11 +107,18 @@ export default [
     path: '/examination/wrongquestion/:id',
     component: views.ExaminationWrongQuestionDetail,
     meta: {
+      fetchUri: '钩子中生成',
       breadcrumb: [
         { name: '测试管理' },
         EXAMINATION_WRONGQUESTION,
         { name: '错题库' },
       ],
+    },
+    beforeEnter(to, from, next) {
+      const id = to.params.id
+      // eslint-disable-next-line
+      to.meta.fetchUri = `/wrongquestion/wrong_list/${id}`
+      next()
     },
   },
 ]

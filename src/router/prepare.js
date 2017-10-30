@@ -88,6 +88,7 @@ export default [
     component: views.PrepareQuestion,
     meta: {
       action: 'patch',
+      fetchUri: '/question_center',
       putUri: '钩子中生成',
       breadcrumb: [
         { name: '备课管理' },
@@ -127,6 +128,7 @@ export default [
     component: views.PrepareQuestion,
     meta: {
       action: 'post',
+      fetchUri: '/question_center',
       putUri: '/paper_center',
       breadcrumb: [
         { name: '备课管理' },

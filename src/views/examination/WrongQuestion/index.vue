@@ -92,6 +92,10 @@ export default {
           field_name: 'display_name',
           display_name: '学员姓名',
         },
+        {
+          field_name: 'counsellor_name',
+          display_name: '学管师',
+        },
       ],
 
       likeKey: 'display_name',
@@ -105,23 +109,25 @@ export default {
         },
         {
           title: '当前年级',
-          key: 2,
+          key: 'current_grade_name',
           align: 'center',
         },
         {
           title: '学管师',
-          key: 3,
+          key: 'counsellor_name',
           align: 'center',
         },
         {
           title: '测试次数',
-          key: 4,
+          key: 'test_count',
           align: 'center',
+          sortable: 'custom',
         },
         {
           title: '错题数',
-          key: 5,
+          key: 'wrong_count',
           align: 'center',
+          sortable: 'custom',
         },
         {
           title: '操作',

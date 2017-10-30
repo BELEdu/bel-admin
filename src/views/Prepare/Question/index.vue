@@ -1,5 +1,11 @@
 <template>
   <div class="question-paper-composition">
+    <!-- 插槽 学员信息 -->
+    <slot
+      name="header"
+      :data="buffer"
+    ></slot>
+
     <!-- 左：树形搜索 -->
     <TreeCondition
       v-if="treeEntries"
@@ -34,6 +40,7 @@
         @on-preview="vm_onPaperPreview"
       />
 
+      <!-- 插槽 题目扩展 -->
       <slot
         name="improvement"
         :data="buffer.data"
