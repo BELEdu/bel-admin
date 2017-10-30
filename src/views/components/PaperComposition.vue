@@ -123,7 +123,7 @@ export default {
       v-if="buffer && buffer.data"
     >
       <Button
-        v-if="buffer.data.length
+        v-if="buffer.data && buffer.data.length
           && buffer.data.every(question => v_questionSelected(question))
         "
         type="text"
