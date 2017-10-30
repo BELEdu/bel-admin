@@ -184,9 +184,11 @@ export default {
     },
   },
 
-  created() {
-    this.mapRouteToQuery()
-    this.fetchData()
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.mapRouteToQuery()
+      vm.fetchData(to)
+    })
   },
 
   beforeRouteUpdate(to, from, next) {

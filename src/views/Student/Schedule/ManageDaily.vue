@@ -152,7 +152,7 @@
     computed: {
       ...mapState({
         dailyList: state => state.student.schedule.dailyList,
-        courseTip: state => state.student.schedule.tip,
+        courseTip: state => state.student.schedule.tip.ready_courses,
         userId: state => state.user.id,
       }),
     },

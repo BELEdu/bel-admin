@@ -163,7 +163,7 @@
     computed: {
       ...mapState({
         weeklyList: state => state.student.schedule.weekList,
-        courseTip: state => state.student.schedule.tip,
+        courseTip: state => state.student.schedule.tip.ready_courses,
         userId: state => state.user.id,
       }),
     },

@@ -23,7 +23,9 @@ export default {
     },
 
     // 未完成课时数
-    tip: 0,
+    tip: {
+      ready_courses: 0,
+    },
 
     // 当前编辑的课表
     currentCourseItem: {},
@@ -47,7 +49,7 @@ export default {
     },
 
     [STUDENT.SCHEDULE.GET_TIP](state, data) {
-      state.tip = data
+      state.tip = { ...data }
     },
 
     [STUDENT.SCHEDULE.COURSE_ITEM](state, item) {
@@ -87,8 +89,8 @@ export default {
     // 获取教师未完成课时数
     [STUDENT.SCHEDULE.GET_TIP]({ commit }, query = '') {
       return Http.get(`/schedule/tip/${query}`)
-        .then(({ ready_courses }) => {
-          commit(STUDENT.SCHEDULE.GET_TIP, ready_courses)
+        .then((result) => {
+          commit(STUDENT.SCHEDULE.GET_TIP, result)
         })
     },
 

@@ -4,6 +4,9 @@
       <template v-for="tab in $route.meta.tabName">
         <Tab-pane :label="tab.name" :name="tab.value"></Tab-pane>
       </template>
+      <div slot="extra">
+        <Tag type="dot" color="blue"><b>教师姓名</b>：{{ currentTip.realname }}</Tag>
+      </div>
     </Tabs>
     <router-view></router-view>
   </div>
@@ -33,15 +36,17 @@
 
     computed: {
       ...mapState({
-        uesrId: state => state.user.id,
+        currentTip: state => state.student.schedule.tip,
       }),
-
       tabActive() {
         const pathArry = this.$route.path.split('/')
         return pathArry[pathArry.length - this.currentId]
       },
       currentId() {
         return this.$route.params.id ? 2 : 1
+      },
+      userId() {
+        return this.$store.state.user.id
       },
     },
 
@@ -55,7 +60,7 @@
 
     methods: {
       // 标签切换事件
-      tabSwitch(name) {
+      tabSwitch(name = this.$route.meta.tabName[0].value) {
         return this.updateRoute(name)
       },
 
@@ -75,8 +80,10 @@
       },
     },
 
-    created() {
-      this.getTip(this.$route.params.id)
+    beforeRouteEnter(to, from, next) {
+      next((vm) => {
+        vm.getTip(to.params.id)
+      })
     },
 
     beforeRouteUpdate(to, from, next) {
