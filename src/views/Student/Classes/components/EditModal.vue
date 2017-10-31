@@ -16,9 +16,9 @@
 
       <Form-item label="产品名称" prop="product_id">
         <Select
+          v-if="!hasData"
           v-model="form.product_id"
           placeholder="请选择产品"
-          v-if="!hasData"
         >
           <Option
             v-for="product in productList"
@@ -28,14 +28,13 @@
         </Select>
 
         <span v-else class="color-primary">{{form.product_name}}</span>
-
       </Form-item>
 
       <Form-item label="教材版本" prop="teach_material">
         <Select
+          v-if="!hasData"
           v-model="form.teach_material"
           placeholder="请选择教材"
-          v-if="!hasData"
         >
           <Option
             v-for="material in currentTeachMaterialList"
@@ -43,13 +42,12 @@
             :key="material.display_name"
           >{{ material.display_name }}</Option>
         </Select>
-
         <span v-else class="color-primary">{{form.teach_material_name}}</span>
-
       </Form-item>
 
       <Form-item label="排课专员" prop="customer_relationships_id">
         <Select
+          v-if="!isReview"
           v-model="form.customer_relationships_id"
           placeholder="请选择专员"
         >
@@ -59,11 +57,12 @@
             :key="course.username"
           >{{ course.username }}</Option>
         </Select>
+        <span v-else class="color-primary">{{currentCourseName}}</span>
       </Form-item>
 
        <Form-item label="选择教师" prop="teachers">
         <Select
-
+          v-if="!isReview"
           v-model="form.teachers"
           placeholder="请选择教师"
           multiple
@@ -74,9 +73,10 @@
             :key="teacher.username"
           >{{ teacher.username }}</Option>
         </Select>
+        <span v-else class="color-primary">{{currentTeacherNames}}</span>
       </Form-item>
 
-      <Form-item label="选择学员">
+      <Form-item label="选择学员" v-if="!isReview">
         <Select
           :key="studentList.length"
           placeholder="请选择学员"
@@ -193,7 +193,7 @@ export default {
           title: '操作',
           align: 'center',
           render: createButton([
-            { text: '退班', type: 'warning', click: row => this.removeStudent(row.id) },
+            { text: '退班', isShow: () => !this.isReview, type: 'warning', click: row => this.removeStudent(row.id) },
           ]),
         },
       ],
@@ -217,7 +217,6 @@ export default {
   },
 
   computed: {
-
     // 是编辑或者查看班级
     hasData() {
       return this.isEdit || this.isReview
@@ -243,6 +242,28 @@ export default {
         return this.teachMaterialList[this.currentProductSubject]
       }
       return []
+    },
+
+    // 已选中的排课专员的姓名
+    currentCourseName() {
+      const couresId = this.form.customer_relationships_id
+      if (couresId) {
+        return this.teacherList
+          .find(teacher => teacher.id === couresId).username
+      }
+      return ''
+    },
+
+    // 已选中的教师的姓名组合
+    currentTeacherNames() {
+      const teacherArray = this.form.teachers
+      if (teacherArray.length > 0) {
+        return this.teacherList
+          .filter(teacher => teacherArray.includes(teacher.id))
+          .map(teacher => teacher.username)
+          .join('，')
+      }
+      return ''
     },
   },
 
@@ -278,6 +299,9 @@ export default {
         .then((res) => {
           this.studentList = res
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 提交表单
@@ -307,6 +331,14 @@ export default {
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 }
