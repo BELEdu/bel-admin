@@ -12,6 +12,11 @@ export default {
     list: {
       data: [],
     },
+
+    // 学员签约产品列表
+    product_list: {
+      data: [],
+    },
   },
 
   mutations: {
@@ -23,6 +28,11 @@ export default {
     [STUDENT.STUDENT.DELETE](state, id) {
       state.list.data = state.list.data
         .filter(item => item.id !== id)
+    },
+
+    // 学员签约产品列表
+    [STUDENT.STUDENT.PRODUCT.INIT](state, product_list) {
+      state.product_list = product_list
     },
   },
 
@@ -39,6 +49,14 @@ export default {
       return Http.delete(`/student/${id}`)
         .then(() => {
           commit(STUDENT.STUDENT.DELETE, id)
+        })
+    },
+
+    // 学员签约产品列表接口(传入学生id和query)
+    [STUDENT.STUDENT.PRODUCT.INIT]({ commit }, { id, query = '' }) {
+      return Http.get(`/student/stock/${id}${query}`)
+        .then((res) => {
+          commit(STUDENT.STUDENT.PRODUCT.INIT, res)
         })
     },
   },
