@@ -48,7 +48,6 @@
         <h2><Icon type="ios-browsers"/> 班级管理</h2>
       </Col>
       <Col>
-        <!-- <Button type="primary" @click="$router.push('/student/classes/edit')" >添加班级（旧）</Button> -->
         <Button type="primary" @click="openEditModal('add')" >添加班级</Button>
       </Col>
     </Row>
@@ -58,10 +57,14 @@
       v-model="modal.delete"
       title="删除确认"
       :loading="loading.delete"
-      @on-ok="deleteSubmit(classId)"
+      @on-ok="deleteSubmit"
       action="删除"
     >
-      <div class="text-center">删除该班级（{{classId}}）后将无法再回复，是否继续删除？</div>
+      <div class="text-center">
+        删除该班级
+        <br><span class="color-primary">{{classesName}}</span><br>
+        后将无法再回复，是否继续删除？
+      </div>
     </app-warn-modal>
 
     <!--班级管理表格-->
@@ -148,11 +151,11 @@ export default {
           align: 'center',
           width: 320,
           render: (h, params) => {
-            const { classes_name } = params.row
+            const { classes_name, student_name } = params.row
             return h('Tooltip', {
               class: 'color-primary',
               props: {
-                content: '学生1，学生2，学生3',
+                content: student_name === '' ? '暂无学员' : student_name,
                 placement: 'bottom-start',
               },
             }, classes_name)
@@ -161,35 +164,15 @@ export default {
         { title: '教材版本', key: 'teach_material_name', align: 'center' },
         { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
         { title: '教师', key: 'teacher_item', align: 'center' },
-        // { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
-        // { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 130, sortable: 'custom' },
         { title: '计划课时', key: 'teach_material', align: 'center', sortable: 'custom' },
         { title: '创建日期', key: 'created_at', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'classes_status_name', align: 'center' },
-        // {
-        //   title: '教师',
-        //   key: 'teacher_item',
-        //   align: 'center',
-        //   render: (h, params) => {
-        //     // 解构，const { xx } = obj 相当于 const xx in row { xx } = params.row
-        //     const { teacher_item } = params.row
-        //     // 相当于cosnt { teacher_id } = item
-        //     // const text = teacher_item
-        //     //   .map(({ teacher_id }) => `${teacher_id}`)
-        //     //   .join('，')
-        //     const text = teacher_item
-        //       .reduce((result, item) => `${result} ${item.teacher_id}，`, '')
-        //       .slice(0, -1)
-
-        //     return h('span', text)
-        //   },
-        // },
         {
           title: '操作',
           key: 10,
           align: 'center',
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id) },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.classes_name) },
             { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
             { text: '查看', type: 'primary', click: row => this.openEditModal('review', row.id) },
           ]),
@@ -204,7 +187,8 @@ export default {
         delete: false,
       },
 
-      classId: null, //  班级编号
+      classId: null, // 班级编号
+      classesName: '', // 班级名称
 
       productList: [], // 产品数据源
       teacherList: [], // 教师数据源
@@ -269,30 +253,39 @@ export default {
           this.editModal.form = { ...res }
           this.editModal.active = true
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 打开删除班级模态框
-    openDeleteModal(id) {
+    openDeleteModal(id, name) {
       this.modal.delete = true
       this.classId = id
+      this.classesName = name
     },
 
     // 删除班级
-    deleteSubmit(id) {
-      this.classId = id
+    deleteSubmit() {
       this.loading.delete = true
       // 班级id用来请求删除接口
-      this.$store.dispatch(STUDENT.CLASSES.DELETE, id)
+      this.$store.dispatch(STUDENT.CLASSES.DELETE, this.classId)
         .then(() => {
           this.loading.delete = false
           this.modal.delete = false
           this.$Message.warning('删除成功！')
+        })
+        .catch(({ message }) => {
+          this.$Message.warning(message)
         })
     },
 
     // 根据接口和loaction.search（query）获取列表数据
     getData(qs) {
       return this.$store.dispatch(STUDENT.CLASSES.INIT, qs)
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 获取产品数据源
@@ -302,6 +295,9 @@ export default {
           this.productList = product_list
           this.teachMaterialList = teach_material_list
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 获取教师数据源
@@ -309,6 +305,9 @@ export default {
       this.$http.get('/teacher_list?attr=is_student_teac')
         .then((res) => {
           this.teacherList = res
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
         })
     },
 
@@ -318,6 +317,17 @@ export default {
         .then((res) => {
           this.courseList = res
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 
