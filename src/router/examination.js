@@ -6,22 +6,27 @@
 
 import * as views from '@/views'
 
+/* 测试管理 */
 const EXAMINATION = { name: '测试管理' }
 
+/* 智能测试 */
 const EXAMINATION_SMARTEXAM = {
+  routeName: 'ExaminationSmartExam',
   name: '智能测试',
   link: '/examination/smartexam',
 }
-
 const EXAMINATION_SMARTEXAM_CHECK = {
+  routeName: 'ExaminationSmartExamCheck',
   name: '阅卷',
   link: '/examination/smartexam/:testid/check',
 }
 const EXAMINATION_SMARTEXAM_PREVIEW = {
+  routeName: 'ExaminationSmartExamPreview',
   name: '查看试卷',
   link: '/examination/smartexam/:testid/preview',
 }
 
+/* 错题管理 */
 const EXAMINATION_WRONGQUESTION = {
   name: '错题管理',
   link: '/examination/wrongquestion',
@@ -30,8 +35,10 @@ const EXAMINATION_WRONGQUESTION = {
 export default [
   /* 智能测试 */
 
+  // 测试列表
   {
     path: EXAMINATION_SMARTEXAM.link,
+    name: EXAMINATION_SMARTEXAM.routeName,
     component: views.ExaminationSmartExam,
     meta: {
       breadcrumb: [
@@ -40,8 +47,11 @@ export default [
       ],
     },
   },
+
+  // 阅卷
   {
     path: EXAMINATION_SMARTEXAM_CHECK.link,
+    name: EXAMINATION_SMARTEXAM_CHECK.routeName,
     component: views.ExaminationSmartExamCheck,
     meta: {
       breadcrumb: [
@@ -51,8 +61,11 @@ export default [
       ],
     },
   },
+
+  // 查看试卷
   {
     path: EXAMINATION_SMARTEXAM_PREVIEW.link,
+    name: EXAMINATION_SMARTEXAM_PREVIEW.routeName,
     component: views.ExaminationSmartExamPreview,
     meta: {
       breadcrumb: [
@@ -65,6 +78,7 @@ export default [
 
   /* abolish 智能分析 */
 
+  // 列表页
   {
     path: '/examination/smartanalyse',
     component: views.SmartAnalyse,
@@ -75,6 +89,8 @@ export default [
       ],
     },
   },
+
+  // 分析详情
   {
     path: '/examination/smartanalyse/:id',
     component: views.StudentAnalyse,
