@@ -4,80 +4,112 @@ export { default as Home } from './Home'
 export { default as Feedback } from './Feedback'
 export { default as AccessError } from './AccessError'
 
-// 题库中心
+/* 题库中心 */
+
+// 知识点
 export { default as QuestionKnowledge } from './Question/Knowledge'
 export { default as QuestionKnowledgeEdition } from './Question/Knowledge/Edition'
+
+// 章节
 export { default as QuestionChapter } from './Question/Chapter'
+
+// 试题
 export { default as QuestionQuestion } from './Question/Question'
 export { default as QuestionQuestionEdit } from './Question/Question/Edit'
+
+// 试卷
 export { default as QuestionPaper } from './Question/Paper'
 export { default as QuestionPaperDetail } from './Question/Paper/Detail'
 export { default as QuestionPaperComposition } from './Question/Paper/Composition'
 export { default as QuestionPaperCreation } from './Question/Paper/Creation'
 
-// 算法中心
+
+/* 算法中心 */
+
+// 学员知识点
 export { default as AlgorithmKnowledge } from './Algorithm/Knowledge/'
 export { default as AlgorithmKnowledgeShow } from './Algorithm/Knowledge/Show'
 export { default as AlgorithmKnowledgeDetail } from './Algorithm/Knowledge/Detail'
 
-// 业务管理
+
+/* 业务管理 */
+
+// 热线管理
 export { default as Hotline } from './Business/Hotline'
 export { default as HotlineEdit } from './Business/Hotline/HotlineEdit'
+
+// 沟通记录
 export { default as Communication } from './Business/Communication'
 export { default as CommunicationEdit } from './Business/Communication/CommunicationEdit'
+
+// 合同审批
 export { default as Contract } from './Business/Contract'
 export { default as ContractEdit } from './Business/Contract/ContractEdit'
 export { default as ContractAudit } from './Business/Contract/ContractAudit'
 export { default as ContractRefund } from './Business/Contract/ContractRefund'
+
+// 产品管理
 export { default as Product } from './Business/Product'
 export { default as ProductEdit } from './Business/Product/ProductEdit'
+
+// 优惠活动
 export { default as Promotion } from './Business/Promotion'
 
-// 统计管理
+/* 统计管理 */
+
+// 签约统计
 export { default as AnalysisSign } from './Analysis/Sign'
+
+// 课时统计
 export { default as AnalysisCurricula } from './Analysis/Curricula'
+
+// 排名情况
 export { default as AnalysisRank } from './Analysis/Rank'
 
-// 系统管理
+
+/* 系统管理 */
+
+// 角色管理
 export { default as SystemRole } from './System/Role'
 export { default as SystemRoleEdit } from './System/Role/Edit'
+
+// 用户管理
 export { default as SystemUser } from './System/User'
 export { default as SystemUserEdit } from './System/User/Edit'
 export { default as SystemUserRole } from './System/User/Role'
+
+// 日志管理
 export { default as SystemLog } from './System/Log'
+
+// 部门管理
 export { default as SystemDepartment } from './System/Department'
+
+// 流程管理
 export { default as SystemProcess } from './System/Process'
 export { default as SystemProcessEdit } from './System/Process/Edit'
 
-// 学员课程 - 学员管理
+
+/* 学员课程 */
+
+// 学员管理
 export { default as StudentStudent } from './Student/Student'
 export { default as StudentStudentEdit } from './Student/Student/Edit'
 export { default as StudentStudentReview } from './Student/Student/Review'
 export { default as StudentStudentReviewProduct } from './Student/Student/Review/Product'
-// 旧版
+
+// 旧版学员管理
 export { default as StudentStudentDetail } from './Student/Student/Detail'
-export { default as StudentStudentDetailEdit } from './Student/Student/Detail/Edit'
 export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
 export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
-export { default as StudentStudentDetailWarning } from './Student/Student/Detail/Warning'
 
-export { default as StudentStudyprogress } from './Student/Studyprogress'
-export { default as StudentStudyprogressStudent } from './Student/Studyprogress/Student'
-export { default as StudentStudyprogressClasses } from './Student/Studyprogress/Classes'
-export { default as StudentStudyprogressAdd } from './Student/Studyprogress/Add'
-export { default as StudentStudyprogressDetail } from './Student/Studyprogress/Detail'
-export { default as StudentStudyprogressDetailProgress } from './Student/Studyprogress/Detail/Progress'
-export { default as StudentStudyprogressDetailPlan } from './Student/Studyprogress/Detail/Plan'
-export { default as StudentStudyprogressDetailHistory } from './Student/Studyprogress/Detail/History'
-
-export { default as StudentKnowledgepoint } from './Student/Knowledgepoint'
-export { default as StudentKnowledgepointDetail } from './Student/Knowledgepoint/Detail'
-// 学员课程 - 班级管理
+// 班级管理
 export { default as StudentClasses } from './Student/Classes'
 export { default as StudentClassesEdit } from './Student/Classes/Edit'
-// 学员课程 - 学习计划
+
+// 学习计划
 export { default as StudentPlan } from './Student/Plan'
-// 学员课程 - 教师课表
+
+// 教师课表
 export { default as StudentSchedule } from './Student/Schedule/'
 export { default as StudentScheduleManage } from './Student/Schedule/Manage'
 export { default as StudentScheduleManageWeekly } from './Student/Schedule/ManageWeekly'
@@ -85,6 +117,7 @@ export { default as StudentScheduleManageDaily } from './Student/Schedule/Manage
 export { default as StudentMyScheduleManage } from './Student/Schedule/Manage'
 export { default as StudentMyScheduleManageWeekly } from './Student/Schedule/ManageWeekly'
 export { default as StudentMyScheduleManageDaily } from './Student/Schedule/ManageDaily'
+
 
 /* 测试管理 */
 
@@ -100,6 +133,7 @@ export { default as StudentAnalyse } from './examination/SmartAnalyse/StudentAna
 // 错题管理
 export { default as ExaminationWrongQuestion } from './examination/WrongQuestion'
 export { default as ExaminationWrongQuestionDetail } from './examination/WrongQuestion/Detail'
+
 
 /* 备课管理 */
 
@@ -118,10 +152,18 @@ export { default as Smartquestion } from './Prepare/Smartquestion'
 export { default as PrepareQuestion } from './Prepare/Question'
 export { default as PreparePaperPreview } from './Prepare/Question/PaperPreview'
 
-// 业务配置
+
+/* 业务配置 */
+
+// 学校管理
 export { default as SettingSchool } from './Setting/School'
+
+// 教室管理
 export { default as SettingClassroom } from './Setting/Classroom'
+
+// 设备管理
 export { default as SettingEquipment } from './Setting/Classroom/Equipment'
 
-// 404页面
+
+/* 404页面 */
 export { default as NotFound } from './NotFound'
