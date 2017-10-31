@@ -167,15 +167,13 @@
         }
       },
 
-      onSuccess() {
+      onSuccess({ close = false }) {
         this.loading = false
-        if (this.currentCom.nextStep || this.currentCom.prevStep) {
-          this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep
-        } else {
-          if (this.item.type !== 'view') {
-            this.$emit('on-success')
-          }
+        if (close) {
+          this.$emit('on-success')
           this.$emit('update:visible', false)
+        } else if (this.currentCom.nextStep || this.currentCom.prevStep) {
+          this.currentComId = this.currentCom.nextStep || this.currentCom.prevStep
         }
       },
     },

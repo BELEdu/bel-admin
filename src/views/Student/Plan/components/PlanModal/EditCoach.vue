@@ -40,11 +40,11 @@
 
     methods: {
       onSubmit(item) {
-        const { id } = this.currentItem.data
+        const { plan: { id } } = this.currentItem.data
         this.$http.patch(`/plan/${id}`, { course: item })
           .then(() => {
             this.$Message.success('成功修改学习计划！')
-            this.$emit('on-success')
+            this.$emit('on-success', { close: true })
           })
           .catch(() => {
             this.$emit('on-error')

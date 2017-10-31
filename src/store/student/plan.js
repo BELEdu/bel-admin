@@ -86,7 +86,7 @@ export default {
 
     // 获取计划详情
     [STUDENT.PLAN.FETCH_COACH_LIST]({ commit, state }) {
-      return Http.get(`/plan/${state.currentItem.data.id}`)
+      return Http.get(`/plan/${state.currentItem.data.plan.id}`)
         .then((result) => {
           commit(STUDENT.PLAN.CURRENT_ITEM_COURSELIST, result.course)
         })

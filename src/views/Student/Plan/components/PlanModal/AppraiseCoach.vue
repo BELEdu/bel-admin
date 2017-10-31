@@ -61,7 +61,7 @@
 
     methods: {
       getComment() {
-        this.$http.get(`/plan/${this.itemData.id}/comment`)
+        this.$http.get(`/plan/${this.itemData.plan.id}/comment`)
           .then((res) => {
             this.commentList = [...res]
             this.select(res[0])

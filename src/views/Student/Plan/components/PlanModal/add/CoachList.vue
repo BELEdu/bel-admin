@@ -41,11 +41,11 @@
 
     methods: {
       onSubmit(item) {
-        const { classes_id } = this.currentItem.data
-        this.$http.post(`/plan/${classes_id}`, { classes_id, course: item })
+        const { id } = this.currentItem.data
+        this.$http.post(`/plan/${id}`, { classes_id: id, course: item })
           .then(() => {
             this.$Message.success('成功添加学习计划！')
-            this.$emit('on-success')
+            this.$emit('on-success', { close: true })
           })
           .catch(() => {
             this.$emit('on-error')

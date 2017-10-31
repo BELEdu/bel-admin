@@ -78,18 +78,15 @@
           { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
           { title: '课时进度',
             align: 'center',
-            width: 280,
+            width: 200,
             render: (h, params) => {
               const cost = params.row.course_cost ?
                 (params.row.course_cost / params.row.course_total) * 100 : 0
               return [
-                h('span', null, `总课时：${params.row.course_total}`),
+                h('div', null, `总课时：${params.row.course_total}`),
                 h('Progress', {
-                  style: {
-                    width: '170px',
-                  },
                   props: {
-                    percent: cost,
+                    percent: parseFloat(cost.toFixed(2)),
                   },
                 }),
               ]
@@ -103,7 +100,7 @@
               // 未计划
               { text: '添加计划',
                 type: 'primary',
-                isShow: ({ row }) => row.operation.store,
+                isShow: ({ row }) => row.plan_operation.store,
                 click: (row) => {
                   this.handlePlan(row, 'add')
                 },
@@ -111,7 +108,7 @@
               // 计划中 || 已结束
               { text: '查看进度',
                 type: 'primary',
-                isShow: ({ row }) => row.operation.show,
+                isShow: ({ row }) => row.plan_operation.show,
                 click: (row) => {
                   this.handlePlan(row, 'view')
                 },
@@ -119,7 +116,7 @@
               // 计划中
               { text: '编辑计划',
                 type: 'primary',
-                isShow: ({ row }) => row.operation.update,
+                isShow: ({ row }) => row.plan_operation.update,
                 click: (row) => {
                   this.handlePlan(row, 'edit')
                 },
@@ -147,7 +144,7 @@
         this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_DATA, item)
         this.$store.commit(STUDENT.PLAN.CURRENT_ITEM_TYPE, type)
         if (type !== 'view') {
-          this.$store.dispatch(STUDENT.PLAN.CURRENT_ITEM_STORE, `${item.classes_id}`)
+          this.$store.dispatch(STUDENT.PLAN.CURRENT_ITEM_STORE, `${item.id}`)
         }
         if (type === 'edit') {
           // 请求异步数据

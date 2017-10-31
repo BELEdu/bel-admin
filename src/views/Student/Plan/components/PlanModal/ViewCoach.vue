@@ -63,9 +63,10 @@
           title: '结束计划',
           content: '是否确认结束本计划，确认后将无法再安排计划，是否继续？',
           onOk: () => {
-            this.$http.patch(`/plan/end/${this.currentItemData.id}`)
+            this.$http.patch(`/plan/end/${this.currentItemData.plan.id}`)
               .then(() => {
                 this.$Message.success('成功结束计划')
+                this.$emit('on-success', { close: true })
               })
               .catch(() => {
                 this.$Message.error('操作失败')
@@ -76,7 +77,7 @@
 
       // 获取学习进度列表
       getPlanProgress() {
-        this.$http.get(`/plan/progress/${this.currentItemData.id}`)
+        this.$http.get(`/plan/progress/${this.currentItemData.plan.id}`)
           .then((result) => {
             this.progressList = result.course_progress
           })
