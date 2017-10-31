@@ -142,8 +142,18 @@
           </Form-item>
           <Form-item>
             <div class="text-center question-edit__answer__btn">
-              <Button type="dashed" icon="minus-round" @click="removeChoice">减少选项</Button>
-              <Button type="dashed" icon="plus-round" @click="addChoice">增加选项</Button>
+              <Button
+                type="dashed"
+                icon="minus-round"
+                @click="removeChoice"
+                v-if="form.question_answers.length>2"
+              >减少选项</Button>
+              <Button
+                type="dashed"
+                icon="plus-round"
+                @click="addChoice"
+                v-if="form.question_answers.length<26"
+              >增加选项</Button>
             </div>
           </Form-item>
         </div>
@@ -165,7 +175,9 @@
         <!-- 填空题 -->
         <div class="question-edit__answer"  v-if="questionTemplateFormat === 3">
           <Form-item label="答案" required>
-             <p class="question-edit__answer__tips">请在题目内容操作部分点击 <Icon type="plus-round" class="color-primary"/> 来插入填空</p>
+            <p class="question-edit__answer__tips">
+              请在下方点击 <span class="color-primary">增加填空项</span> 来插入填空
+            </p>
           </Form-item>
           <Form-item
             v-for="(item,index) in form.question_answers"
@@ -173,14 +185,29 @@
           >
             <Row>
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
-              <Col span="22">
+              <Col span="20">
                 <app-editor
                   :height="80"
                   v-if="!isLoading"
                   v-model="item.content"
                 ></app-editor>
               </Col>
+              <Col span="2" class="question-edit__answer__btn">
+                <Button
+                  type="dashed"
+                  size="small"
+                  icon="close-round"
+                  class="right "
+                  @click="removeFill(index)"
+                  v-if="form.question_answers.length>1"
+                >删除</Button>
+              </Col>
             </Row>
+          </Form-item>
+          <Form-item>
+            <div class="text-center question-edit__answer__btn">
+              <Button type="dashed" icon="plus-round" @click="addFill">增加填空项</Button>
+            </div>
           </Form-item>
         </div>
 
@@ -191,11 +218,11 @@
           prop="question_answers.0.content"
           :rules="[$rules.required('答案')]"
         >
-          <app-editor v-if="!isLoading" v-model="form.question_answers[0].content" ></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.question_answers[0].content"></app-editor>
         </Form-item>
 
         <Form-item label="解析">
-          <app-editor v-if="!isLoading" v-model="form.analysis" ></app-editor>
+          <app-editor v-if="!isLoading" v-model="form.analysis"></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -237,8 +264,6 @@ const defaultAnswer = {
   content: '', // 内容
   is_correct: 0, // 是否是正确选项
 }
-
-// const charCodeOfA = 'A'.charCodeAt(0)
 
 export default {
   name: 'question-question-edit',
@@ -368,17 +393,23 @@ export default {
 
     addChoice() { // 添加选择题选项
       const length = this.form.question_answers.length
-      if (length < 26) {
-        this.form.question_answers.push(
-          { ...defaultAnswer, option: this.alphabetize(length) },
-        )
-      }
+      this.form.question_answers.push(
+        { ...defaultAnswer, option: this.alphabetize(length) },
+      )
     },
 
     removeChoice() { // 移除选择题选项
       if (this.form.question_answers.length > 2) {
         this.form.question_answers.pop()
       }
+    },
+
+    addFill() { // 添加填空题选项
+      this.form.question_answers.push({ ...defaultAnswer })
+    },
+
+    removeFill(index) { // 移除填空题选项
+      this.form.question_answers.splice(index, 1)
     },
 
     handleReset() { // 重置选项
@@ -429,9 +460,9 @@ export default {
               { ...defaultAnswer, option: 'D' },
             ]
             break
-          case 3:
-            this.form.question_answers = Array(3).fill({ ...defaultAnswer })
-            break
+          // case 3:
+          //   this.form.question_answers = Array(3).fill({ ...defaultAnswer })
+          //   break
           default:
             this.form.question_answers = [{ ...defaultAnswer }]
             break
@@ -523,9 +554,12 @@ export default {
 
     &__btn {
       .ivu-btn {
-        margin-right: 20px;
         color: @primary-color;
         border-color: @primary-color;
+
+        & + .ivu-btn {
+          margin-left: 20px;
+        }
       }
     }
 
