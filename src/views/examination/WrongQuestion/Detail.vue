@@ -7,7 +7,7 @@
       <!-- 上部 学生信息条 -->
       <template
         slot="header"
-        scope="props"
+        slot-scope="props"
       >
         <h2
           v-if="props.data.student_name"
@@ -21,7 +21,7 @@
       <!-- 底部 进阶学习 -->
       <template
         slot="improvement"
-        scope="props"
+        slot-scope="props"
       >
         <h1
           class="examination-wrongquestion-detail__title"
