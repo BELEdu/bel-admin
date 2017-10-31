@@ -116,8 +116,8 @@ const defaultClassesForm = {
   product_id: null, // 产品id
   teach_material: null, // 教材版本
   customer_relationships_id: null, // 学管师id
-  students: [], // 老师
-  teachers: [], // 学生
+  students: [], // 学生
+  teachers: [], // 老师
 }
 
 export default {
@@ -163,7 +163,7 @@ export default {
         { title: '教师', key: 'teacher_item', align: 'center' },
         // { title: '上课人数', key: 'student_total', align: 'center', width: 100, sortable: 'custom' },
         // { title: '剩余可用课时', key: 'course_cost', align: 'center', width: 130, sortable: 'custom' },
-        { title: '计划课时', key: 'course_total', align: 'center', sortable: 'custom' },
+        { title: '计划课时', key: 'teach_material', align: 'center', sortable: 'custom' },
         { title: '创建日期', key: 'created_at', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'classes_status_name', align: 'center' },
         // {
@@ -253,7 +253,11 @@ export default {
         default:
           this.editModal.active = true
           this.editModal.title = '添加班级'
-          this.editModal.form = { ...defaultClassesForm }
+          this.editModal.form = {
+            ...defaultClassesForm,
+            students: [],
+            teachers: [],
+          }
           break
       }
     },
