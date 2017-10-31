@@ -148,7 +148,7 @@ export default {
 
   computed: {
     ...mapState({
-      list: state => state.student.product.list,
+      list: state => state.student.student.product_list,
     }),
 
     id() {
@@ -171,6 +171,9 @@ export default {
           this.data = res
           this.name = name
           this.modal.expend = true
+        })
+        .catch(({ message }) => {
+          this.$Message.error(message)
         })
     },
   },

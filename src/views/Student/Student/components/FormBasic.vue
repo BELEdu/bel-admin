@@ -48,12 +48,17 @@
       <Col span="11" offset="1">
 
         <Form-item label="学员姓名" prop="display_name">
-          <Input placeholder="请输入学员姓名" v-model="form.display_name"></Input>
+          <Input
+            placeholder="请输入学员姓名"
+            v-model="form.display_name"
+            :readonly="isReview"
+          ></Input>
         </Form-item>
 
         <Form-item label="学员性别">
           <Radio-group v-model="form.gender">
             <Radio
+              :disabled="isReview"
               v-for="gender in genders"
               :key="gender.value"
               :label="gender.value"
@@ -62,19 +67,33 @@
         </Form-item>
 
         <Form-item label="学员手机号码" prop="phone">
-          <Input placeholder="请输入手机号码" v-model="form.phone"></Input>
+          <Input
+            placeholder="请输入手机号码"
+            v-model="form.phone"
+            :readonly="isReview"
+          ></Input>
         </Form-item>
 
         <Form-item label="学员身份证号" prop="identity_card">
-          <Input placeholder="请输入身份证号" v-model="form.identity_card"></Input>
+          <Input
+            placeholder="请输入身份证号"
+            v-model="form.identity_card"
+            :readonly="isReview"
+          ></Input>
         </Form-item>
 
         <Form-item label="出生日期">
-          <app-date-picker placeholder="请选择日期" v-model="form.birth_at"></app-date-picker>
+          <app-date-picker
+            placeholder="请选择日期"
+            v-model="form.birth_at"
+          ></app-date-picker>
         </Form-item>
 
         <Form-item label="当前状态" v-if="isReview">
-          <Select placeholder="请选择..." v-model="form.student_current_status">
+          <Select
+            placeholder="请选择..."
+            v-model="form.student_current_status"
+          >
             <Option
               v-for="status in studentCurrentStatus"
               :key="status.value"
@@ -92,13 +111,17 @@
         </Form-item>
 
         <Form-item>
-          <Input placeholder="请输入街道地址" v-model="form.address"></Input>
+          <Input
+            placeholder="请输入街道地址"
+            v-model="form.address"
+            :readonly="isReview"
+          ></Input>
         </Form-item>
 
         <Form-item label="在读学校">
           <Select placeholder="请选择..." v-model="form.current_school">
             <Option
-              v-for="school in currentSchoolList"
+              v-for="school in campusList"
               :key="school.id"
               :value="school.id"
             >{{ school.display_name }}</Option>
@@ -118,6 +141,7 @@
          <Form-item label="家庭经济状况">
           <Radio-group v-model="form.family_income_type">
             <Radio
+              :disabled="isReview"
               v-for="item in familyIncomeType"
               :key="item.value"
               :label="item.value"
@@ -126,11 +150,11 @@
         </Form-item>
 
         <Form-item label="建档人" v-if="isReview">
-          <Input v-model="form.user_id" readonly></Input>
+          <span class="color-primary">{{form.user_id}}</span>
         </Form-item>
 
         <Form-item label="所有签约校区" v-if="isReview">
-          <Input v-model="form.department_name" readonly></Input>
+          <span class="color-primary">{{form.department_name}}</span>
         </Form-item>
 
       </Col>
@@ -161,7 +185,7 @@ export default {
       type: Array,
       default: () => [],
     },
-    currentSchoolList: {
+    campusList: {
       type: Array,
       default: () => [],
     },

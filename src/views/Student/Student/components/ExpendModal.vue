@@ -1,5 +1,5 @@
 <template>
-   <Modal
+  <Modal
     title="课时消耗详情"
     width="600"
     :value="value"

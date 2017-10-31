@@ -22,7 +22,7 @@
         :genders="genders"
         :grades="grades"
         :studentCurrentStatus="student_current_status"
-        :currentSchoolList="current_school_list"
+        :campusList="campusList"
         :familyIncomeType="family_income_type"
       ></form-basic>
 
@@ -64,7 +64,7 @@ import { form, goBack } from '@/mixins'
 import FormBasic from './components/FormBasic'
 import FormParents from './components/FormParents'
 
-// eslint-disable-next-line
+// 默认家长信息
 const defaultParent = {
   parent_name: '', // 姓名
   gender: 3, // 性别
@@ -121,24 +121,7 @@ export default {
         ],
       },
 
-      current_school_list: [ // 在读校区列表临时数据
-        {
-          id: 1,
-          display_name: '厦门一中',
-        },
-        {
-          id: 2,
-          display_name: '双十中学',
-        },
-        {
-          id: 3,
-          display_name: '外国语学校',
-        },
-        {
-          id: 4,
-          display_name: '蔡塘学校',
-        },
-      ],
+      campusList: [], // 在读学校数据源
     }
   },
 
@@ -166,8 +149,6 @@ export default {
   },
 
   methods: {
-
-
     // 添加家长
     addParent() {
       this.form.parent.push({ ...defaultParent })
@@ -189,6 +170,15 @@ export default {
         })
     },
 
+    // 获取在读学校数据源
+    getCampusList() {
+      this.$http.get('/campus_list')
+        .then((res) => {
+          this.campusList = res
+        })
+    },
+
+    // 提交表单
     submit() {
       const data = {
         ...this.form,
@@ -205,6 +195,7 @@ export default {
   },
 
   created() {
+    this.getCampusList()
     // 如果是 编辑学员或查看学员 先获取学员数据
     if (this.isUpdate) {
       this.getStudentData()

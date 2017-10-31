@@ -3,6 +3,7 @@
     class="student-student-edit__parent"
     :bordered="false"
     dis-hover
+    v-if="!(isReview && parent.length === 0)"
   >
     <p slot="title">
       <Icon type="person-stalker"></Icon>
@@ -33,16 +34,22 @@
       <Row>
         <Col span="11" offset="1">
 
-          <Form-item label="家长姓名"
+          <Form-item
+            label="家长姓名"
             :prop="`parent.${index}.parent_name`"
             :rules="[$rules.required('家长姓名'),$rules.name]"
           >
-            <Input placeholder="请输入家长姓名" v-model="item.parent_name"></Input>
+            <Input
+              placeholder="请输入家长姓名"
+              v-model="item.parent_name"
+              :readonly="isReview"
+            ></Input>
           </Form-item>
 
           <Form-item label="家长性别">
             <Radio-group v-model="item.gender">
               <Radio
+                :disabled="isReview"
                 v-for="gender in genders"
                 :key="gender.value"
                 :label="gender.value"
@@ -50,28 +57,38 @@
             </Radio-group>
           </Form-item>
 
-          <Form-item label="家长手机号码"
+          <Form-item
+            label="家长手机号码"
             :prop="`parent.${index}.phone`"
             :rules="[$rules.mobile]"
           >
-            <Input placeholder="请输入手机号码" v-model="item.phone"></Input>
+            <Input
+              placeholder="请输入手机号码"
+              v-model="item.phone"
+              :readonly="isReview"
+            ></Input>
           </Form-item>
 
         </Col>
 
         <Col span="11" offset="1">
 
-          <Form-item label="家长身份证号"
+          <Form-item
+            label="家长身份证号"
             :prop="`parent.${index}.identity_card`"
             :rules="[$rules.idcard]"
           >
-            <Input placeholder="请输入身份证号" v-model="item.identity_card"></Input>
+            <Input
+              placeholder="请输入身份证号"
+              v-model="item.identity_card"
+              :readonly="isReview"
+            ></Input>
           </Form-item>
 
           <Form-item label="是否监护人">
             <Radio-group v-model="item.is_guardian">
-              <Radio :label="1">是</Radio>
-              <Radio :label="0">否</Radio>
+              <Radio :label="1" :disabled="isReview">是</Radio>
+              <Radio :label="0" :disabled="isReview">否</Radio>
             </Radio-group>
           </Form-item>
 
