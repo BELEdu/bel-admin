@@ -7,9 +7,50 @@
 
 import * as views from '@/views'
 
-const STUDENT = { name: '学员课程' }
-const STUDENT_STUDENT = { name: '学员管理', link: '/student/student' }
-const STUDENT_CLASSES = { name: '班级管理', link: '/student/classes' }
+/* 学员课程 */
+const STUDENT = {
+  name: '学员课程',
+}
+
+/* 学员管理 */
+const STUDENT_STUDENT = {
+  routeName: 'StudentStudent',
+  name: '学员管理',
+  link: '/student/student',
+}
+const STUDENT_STUDENT_ADD = {
+  routeName: 'StudentStudentAdd',
+  name: '添加学员',
+  link: '/student/student/add',
+}
+const STUDENT_STUDENT_EDIT = {
+  routeName: 'StudentStudentEdit',
+  name: '编辑学员',
+  link: '/student/student/:id/edit',
+}
+const STUDENT_STUDENT_REVIEW = {
+  routeName: 'StudentStudentReview',
+  name: '学员详情',
+  link: '/student/student/:id',
+}
+const STUDENT_STUDENT_REVIEW_INFO = {
+  routeName: 'StudentStudentReviewInfo',
+  name: '基本信息',
+  link: '/student/student/:id/info',
+}
+const STUDENT_STUDENT_REVIEW_PRODECT = {
+  routeName: 'StudentStudentReviewProduct',
+  name: '签约产品',
+  link: '/student/student/:id/product',
+}
+
+/* 班级管理 */
+const STUDENT_CLASSES = {
+  routeName: 'StudentClasses',
+  name: '班级管理',
+  link: '/student/classes',
+}
+
 const STUDENT_PLAN = { routeName: 'StudentPlan', name: '学习计划', link: '/student/plan' }
 const STUDENT_SCHEDULE = { routeName: 'StudentSchedule', name: '教师课表', link: '/student/schedule' }
 const STUDENT_SCHEDULE_MANAGE = {
@@ -37,10 +78,12 @@ const STUDENT_MY_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentMyScheduleManageDa
 
 export default [
 
-  // 学员课程 - 学员管理
+  /* 学员管理 */
+
+  // 学员列表
   {
     path: STUDENT_STUDENT.link,
-    name: 'StudentStudent',
+    name: STUDENT_STUDENT.routeName,
     component: views.StudentStudent,
     meta: {
       breadcrumb: [
@@ -49,78 +92,74 @@ export default [
       ],
     },
   },
+
+  // 添加学员
   {
-    path: '/student/student/add',
-    name: 'StudentStudentAdd',
+    path: STUDENT_STUDENT_ADD.link,
+    name: STUDENT_STUDENT_ADD.routeName,
     component: views.StudentStudentEdit,
     meta: {
       breadcrumb: [
         STUDENT,
         STUDENT_STUDENT,
-        { name: '添加学员' },
-      ],
-    },
-  },
-  // 旧版添加学员（到时候要删除）
-  {
-    path: '/student/student/edit',
-    name: 'StudentStudentAddOld',
-    component: views.StudentStudentDetailEdit,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        STUDENT_STUDENT,
-        { name: '添加学员' },
+        STUDENT_STUDENT_ADD,
       ],
     },
   },
 
+  // 编辑学员
   {
-    path: '/student/student/:id/edit',
-    name: 'StudentStudentEdit',
+    path: STUDENT_STUDENT_EDIT.link,
+    name: STUDENT_STUDENT_EDIT.routeName,
     component: views.StudentStudentEdit,
     meta: {
       breadcrumb: [
         STUDENT,
         STUDENT_STUDENT,
-        { name: '编辑学员' },
+        STUDENT_STUDENT_EDIT,
       ],
     },
   },
+
+  // 学员详情
   {
-    path: '/student/student/:id',
-    name: 'StudentStudentReview',
-    redirect: '/student/student/:id/info',
+    path: STUDENT_STUDENT_REVIEW.link,
+    name: STUDENT_STUDENT_REVIEW.routeName,
+    redirect: STUDENT_STUDENT_REVIEW_INFO.link,
     component: views.StudentStudentReview,
     meta: {
       breadcrumb: [
         STUDENT,
         STUDENT_STUDENT,
-        { name: '学员详情' },
+        STUDENT_STUDENT_REVIEW,
       ],
     },
     children: [
+
+      // 基础信息
       {
-        path: '/student/student/:id/info',
-        name: 'StudentStudentReviewInfo',
+        path: STUDENT_STUDENT_REVIEW_INFO.link,
+        name: STUDENT_STUDENT_REVIEW_INFO.routeName,
         component: views.StudentStudentEdit,
         meta: {
           breadcrumb: [
             STUDENT,
             STUDENT_STUDENT,
-            { name: '基本信息' },
+            STUDENT_STUDENT_REVIEW_INFO,
           ],
         },
       },
+
+      // 签约产品列表
       {
-        path: '/student/student/:id/product',
-        name: 'StudentStudentReviewProduct',
+        path: STUDENT_STUDENT_REVIEW_PRODECT.link,
+        name: STUDENT_STUDENT_REVIEW_PRODECT.routeName,
         component: views.StudentStudentReviewProduct,
         meta: {
           breadcrumb: [
             STUDENT,
             STUDENT_STUDENT,
-            { name: '签约产品' },
+            STUDENT_STUDENT_REVIEW_PRODECT,
           ],
         },
       },
@@ -141,18 +180,6 @@ export default [
       ],
     },
     children: [
-      {
-        path: '/student/student/:studentId/editold',
-        name: 'StudentStudentDetailEdit',
-        component: views.StudentStudentDetailEdit,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            STUDENT_STUDENT,
-            { name: '学员详情' },
-          ],
-        },
-      },
       // 交流会
       {
         path: '/student/student/:studentId/Meeting',
@@ -192,156 +219,20 @@ export default [
           ],
         },
       },
-      {
-        path: '/student/student/:studentId/Warning',
-        name: 'StudentStudentDetailWarning',
-        component: views.StudentStudentDetailWarning,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            STUDENT_STUDENT,
-            { name: '预警信息' },
-          ],
-        },
-      },
     ],
   },
 
-  // 学员进度
-  {
-    path: '/student/studyprogress',
-    name: 'StudentStudyprogress',
-    redirect: '/student/studyprogress/student',
-    component: views.StudentStudyprogress,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        { name: '学习进度' },
-      ],
-    },
-    children: [
-      {
-        path: '/student/studyprogress/student',
-        name: 'StudentStudyprogressStudent',
-        component: views.StudentStudyprogressStudent,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            { name: '学习进度' },
-          ],
-        },
-      },
-      {
-        path: '/student/studyprogress/classes',
-        name: 'StudentStudyprogressClasses',
-        component: views.StudentStudyprogressClasses,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            { name: '学习进度' },
-          ],
-        },
-      },
-    ],
-  },
-  {
-    path: '/student/studyprogress/:type/:id/add',
-    name: 'StudentStudyprogressAdd',
-    component: views.StudentStudyprogressAdd,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        { name: '学习进度' },
-        { name: '添加计划' },
-      ],
-    },
-  },
-  {
-    path: '/student/studyprogress/:type/:id',
-    name: 'StudentStudyprogressDetail',
-    redirect: '/student/studyprogress/:type/:id/progress',
-    component: views.StudentStudyprogressDetail,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        { name: '学习进度' },
-        { name: '进度详情(主组件)' },
-      ],
-    },
-    children: [
-      {
-        path: '/student/studyprogress/:type/:id/progress',
-        name: 'StudentStudyprogressDetailProgress',
-        component: views.StudentStudyprogressDetailProgress,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            { name: '学习进度' },
-            { name: '学习进度' },
-          ],
-        },
-      },
-      {
-        path: '/student/studyprogress/:type/:id/plan',
-        name: 'StudentStudyprogressDetailPlan',
-        component: views.StudentStudyprogressDetailPlan,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            { name: '学习进度' },
-            { name: '学习计划' },
-          ],
-        },
-      },
-      {
-        path: '/student/studyprogress/:type/:id/history',
-        name: 'StudentStudyprogressDetailHistory',
-        component: views.StudentStudyprogressDetailHistory,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            { name: '学习进度' },
-            { name: '历史计划' },
-          ],
-        },
-      },
-    ],
-  },
+  /* 班级管理 */
 
-  // 学员知识点
-  {
-    path: '/student/knowledgepoint',
-    name: 'StudentKnowledgepoint',
-    component: views.StudentKnowledgepoint,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        { name: '学员知识点' },
-      ],
-    },
-  },
-  {
-    path: '/student/knowledgepoint/:id',
-    name: 'StudentKnowledgepointDetail',
-    component: views.StudentKnowledgepointDetail,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        { name: '学员知识点', link: '/student/knowledgepoint' },
-        { name: '学员知识点详情' },
-      ],
-    },
-  },
-
-  // 班级管理
+  // 班级列表
   {
     path: STUDENT_CLASSES.link,
-    name: 'StudentClasses',
+    name: STUDENT_CLASSES.routeName,
     component: views.StudentClasses,
     meta: {
       breadcrumb: [
-        { name: '学员管理' },
-        { name: '班级管理' },
+        STUDENT,
+        STUDENT_CLASSES,
       ],
     },
   },
