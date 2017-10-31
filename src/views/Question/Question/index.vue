@@ -134,9 +134,9 @@
       action="下线"
     >
       <div class="text-center">
-        下架后，该试题
+        下架后，该编号
         <span class="color-primary">" {{questionNumber}} "</span>
-        将变为草稿状态，无法继续使用。若需上架，需要再次经过审核才可上架。
+        的试题将变为草稿状态，无法继续使用。若需上架，需要再次经过审核才可上架。
       </div>
     </app-warn-modal>
 
