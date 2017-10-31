@@ -108,7 +108,7 @@ export default {
     return {
       likeKeys: [
         { label: '班级名称', value: 'classes_name' },
-        { label: '上课内容', value: 'display_name' },
+        { label: '上课内容', value: 'chapter_name' },
       ],
       likeKey: 'classes_name',
       query: {
@@ -117,7 +117,7 @@ export default {
 
       columns: [
         { title: '班级名称', key: 'classes_name', align: 'center' },
-        { title: '课序', key: 'sort_value', align: 'center', sortable: 'custom' },
+        { title: '课序', key: 'sort_value', align: 'center' },
         {
           title: '上课内容',
           key: 'chapter_name',
@@ -128,16 +128,13 @@ export default {
             },
           }),
         },
-        { title: '课堂题量', key: 'practice_immediately', align: 'center', sortable: 'custom' },
+        { title: '课堂题量', key: 'practice_immediately', align: 'center' },
         { title: '状态', key: 'course_status_name', align: 'center' },
         {
           title: '操作',
           align: 'center',
           width: 180,
           render: createButton([
-            // { text: '添加', type: 'warning', click: row => this.openEditModal('create', row.id) },
-            // { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
-            // { text: '查看', type: 'primary', click: row => this.openEditModal('show', row.id) },
             { text: '添加', type: 'warning', isShow: ({ row }) => row.scheme_operation.create, click: row => this.openEditModal('create', row.id) },
             { text: '编辑', type: 'success', isShow: ({ row }) => row.scheme_operation.edit, click: row => this.openEditModal('edit', row.id) },
             { text: '查看', type: 'primary', isShow: ({ row }) => row.scheme_operation.show, click: row => this.openEditModal('show', row.id) },
@@ -231,7 +228,10 @@ export default {
           // 如果是新建教案，要拼接章节解析给content
           this.editModal.form = {
             ...defaultPlanForm,
-            content: this.editModal.isCreate ? res.course_chapter.map(item => item.analysis).join('</br>') : '',
+            content: this.editModal.isCreate ? res.course_chapter
+              .map(item => item.analysis)
+              .filter(item => item !== '')
+              .join('</br>') : '',
             ...res,
           }
           this.editModal.active = true
