@@ -167,14 +167,21 @@ export default {
             ...this.form,
             ...res,
           }
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
         })
     },
 
     // 获取在读学校数据源
     getCampusList() {
-      this.$http.get('/campus_list')
+      return this.$http.get('/campus_list')
         .then((res) => {
           this.campusList = res
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
         })
     },
 
@@ -192,6 +199,14 @@ export default {
         .then(this.successHandler)
         .catch(this.errorHandler)
     },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
+    },
   },
 
   created() {
@@ -199,7 +214,6 @@ export default {
     // 如果是 编辑学员或查看学员 先获取学员数据
     if (this.isUpdate) {
       this.getStudentData()
-        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     } else {
       this.$store.commit(GLOBAL.LOADING.HIDE)
     }

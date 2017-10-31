@@ -99,10 +99,14 @@
       v-model="modal.delete"
       title="删除确认"
       :loading="loading.delete"
-      @on-ok="studentDelete(studentId)"
+      @on-ok="studentDelete"
       action="删除"
     >
-      <div class="text-center">是否删除该编号为{{studentId}}的学员？</div>
+      <div class="text-center">
+        是否删除编号为
+        <span class="color-primary">{{studentNumber}}</span>
+        的学员 <span class="color-primary">{{studentName}}</span>？
+      </div>
     </app-warn-modal>
 
     <!-- 分配学管师组件 -->
@@ -212,7 +216,12 @@ export default {
           align: 'center',
           width: 200,
           render: createButton([
-            { text: '删除', type: 'error', isShow: ({ row }) => row.operation.destroy, click: row => this.openDeleteModal(row.id) },
+            {
+              text: '删除',
+              type: 'error',
+              isShow: ({ row }) => row.operation.destroy,
+              click: row => this.openDeleteModal(row.id, row.number, row.display_name),
+            },
             { text: '编辑', type: 'success', click: row => this.$router.push(`/student/student/${row.id}/edit`) },
             { text: '查看', type: 'primary', click: row => this.$router.push(`/student/student/${row.id}/info`) },
           ]),
@@ -228,7 +237,10 @@ export default {
         delete: false,
       },
 
-      studentId: '', // 学员编号（用于删除学员）
+      studentId: null, // 学员id（用于删除学员）
+      studentNumber: '', // 学员编号（用于删除学员）
+      studentName: '', // 学员姓名（用于删除学员）
+
       studentItem: [], // 勾选的学生id数组（用于分配学管师）
       campusList: [], // 在读学校数据源
 
@@ -258,16 +270,17 @@ export default {
     },
 
     // 打开删除模态框
-    openDeleteModal(id) {
+    openDeleteModal(id, number, name) {
       this.modal.delete = true
       this.studentId = id
+      this.studentNumber = number
+      this.studentName = name
     },
 
     // 删除未签约学员
-    studentDelete(id) {
-      this.studentId = id
+    studentDelete() {
       this.loading.delete = true
-      this.$store.dispatch(STUDENT.STUDENT.DELETE, id)
+      this.$store.dispatch(STUDENT.STUDENT.DELETE, this.studentId)
         .then(() => {
           this.loading.delete = false
           this.modal.delete = false
