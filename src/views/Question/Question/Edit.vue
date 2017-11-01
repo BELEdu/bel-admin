@@ -327,31 +327,34 @@ export default {
       isLoading: state => state.loading, // 页面加载成功的标志，用于让ckeditor在接口请求成功后再渲染
     }),
 
-    id() { // 获取用户id
+    // 获取用户id
+    id() {
       return this.$router.currentRoute.params.id
     },
 
-    isUpdate() { // 判断是编辑还是新增
+    // 判断是编辑还是新增
+    isUpdate() {
       return !!this.$router.currentRoute.params.id
     },
 
-    questionTypeFormat() { // 题型名称格式化
+    // 题型名称格式化（用于编辑展示）
+    questionTypeFormat() {
       const { question_type_id } = this.form
       return question_type_id ?
         this.questionTypes.find(item => item.value === question_type_id).display_name : null
     },
 
-    questionTemplateFormat() { // 试题模板格式化 1 选择题（单选、多选）2 判断题 3 填空题 4 解答题
+    // 试题模板格式化 1 选择题（单选、多选）2 判断题 3 填空题 4 解答题
+    questionTemplateFormat() {
       const { question_type_id } = this.form
       return question_type_id ?
         this.questionTypes.find(item => item.value === question_type_id).question_template : null
     },
-
   },
 
   methods: {
-    // eslint-disable-next-line
-    tipFormat(val) { // 试题难度格式化
+    // 试题难度格式化
+    tipFormat(val) {
       switch (val) {
         case 1:
           return '容易'
@@ -391,41 +394,52 @@ export default {
       return String.fromCharCode(charCode + charCodeOfA)
     },
 
-    addChoice() { // 添加选择题选项
+    // 添加选择题选项
+    addChoice() {
       const length = this.form.question_answers.length
       this.form.question_answers.push(
         { ...defaultAnswer, option: this.alphabetize(length) },
       )
     },
 
-    removeChoice() { // 移除选择题选项
+    // 移除选择题选项
+    removeChoice() {
       if (this.form.question_answers.length > 2) {
         this.form.question_answers.pop()
       }
     },
 
-    addFill() { // 添加填空题选项
+    // 添加填空题选项
+    addFill() {
       this.form.question_answers.push({ ...defaultAnswer })
     },
 
-    removeFill(index) { // 移除填空题选项
+    // 移除填空题选项
+    removeFill(index) {
       this.form.question_answers.splice(index, 1)
     },
 
-    handleReset() { // 重置选项
+    // 重置选项
+    handleReset() {
       this.form.question_type_id = null
       this.form.paper_type = null
       this.form.knowledge_ids.length = 0
     },
 
-    getQuestionData() { // 获取题目详情
+    // 获取题目详情
+    getQuestionData() {
       return this.$http.get(`/question/${this.id}`)
         .then((res) => {
           this.form = res
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
         })
     },
 
-    changeSubject(subjectId) { // 切换科目，重置试题信息
+    // 切换科目，重置试题信息
+    changeSubject(subjectId) {
       this.handleReset()
       this.$http.get(`/question/store_before?grade_range_subject_id=${subjectId}`)
         .then(({
@@ -443,9 +457,13 @@ export default {
           this.years = year
           this.knowledge_tree = knowledge_tree
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
-    changeQuestionType(item) { // 切换题型重置答案
+    // 切换题型重置答案
+    changeQuestionType(item) {
       // 如果切换后的题型跟当前题型不一致的话，则重置答案
       if (this.current_question_template !== item.question_template) {
         // 设置当前题型
@@ -470,12 +488,14 @@ export default {
       }
     },
 
-    choseStatus(status) { // 存为草稿||提交审核
+    // 存为草稿||提交审核
+    choseStatus(status) {
       this.form.question_status = +status
       this.beforeSubmit()
     },
 
-    submit() { // 提交表单
+    // 提交表单
+    submit() {
       const data = this.form
       ;(
         this.isUpdate ?
@@ -486,6 +506,7 @@ export default {
         .catch(this.errorHandler)
     },
 
+    // 提交成功回调
     successHandler() {
       this.formLoading = false
       if (this.afterAdded === 'back') {
@@ -494,11 +515,19 @@ export default {
         location.reload()
       }
     },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
+    },
   },
 
   created() {
     if (this.isUpdate) {
-      this.getQuestionData().then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+      this.getQuestionData()
     } else {
       this.$store.commit(GLOBAL.LOADING.HIDE)
     }

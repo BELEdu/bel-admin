@@ -150,10 +150,8 @@
  * @version 2017-09-14
  */
 
-// import { mapState } from 'vuex'
 import Http from '@/utils/http'
 import { list } from '@/mixins'
-// import { Question } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import DetailModal from './components/DetailModal'
 
@@ -284,21 +282,27 @@ export default {
   },
 
   methods: {
-    openDetailModal(id) { // 打开详情弹窗
+    // 打开详情弹窗
+    openDetailModal(id) {
       this.$http.get(`/question/${id}`)
         .then((res) => {
           this.questionDetail = res
           this.modal.detail = true
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
-    openDeleteModal(id, number) { // 打开删除弹窗
+    // 打开删除弹窗
+    openDeleteModal(id, number) {
       this.questionId = id
       this.questionNumber = number
       this.modal.delete = true
     },
 
-    deleteQuestion() { // 删除操作
+    // 删除操作
+    deleteQuestion() {
       this.loading.delete = true
       this.$http.delete(`/question/${this.questionId}`)
         .then(() => {
@@ -314,13 +318,15 @@ export default {
         })
     },
 
-    openOutlineModal(id, number) { // 打开下线弹窗
+    // 打开下线弹窗
+    openOutlineModal(id, number) {
       this.questionId = id
       this.questionNumber = number
       this.modal.outline = true
     },
 
-    outline() { // 下线操作
+    // 下线操作
+    outline() {
       this.loading.outline = true
       this.$http.patch(`/question/set_offline/${this.questionId}`)
         .then(() => {
@@ -335,11 +341,17 @@ export default {
         })
     },
 
-    getData(query, to) { // 获取列表数据
+    // 获取列表数据
+    getData(query, to) {
       const urlArr = to.fullPath.split('/').slice(2)
       const url = `/${urlArr.join('/')}`
       return this.$http.get(url)
-        .then((res) => { this.list = res })
+        .then((res) => {
+          this.list = res
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     /**
@@ -365,12 +377,22 @@ export default {
             this.likeKeys = search_fields
             this.question_type_id = question_type_id
           })
+          .catch(({ message }) => {
+            this.errorNotice(message)
+          })
       }
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 
   created() {
-
   },
 
   beforeRouteEnter(to, from, next) {
