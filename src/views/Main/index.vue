@@ -19,7 +19,7 @@
           <Breadcrumb class="app-creadcrumb">
             <Breadcrumb-item
               v-for="item in breadcrumb"
-              :key="item.name"
+              :key="item.link"
               :href="item.link"
             >
               {{ item.name }}
