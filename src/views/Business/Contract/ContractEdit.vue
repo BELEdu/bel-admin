@@ -105,8 +105,8 @@
           >
             <Option
               v-for="option in dicts[item.dictName]"
-              :key="option.value"
-              :value="option.value"
+              :key="option.value || option.id"
+              :value="option.value || option.id"
             >{{option.display_name}}</Option>
           </Select>
         </Form-item>
@@ -313,10 +313,8 @@
  * @author huojinzhao
  */
 
-import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
 import { goBack, form } from '@/mixins'
-import { Http } from '@/utils'
 import flow from './mixins/flow'
 import {
   editInit,
@@ -344,6 +342,8 @@ export default {
       process: 1,
       // step2: 表单渲染
       studentFormRender: studentFormRender(),
+      // step2: 校园数据
+      campuses: [],
       // step3: 产品列表数据
       productList: [],
       // step3: 原始优惠列表
@@ -356,21 +356,29 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      dicts: state => ({
-        ...state.dicts,
-        school_list: [
-          {
-            display_name: '厦门一中',
-            value: 11,
-          },
-          {
-            display_name: '双十中学',
-            value: 12,
-          },
-        ],
-      }),
-    }),
+    dicts() {
+      return ({
+        ...this.$store.state.dicts,
+        school_list: this.campuses,
+      })
+    },
+  },
+
+  created() {
+    // 请求第二步需要的学校列表
+    this.fetchCampuses()
+
+    // 请求第三步需要的产品列表
+    this.fetchProducts()
+
+    // 更新合同数据
+    const id = this.$route.params.id
+    if (id) {
+      this.fetchContractInfo(id)
+        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+    } else {
+      this.$store.commit(GLOBAL.LOADING.HIDE)
+    }
   },
 
   methods: {
@@ -381,6 +389,22 @@ export default {
         .then((data) => {
           this.isDealAuthority = false
           this.fdata = { ...this.fdata, ...data }
+        })
+    },
+
+    fetchCampuses() {
+      this.$http.get('/contract/campus/list')
+        .then((res) => { this.campuses = res })
+    },
+
+    fetchProducts() {
+      this.$http.get('/contract_step3?sale_status=1')
+        .then(({
+          product_list,
+          promotion_list,
+        }) => {
+          this.productList = product_list
+          this.promotionList = promotion_list
         })
     },
 
@@ -567,27 +591,6 @@ export default {
       }
       return this.$http.post('/contract', fdata)
     },
-  },
-
-  created() {
-    // 请求第三步需要的产品列表
-    Http.get('/contract_step3?sale_status=1')
-      .then(({
-        product_list,
-        promotion_list,
-      }) => {
-        this.productList = product_list
-        this.promotionList = promotion_list
-      })
-
-    // 更新合同数据
-    const id = this.$route.params.id
-    if (id) {
-      this.fetchContractInfo(id)
-        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-    } else {
-      this.$store.commit(GLOBAL.LOADING.HIDE)
-    }
   },
 }
 </script>

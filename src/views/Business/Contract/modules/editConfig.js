@@ -57,9 +57,9 @@ export const studentFormRender = () => [
     prop: 'relation',
   },
   {
+    // 复合项，自定义
     label: '家庭住址',
     type: 'custom_address',
-    // 符合项，自定义
   },
   {
     label: '在读学校',
