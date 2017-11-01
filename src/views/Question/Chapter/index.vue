@@ -165,9 +165,8 @@ export default {
           align: 'center',
         },
         { title: '上级',
-          key: 'p_id',
+          key: 'parent_name',
           align: 'center',
-          sortable: 'custom',
         },
         {
           title: '包含知识点',
@@ -184,7 +183,7 @@ export default {
         },
         {
           title: '关联知识点',
-          key: 'have_knowledge',
+          key: 'relation_knowledge',
           align: 'left',
           render: (h, params) => {
             const { relation_knowledge } = params.row
@@ -228,16 +227,21 @@ export default {
   },
 
   methods: {
-    openChapterModal() { // 打开编辑章节树弹窗
+    // 打开编辑章节树弹窗
+    openChapterModal() {
       const id = this.$route.query['equal[grade_range_subject_id]'] || this.current_grade_range_subject_id
       this.$http.get(`/chapter/tree/${id}`)
         .then((res) => {
           this.modal.chapter = true
           this.chapterTree = res
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
-    openEditModal(id, type) { // 打开编辑章节 & 查看章节弹窗
+    // 打开编辑章节 & 查看章节弹窗
+    openEditModal(id, type) {
       if (type === 'edit') {
         this.isEdit = true
       } else {
@@ -249,16 +253,26 @@ export default {
           this.form = res
           this.modal.edit = true
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
-    getData(query, to) { // 获取列表数据
+    // 获取列表数据
+    getData(query, to) {
       const urlArr = to.fullPath.split('/').slice(2)
       const url = `/${urlArr.join('/')}`
       return this.$http.get(url)
-        .then((res) => { this.list = res })
+        .then((res) => {
+          this.list = res
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
-    createChapter(data, success, fail) { // 添加章节
+    // 添加章节
+    createChapter(data, success, fail) {
       this.$http.post('/chapter', data)
         .then((res) => {
           success(res)
@@ -267,7 +281,8 @@ export default {
         .catch(error => fail(error))
     },
 
-    deleteChapter(id, success, fail) { // 删除章节
+    // 删除章节
+    deleteChapter(id, success, fail) {
       this.$http.delete(`/chapter/${id}`)
         .then((res) => {
           success(res)
@@ -276,10 +291,19 @@ export default {
         .catch(error => fail(error))
     },
 
-    sortChapter(data, success, fail) { // 排序章节
+    // 排序章节
+    sortChapter(data, success, fail) {
       this.$http.patch(`/chapter/sort/${data.id}`, data)
         .then(() => success())
         .catch(error => fail(error))
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 

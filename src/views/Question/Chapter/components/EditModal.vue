@@ -85,6 +85,7 @@
                           <Row>
                             <Col span="20">
                               <app-tree-select
+                                :key="item.id"
                                 v-if="isEdit"
                                 v-model="item.id"
                                 :data="knowledgeTree"
@@ -358,6 +359,9 @@ export default {
         .then((res) => {
           this.knowledgeTree = res
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
     closeModal() { // 关闭该模态框
@@ -399,6 +403,9 @@ export default {
             data[index].art_duration = art_duration
             data[index].art_frequency = art_frequency
             data[index].art_score = art_score
+          })
+          .catch(({ message }) => {
+            this.$Message.error(message)
           })
       }
     },
