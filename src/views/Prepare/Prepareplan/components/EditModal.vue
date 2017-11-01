@@ -5,7 +5,7 @@
       @input="value => $emit('input', value)"
       :title="title"
       @on-cancel="closeModal"
-      width="600"
+      width="850"
     >
       <!-- 头部信息展示 -->
       <div class="text-center prepareplan-edit-modal__header">
