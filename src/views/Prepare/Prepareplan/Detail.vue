@@ -231,7 +231,7 @@ export default {
             content: this.editModal.isCreate ? res.course_chapter
               .map(item => item.analysis)
               .filter(item => item !== '')
-              .join('</br>') : '',
+              .join('') : '',
             ...res,
           }
           this.editModal.active = true
