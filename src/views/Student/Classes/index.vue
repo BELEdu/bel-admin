@@ -152,11 +152,13 @@ export default {
           width: 320,
           render: (h, params) => {
             const { classes_name, student_name } = params.row
-            return h('Tooltip', {
+            return h('Poptip', {
               class: 'color-primary',
               props: {
+                trigger: 'hover',
                 content: student_name === '' ? '暂无学员' : student_name,
-                placement: 'bottom-start',
+                placement: 'right',
+                transfer: true,
               },
             }, classes_name)
           },
