@@ -167,9 +167,9 @@
         }
       },
 
-      onSuccess({ close = false }) {
+      onSuccess(param = { close: false }) {
         this.loading = false
-        if (close) {
+        if (param.close) {
           this.$emit('on-success')
           this.$emit('update:visible', false)
         } else if (this.currentCom.nextStep || this.currentCom.prevStep) {

@@ -5,21 +5,18 @@
         <Button type="warning" icon="power" @click="overPlan">结束计划</Button>
       </Col>
     </Row>
-    <ul class="view-coach__list">
-      <li
+    <Timeline>
+      <TimelineItem
         v-for="(list, index) in progressList"
         :key="list.sort_value"
-        :data-index="progressList.length - index"
-        :class="{over: list.course_status === 2}"
       >
-        <div class="view-coach__list-time">
-          {{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}
+        <Icon v-if="list.course_status >= 2" type="ios-checkmark" slot="dot"></Icon>
+        <div :class="{over: list.course_status >= 2}">
+          <p class="content">{{list.name}}</p>
+          <p class="time">{{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}</p>
         </div>
-        <div class="view-coach__list-name">
-          {{list.name}}
-        </div>
-      </li>
-    </ul>
+      </TimelineItem>
+    </Timeline>
   </div>
 </template>
 
@@ -101,47 +98,18 @@
       text-align: right;
     }
 
-    &__list {
-      padding: 10px 0 0 14px;
-      max-height: 500px;
-      overflow-y: auto;
+    .content{
+      font-size: 14px;
+      font-weight: bold;
+    }
 
-      > li {
-        position: relative;
-        padding-left: 30px;
-        font-size: 14px;
-        border-left: 1px solid #ccc;
+    .time{
+      padding-left: 5px;
+    }
 
-        &:before {
-          content: attr(data-index);
-          display: block;
-          width: 26px;
-          height: 26px;
-          line-height: 24px;
-          margin-right: 8px;
-          text-align: center;
-          border: 1px solid @disabled-color;
-          border-radius: 50%;
-          font-size: 14px;
-          color: #fff;
-          background-color: @disabled-color;
-          position: absolute;
-          left: -13px;
-        }
-
-        &.over {
-          border-color: @info-color;
-
-          &:before {
-            border-color: @primary-color;
-            background-color: @primary-color;
-          }
-        }
-      }
-
-      &-name {
-        padding-left: 10px;
-        padding-bottom: 14px;
+    .over {
+      .content, .time {
+        color: @disabled-color;
       }
     }
   }

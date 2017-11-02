@@ -74,17 +74,29 @@
 
         columns: [
           { title: '班级名称', key: 'classes_name', align: 'center' },
-          { title: '学员人数（个）', key: 'student_total', align: 'center' },
-          { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
+          { title: '学员人数（个）', key: 'student_total', width: 120, align: 'center' },
+          { title: '排课专员', key: 'customer_relationships_name', width: 160, align: 'center' },
           { title: '课时进度',
             align: 'center',
-            width: 200,
+            width: 300,
             render: (h, params) => {
               const cost = params.row.course_cost ?
                 (params.row.course_cost / params.row.course_total) * 100 : 0
               return [
-                h('div', null, `总课时：${params.row.course_total}`),
+                h('span', {
+                  style: {
+                    width: '100px',
+                    display: 'inline-block',
+                    float: 'left',
+                  },
+                }, `总课时：${params.row.course_total}`),
                 h('Progress', {
+                  style: {
+                    width: '170px',
+                    display: 'inline-block',
+                    float: 'right',
+                    textAlign: 'left',
+                  },
                   props: {
                     percent: parseFloat(cost.toFixed(2)),
                   },
@@ -92,7 +104,7 @@
               ]
             },
           },
-          { title: '状态', key: 'plan_status_name', align: 'center' },
+          { title: '状态', key: 'plan_status_name', width: 80, align: 'center' },
           { title: '操作',
             align: 'center',
             width: 180,
@@ -155,3 +167,12 @@
     },
   }
 </script>
+
+<style lang="less">
+  .student-plan {
+    .ivu-progress-show-info .ivu-progress-outer {
+      padding-right: 58px;
+      margin-right: -58px;
+    }
+  }
+</style>

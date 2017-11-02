@@ -11,7 +11,9 @@
       </ul>
     </Col>
     <Col :span="20">
-      <ul class="appraise-coach__commit">
+      <ul class="appraise-coach__commit"
+          v-if="currentStudentComment.comment.length > 0"
+      >
         <li
           v-for="(list, index) in currentStudentComment.comment"
           :key="`${currentStudentComment.id}${index}`"
@@ -24,6 +26,9 @@
           </div>
         </li>
       </ul>
+    <div v-else class="text-center">
+      暂时无评价内容
+    </div>
     </Col>
   </Row>
 </template>
