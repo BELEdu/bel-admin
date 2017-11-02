@@ -34,7 +34,7 @@
         <Select
           v-if="!hasData"
           v-model="form.teach_material"
-          placeholder="请选择教材"
+          placeholder="请选择教材版本"
         >
           <Option
             v-for="material in currentTeachMaterialList"
@@ -49,18 +49,18 @@
         <Select
           v-if="!isReview"
           v-model="form.customer_relationships_id"
-          placeholder="请选择专员"
+          placeholder="请选择排课专员"
         >
           <Option
             v-for="course in courseList"
             :value="course.id"
-            :key="course.username"
-          >{{ course.username }}</Option>
+            :key="course.id"
+          >{{ course.realname }}</Option>
         </Select>
         <span v-else class="color-primary">{{currentCourseName}}</span>
       </Form-item>
 
-       <Form-item label="选择教师" prop="teachers">
+       <Form-item label="教师" prop="teachers">
         <Select
           v-if="!isReview"
           v-model="form.teachers"
@@ -70,8 +70,8 @@
           <Option
             v-for="teacher in teacherList"
             :value="teacher.id"
-            :key="teacher.username"
-          >{{ teacher.username }}</Option>
+            :key="teacher.id"
+          >{{ teacher.realname }}</Option>
         </Select>
         <span v-else class="color-primary">{{currentTeacherNames}}</span>
       </Form-item>
@@ -248,8 +248,8 @@ export default {
     currentCourseName() {
       const couresId = this.form.customer_relationships_id
       if (couresId) {
-        return this.teacherList
-          .find(teacher => teacher.id === couresId).username
+        return this.courseList
+          .find(course => course.id === couresId).realname
       }
       return ''
     },
@@ -260,7 +260,7 @@ export default {
       if (teacherArray.length > 0) {
         return this.teacherList
           .filter(teacher => teacherArray.includes(teacher.id))
-          .map(teacher => teacher.username)
+          .map(teacher => teacher.realname)
           .join('，')
       }
       return ''
