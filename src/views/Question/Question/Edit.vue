@@ -165,7 +165,10 @@
           v-if="questionTemplateFormat === 2"
           required
         >
-          <RadioGroup v-model="form.question_answers[0].is_correct">
+          <RadioGroup
+            v-model="tureOrFalseData"
+            @on-change="changeTrueOrFalse"
+          >
             <Radio :label="1">对</Radio>
             <Radio :label="0">错</Radio>
           </RadioGroup>
@@ -310,6 +313,8 @@ export default {
 
       current_question_template: null, // 当前选中的题型，4种
 
+      tureOrFalseData: 1, // 判断题model，用于判断对错
+
       subjects: [], // 年级学科数据源
       questionTypes: [], // 题型数据源
       difficulty: [], // 难度数据源
@@ -424,6 +429,7 @@ export default {
       this.form.question_type_id = null
       this.form.paper_type = null
       this.form.knowledge_ids.length = 0
+      this.tureOrFalseData = 1
     },
 
     // 获取题目详情
@@ -478,6 +484,13 @@ export default {
               { ...defaultAnswer, option: 'D' },
             ]
             break
+          case 2:
+            this.tureOrFalseData = 1
+            this.form.question_answers = [
+              { ...defaultAnswer, option: '√', is_correct: 1 },
+              { ...defaultAnswer, option: '×' },
+            ]
+            break
           // case 3:
           //   this.form.question_answers = Array(3).fill({ ...defaultAnswer })
           //   break
@@ -485,6 +498,18 @@ export default {
             this.form.question_answers = [{ ...defaultAnswer }]
             break
         }
+      }
+    },
+
+    // 判断题改变选项
+    changeTrueOrFalse(val) {
+      const answerArray = this.form.question_answers
+      if (val === 1) {
+        answerArray[0].is_correct = 1
+        answerArray[1].is_correct = 0
+      } else {
+        answerArray[0].is_correct = 0
+        answerArray[1].is_correct = 1
       }
     },
 

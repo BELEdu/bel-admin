@@ -70,7 +70,7 @@ export default {
             .map(({ option }) => option)
             .join('，')
         case 2:
-          return question_answers[0].is_correct === 1 ? '对' : '错'
+          return question_answers.find(answer => answer.is_correct === 1).option
         case 3:
           return question_answers
             .map(({ content }) => content)
