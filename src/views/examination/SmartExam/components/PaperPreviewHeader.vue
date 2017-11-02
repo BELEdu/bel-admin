@@ -6,8 +6,9 @@
       <span>| 类型: </span>
       <span>| 区域: </span>
       <span>| 年份: </span> -->
-      <span>题数: {{paperTotalCount}} 题</span>
-      <span>| 总分: {{paperTotalScore}} 分</span>
+
+       总分：<span class="color-error">{{paperTotalScore}}</span> 分
+      | 题数：<span class="color-error">{{paperTotalCount}} </span>题
     </header>
   </div>
 </template>

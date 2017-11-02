@@ -111,6 +111,7 @@
               filterable
               remote
               :remote-method="remoteMethodPaper"
+              clearable
               :loading="loading.paper"
             >
               <Option

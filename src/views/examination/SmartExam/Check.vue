@@ -142,7 +142,25 @@
       <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
       <paper-preview-detail
         :data="form"
+        v-if="false"
       ></paper-preview-detail>
+
+      <div class="smartexam-check__alert">
+        <!-- （线上）待交卷-->
+        <Alert type="warning" show-icon>
+          <span slot="desc">
+              未提交答卷
+          </span>
+        </Alert>
+
+        <!-- （线下）待上传 -->
+        <Alert type="warning" show-icon>
+          <span slot="desc">
+              未上传学员答卷
+          </span>
+        </Alert>
+      </div>
+
     </div>
 
     <!-- 半对错得分弹窗 -->
@@ -174,7 +192,6 @@
           >{{item.display_name}}</Checkbox>
         </li>
       </ul>
-
     </Modal>
 
   </div>
@@ -442,6 +459,11 @@ export default {
 
   &__sidebar{
     overflow: hidden;
+    width: 885px;
+
+    &__alert {
+
+    }
   }
 
   &__form {
