@@ -153,9 +153,22 @@ export default {
       this.$router.push(`contract/refund/${row.id}`)
     },
 
-    toCancel(row) {
-      this.$http.post(`/contract/cancel/${row.id}`)
-        .then(() => this.fetchData())
+    // 取消合同
+    toCancel({ id }) {
+      this.$Modal.confirm({
+        title: '取消确认',
+        content: '取消该审批后将无法重新提交，是否确认取消？',
+        loading: true,
+        onOk: () => this.doCancel(id),
+      })
+    },
+
+    doCancel(id) {
+      this.$http.post(`/contract/cancel/${id}`)
+        .then(() => {
+          this.$Modal.remove()
+          this.fetchData()
+        })
     },
   },
 }
