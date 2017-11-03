@@ -150,7 +150,7 @@ export const editInit = () => ({
   ],
 
   // 产品净总金额
-  origin_price: 0,
+  original_money: 0,
 
   // 优惠后的实际总金额
   money: 0,

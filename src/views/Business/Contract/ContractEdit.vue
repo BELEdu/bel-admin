@@ -230,7 +230,7 @@
 
       <!-- 产品净总金额 -->
       <Form-item label="产品总额">
-        <span>{{fdata.origin_price}}元</span>
+        <span>{{fdata.original_money}}元</span>
       </Form-item>
 
       <!-- 优惠选择 -->
@@ -386,9 +386,21 @@ export default {
 
     fetchContractInfo(id) {
       return this.$http.get(`/contract/edit/${id}`)
-        .then((data) => {
+        .then(({
+          contract_promotion,
+          ...rest
+        }) => {
           this.isDealAuthority = false
-          this.fdata = { ...this.fdata, ...data }
+
+          if (!contract_promotion.length) {
+            // eslint-disable-next-line
+            contract_promotion = [{ promotion_id: -1 }]
+          }
+          this.fdata = {
+            ...this.fdata,
+            ...rest,
+            contract_promotion,
+          }
         })
     },
 
@@ -500,7 +512,7 @@ export default {
 
     // 计算净总金额，后计算优惠后总额
     calcOriginPrice() {
-      this.fdata.origin_price = this
+      this.fdata.original_money = this
         .fdata.contract_product
         .reduce((acc, product) => acc + product.money, 0)
       this.initPromotion()
@@ -552,7 +564,7 @@ export default {
             return this.calcDiscount(acc, promotion)
           }
           return acc
-        }, this.fdata.origin_price)
+        }, this.fdata.original_money)
     },
 
     calcMinus(price, promotion) {
@@ -568,9 +580,15 @@ export default {
     filterPromotions(promotion, id) {
       // 选中不过滤
       if (promotion.id === id) return true
+
       // 非选中过滤
       const result = this.fdata.contract_promotion
         .every(item => item.promotion_id !== promotion.id)
+
+      if (this.fdata.contract_promotion.length === 1) {
+        return result && promotion.enjoy_price <= this.fdata.original_money
+      }
+
       return result && promotion.enjoy_price <= this.fdata.money
     },
 
