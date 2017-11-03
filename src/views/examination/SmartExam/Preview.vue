@@ -21,8 +21,8 @@
 
     <!-- 操作按钮 -->
     <div class="right">
-      <Button type="success" icon="search">下载预览</Button>
-      <Button type="primary" icon="printer">Word直接下载</Button>
+      <!-- <Button type="success" icon="search">下载预览</Button> -->
+      <Button type="primary" icon="archive" @click="download">Word直接下载</Button>
     </div>
   </div>
 
@@ -81,6 +81,11 @@ export default {
   },
 
   methods: {
+    // 下载word
+    download() {
+      window.open(`/down_word/${this.currentStudentTestId}`)
+    },
+
     // 获取试卷详情
     getPaperData(student_test_id) {
       return this.$http.get(`/test/paperinspection/${student_test_id}`)
