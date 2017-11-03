@@ -5,133 +5,152 @@
   >
 
     <!-- 阅卷区域 -->
-    <div class="smartexam-check__aside left">
+    <aside class="smartexam-check__aside">
 
-      <!-- 学员列表 -->
-      <Card class="smartexam-check__aside__card" dis-hover>
-        <p slot="title">学员列表</p>
-        <!-- 小贴士 -->
-        <div class="smartexam-check__aside__tips">
-          <Tag>未考试</Tag>
-          <Tag type="border">待交卷</Tag>
-          <Tag type="border" color="blue">待阅卷</Tag>
-          <Tag color="green">已阅卷</Tag>
-          <Tag color="blue">已选中</Tag>
-        </div>
-        <!-- 学员按钮 -->
-        <Row :gutter="15">
-          <Col
-            span="12"
-            v-for="(item,index) in student_data"
-            :key="index"
-            class="smartexam-check__aside__btn"
-          >
-            <Button
-              :type="buttonFormat(item.test_status,item.id)"
-              long
-              class="text-right"
-              :disabled="item.test_status === 2"
-              @click="changeStudentTestId(item.id)"
-            >
-              <!-- 姓名 -->
-              <span class="left">{{item.id}}</span>
-              <!-- 未选择设备显示未考试 -->
-              <span v-if="item.test_status === 2">(未考)</span>
-              <!-- 待阅卷和已阅卷显示得分 -->
-              <span >{{item.total_score}}分</span>
-              <!-- 已阅卷显示打钩 -->
-              <!-- <Icon v-if="item.test_status === 3" type="checkmark-round" /> -->
-            </Button>
-          </Col>
-        </Row>
-      </Card>
+      <!-- 折叠面板 -->
+      <Collapse
+        v-model="collapseData"
+        class="smartexam-check__collapse"
+      >
 
-      <!-- 试卷试题 -->
-      <Card dis-hover>
-        <p slot="title">
-          试题（{{currentStudentName}}）
-          <span class="right">
-            得分：<span class="color-error">{{currentStudentTotalScore}} / {{currentPaperTotalScore}}</span>
-          </span>
-        </p>
-        <Form
-          ref="form"
-          class="smartexam-check__form"
-          :model="form"
-          :rules="rules"
-          :label-width="0"
-        >
-          <app-form-alert :errors="formErrors"></app-form-alert>
-
-          <!-- 题型区域 -->
-          <div
-            v-for="(question_type,tindex) in form.question_types"
-            :key="tindex"
-          >
-            <!-- 题型名称 & 题型得分 -->
-            <p class="smartexam-check__form__title">
-              {{tindex+1}}.{{question_type.display_name}}
-              <span class="color-primary ">
-                （得分：{{questionTypeScoreFormat(question_type.questions)}} / {{question_type.total_score}}）
-              </span>
-            </p>
-            <!-- 题目 -->
-            <Row>
-              <Col span="12"
-                v-for="(question,qindex) in question_type.questions"
-                :key="qindex"
-                class="smartexam-check__form__item"
+        <!-- 学员面板 -->
+        <Panel name="panelStudent">
+          学员列表
+          <section slot="content">
+            <!-- 小贴士 -->
+            <div class="smartexam-check__aside__tips">
+              <Tag>未考试</Tag>
+              <Tag type="border">待交卷</Tag>
+              <Tag type="border" color="blue">待阅卷</Tag>
+              <Tag color="green">已阅卷</Tag>
+              <Tag color="blue">已选中</Tag>
+            </div>
+            <!-- 学员按钮 -->
+            <Row :gutter="15" class="smartexam-check__aside__student-wrap">
+              <Col
+                span="12"
+                v-for="(item,index) in student_data"
+                :key="index"
+                class="smartexam-check__aside__btn"
               >
-                <Form-item>
-                  <!-- 题目下标 -->
-                  <Tag :color="indexColorFormat(question.answer_right_wrong)">
-                    {{qindex+1}}
-                  </Tag>
-                  <!-- 题目批改 -->
-                  <RadioGroup
-                    v-model="question.answer_right_wrong"
-                    type="button"
-                    size="small"
-                    @on-change="(value) => changeQuestionAnswer(value,tindex,qindex)"
-                  >
-                    <Radio :label="1">
-                      <Icon class="color-success" type="checkmark-round" />
-                    </Radio>
-                    <Radio :label="3" v-if="isHalfWrongQuestion(question.question_template)">
-                      <Icon class="color-warning" type="minus-round" />
-                    </Radio>
-                    <Radio :label="2">
-                      <Icon class="color-error" type="close-round" />
-                    </Radio>
-                  </RadioGroup>
-                </Form-item>
+                <Button
+                  :type="buttonFormat(item.test_status,item.id)"
+                  long
+                  class="text-right"
+                  :disabled="item.test_status === 2"
+                  @click="changeStudentTestId(item.id)"
+                >
+                  <!-- 姓名 -->
+                  <span class="left">{{item.id}}</span>
+                  <!-- 未选择设备显示未考试 -->
+                  <span v-if="item.test_status === 2">(未考)</span>
+                  <!-- 待阅卷和已阅卷显示得分 -->
+                  <span >{{item.total_score}}分</span>
+                  <!-- 已阅卷显示打钩 -->
+                  <!-- <Icon v-if="item.test_status === 3" type="checkmark-round" /> -->
+                </Button>
               </Col>
             </Row>
-          </div>
+          </section>
+        </Panel>
 
-          <!-- 提交阅卷 -->
-          <Button
-            class="smartexam-check__form__submit"
-            type="primary"
-            long
-            :loading="formLoading"
-            @click="submit"
-          >提交阅卷</Button>
+        <!-- 阅卷面板 -->
+        <Panel name="panelCheck">
+          试题（{{currentStudentName}}）
+          <span class="right martexam-check__aside__score">
+            得分：
+            <span class="color-error">
+              {{currentStudentTotalScore}} / {{currentPaperTotalScore}}
+            </span>
+          </span>
+          <section slot="content">
+            <Form
+              ref="form"
+              class="smartexam-check__form"
+              :model="form"
+              :rules="rules"
+              :label-width="0"
+            >
+              <app-form-alert :errors="formErrors"></app-form-alert>
 
-          <Button
-            class="smartexam-check__form__submit"
-            type="warning"
-            long
-            :loading="formLoading"
-            @click="submit"
-          >未交卷</Button>
+              <!-- 容器 -->
+              <div class="smartexam-check__aside__check-wrap">
+                <!-- 题型区域 -->
+                <div
+                  v-for="(question_type,tindex) in form.question_types"
+                  :key="tindex"
 
-        </Form>
-      </Card>
+                >
+                  <!-- 题型名称 & 题型得分 -->
+                  <p class="smartexam-check__form__title">
+                    {{tindex+1}}.{{question_type.display_name}}
+                    <span class="color-primary ">
+                      （得分：{{questionTypeScoreFormat(question_type.questions)}} / {{question_type.total_score}}）
+                    </span>
+                  </p>
+                  <!-- 题目 -->
+                  <Row>
+                    <Col span="12"
+                      v-for="(question,qindex) in question_type.questions"
+                      :key="qindex"
+                      class="smartexam-check__form__item"
+                    >
+                      <Form-item>
+                        <!-- 题目下标 -->
+                        <Tag :color="indexColorFormat(question.answer_right_wrong)">
+                          {{qindex+1}}
+                        </Tag>
+                        <!-- 题目批改 -->
+                        <RadioGroup
+                          v-model="question.answer_right_wrong"
+                          type="button"
+                          size="small"
+                          @on-change="(value) => changeQuestionAnswer(value,tindex,qindex)"
+                        >
+                          <Radio :label="1">
+                            <Icon class="color-success" type="checkmark-round" />
+                          </Radio>
+                          <Radio :label="3" v-if="isHalfWrongQuestion(question.question_template)">
+                            <Icon class="color-warning" type="minus-round" />
+                          </Radio>
+                          <Radio :label="2">
+                            <Icon class="color-error" type="close-round" />
+                          </Radio>
+                        </RadioGroup>
+                      </Form-item>
+                    </Col>
+                  </Row>
+                </div>
 
-    </div>
+              </div>
 
-    <!-- 试卷区域 -->
+              <!-- 提交阅卷 -->
+              <Button
+                class="smartexam-check__form__submit"
+                type="primary"
+                long
+                :loading="formLoading"
+                @click="submit"
+              >提交阅卷</Button>
+
+              <Button
+                class="smartexam-check__form__submit"
+                type="warning"
+                long
+                :loading="formLoading"
+                @click="submit"
+              >未交卷</Button>
+
+            </Form>
+
+          </section>
+
+        </Panel>
+      </Collapse>
+
+    </aside>
+
+    <!-- 展示（上传图片）区域 -->
     <div class="smartexam-check__sidebar">
 
       <!-- 试卷公共头部 -->
@@ -139,27 +158,47 @@
         :data="form"
       ></paper-preview-header>
 
-      <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
-      <paper-preview-detail
-        :data="form"
-        v-if="false"
-      ></paper-preview-detail>
-
-      <div class="smartexam-check__alert">
-        <!-- （线上）待交卷-->
-        <Alert type="warning" show-icon>
+      <!-- 阅卷（线上） -->
+      <section
+        class="smartexam-check__online"
+        v-if="true"
+      >
+        <!-- 待交卷 -->
+        <Alert
+          type="warning"
+          show-icon
+        >
           <span slot="desc">
               未提交答卷
           </span>
         </Alert>
 
-        <!-- （线下）待上传 -->
-        <Alert type="warning" show-icon>
+        <!-- 试卷详情展示 -->
+        <paper-preview-detail :data="form"></paper-preview-detail>
+
+      </section>
+
+      <!-- 阅卷（线下） -->
+      <section
+        class="smartexam-check__offline"
+        v-if="true"
+      >
+        <!-- 待上传 -->
+        <Alert type="warning"
+          v-if="uploadList.length === 0"
+          show-icon
+        >
           <span slot="desc">
-              未上传学员答卷
+            未上传学员答卷
           </span>
         </Alert>
-      </div>
+
+        <!-- 上传区域 -->
+        <paper-upload
+          :dataList="uploadList"
+          @changeList="changeList"
+        ></paper-upload>
+      </section>
 
     </div>
 
@@ -209,6 +248,7 @@ import { mapState } from 'vuex'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
 import PaperPreviewDetail from './components/PaperPreviewDetail'
 import PaperPreviewHeader from './components/PaperPreviewHeader'
+import PaperUpload from './components/PaperUpload'
 
 export default {
   name: 'app-examination-smartexam-check',
@@ -218,24 +258,50 @@ export default {
   components: {
     PaperPreviewHeader,
     PaperPreviewDetail,
+    PaperUpload,
   },
 
   data() {
     return {
+      collapseData: ['panelStudent', 'panelCheck'], // 折叠面板控制
 
       currentStudentTestId: null, // 当前选中的测试学员的测试id
 
-      form: null,
+      form: null, // 阅卷表单
 
       rules: {},
 
-      tindex: 0,
-      qindex: 0,
+      tindex: 0, // 题型index
+      qindex: 0, // 题目index
 
       // 半对错弹窗
       modal: {
         check: false,
       },
+
+      // 线下阅卷假数据
+      uploadList: [
+        {
+          name: '试卷1',
+          url: '/data/head_url/201711/59fc1d10a0fd1.jpg',
+        },
+        {
+          name: '试卷2',
+          url: '/data/head_url/201711/59fc1d40da5c4.jpg',
+        },
+        {
+          name: '试卷3',
+          url: '/data/head_url/201711/59fc1d5e6123e.jpg',
+        },
+        {
+          name: '试卷4',
+          url: '/data/head_url/201711/59fc1d70a9353.jpg',
+        },
+        {
+          name: '试卷5',
+          url: '/data/head_url/201711/59fc1d86b0840.jpg',
+        },
+      ],
     }
   },
 
@@ -418,7 +484,19 @@ export default {
       return this.$http.get(`/test/paperinspection/${student_test_id}`)
         .then((res) => {
           this.form = res
+          this.$emit('scrollToTop')
         })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
+    },
+
+    // 上传图片成功回调
+    changeList(array) {
+      this.uploadList = [
+        ...this.uploadList,
+        ...array,
+      ]
     },
   },
 
@@ -440,39 +518,62 @@ export default {
 
 <style lang="less">
 .smartexam-check {
-  &__aside {
-    width: 366px;
-    padding-right: 30px;
 
-    &__btn{
-      margin: 7.5px 0;
-    }
-
-    &__card{
-      margin-bottom: 20px;
-    }
-
-    &__tips{
-      margin-bottom: 10px;
+  &__collapse {
+    &.ivu-collapse > .ivu-collapse-item > .ivu-collapse-header{
+      padding: 0 16px;
+      &>i{
+        margin-right: 10px;
+      }
     }
   }
 
+  &__aside {
+    width: 336px;
+    position: fixed;
+    z-index: 999;
+
+    &__btn {
+      margin: 7.5px 0;
+    }
+
+    &__tips {
+      margin-bottom: 10px;
+    }
+
+    &__score {
+      margin-right: 10px;
+    }
+
+    &__student-wrap {
+      max-height: 185px;
+      overflow: auto;
+    }
+
+    &__check-wrap {
+      max-height: 300px;
+      overflow: auto;
+    }
+
+  }
+
   &__sidebar{
+    margin-left: 366px;
     overflow: hidden;
     width: 885px;
 
-    &__alert {
+    &__offline {}
 
-    }
+    &__online {}
   }
 
   &__form {
     .ivu-form-item {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     &__title{
-      margin-bottom: 10px;
+      margin-bottom: 5px;
     }
 
     .ivu-radio-group-button.ivu-radio-group-small .ivu-radio-wrapper{
