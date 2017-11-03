@@ -12,7 +12,7 @@
         ref="form"
         :rules="rules"
         :model="form"
-        :label-width="70"
+        :label-width="100"
         v-if="isOnline"
       >
         <app-form-alert :errors="formErrors"></app-form-alert>
