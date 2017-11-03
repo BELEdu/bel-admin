@@ -22,7 +22,7 @@
             v-for="manage in manages"
             :key="manage.id"
             :value="manage.id"
-          >{{ manage.username }}</Option>
+          >{{ manage.realname }}</Option>
         </Select>
       </Form-item>
 
