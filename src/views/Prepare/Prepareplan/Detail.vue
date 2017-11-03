@@ -247,6 +247,17 @@ export default {
         id: this.teacherId,
         query: qs,
       })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 

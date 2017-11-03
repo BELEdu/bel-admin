@@ -162,6 +162,9 @@ export default {
         id: this.id,
         query: qs,
       })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     openExpendModal(id, name) { // 打开消耗日志弹窗
@@ -175,6 +178,14 @@ export default {
         .catch(({ message }) => {
           this.$Message.error(message)
         })
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 

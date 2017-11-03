@@ -287,6 +287,7 @@ export default {
           this.$Message.warning('删除成功！')
         })
         .catch(({ message }) => {
+          this.loading.delete = false
           this.$Message.error(message)
         })
     },
@@ -297,11 +298,25 @@ export default {
         .then((res) => {
           this.campusList = res
         })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 获取学员列表数据
     getData(qs) {
       return this.$store.dispatch(STUDENT.STUDENT.INIT, qs)
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 

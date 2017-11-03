@@ -246,9 +246,6 @@ export default {
           }
         })
         .catch(this.errorHandler)
-      // this.step = this.step + 1
-      // this.formLoading = false
-      // this.$Message.success('获取习题')
     },
 
     closeModal() {

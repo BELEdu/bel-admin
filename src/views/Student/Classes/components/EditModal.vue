@@ -76,7 +76,7 @@
         <span v-else class="color-primary">{{currentTeacherNames}}</span>
       </Form-item>
 
-      <Form-item label="选择学员" v-if="!isReview">
+      <Form-item label="学员" v-if="!isReview">
         <Select
           :key="studentList.length"
           placeholder="请选择学员"

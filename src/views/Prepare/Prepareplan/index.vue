@@ -102,12 +102,23 @@ export default {
     // 获取教师数据
     getData(qs) {
       return this.$store.dispatch(PREPARE.PREPAREPLAN.INIT, qs)
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 查看教案
     goTo(id, name) {
       this.$store.commit(PREPARE.PREPAREPLAN.TEACHERNAME, name)
       this.$router.push(`/prepare/prepareplan/${id}`)
+    },
+
+    // 接口错误处理
+    errorNotice(message) {
+      this.$Notice.error({
+        title: message,
+        duration: 0,
+      })
     },
   },
 
