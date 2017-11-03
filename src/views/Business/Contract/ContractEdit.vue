@@ -423,6 +423,10 @@ export default {
     /* --- 第一步 --- */
 
     fetchStudentInfo() {
+      // 更新合同数据
+      const contractId = this.$route.params.id
+      if (contractId) return Promise.resolve()
+
       const url = `/student/number/${this.fdata.student_number}`
       return this.$http.get(url)
         .then(({ id, ...rest }) => {
