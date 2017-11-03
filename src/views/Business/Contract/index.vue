@@ -152,6 +152,11 @@ export default {
     toRefund(row) {
       this.$router.push(`contract/refund/${row.id}`)
     },
+
+    toCancel(row) {
+      this.$http.post(`/contract/cancel/${row.id}`)
+        .then(() => this.fetchData())
+    },
   },
 }
 </script>

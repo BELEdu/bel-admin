@@ -122,7 +122,7 @@ export const colConfig = that => [
       {
         text: '取消',
         type: 'error',
-        click: ({ id }) => that.deleteItem(id),
+        click: that.toCancel,
         isShow: params => params.row.operation.cancel,
       },
     ]),
