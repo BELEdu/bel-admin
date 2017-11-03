@@ -67,6 +67,21 @@
       </div>
     </app-warn-modal>
 
+    <!-- 取消模态框 -->
+    <app-warn-modal
+      v-model="modal.cancel"
+      title="取消确认"
+      :loading="loading.cancel"
+      @on-ok="cancelSubmit"
+      action="确认取消"
+    >
+      <div class="text-center">
+        取消该班级
+        <br><span class="color-primary">{{classesName}}</span><br>
+        后，班级状态将变为已取消，无法再修改，是否继续？
+      </div>
+    </app-warn-modal>
+
     <!--班级管理表格-->
     <Table
       class="app-table"
@@ -166,7 +181,8 @@ export default {
         { title: '教材版本', key: 'teach_material_name', align: 'center' },
         { title: '排课专员', key: 'customer_relationships_name', align: 'center' },
         { title: '教师', key: 'teacher_item', align: 'center' },
-        { title: '计划课时', key: 'teach_material', align: 'center', sortable: 'custom' },
+        { title: '上课人数', key: 'student_total', align: 'center', sortable: 'custom' },
+        { title: '计划课时', key: 'teach_material', align: 'center' },
         { title: '创建日期', key: 'created_at', align: 'center', sortable: 'custom' },
         { title: '状态', key: 'classes_status_name', align: 'center' },
         {
@@ -174,19 +190,42 @@ export default {
           key: 10,
           align: 'center',
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.classes_name) },
-            { text: '编辑', type: 'success', click: row => this.openEditModal('edit', row.id) },
-            { text: '查看', type: 'primary', click: row => this.openEditModal('review', row.id) },
+            {
+              text: '编辑',
+              type: 'success',
+              isShow: ({ row }) => row.operation.update,
+              click: row => this.openEditModal('edit', row.id),
+            },
+            {
+              text: '查看',
+              type: 'primary',
+              isShow: ({ row }) => row.operation.show,
+              click: row => this.openEditModal('review', row.id),
+            },
+            {
+              text: '取消',
+              type: 'warning',
+              isShow: ({ row }) => row.operation.cancel,
+              click: row => this.openCancelModal(row.id, row.classes_name),
+            },
+            {
+              text: '删除',
+              type: 'error',
+              isShow: ({ row }) => row.operation.destroy,
+              click: row => this.openDeleteModal(row.id, row.classes_name),
+            },
           ]),
         },
       ],
 
       modal: { // 模态框
         delete: false,
+        cancel: false,
       },
 
       loading: {
         delete: false,
+        cancel: false,
       },
 
       classId: null, // 班级编号
@@ -278,6 +317,31 @@ export default {
           this.$Message.warning('删除成功！')
         })
         .catch(({ message }) => {
+          this.loading.delete = false
+          this.$Message.warning(message)
+        })
+    },
+
+    // 打开取消班级模态框
+    openCancelModal(id, name) {
+      this.modal.cancel = true
+      this.classId = id
+      this.classesName = name
+    },
+
+    // 取消班级
+    cancelSubmit() {
+      this.loading.cancel = true
+      // 班级id用来请求删除接口
+      this.$http.post(`/classes/cancel/${this.classId}`)
+        .then(() => {
+          this.loading.cancel = false
+          this.modal.cancel = false
+          this.$Message.warning('取消成功！')
+          this.fetchData()
+        })
+        .catch(({ message }) => {
+          this.loading.cancel = false
           this.$Message.warning(message)
         })
     },
