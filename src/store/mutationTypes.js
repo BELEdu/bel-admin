@@ -97,32 +97,9 @@ export const STUDENT = {
       DELETE: 'STUDENT.STUDENT.MEETING.DELETE',
     },
 
-    WARNING: { // 预警信息(旧)
-      INIT: 'STUDENT.STUDENT.WARNING.INIT',
-    },
-
     PRODUCT: { // 签约产品
       INIT: 'STUDENT.STUDENT.PRODUCT.INIT',
     },
-  },
-
-  STUDYPROGRESS: { // 学习进度
-    STUDENT: { // (学员)
-      INIT: 'STUDENT.STUDYPROGRESS.STUDENT.INIT',
-      HISTORY: { // 历史计划(学员)
-        INIT: 'STUDENT.STUDYPROGRESS.STUDENT.HISTORY.INIT',
-      },
-    },
-    CLASSES: { // (班级)
-      INIT: 'STUDENT.STUDYPROGRESS.CLASSES.INIT',
-      HISTORY: { // 历史计划(班级)
-        INIT: 'STUDENT.STUDYPROGRESS.CLASSES.HISTORY.INIT',
-      },
-    },
-  },
-
-  KNOWLEDGEPOINT: { // 学员知识点
-    INIT: 'STUDENT.KNOWLEDGEPOINT.INIT',
   },
 
   PLAN: { // 学习计划
