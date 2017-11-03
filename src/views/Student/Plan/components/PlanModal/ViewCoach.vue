@@ -2,15 +2,16 @@
   <div class="view-coach">
     <Row class="view-coach__header">
       <Col>
-        <Button type="warning" icon="power" @click="overPlan">结束计划</Button>
+        <Button type="warning" icon="power" @click="overPlan" v-if="progressList.end_status">结束计划</Button>
       </Col>
     </Row>
     <Timeline>
       <TimelineItem
-        v-for="(list, index) in progressList"
+        v-for="(list, index) in progressList.course_progress"
         :key="list.sort_value"
       >
         <Icon v-if="list.course_status >= 2" type="ios-checkmark" slot="dot"></Icon>
+        <Icon v-else type="ios-circle-outline" slot="dot"></Icon>
         <div :class="{over: list.course_status >= 2}">
           <p class="content">{{list.name}}</p>
           <p class="time">{{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}</p>
@@ -34,7 +35,9 @@
 
     data() {
       return {
-        progressList: [],
+        progressList: {
+          course_progress: [],
+        },
       }
     },
 
@@ -76,7 +79,7 @@
       getPlanProgress() {
         this.$http.get(`/plan/progress/${this.currentItemData.plan.id}`)
           .then((result) => {
-            this.progressList = result.course_progress
+            this.progressList = { ...result }
           })
       },
     },
