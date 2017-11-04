@@ -9,6 +9,31 @@
         </Input>
       </Form-item>
       <Form-item>
+        <Select
+          v-model="query['equal[users_job_type]']"
+          placeholder="岗位性质"
+          style="width: 8em;"
+        >
+          <Option value="">全部岗位</Option>
+          <Option
+            v-for="usersJobType in usersJobTypes"
+            :key="usersJobType.value"
+            :value="usersJobType.value"
+          >{{ usersJobType.display_name }}</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
+        <Select
+          v-model="query['equal[status]']"
+          placeholder="状态"
+          style="width: 8em;"
+        >
+          <Option value="">全部状态</Option>
+          <Option :value="1">启用</Option>
+          <Option :value="2">禁用</Option>
+        </Select>
+      </Form-item>
+      <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
       </Form-item>
     </Form>
@@ -74,8 +99,6 @@ export default {
         { label: '用户名', value: 'username' },
         { label: '姓名', value: 'realname' },
         { label: '手机号码', value: 'mobile' },
-        { label: '岗位性质', value: 'users_job_type' },
-        { label: '状态', value: 'status' },
       ],
       likeKey: 'user_number',
 
@@ -107,6 +130,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.system.user.list,
+      usersJobTypes: state => state.dicts.users_job_type,
     }),
   },
 
