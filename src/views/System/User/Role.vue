@@ -2,30 +2,6 @@
   <Form class="app-form-entire" :model="form" :label-width="140" ref="form">
     <app-form-alert :errors="formErrors"></app-form-alert>
 
-    <Form-item label="学员管理">
-      <Radio-group v-model="form.is_student_admin">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
-
-    <Form-item label="学员授课">
-      <Radio-group v-model="form.is_student_teac">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
-
-    <Form-item label="学员咨询">
-      <Radio-group v-model="form.is_student_advisory">
-        <Radio :label="0">关闭</Radio>
-        <Radio :label="1">开启</Radio>
-      </Radio-group>
-    </Form-item>
-
-    <!--这里后台暂时还没有数据，过后需要补上-->
-    <data-auths :data="data_auths" v-model="form.data_auth_ids"></data-auths>
-
     <permissions
       :data="permissions"
       v-model="form.permission_ids"
@@ -48,7 +24,6 @@
 import { mapState } from 'vuex'
 import { GLOBAL, SYSTEM } from '@/store/mutationTypes'
 import { form, goBack } from '@/mixins'
-import DataAuths from '../components/DataAuths'
 import Permissions from '../components/Permissions'
 
 export default {
@@ -59,10 +34,6 @@ export default {
   data() {
     return {
       form: {
-        is_student_admin: 0,
-        is_student_teac: 0,
-        is_student_advisory: 0,
-        data_auth_ids: [],
         permission_ids: [],
       },
     }
@@ -70,7 +41,6 @@ export default {
 
   computed: {
     ...mapState({
-      data_auths: state => state.system.data.data_auths,
       permissions: state => state.system.data.permissions,
     }),
 
@@ -96,7 +66,6 @@ export default {
   },
 
   components: {
-    DataAuths,
     Permissions,
   },
 
