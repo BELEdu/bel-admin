@@ -38,9 +38,9 @@
 
       <Form-item label="部门角色" prop="roles">
         <Radio-group v-model="form.default_role_id" style="display: block;">
-          <div v-for="(role, index) in form.roles" :key="role.value" class="multiple-select">
+          <div v-for="(role, index) in form.roles" :key="role.join()" class="multiple-select">
             <Cascader
-              placeholder="请选择部门与角色" :data="roles" v-model="form.roles[index]"
+              placeholder="请选择部门与角色" :data="roles" :value="form.roles[index]"
               @on-change="(value, detail) => selectRole(value, detail, index)"
             ></Cascader>
             <Button class="multiple-select__modify" :class="{hidden: !isRoleInDb(role)}" type="text" @click="editUserRole(role)">修改权限</Button>
@@ -79,7 +79,7 @@
 <script>
 /**
  * 系统管理 - 用户管理 - 用户详情页（新建/编辑）
- * @author lmh
+ * @author lmh | chenliangshan
  * @version 2017-06-19
  */
 
@@ -175,6 +175,21 @@ export default {
     },
   },
 
+  watch: {
+    'form.roles': {
+      handler(newVal, oldVal) {
+        if (this.form.default_role_id) {
+          oldVal.forEach((item, index) => {
+            if (item.includes(this.form.default_role_id)) {
+              this.form.default_role_id = newVal[index][newVal[index].length - 1]
+            }
+          })
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     // 获取当前用户信息
     getUser() {
@@ -205,6 +220,21 @@ export default {
       // 相当于撤销此次选择
       if (canNotChoose || hasSelected) {
         Vue.set(this.form.roles, index, [])
+      } else {
+        /**
+         * 此处理是为监听 form.roles 字段值变化
+         * 注意：在变异 (不是替换) 对象或数组时，
+         * 旧值将与新值相同，
+         * 因为它们的引用指向同一个对象/数组。
+         * Vue 不会保留变异之前值的副本。
+         */
+        const roles = this.form.roles.map((item, key) => {
+          if (key === index) {
+            return value
+          }
+          return item
+        })
+        this.form.roles = [...roles]
       }
 
       if (canNotChoose) {
