@@ -41,6 +41,20 @@
         </Radio-group>
       </Form-item>
 
+      <Form-item label="排课专员">
+        <Radio-group v-model="form.is_student_schedule">
+          <Radio :label="0">关闭</Radio>
+          <Radio :label="1">开启</Radio>
+        </Radio-group>
+      </Form-item>
+
+      <Form-item label="设备管理">
+        <Radio-group v-model="form.is_equipment_admin">
+          <Radio :label="0">关闭</Radio>
+          <Radio :label="1">开启</Radio>
+        </Radio-group>
+      </Form-item>
+
       <data-auths :data="data_auths" v-model="form.data_auths"></data-auths>
 
       <permissions :data="permissions" v-model="form.permissions"></permissions>
@@ -81,6 +95,8 @@ export default {
         is_student_admin: 0,
         is_student_teac: 0,
         is_student_advisory: 0,
+        is_student_schedule: 0,
+        is_equipment_admin: 0,
         permissions: [],
         data_auths: [],
       },
