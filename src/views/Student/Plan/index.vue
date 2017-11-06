@@ -24,7 +24,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-        <h2><Icon type="ios-browsers"/> 学习计划</h2>
+        <h2><Icon type="ios-barcode"/> 学习计划</h2>
       </Col>
     </Row>
 

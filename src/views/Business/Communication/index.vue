@@ -69,7 +69,7 @@
     <!-- end 顶部搜索 -->
 
     <Row class="app-content-topbar">
-      <h2>沟通记录</h2>
+      <h2><Icon type="ios-paper"/> 沟通记录</h2>
       <Button type="primary" @click="toCreate()">添加记录</Button>
       <Button type="primary">导入记录</Button>
       <Button type="primary" icon="archive">下载导入模板</Button>

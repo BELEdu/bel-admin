@@ -84,7 +84,7 @@
     <!-- end 顶部搜索 -->
 
     <div class="app-content-topbar">
-      <h2>热线登记</h2>
+      <h2><Icon type="ios-compose"/> 热线登记</h2>
       <Button
         type="primary"
         @click="toCreate()"

@@ -22,7 +22,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2><Icon type="ios-browsers"/> 设备管理</h2>
+      <h2><Icon type="toggle-filled"/> 设备管理</h2>
       </Col>
     </Row>
 

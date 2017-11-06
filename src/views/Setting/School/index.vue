@@ -14,7 +14,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col :span="12">
-        <h2><Icon type="ios-browsers"/> 学校管理</h2>
+        <h2><Icon type="flag"/> 学校管理</h2>
       </Col>
       <Col :span="12" class="text-right">
         <Button type="primary" icon="plus-round" @click="dialog.visible = true">添加学校</Button>

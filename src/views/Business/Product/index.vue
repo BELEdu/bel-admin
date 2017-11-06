@@ -88,7 +88,7 @@
     <!-- end 顶部搜索 -->
 
     <div class="app-content-topbar">
-      <h2>产品管理</h2>
+      <h2><Icon type="cube"/> 产品管理</h2>
       <Button
         type="primary"
         @click="toCreate()"

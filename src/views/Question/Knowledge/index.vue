@@ -70,7 +70,7 @@
 
     <!-- 中部辅助栏 -->
     <div class="app-content-topbar">
-      <h2>知识点列表</h2>
+      <h2><Icon type="grid"/> 知识点列表</h2>
       <Button
         type="primary"
         @click="toBatchEdit"

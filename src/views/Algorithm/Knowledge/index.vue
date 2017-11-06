@@ -50,7 +50,7 @@
     <div
       class="app-content-header"
     >
-      <h2>学员列表</h2>
+      <h2><Icon type="android-contacts"/> 学员列表</h2>
     </div>
 
     <Table

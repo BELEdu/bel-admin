@@ -15,7 +15,7 @@
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>
-      <h2><Icon type="ios-browsers"/> 教师课表</h2>
+      <h2><Icon type="ios-calendar"/> 教师课表</h2>
       </Col>
     </Row>
 
