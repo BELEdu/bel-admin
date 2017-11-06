@@ -92,3 +92,18 @@
 .right {
   float: right !important;
 }
+
+/*浮层-警告样式*/
+.poptip-warning {
+  .ivu-poptip-popper[x-placement^="bottom"] .ivu-poptip-arrow:after {
+    border-bottom-color: #fff5e6;
+  }
+
+  .ivu-poptip-body {
+    background-color: #fff5e6;
+
+    .ivu-icon-android-alert {
+      color: @warning-color;
+    }
+  }
+}
