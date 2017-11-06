@@ -58,9 +58,13 @@
       </Form-item>
     </Form>
 
-    <Row class="app-content-header" type="flex" justify="space-between">
+    <Row
+      class="app-content-header"
+      type="flex"
+      justify="space-between"
+    >
       <Col>
-        <h2>章节列表</h2>
+        <h2><Icon type="bookmark"/> 章节列表</h2>
       </Col>
       <Col>
         <Button type="primary" @click="openChapterModal">编辑章节</Button>

@@ -75,12 +75,16 @@
       </Form-item>
     </Form>
 
-    <Row class="app-content-header" type="flex" justify="space-between">
+    <Row
+      class="app-content-header"
+      type="flex"
+      justify="space-between"
+    >
       <Col>
-        <h2>试题列表</h2>
+        <h2><Icon type="ios-flask"/> 试题列表</h2>
       </Col>
       <Col>
-        <Button type="primary"  @click="$router.push(`/question/question/${query[`equal[grade_range_subject_id]`]}`)">添加试题</Button>
+        <Button type="primary"  @click="addQuestion">添加试题</Button>
       </Col>
     </Row>
 
@@ -282,6 +286,11 @@ export default {
   },
 
   methods: {
+    // 添加试题
+    addQuestion() {
+      this.$router.push(`/question/question/${this.query['equal[grade_range_subject_id]']}`)
+    },
+
     // 打开详情弹窗
     openDetailModal(id) {
       this.$http.get(`/question/${id}`)

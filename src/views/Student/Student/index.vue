@@ -79,7 +79,7 @@
       justify="space-between"
     >
       <Col>
-        <h2>学员列表</h2>
+        <h2><Icon type="android-contacts"/> 学员列表</h2>
       </Col>
       <Col>
         <Button

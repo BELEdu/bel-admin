@@ -49,7 +49,7 @@
       justify="space-between"
     >
       <Col>
-        <h2>签约产品</h2>
+        <h2><Icon type="ios-compose"/> 签约产品</h2>
       </Col>
     </Row>
 

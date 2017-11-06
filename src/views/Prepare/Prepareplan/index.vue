@@ -26,8 +26,14 @@
     </Form>
 
     <!-- 标题 -->
-    <Row class="app-content-header">
-      <h2 icon="">教案管理</h2>
+    <Row
+      class="app-content-header"
+      type="flex"
+      justify="space-between"
+    >
+      <Col>
+        <h2><Icon type="android-list"/> 教案管理</h2>
+      </Col>
     </Row>
 .
     <!--教案管理表格-->

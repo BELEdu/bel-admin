@@ -81,9 +81,13 @@
     </Form>
 
     <!-- 操作 -->
-    <Row class="app-content-header" type="flex" justify="space-between">
+    <Row
+      class="app-content-header"
+      type="flex"
+      justify="space-between"
+    >
       <Col>
-        <h2>智能测试</h2>
+        <h2><Icon type="android-menu"/> 智能测试</h2>
       </Col>
       <Col>
         <Button type="primary" @click="openAddModal()" >添加测试</Button>

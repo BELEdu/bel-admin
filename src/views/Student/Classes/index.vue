@@ -43,7 +43,11 @@
     </Form>
 
     <!-- 操作 -->
-    <Row class="app-content-header" type="flex" justify="space-between">
+    <Row
+      class="app-content-header"
+      type="flex"
+      justify="space-between"
+    >
       <Col>
         <h2><Icon type="ios-browsers"/> 班级管理</h2>
       </Col>
@@ -173,7 +177,6 @@ export default {
                 trigger: 'hover',
                 content: student_name === '' ? '暂无学员' : student_name,
                 placement: 'right',
-                transfer: true,
               },
             }, classes_name)
           },
