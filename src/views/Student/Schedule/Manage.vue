@@ -4,9 +4,6 @@
       <template v-for="tab in $route.meta.tabName">
         <Tab-pane :label="tab.name" :name="tab.value"></Tab-pane>
       </template>
-      <div slot="extra">
-        <Tag type="dot" color="blue"><b>教师姓名</b>：{{ currentTip.realname }}</Tag>
-      </div>
     </Tabs>
     <router-view></router-view>
   </div>
@@ -19,7 +16,6 @@
    * @version 2017-10-19
    */
 
-  import { mapState } from 'vuex'
   import { list } from '@/mixins'
   import { STUDENT } from '@/store/mutationTypes'
 
@@ -35,9 +31,6 @@
     },
 
     computed: {
-      ...mapState({
-        currentTip: state => state.student.schedule.tip,
-      }),
       tabActive() {
         const pathArry = this.$route.path.split('/')
         return pathArry[pathArry.length - this.currentId]

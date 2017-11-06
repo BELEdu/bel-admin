@@ -53,6 +53,7 @@ const STUDENT_CLASSES = {
 
 const STUDENT_PLAN = { routeName: 'StudentPlan', name: '学习计划', link: '/student/plan' }
 const STUDENT_SCHEDULE = { routeName: 'StudentSchedule', name: '教师课表', link: '/student/schedule' }
+const STUDENT_MY_SCHEDULE = { routeName: 'StudentSchedule', name: '我的课表', link: '/student/myschedule/' }
 const STUDENT_SCHEDULE_MANAGE = {
   routeName: 'StudentScheduleManage',
   name: '排课管理',
@@ -337,7 +338,7 @@ export default [
     meta: {
       breadcrumb: [
         STUDENT,
-        STUDENT_SCHEDULE,
+        STUDENT_MY_SCHEDULE,
         STUDENT_MY_SCHEDULE_MANAGE,
       ],
     },
@@ -350,7 +351,7 @@ export default [
           tabName: STUDENT_MY_SCHEDULE_MANAGE.tabName,
           breadcrumb: [
             STUDENT,
-            STUDENT_SCHEDULE,
+            STUDENT_MY_SCHEDULE,
             STUDENT_MY_SCHEDULE_MANAGE_WEEKLY,
           ],
         },
@@ -363,7 +364,7 @@ export default [
           tabName: STUDENT_MY_SCHEDULE_MANAGE.tabName,
           breadcrumb: [
             STUDENT,
-            STUDENT_SCHEDULE,
+            STUDENT_MY_SCHEDULE,
             STUDENT_MY_SCHEDULE_MANAGE_DAILY,
           ],
         },

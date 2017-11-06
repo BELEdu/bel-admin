@@ -1,3 +1,4 @@
+import { mapState } from 'vuex'
 import { startOfWeek, endOfWeek, addDays, isEqual } from 'date-fns'
 import { formatDate } from '@/utils/date'
 
@@ -13,6 +14,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      currentTip: state => state.student.schedule.tip,
+    }),
+
     currentDaily() {
       /* eslint-disable */
       let arr = Array(6).fill(null)

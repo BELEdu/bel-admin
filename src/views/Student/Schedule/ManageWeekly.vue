@@ -29,7 +29,7 @@
     </Form>
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col :span="12">
-        <h2><Icon type="ios-browsers"/> 教师课表</h2>
+        <h2><Icon type="ios-browsers"/> {{`${!this.$route.params.id ? '我的课表' : currentTip.realname + '的课表'}`}}</h2>
       </Col>
       <Col :span="12" style="text-align: right">
         待上课总数：{{ courseTip }}
