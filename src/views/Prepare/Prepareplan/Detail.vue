@@ -167,7 +167,7 @@ export default {
       list: state => state.prepare.prepareplan.plans,
       course_status: state => state.dicts.course_status,
       userId: state => state.user.id,
-      username: state => state.user.username,
+      username: state => state.user.realname,
       teachername: state => state.prepare.prepareplan.teachername,
     }),
 

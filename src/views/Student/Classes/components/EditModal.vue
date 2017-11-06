@@ -79,7 +79,7 @@
       <Form-item label="学员" v-if="!isReview">
         <Select
           :key="studentList.length"
-          placeholder="请选择学员"
+          :placeholder="studentList.length === 0 ? '暂无满足条件的签约学员' : '请选择学员' "
           filterable
           @on-change="addStudent"
           :disabled="studentList.length === 0"
