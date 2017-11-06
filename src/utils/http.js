@@ -141,7 +141,7 @@ class Http {
 
 // 上线时需拼合为完整的接口地址
 Http.HOST = process.env.NODE_ENV === 'production' ?
-  'https://oa-api.caihonggou.com' : ''
+  window.location.hostname.replace(/([^.]+)\./, '$1-api.') : ''
 
 // 接口版本号
 Http.VERSION = '/v1'
