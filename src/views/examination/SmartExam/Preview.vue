@@ -1,43 +1,76 @@
 <template>
- <div
+  <div
   v-if="data"
   class="smartexam-preview"
- >
-  <app-editor-title></app-editor-title>
-
-  <div class="clearfix smartexam-preview__hearder">
-    <!-- 学员选择 -->
-    <Select
-      v-model="currentStudentTestId"
-      class="smartexam-preview__select"
-      @on-change="changeStudentTestId"
-    >
-      <Option
-        v-for="item in student_data"
-        :value="item.id"
-        :key="item.id"
-      >{{ item.id }}</Option>
-    </Select>
-
-    <!-- 操作按钮 -->
-    <div class="right">
+  >
+    <app-editor-title>
       <!-- <Button type="success" icon="search">下载预览</Button> -->
-      <Button type="primary" icon="archive" @click="download">Word直接下载</Button>
+      <Button
+        type="primary"
+        class="right"
+        icon="archive"
+        @click="download"
+      >Word直接下载</Button>
+
+    </app-editor-title>
+
+
+    <div class="clearfix">
+      <!-- 左侧选择学员 -->
+      <aside class="smartexam-preview__aside left">
+
+        <!-- 学员按钮组（到时候未考试的要变为disabled） -->
+        <ButtonGroup vertical>
+          <Button
+            v-for="item in student_data"
+            :key="item.id"
+            :disabled="false"
+            :type="buttonFormat(item.id)"
+            @click="changeStudentTestId(item.id)"
+          >
+            {{ item.id }}
+          </Button>
+        </ButtonGroup>
+
+      </aside>
+
+      <!-- 右侧试卷展示部分 -->
+      <div class="smartexam-preview__sidebar left">
+
+        <!-- 试卷公共头部 -->
+        <paper-preview-header
+          :data="data"
+        ></paper-preview-header>
+
+        <!-- 待上传 -->
+        <Alert type="warning"
+          show-icon
+        >
+          <span slot="desc">
+            未上传学员答卷
+          </span>
+        </Alert>
+
+        <!-- 待提交 -->
+        <Alert
+          type="warning"
+          show-icon
+        >
+          <span slot="desc">
+              未提交答卷
+          </span>
+        </Alert>
+
+        <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
+        <paper-preview-detail
+          :data="data"
+        ></paper-preview-detail>
+
+      </div>
+
     </div>
+
   </div>
-
-
-  <!-- 试卷公共头部 -->
-  <paper-preview-header
-    :data="data"
-  ></paper-preview-header>
-
-  <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
-  <paper-preview-detail
-    :data="data"
-  ></paper-preview-detail>
-
- </div>
 </template>
 
 <script>
@@ -81,6 +114,14 @@ export default {
   },
 
   methods: {
+    // 按钮模板
+    buttonFormat(id) {
+      if (this.currentStudentTestId === id) {
+        return 'primary'
+      }
+      return 'ghost'
+    },
+
     // 下载word
     download() {
       window.open(`/down_word/${this.currentStudentTestId}`)
@@ -118,14 +159,16 @@ export default {
 </script>
 
 <style lang="less">
-.smartexam-preview{
-  &__hearder {
-    width: 885px;
+.smartexam-preview {
+  &__aside {
+    width:100px;
+    max-height: 500px;
+    overflow: auto;
+    margin-right: 20px;
   }
 
-  &__select {
-    width: 200px;
-  margin-bottom: 30px;
+  &__sidebar{
+    width: 885px;
   }
 }
 </style>
