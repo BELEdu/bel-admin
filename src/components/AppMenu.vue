@@ -41,6 +41,9 @@ export default {
       'front.prepare': 'ios-list',
       'front.analysis': 'stats-bars',
       'front.system': 'ios-gear',
+      'front.question': 'social-buffer',
+      'front.algorithm': 'ios-pie',
+      'front.setting': 'ios-toggle',
     },
   }),
 
