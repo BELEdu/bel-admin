@@ -5,13 +5,15 @@
         <Button type="dashed" icon="refresh" @click="updateList" :disabled="!coachList.items.length">刷新排序</Button>
       </Col>
       <Col :span="8" class="list-coach__header-add">
-        <Button type="dashed" icon="plus-round" @click="addList" :disabled="this.courseRemain <= 0">新增计划</Button>
+        <Poptip trigger="hover" placement="bottom" class="poptip-warning">
+          <Button type="dashed" icon="plus-round" @click="addList" :disabled="this.courseRemain <= 0">新增计划</Button>
+          <div slot="content" v-if="courseRemain <= 0"><Icon type="android-alert"></Icon> 无可用计划课时，无法新增计划</div>
+        </Poptip>
       </Col>
       <Col :span="7" class="list-coach__header-course-remain">
         剩余可用计划课时：{{ courseRemain }}
       </Col>
     </Row>
-    <Alert type="warning" show-icon v-if="courseRemain <= 0">无可用计划课时，无法新增计划</Alert>
     <Form class="list-coach__form" :model="coachList" ref="coachForm">
       <div
         class="list-coach__form-item"
@@ -299,10 +301,6 @@
 
       &-add {
         text-align: center;
-
-        .ivu-btn {
-          width: 80%;
-        }
       }
     }
 
@@ -344,5 +342,6 @@
         }
       }
     }
+
   }
 </style>
