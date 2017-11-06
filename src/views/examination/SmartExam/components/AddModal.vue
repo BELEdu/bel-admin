@@ -8,11 +8,15 @@
       width="950"
     >
       <!-- 头部信息展示 -->
-      <div class="text-center" >
-        <p>
-          <strong>{{step}}</strong> Of <strong>{{stepLength}}</strong>
-        </p>
-      </div>
+      <Steps
+        :current="step-1"
+        class="steps-fix"
+        size="small"
+      >
+        <Step title="填写测试对象信息"></Step>
+        <Step title="预览 / 编辑试卷"></Step>
+        <Step title="提交"></Step>
+      </Steps>
 
       <!-- 表单 -->
       <Form

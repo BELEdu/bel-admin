@@ -7,13 +7,20 @@
       @on-cancel="closeModal"
       width="850"
     >
-      <!-- 头部信息展示 -->
-      <div class="text-center prepareplan-edit-modal__header">
 
-        <p>
-          <strong>{{step}}</strong> Of <strong>{{stepLength}}</strong>
-        </p>
-        <p class="color-primary">{{form.classes_name}} —— 第{{form.sort_value}}节课</p>
+      <!-- 头部信息展示 -->
+      <div class="prepareplan-edit-modal__header">
+
+        <Steps
+          :current="step-1"
+          class="steps-fix"
+          size="small"
+        >
+          <Step title="编辑教案"></Step>
+          <Step title="课堂练习"></Step>
+          <Step title="提交"></Step>
+        </Steps>
+
       </div>
 
       <!-- 表单 -->
@@ -193,12 +200,13 @@ export default {
 
   computed: {
     title() {
+      const text = `${this.form.classes_name} —— 第 ${this.form.sort_value} 节课`
       if (this.isCreate) {
-        return '添加教案'
+        return `添加教案：${text}`
       } else if (this.isEdit) {
-        return '编辑教案'
+        return `编辑教案：${text}`
       }
-      return '查看教案'
+      return `查看教案：${text}`
     },
   },
 
@@ -292,9 +300,7 @@ export default {
 <style lang="less">
 .prepareplan-edit-modal{
   &__header {
-    p {
-      margin-bottom: 16px;
-    }
+    margin-bottom: 30px;
   }
 
   &__refresh{
