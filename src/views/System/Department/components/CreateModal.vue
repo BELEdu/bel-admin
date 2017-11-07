@@ -67,12 +67,16 @@ export default {
           this.$rules.length(2, 16),
           {
             validator: (rule, value, next) => {
-              const isDuplicatedName = this.departments[0]
-                .children
-                .filter(item => item !== this.item)
-                .some(item => item.display_name.slice(0, -2) === value)
-              if (isDuplicatedName) {
-                next(new Error('校区名称不能重复'))
+              const { children } = this.departments[0]
+              if (children) {
+                const isDuplicatedName = children
+                  .filter(item => item !== this.item)
+                  .some(item => item.display_name.slice(0, -2) === value)
+                if (isDuplicatedName) {
+                  next(new Error('校区名称不能重复'))
+                } else {
+                  next()
+                }
               } else {
                 next()
               }
