@@ -5,10 +5,13 @@
         <Button type="dashed" icon="refresh" @click="updateList" :disabled="!coachList.items.length">刷新排序</Button>
       </Col>
       <Col :span="8" class="list-coach__header-add">
-        <Poptip trigger="hover" placement="bottom" class="poptip-warning">
-          <Button type="dashed" icon="plus-round" @click="addList" :disabled="this.courseRemain <= 0">新增计划</Button>
-          <div slot="content" v-if="courseRemain <= 0"><Icon type="android-alert"></Icon> 无可用计划课时，无法新增计划</div>
-        </Poptip>
+        <template v-if="courseRemain <= 0">
+          <Poptip trigger="hover" placement="bottom" class="poptip-warning">
+            <Button type="dashed" icon="plus-round" :disabled="this.courseRemain <= 0">新增计划</Button>
+            <div slot="content"><Icon type="android-alert"></Icon> 无可用计划课时，无法新增计划</div>
+          </Poptip>
+        </template>
+        <Button v-else type="dashed" icon="plus-round" @click="addList">新增计划</Button>
       </Col>
       <Col :span="7" class="list-coach__header-course-remain">
         剩余可用计划课时：{{ courseRemain }}
@@ -269,7 +272,7 @@
 
       // 计算select位置设置展开方向
       selectPlaceType(index) {
-        return this.coachList.items.length - index < 5 ? 'top' : 'bottom'
+        return this.coachList.items.length - index < 5 && this.coachList.items.length > 10 ? 'top' : 'bottom'
       },
 
     },
