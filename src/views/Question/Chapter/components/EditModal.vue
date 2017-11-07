@@ -267,7 +267,7 @@
           type="primary"
           size="large"
           :loading="formLoading"
-          @click="beforeSubmit"
+          @click="confirm"
         >确认</Button>
       </div>
 
@@ -354,7 +354,8 @@ export default {
   },
 
   methods: {
-    getKnowledgeTree(id) { // 获取知识点树
+    // 获取知识点树
+    getKnowledgeTree(id) {
       this.$http.get(`/knowledge/tree/${id}`)
         .then((res) => {
           this.knowledgeTree = res
@@ -364,28 +365,24 @@ export default {
         })
     },
 
-    closeModal() { // 关闭该模态框
+    // 关闭该模态框
+    closeModal() {
       this.formErrors = {}
       this.$emit('closeEditModal')
     },
 
-    addKnowledge() { // 添加知识点
+    // 添加知识点
+    addKnowledge() {
       this.form.data.push({ ...defaultKnowledge })
     },
 
-    removeKnowledge(index) { // 移除知识点
+    // 移除知识点
+    removeKnowledge(index) {
       this.form.data.splice(index, 1)
     },
 
-    changeKnowledge(value, index) { // 更改&选择知识点时获取该知识点详情
-      // console.log(`value:${value}`)
-      // console.log(`index:${index}`)
-      // console.log(data.filter(item => item.id === value).length)
-      // if (value && data.filter(item => item.id === value).length > 0) {
-      //   this.$Message.error('该知识点已添加过')
-      //   this.removeKnowledge(index)
-      // }
-
+    // 更改&选择知识点时获取该知识点详情
+    changeKnowledge(value, index) {
       const { data } = this.form
       if (value) {
         this.$http.get(`/knowledge/${value}`)
@@ -410,13 +407,25 @@ export default {
       }
     },
 
+    // 提交前判断
+    confirm() {
+      if (this.form.data.length > 0) {
+        this.beforeSubmit()
+      } else {
+        this.submit()
+      }
+    },
+
+    // 提交
     submit() {
       this.$http.patch(`/chapter/${this.form.id}`, this.form)
         .then(this.successHandler)
         .catch(this.errorHandler)
     },
 
+    // 成功回调
     successHandler() {
+      this.$Message.success('提交成功！')
       this.formLoading = false
       this.closeModal()
       this.$emit('fetchData')
