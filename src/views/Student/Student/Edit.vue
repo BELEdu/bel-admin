@@ -75,7 +75,7 @@ const defaultParent = {
 }
 
 export default {
-  name: 'app-student-student-detail-edit',
+  name: 'app-student-student-edit',
 
   mixins: [form, goBack],
 

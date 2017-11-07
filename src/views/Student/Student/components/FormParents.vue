@@ -121,6 +121,8 @@
 
 <script>
 export default {
+  name: 'app-student-student-edit-form-parents',
+
   props: {
     parent: {
       type: Array,

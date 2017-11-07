@@ -14,31 +14,14 @@
       <Col span="23" offset="1">
 
         <Form-item label="学员头像" >
-          <Avatar
-            shape="square"
-            icon="person"
-            class="app-avatar"
-            :src="avatarSrc"
-          />
 
-          <Upload
-            action="https://oa-api.caihonggou.com/v1/student/upload"
-            :headers="headers"
-            name="head_url"
-            :max-size="2048"
-            :format="['jpg','jpeg','png']"
-            :on-success="uploadSuccess"
-            :on-error="uploadError"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            :on-preview="onPreview"
-          >
-            <Button
-              type="ghost"
-              icon="ios-cloud-upload-outline"
-              class="app-avatar__btn"
-            >上传头像</Button>
-          </Upload>
+          <!-- 头像上传组件 -->
+          <avatar-upload
+            :img-url="form.head_url"
+            :img-name="form.head_name"
+            @on-success="changeAvatar"
+          ></avatar-upload>
+
         </Form-item>
 
       </Col>
@@ -163,7 +146,11 @@
 </template>
 
 <script>
+import AvatarUpload from './AvatarUpload'
+
 export default {
+  name: 'app-student-student-edit-form-basic',
+
   props: {
     form: {
       type: Object,
@@ -199,73 +186,21 @@ export default {
     },
   },
 
-  computed: {
-    // 请求头
-    headers() {
-      return {
-        Authorization: `Bearer ${this.$store.state.token}`,
-      }
-    },
-
-    // 头像链接
-    avatarSrc() {
-      return this.form.head_url === '' ? '' : `https://oa-statics.caihonggou.com${this.form.head_url}`
-    },
+  components: {
+    AvatarUpload,
   },
 
   methods: {
-    // 图片上传成功回调
-    uploadSuccess({ url, name }) {
+    // 改变头像url
+    changeAvatar(url, name) {
       this.form.head_url = url
       this.form.head_name = name
     },
-
-    // 图片上传失败回调
-    uploadError() {
-      this.$Notice.warning({
-        title: '上传失败',
-        desc: '服务器上传发生错误',
-      })
-    },
-
-    // 校验文件格式
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: '文件格式不正确',
-        desc: `文件 ${file.name} 格式不正确，请上传 jpg、jpeg 或 png 格式的图片。`,
-      })
-    },
-
-    // 校验文件大小
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: '超出文件大小限制',
-        desc: `文件 ${file.name} 太大，不能超过 2M。`,
-      })
-    },
-
-    // 点击预览
-    onPreview(file) {
-      // 这里需要了解open方法，写得更细致一些,临时链接，后面需要统一
-      window.open(`https://oa-statics.caihonggou.com/${file.response.url}`)
-    },
   },
+
 }
 </script>
 
 <style lang="less">
-.app-avatar{
-  width: 120px;
-  height: 120px;
-  line-height: 120px;
-
-  &.ivu-avatar.ivu-avatar-icon{
-    font-size: 70px
-  }
-
-  &__btn{
-    margin-top: 20px;
-    width: 120px;
-  }
-}
+@import '~vars';
 </style>
