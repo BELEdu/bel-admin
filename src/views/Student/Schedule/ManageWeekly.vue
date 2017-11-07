@@ -15,7 +15,7 @@
         ></Date-picker>
       </Form-item>
       <Form-item>
-        <Select v-model="query['equal[course_status]']">
+        <Select v-model="query['equal[course_status]']" placeholder="课表状态" style="width:6em;">
           <Option value="">全部</Option>
           <Option value="0">待确认</Option>
           <Option value="1">待上课</Option>
