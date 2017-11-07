@@ -69,7 +69,7 @@
             <form-item>
               <template v-if="isNightCoach">
                 <Select v-model="item.teacher_id" multiple placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
-                  <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.username }}</Option>
+                  <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.realname }}</Option>
                 </Select>
               </template>
               <template v-else>
