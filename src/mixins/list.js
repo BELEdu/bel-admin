@@ -139,6 +139,7 @@ export default {
         query: {
           ...copy,
           ...query,
+          _timestamp: Date.now(), // 处理可重复请求
         },
       })
     },
