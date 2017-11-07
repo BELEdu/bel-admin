@@ -103,7 +103,6 @@ export default {
 <style lang="less">
 .app-main--loading {
   overflow-y: hidden;
-  margin-right: 15px;
 }
 
 .ivu-spin {
