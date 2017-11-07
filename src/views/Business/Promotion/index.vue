@@ -54,7 +54,7 @@
     <!-- end 顶部搜索 -->
 
     <div class="app-content-topbar">
-      <h2>优惠活动列表</h2>
+      <h2><Icon type="pricetags"/> 优惠活动列表</h2>
       <Button
         type="primary"
         @click="toCreate()"
