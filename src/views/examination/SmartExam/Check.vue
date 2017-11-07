@@ -161,7 +161,7 @@
       <!-- 阅卷（线上） -->
       <section
         class="smartexam-check__online"
-        v-if="true"
+        v-if="false"
       >
         <!-- 待交卷 -->
         <Alert
@@ -193,11 +193,22 @@
           </span>
         </Alert>
 
-        <!-- 上传区域 -->
+        <!-- 图片上传组件 -->
         <paper-upload
           :dataList="uploadList"
-          @changeList="changeList"
+          @on-success="uploadSuccess"
         ></paper-upload>
+
+        <!-- 保存按钮 -->
+        <Button
+          long
+          type="primary"
+          size="large"
+          :loading="saveLoading"
+          @click="saveImage"
+          class="smartexam-check__save"
+        >保存</Button>
+
       </section>
 
     </div>
@@ -269,7 +280,7 @@ export default {
 
       form: null, // 阅卷表单
 
-      rules: {},
+      rules: {}, // 规则
 
       tindex: 0, // 题型index
       qindex: 0, // 题目index
@@ -279,27 +290,30 @@ export default {
         check: false,
       },
 
+      // 保存图片loading
+      saveLoading: false,
+
       // 线下阅卷假数据
       uploadList: [
         {
           name: '试卷1',
-          url: '/data/head_url/201711/59fc1d10a0fd1.jpg',
+          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d10a0fd1.jpg',
         },
         {
           name: '试卷2',
-          url: '/data/head_url/201711/59fc1d40da5c4.jpg',
+          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d40da5c4.jpg',
         },
         {
           name: '试卷3',
-          url: '/data/head_url/201711/59fc1d5e6123e.jpg',
+          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d5e6123e.jpg',
         },
         {
           name: '试卷4',
-          url: '/data/head_url/201711/59fc1d70a9353.jpg',
+          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d70a9353.jpg',
         },
         {
           name: '试卷5',
-          url: '/data/head_url/201711/59fc1d86b0840.jpg',
+          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d86b0840.jpg',
         },
       ],
     }
@@ -492,11 +506,21 @@ export default {
     },
 
     // 上传图片成功回调
-    changeList(array) {
-      this.uploadList = [
-        ...this.uploadList,
-        ...array,
-      ]
+    uploadSuccess(item) {
+      this.uploadList.push(item)
+    },
+
+    // 保存已上传的图片
+    saveImage() {
+      this.saveLoading = true
+
+      if (this.uploadList.length > 0) {
+        this.$Message.success('保存成功')
+        this.saveLoading = false
+      } else {
+        this.$Message.error('您尚未上传图片，请先上传')
+        this.saveLoading = false
+      }
     },
   },
 
@@ -596,7 +620,10 @@ export default {
     p {
       margin-bottom: 10px;
     }
+  }
 
+  &__save {
+    margin-top: 8px;
   }
 }
 </style>

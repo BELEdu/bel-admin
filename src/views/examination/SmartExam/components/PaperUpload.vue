@@ -10,26 +10,34 @@
       >
         <!-- 遮罩层 -->
         <div class="smartexam__upload__item__mask"></div>
+
         <!-- 按钮组 -->
         <div class="smartexam__upload__item__btns">
           <ButtonGroup>
+            <!-- 查看原图 -->
             <Button
               type="primary"
               icon="image"
               @click="imgPreview(image.url)"
             ></Button>
+
+            <!-- 上移 -->
             <Button
               type="primary"
               icon="chevron-up"
               v-if="index !== 0"
               @click="imgSort(-1,index)"
             ></Button>
+
+            <!-- 下移 -->
             <Button
               type="primary"
               icon="chevron-down"
               v-if="index !== dataList.length-1"
               @click="imgSort(1,index)"
             ></Button>
+
+            <!-- 删除 -->
             <Button
               type="primary"
               icon="close-round"
@@ -37,24 +45,26 @@
             ></Button>
           </ButtonGroup>
         </div>
+
         <!-- 图片 -->
         <img
           :key="image.url"
-          :src="`https://oa-statics.caihonggou.com/${image.url}`"
+          :src="image.url"
           :alt="image.name"
         >
+
       </li>
     </ul>
 
     <!-- 上传控件 -->
     <Upload
-      :action="api"
+      ref="upload"
+      :action="action"
       :headers="headers"
       :name="name"
       multiple
       type="drag"
       :show-upload-list="true"
-      :default-file-list="fileList"
       :format="format"
       :max-size="maxSize"
       :on-success="uploadSuccess"
@@ -78,7 +88,11 @@
           <span class="color-primary">拖拽</span>
           到这里上传学员答卷情况
         </p>
-        <!-- 底部标记 -->
+        <p>
+          文件格式：<span class="color-error">{{formatText}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          大小限制：<span class="color-error">{{maxSizeText}}</span>
+        </p>
+        <!-- 底部锚点 -->
         <div ref="listDown"></div>
       </div>
     </Upload>
@@ -98,32 +112,67 @@ export default {
 
   data() {
     return {
-      // 上传接口
-      api: 'https://oa-api.caihonggou.com/v1/student/upload',
+      // 根据开发环境和线上环境
+      // 生成请求接口的左边部分
+      apiHead: process.env.NODE_ENV === 'production' ?
+        `https://${window.location.hostname.replace(/([^.]+)\./, '$1-api.')}`
+        : 'https://oa-api.caihonggou.com',
+
+      // 请求接口的右边部分
+      api: 'student/upload',
+
       // 文件大小限制，单位 kb
-      maxSize: 4096,
+      maxSize: 2048,
+
       // 支持的文件类型
       format: ['jpg', 'jpeg', 'png'],
+
       // 上传的文件字段名
       name: 'head_url',
+
+      // 上传成功提示信息
+      successText: '图片上传成功！',
+
       // 已上传文件的列表
-      fileList: [],
+      uploadList: null,
+
     }
   },
 
   computed: {
+    // 拼接成真正的完整接口地址
+    action() {
+      return `${this.apiHead}/v1/${this.api}`
+    },
+
     // 请求头
     headers() {
       return {
         Authorization: `Bearer ${this.$store.state.token}`,
       }
     },
+
+    // 上传文件限制大小转换为M
+    maxSizeText() {
+      return `${(this.maxSize / 1024).toFixed(0)}M`
+    },
+
+    // 将文件类型数组转换为文本
+    formatText() {
+      return this.format.join('，')
+    },
+  },
+
+  mounted() {
+    this.uploadList = this.$refs.upload.fileList
   },
 
   methods: {
     // 图片上传成功回调
-    uploadSuccess(res) {
-      this.dataList.push(res)
+    uploadSuccess(response) {
+      this.$Message.success(this.successText)
+      // this.dataList.push(res)
+      this.$emit('on-success', response)
       this.scrollToDown()
     },
 
@@ -137,26 +186,23 @@ export default {
 
     // 校验文件格式
     handleFormatError(file) {
-      const formatName = this.format.join('，')
       this.$Notice.warning({
         title: '文件格式不正确',
-        desc: `文件 ${file.name} 格式不正确，请上传 ${formatName} 格式的图片。`,
+        desc: `文件 ${file.name} 格式不正确，请上传 ${this.formatText} 格式的图片。`,
       })
     },
 
     // 校验文件大小
     handleMaxSize(file) {
-      const size = (this.maxSize / 1024).toFixed(0)
       this.$Notice.warning({
         title: '超出文件大小限制',
-        desc: `文件 ${file.name} 太大，不能超过${size}M。`,
+        desc: `文件 ${file.name} 太大，不能超过${this.sizeName}M。`,
       })
     },
 
     // 点击预览
     onPreview(file) {
-      // 这里需要了解open方法，写得更细致一些,临时链接，后面需要统一
-      window.open(`https://oa-statics.caihonggou.com/${file.response.url}`)
+      window.open(`${file.response.url}`)
     },
 
     // 滚动到底部
@@ -166,7 +212,7 @@ export default {
 
     // 图片预览
     imgPreview(url) {
-      window.open(`https://oa-statics.caihonggou.com/${url}`)
+      window.open(`${url}`)
     },
 
     // 图片排序
@@ -190,7 +236,7 @@ export default {
 
 .smartexam__upload{
   &__btn {
-    padding: 50px 0;
+    padding: 40px 0;
 
     &__text {
       margin-top: 15px;
