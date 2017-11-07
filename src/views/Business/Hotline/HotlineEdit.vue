@@ -238,7 +238,7 @@ export default {
     // 表单验证函数
     validateReturnAt(rule, value, callback) {
       if (this.fdata.visited_at !== ''
-        && value !== null
+        && value !== ''
       ) {
         const from = parseDate(this.fdata.visited_at).valueOf()
         const to = parseDate(this.fdata.return_visited_at).valueOf()
