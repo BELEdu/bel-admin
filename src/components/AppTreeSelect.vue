@@ -16,6 +16,7 @@
       <div class="app-tree-dropdown" @click.stop>
         <Input class="app-tree-dropdown__input original" v-model="keyword" size="small" placeholder="请输入搜索内容"></Input>
         <Tree ref="tree" :data="filteredItems" @on-select-change="onSelectChange" :multiple="multiple"></Tree>
+        <Tree ref="tree2" :data="items" :multiple="multiple" v-if="tree2" v-show="false"></Tree>
       </div>
     </div>
   </div>
@@ -52,6 +53,7 @@ export default {
       selectedItems: [],
       keyword: '',
       initSelected: false,
+      tree2: false,
     }
   },
 
@@ -155,18 +157,25 @@ export default {
      * 如果被选中的树节点不是最后一级，去除其选中状态并过滤掉
      * 剩下的所有节点推入selectedItems中，以在视图上显示选中项
      * 最后，用选中项的id更新组件所绑定的v-model
+     *
+     * this.$refs.tree.getSelectedNodes只会取到被搜索关键字过滤后的项
+     * 通过渲染另外一个总是使用items作为data的Tree组件，来正确地获得选中项
      */
     onSelectChange() {
-      this.selectedItems = this.$refs.tree
-        .getSelectedNodes()
-        .filter((item) => {
-          if (item.children) {
-            item.selected = false
-          }
-          return !item.children
-        })
+      this.tree2 = true
+      this.$nextTick(() => {
+        this.selectedItems = this.$refs.tree2
+          .getSelectedNodes()
+          .filter((item) => {
+            if (item.children) {
+              item.selected = false
+            }
+            return !item.children
+          })
 
-      this.updateValue()
+        this.tree2 = false
+        this.updateValue()
+      })
     },
 
     /**
