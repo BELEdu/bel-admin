@@ -68,12 +68,12 @@
           <Col :span="9">
             <form-item>
               <template v-if="isNightCoach">
-                <Select v-model="item.teacher_id" multiple placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
+                <Select v-model="item.teacher_id" multiple placeholder="请选择教师" transfer :placement="selectPlaceType(index)" :disabled="!item.random_id && !item.operation.update">
                   <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.realname }}</Option>
                 </Select>
               </template>
               <template v-else>
-                <Select v-model="item.teacher_id[0]" placeholder="请选择教师" :disabled="!item.random_id && !item.operation.update">
+                <Select v-model="item.teacher_id[0]" placeholder="请选择教师" transfer :placement="selectPlaceType(index)" :disabled="!item.random_id && !item.operation.update">
                   <Option v-for="(teacher, key) in teacherList" :key="key" :value="teacher.id">{{ teacher.realname }}</Option>
                 </Select>
               </template>
@@ -265,6 +265,11 @@
           this.$Message.error('计划列表不能为空')
           this.$emit('on-error')
         }
+      },
+
+      // 计算select位置设置展开方向
+      selectPlaceType(index) {
+        return this.coachList.items.length - index < 5 ? 'top' : 'bottom'
       },
 
     },
