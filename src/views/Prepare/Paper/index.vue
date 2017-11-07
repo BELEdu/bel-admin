@@ -148,7 +148,7 @@ export default {
         },
         {
           title: '创建人',
-          key: 'user_name',
+          key: 'username',
           align: 'center',
         },
         {
