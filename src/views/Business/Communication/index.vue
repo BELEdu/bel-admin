@@ -34,6 +34,7 @@
           placeholder="当前状态"
           style="width: 150px;"
         >
+          <Option value="">全部状态</Option>
           <Option
             v-for="item in preConfig.student_current_status"
             :value="item.value"
@@ -50,6 +51,7 @@
           placeholder="沟通类型"
           style="width: 150px;"
         >
+          <Option value="">全部类型</Option>
           <Option
             v-for="item in preConfig.communication_type"
             :value="item.value"
