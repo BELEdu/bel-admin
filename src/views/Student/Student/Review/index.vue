@@ -1,6 +1,5 @@
 <template>
-  <div>
-
+  <div class="student-review">
     <!-- 标签 -->
     <Tabs
       class="app-tabs"

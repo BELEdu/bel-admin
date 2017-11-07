@@ -161,7 +161,7 @@
       <!-- 阅卷（线上） -->
       <section
         class="smartexam-check__online"
-        v-if="false"
+        v-if="true"
       >
         <!-- 待交卷 -->
         <Alert
@@ -169,7 +169,7 @@
           show-icon
         >
           <span slot="desc">
-              未提交答卷
+            未提交答卷
           </span>
         </Alert>
 
@@ -295,26 +295,26 @@ export default {
 
       // 线下阅卷假数据
       uploadList: [
-        {
-          name: '试卷1',
-          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d10a0fd1.jpg',
-        },
-        {
-          name: '试卷2',
-          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d40da5c4.jpg',
-        },
-        {
-          name: '试卷3',
-          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d5e6123e.jpg',
-        },
-        {
-          name: '试卷4',
-          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d70a9353.jpg',
-        },
-        {
-          name: '试卷5',
-          url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d86b0840.jpg',
-        },
+        // {
+        //   name: '试卷1',
+        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d10a0fd1.jpg',
+        // },
+        // {
+        //   name: '试卷2',
+        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d40da5c4.jpg',
+        // },
+        // {
+        //   name: '试卷3',
+        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d5e6123e.jpg',
+        // },
+        // {
+        //   name: '试卷4',
+        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d70a9353.jpg',
+        // },
+        // {
+        //   name: '试卷5',
+        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d86b0840.jpg',
+        // },
       ],
     }
   },
