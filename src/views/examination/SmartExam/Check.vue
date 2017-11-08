@@ -12,7 +12,6 @@
         v-model="collapseData"
         class="smartexam-check__collapse"
       >
-
         <!-- 学员面板 -->
         <Panel name="panelStudent">
           学员列表

@@ -300,9 +300,9 @@ export default {
         year: [
           this.$rules.required('时间', 'number', 'change'),
         ],
-        knowledge_ids: [
-          this.$rules.required('关联知识点', 'array', 'change'),
-        ],
+        // knowledge_ids: [
+        //   this.$rules.required('关联知识点', 'array', 'change'),
+        // ],
         content: [
           this.$rules.required('题目'),
         ],
@@ -516,7 +516,22 @@ export default {
     // 存为草稿||提交审核
     choseStatus(status) {
       this.form.question_status = +status
-      this.beforeSubmit()
+
+      switch (status) {
+        // 提交审核
+        case 2:
+          if (this.form.knowledge_ids.length > 0) {
+            this.beforeSubmit()
+          } else {
+            this.$Message.error('审核前，请选择关联知识点！')
+            this.$emit('scrollToTop')
+          }
+          break
+        // 存为草稿
+        default:
+          this.beforeSubmit()
+          break
+      }
     },
 
     // 提交表单
