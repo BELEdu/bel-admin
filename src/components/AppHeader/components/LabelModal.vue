@@ -86,7 +86,7 @@ export default {
       rules: {
         display_name: [
           this.$rules.required('标签名称'),
-          this.$rules.length(2, 10),
+          this.$rules.length(1, 50),
         ],
       },
 
