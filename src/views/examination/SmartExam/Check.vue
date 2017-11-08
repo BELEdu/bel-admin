@@ -185,7 +185,7 @@
       >
         <!-- 待上传 -->
         <Alert type="warning"
-          v-if="uploadList.length === 0"
+          v-if="imageData.length === 0"
           show-icon
         >
           <span slot="desc">
@@ -195,7 +195,7 @@
 
         <!-- 图片上传组件 -->
         <paper-upload
-          :dataList="uploadList"
+          :dataList="imageData"
           @on-success="uploadSuccess"
         ></paper-upload>
 
@@ -293,29 +293,8 @@ export default {
       // 保存图片loading
       saveLoading: false,
 
-      // 线下阅卷假数据
-      uploadList: [
-        // {
-        //   name: '试卷1',
-        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d10a0fd1.jpg',
-        // },
-        // {
-        //   name: '试卷2',
-        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d40da5c4.jpg',
-        // },
-        // {
-        //   name: '试卷3',
-        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d5e6123e.jpg',
-        // },
-        // {
-        //   name: '试卷4',
-        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d70a9353.jpg',
-        // },
-        // {
-        //   name: '试卷5',
-        //   url: 'https://oa-statics.caihonggou.com/data/head_url/201711/59fc1d86b0840.jpg',
-        // },
-      ],
+      // 线下阅卷图片列表
+      imageData: [],
     }
   },
 
@@ -370,6 +349,13 @@ export default {
       return this.currentQuestionArray
         .map(question => question.answer_right_wrong)
         .some(item => item === 0)
+    },
+
+    imageDataFinal() {
+      return this.imageData.map((val, key) => ({
+        ...val,
+        sort: key,
+      }))
     },
   },
 
@@ -491,6 +477,7 @@ export default {
     changeStudentTestId(student_test_id) {
       this.currentStudentTestId = student_test_id
       this.getPaperData(student_test_id)
+      this.getImageData(student_test_id)
     },
 
     // 获取试卷详情
@@ -505,18 +492,41 @@ export default {
         })
     },
 
-    // 上传图片成功回调
-    uploadSuccess(item) {
-      this.uploadList.push(item)
+    // 获取试卷图片详情
+    getImageData(student_test_id) {
+      return this.$http.get(`/test/paper_image_show/${student_test_id}`)
+        .then((res) => {
+          this.imageData = res
+        })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
     },
 
-    // 保存已上传的图片
+    // 上传图片成功回调
+    uploadSuccess(response) {
+      this.imageData.push({
+        image_url: response.url,
+        image_name: response.name,
+      })
+    },
+
+    // 保存试卷图片
     saveImage() {
       this.saveLoading = true
-
-      if (this.uploadList.length > 0) {
-        this.$Message.success('保存成功')
-        this.saveLoading = false
+      // 如果列表中有图片，则保存
+      if (this.imageData.length > 0) {
+        this.$http.post(`/test/paper_image/${this.currentStudentTestId}`, {
+          data: this.imageDataFinal,
+        })
+          .then(() => {
+            this.saveLoading = false
+            this.$Message.success('保存成功')
+          })
+          .catch(({ message }) => {
+            this.saveLoading = false
+            this.$Message.error(message)
+          })
       } else {
         this.$Message.error('您尚未上传图片，请先上传')
         this.saveLoading = false
@@ -527,13 +537,14 @@ export default {
   created() {
     this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
       .then(() => {
-        // 这里还有待优化，先取第一个学生
+        // 这里还有待优化，先取第一个学生，获取试卷信息和试卷图片信息
         const firstStudentId = this.student_data[0].id
         this.currentStudentTestId = firstStudentId
         this.getPaperData(firstStudentId)
           .then(() => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
           })
+        this.getImageData(firstStudentId)
       })
   },
 

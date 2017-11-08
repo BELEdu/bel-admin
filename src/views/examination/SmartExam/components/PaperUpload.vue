@@ -48,11 +48,10 @@
 
         <!-- 图片 -->
         <img
-          :key="image.url"
-          :src="image.url"
-          :alt="image.name"
+          :key="image.image_url"
+          :src="image.image_url"
         >
-
+<!-- :alt="image.name" -->
       </li>
     </ul>
 
@@ -119,7 +118,7 @@ export default {
         : 'https://oa-api.caihonggou.com',
 
       // 请求接口的右边部分
-      api: 'student/upload',
+      api: 'test/upload',
 
       // 文件大小限制，单位 kb
       maxSize: 2048,
@@ -128,7 +127,7 @@ export default {
       format: ['jpg', 'jpeg', 'png'],
 
       // 上传的文件字段名
-      name: 'head_url',
+      name: 'paper',
 
       // 上传成功提示信息
       successText: '图片上传成功！',
@@ -171,7 +170,6 @@ export default {
     // 图片上传成功回调
     uploadSuccess(response) {
       this.$Message.success(this.successText)
-      // this.dataList.push(res)
       this.$emit('on-success', response)
       this.scrollToDown()
     },
@@ -245,11 +243,11 @@ export default {
 
   &__item {
     position: relative;
-    border: 2px solid  #fff;
+    border: 1px solid  #fff;
     cursor: pointer;
 
     &:hover {
-      border: 2px solid  @primary-color;
+      border: 1px solid  @primary-color;
 
       .smartexam__upload__item__mask,
       .smartexam__upload__item__btns {

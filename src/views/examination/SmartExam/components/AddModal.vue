@@ -258,7 +258,7 @@ export default {
         duration: 0, // 考试时长
         answer_type: 1, // 答题方式 1：线上 2：线下
         paper_source: 1, // 试卷来源 1：智能组卷 2：选择试卷
-        paper_id: 50, // 选择试卷
+        paper_id: null, // 选择试卷
         question_info: [], // 试题信息
         param: [], // 题型题量
       },

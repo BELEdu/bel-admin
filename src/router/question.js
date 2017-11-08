@@ -65,6 +65,9 @@ const QUESTION_PAPER_EDITION = {
 }
 
 export default [
+
+  /* --- 知识点 --- */
+
   // 知识点
   {
     path: QUESTION_KNOWLEDGE.link,
@@ -77,6 +80,8 @@ export default [
       ],
     },
   },
+
+  // 编辑知识点
   {
     path: QUESTION_KNOWLEDGE_EDITION.link,
     name: 'QuestionKnowledgeEdtition',
@@ -89,7 +94,10 @@ export default [
       ],
     },
   },
-  // 章节
+
+  /* --- 章节 --- */
+
+  // 章节列表
   {
     path: QUESTION_CHAPTER.link,
     name: 'QuestionChapter',
@@ -101,7 +109,10 @@ export default [
       ],
     },
   },
-  // 试题
+
+  /* --- 试题 --- */
+
+  // 试题列表
   {
     path: QUESTION_QUESTION.link,
     name: 'QuestionQuestion',
@@ -113,6 +124,7 @@ export default [
       ],
     },
   },
+  // 添加试题
   {
     path: QUESTION_QUESTION_ADD.link,
     name: 'QuestionQuestionAdd',
@@ -125,6 +137,7 @@ export default [
       ],
     },
   },
+  // 编辑试题
   {
     path: QUESTION_QUESTION_EDIT.link,
     name: 'QuestionQuestionEdit',
