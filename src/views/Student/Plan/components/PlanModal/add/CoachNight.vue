@@ -262,11 +262,11 @@
       // 添加日期
       addDate() {
         this.addForm.excludeDate = [
+          ...this.addForm.excludeDate,
           {
             random_id: this.random(),
             value: [],
           },
-          ...this.addForm.excludeDate,
         ]
       },
 
