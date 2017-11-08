@@ -87,6 +87,7 @@
           <Col span="12">
             <Form-item label="关联知识点" prop="knowledge_ids">
               <app-tree-select
+                v-if="loadOk"
                 v-model="form.knowledge_ids"
                 :data="knowledge_tree"
                 multiple
@@ -323,6 +324,8 @@ export default {
       knowledge_tree: [], // 知识点数据源
 
       afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
+
+      loadOk: false,
     }
   },
 
@@ -438,6 +441,7 @@ export default {
         .then((res) => {
           this.form = res
           this.$store.commit(GLOBAL.LOADING.HIDE)
+          this.loadOk = true
         })
         .catch(({ message }) => {
           this.errorNotice(message)
