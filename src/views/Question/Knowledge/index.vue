@@ -126,6 +126,8 @@
         >
           <InputNumber
             v-model="editionInfo.score"
+            :min="0"
+            :max="100"
           ></InputNumber>
         </Form-item>
       </Form>
@@ -144,6 +146,8 @@
         >
           <InputNumber
             v-model="editionInfo.score"
+            :min="0"
+            :max="100"
           ></InputNumber>
         </Form-item>
         <Form-item
@@ -158,6 +162,8 @@
         >
           <InputNumber
             v-model="editionInfo.art_score"
+            :min="0"
+            :max="100"
           ></InputNumber>
         </Form-item>
       </Form>
