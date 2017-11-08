@@ -29,7 +29,12 @@
           <form-item :prop="'items.' + index + '.course_num'" :rules="coachRules['course_num']">
             <Row>
               <Col :span="16" style="padding: 0 1px;">
-              <Select v-model="item.course_num" :disabled="!item.random_id && !item.operation.update">
+              <Select
+                v-model="item.course_num"
+                transfer
+                :placement="selectPlaceType(index)"
+                :disabled="!item.random_id && !item.operation.update"
+              >
                 <Option
                   v-for="(period, key) in courseNum"
                   :key="key"
@@ -51,6 +56,8 @@
                 @on-clear="() => item.course_date = null"
                 :options="dateOptions"
                 placeholder="请选择开始日期"
+                transfer
+                :placement="selectPlaceType(index)"
                 :disabled="!item.random_id && !item.operation.update"
               ></date-picker>
             </form-item>
@@ -64,6 +71,8 @@
                 @on-change="(val) => item.course_time = val[0] ? val : []"
                 @on-clear="() => item.course_time = []"
                 placeholder="请选择时间"
+                transfer
+                :placement="selectPlaceType(index)"
                 :disabled="!item.random_id && !item.operation.update"
               ></TimePicker>
             </form-item>
