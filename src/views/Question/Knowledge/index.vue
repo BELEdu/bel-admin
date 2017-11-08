@@ -307,13 +307,14 @@ export default {
   computed: {
     isNotBranch() {
       const subject = this.$route.query['equal[grade_range_subject_id]']
-      return !subject && subject !== '5'
+      return subject !== 5
     },
 
     colConfig() {
-      return this.isNotBranch
-        ? this.tableConfig
-        : [...this.tableConfig].splice(4, 1,
+      const config = [...this.tableConfig]
+
+      if (!this.isNotBranch) {
+        config.splice(4, 1,
           {
             title: '文科重要性',
             key: 'knowledge_importance',
@@ -327,6 +328,9 @@ export default {
             sortable: 'custom',
           },
         )
+      }
+
+      return config
     },
   },
 
