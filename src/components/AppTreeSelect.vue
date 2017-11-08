@@ -169,7 +169,7 @@ export default {
           .filter((item) => {
             if (item.children) {
               item.selected = false
-              item.expand = true
+              item.expand = !item.expand
             }
             return !item.children
           })
