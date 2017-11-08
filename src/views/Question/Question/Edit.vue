@@ -573,6 +573,7 @@ export default {
     if (this.isUpdate) {
       this.getQuestionData()
     } else {
+      this.loadOk = true
       this.$store.commit(GLOBAL.LOADING.HIDE)
     }
   },
