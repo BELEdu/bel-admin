@@ -301,29 +301,26 @@ export default {
   computed: {
     isNotBranch() {
       const subject = this.$route.query['equal[grade_range_subject_id]']
-      return subject && subject !== '5'
+      return !subject && subject !== '5'
     },
 
     colConfig() {
-      if (this.isNotBranch) {
-        return this.tableConfig
-      }
-      const temp = [...this.tableConfig]
-      temp.splice(4, 1,
-        {
-          title: '文科重要性',
-          key: 'knowledge_importance',
-          align: 'center',
-          sortable: 'custom',
-        },
-        {
-          title: '理科重要性',
-          key: 'art_knowledge_importance',
-          align: 'center',
-          sortable: 'custom',
-        },
-      )
-      return temp
+      return this.isNotBranch
+        ? this.tableConfig
+        : [...this.tableConfig].splice(4, 1,
+          {
+            title: '文科重要性',
+            key: 'knowledge_importance',
+            align: 'center',
+            sortable: 'custom',
+          },
+          {
+            title: '理科重要性',
+            key: 'art_knowledge_importance',
+            align: 'center',
+            sortable: 'custom',
+          },
+        )
     },
   },
 
