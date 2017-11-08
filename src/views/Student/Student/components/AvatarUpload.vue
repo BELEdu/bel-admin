@@ -25,7 +25,7 @@
         >
           <Icon
             v-if="imgUrl=== ''"
-            type="image"
+            type="person-add"
             size="70"
           />
 
