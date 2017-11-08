@@ -41,13 +41,13 @@
           <span>{{ user.username }}</span>
         </Form-item>
         <Form-item label="原密码" prop="old_password">
-          <Input type="password" v-model="form.old_password"></Input>
+          <Input type="password" v-model="form.old_password" autocomplete="off"></Input>
         </Form-item>
         <Form-item label="新密码" prop="new_password">
-          <Input type="password" v-model="form.new_password"></Input>
+          <Input type="password" v-model="form.new_password" autocomplete="off"></Input>
         </Form-item>
         <Form-item label="重复新密码" prop="new_password_again">
-          <Input type="password" v-model="form.new_password_again"></Input>
+          <Input type="password" v-model="form.new_password_again" autocomplete="off"></Input>
         </Form-item>
       </Form>
     </app-form-modal>

@@ -54,11 +54,11 @@
       </Form-item>
 
       <Form-item label="密码" prop="password">
-        <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+        <Input type="password" placeholder="请输入密码" v-model="form.password" autocomplete="off"></Input>
       </Form-item>
 
       <Form-item label="重复密码" prop="repassword">
-        <Input type="password" placeholder="请输入密码" v-model="form.repassword"></Input>
+        <Input type="password" placeholder="请输入密码" v-model="form.repassword" autocomplete="off"></Input>
       </Form-item>
 
       <Form-item label="状态">

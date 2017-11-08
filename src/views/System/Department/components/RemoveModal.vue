@@ -21,7 +21,7 @@
         <p>角色与用户均不可用，是否继续删除？</p>
       </div>
       <Form-item prop="password">
-        <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+        <Input type="password" placeholder="请输入密码" v-model="form.password" autocomplete="off"></Input>
       </Form-item>
     </Form>
   </app-warn-modal>

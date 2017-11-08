@@ -68,7 +68,7 @@
           <p>您也可以考虑禁用该用户，禁用后用户将无法登录，但不删除任何数据。是否继续删除？</p>
         </div>
         <Form-item prop="password">
-          <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+          <Input type="password" placeholder="请输入密码" v-model="form.password" autocomplete="off"></Input>
         </Form-item>
       </Form>
     </app-warn-modal>

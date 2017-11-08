@@ -16,7 +16,7 @@
               <Input v-model="form.username"></Input>
             </Form-item>
             <Form-item label="密码" prop="password">
-              <Input type="password" v-model="form.password"></Input>
+              <Input type="password" v-model="form.password" autocomplete="off"></Input>
             </Form-item>
             <Form-item>
               <Button type="primary" @click="beforeSubmit" :loading="formLoading" long>登录</Button>

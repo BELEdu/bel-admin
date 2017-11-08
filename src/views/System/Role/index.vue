@@ -43,7 +43,7 @@
           <p>删除该角色后，将导致其关联的用户不可用。是否继续删除？</p>
         </div>
         <Form-item prop="password">
-          <Input type="password" placeholder="请输入密码" v-model="form.password"></Input>
+          <Input type="password" placeholder="请输入密码" v-model="form.password" autocomplete="off"></Input>
         </Form-item>
       </Form>
     </app-warn-modal>
