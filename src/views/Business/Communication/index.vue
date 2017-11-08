@@ -63,7 +63,11 @@
       </Form-item>
       <!-- 查询按钮 -->
       <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">
+        <Button
+          type="primary"
+          icon="ios-search"
+          @click="search"
+        >
           搜索
         </Button>
       </Form-item>
@@ -72,9 +76,17 @@
 
     <Row class="app-content-topbar">
       <h2><Icon type="ios-paper"/> 沟通记录</h2>
-      <Button type="primary" @click="toCreate()">添加记录</Button>
-      <Button type="primary">导入记录</Button>
-      <Button type="primary" icon="archive">下载导入模板</Button>
+      <Button
+        type="primary"
+        @click="toCreate()"
+      >添加记录</Button>
+      <Button
+        type="primary"
+      >导入记录</Button>
+      <Button
+        type="primary"
+        icon="archive"
+      >下载导入模板</Button>
     </Row>
 
     <Table border
@@ -106,13 +118,17 @@
  * @author huojinzhao
  */
 
-import { list, tableCommon } from '@/mixins'
+import {
+  list,
+  tableCommon,
+} from '@/mixins'
+
 import {
   colConfig,
   searchConfig,
 } from './modules/config'
-import vRecord from './components/record'
 
+import vRecord from './components/record'
 
 export default {
   name: 'business-communication',

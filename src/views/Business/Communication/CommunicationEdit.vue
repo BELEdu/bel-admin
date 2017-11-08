@@ -98,7 +98,10 @@
           v-model="comm_log.communication_at"
         ></Date-picker>
       </Form-item>
-      <Form-item label="沟通情况" prop="content">
+      <Form-item
+        label="沟通情况"
+        prop="content"
+      >
         <Input
           type="textarea"
           placeholder="请输入......"
@@ -106,7 +109,6 @@
           v-model="comm_log.content"
         ></Input>
       </Form-item>
-      <!-- log编辑 end-->
       <!-- 添加log -->
       <Form-item class="commeditor--plus-container">
         <Button
@@ -118,17 +120,21 @@
           "
         >增加沟通记录</Button>
       </Form-item>
-      <!-- 添加log end -->
       <!-- logs展示 -->
       <Row
         class="commeditor--contents"
         v-for="(item, index) in fdata.communication_logs" v-if="fdata.communication_logs.length"
         :key="item.communication_at"
       >
-        <Col span="3"
+        <Col
+          span="3"
           class="commeditor--contents-date"
-        >{{item.communication_at}}</Col>
-        <Col span="20">{{item.content}}</Col>
+        >
+          {{item.communication_at}}
+        </Col>
+        <Col span="20">
+          {{item.content}}
+        </Col>
         <Col span="1" style="padding-left: 5px;">
           <!-- 删除log-->
           <Button
@@ -136,8 +142,9 @@
             size="small"
             type="text"
             @click.stop="deleteLog(item.communication_id, item.id, index)"
-          >删除</Button>
-          <!-- 删除log end-->
+          >
+            删除
+          </Button>
         </Col>
       </Row>
       <!-- logs展示 end -->
