@@ -3,7 +3,7 @@
     <div class="ivu-select ivu-select-multiple" :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled}" @click="onDropdown">
       <div class="ivu-select-selection">
         <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}">请选择...</span>
-        <div v-if="multiple" class="ivu-tag" v-for="item in selectedItems">
+        <div v-if="multiple" class="ivu-tag ivu-tag-checked" v-for="item in selectedItems">
           <span class="ivu-tag-text">{{ item.title }}</span>
           <i class="ivu-icon ivu-icon-ios-close-empty" @click.stop="onRemove(item)"></i>
         </div>
@@ -13,8 +13,8 @@
       </div>
     </div>
     <div class="ivu-select-dropdown" style="width: 100%;">
+      <Input class="app-tree-dropdown__input original" style="width: calc(100% - 20px);" v-model="keyword" size="small" placeholder="请输入搜索内容"/>
       <div class="app-tree-dropdown" @click.stop>
-        <Input class="app-tree-dropdown__input original" v-model="keyword" size="small" placeholder="请输入搜索内容"></Input>
         <Tree ref="tree" :data="filteredItems" @on-select-change="onSelectChange" :multiple="multiple"></Tree>
         <Tree ref="tree2" :data="items" :multiple="multiple" v-if="tree2" v-show="false"></Tree>
       </div>
@@ -245,37 +245,48 @@ export default {
 </script>
 
 <style lang="less">
-.app-tree-dropdown {
-  padding: 0 16px;
+  .app-tree-select {
+    .ivu-select-dropdown {
+      visibility: hidden;
+      opacity: 0;
+      transform: scaleY(0.8);
+      transition: 0.3s;
+      transform-origin: center top;
+      overflow: hidden;
 
-  &__input {
-    .ivu-input {
-      border-color: #d7dde4;
 
-      &:hover, &:focus {
-        border-color: #33b9ff;
-        box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+      .app-tree-dropdown {
+        padding: 30px 16px 0;
+        max-height: 200px;
+        overflow: auto;
+
+        &__input {
+          padding: 0 0 0 20px;
+          background-color: #fff;
+          position: fixed;
+          z-index: 10;
+
+          .ivu-input {
+            border-color: #d7dde4;
+
+            &:hover, &:focus {
+              border-color: #33b9ff;
+              box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.2);
+            }
+          }
+        }
+      }
+
+
+    }
+
+    .ivu-select-visible {
+      & + .ivu-select-dropdown {
+        visibility: visible;
+        opacity: 1;
+        transform: scaleY(1);
       }
     }
   }
-}
-
-.app-tree-select {
-  .ivu-select-dropdown {
-    visibility: hidden;
-    opacity: 0;
-    transform: scaleY(0.8);
-    transition: 0.3s;
-    transform-origin: center top;
-  }
-
-  .ivu-select-visible {
-    & + .ivu-select-dropdown {
-      visibility: visible;
-      opacity: 1;
-      transform: scaleY(1);
-    }
-  }
-}
 </style>
 
