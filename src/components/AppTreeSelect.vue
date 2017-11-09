@@ -193,7 +193,7 @@ export default {
       // 这时候不应该给this.selectedItems重新赋值
       if (nextSelectedItems.length) {
         this.selectedItems = nextSelectedItems
-      } else {
+      } else if (this.selectedItems[0]) {
         this.selectedItems[0].selected = true
       }
 
