@@ -193,7 +193,8 @@ export default {
           sortable: 'custom',
           render: (h, params) => {
             const { course } = params.row
-            return h('span', course.total)
+            const total = course ? course.total : null
+            return h('span', total)
           },
         },
         {
@@ -203,10 +204,11 @@ export default {
           sortable: 'custom',
           render: (h, params) => { // 剩余课时小于10的时候变红
             const { course } = params.row
-            const className = course.remain < 10 ? 'color-error' : ''
+            const remain = course ? course.remain : null
+            const className = remain && remain < 10 ? 'color-error' : ''
             return h('span', {
               class: className,
-            }, course.remain)
+            }, remain)
           },
         },
         { title: '状态', key: 'student_current_status_name', align: 'center' },
