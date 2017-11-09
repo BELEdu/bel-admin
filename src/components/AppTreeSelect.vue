@@ -41,7 +41,6 @@
       <div class="app-tree-dropdown" @click.stop>
         <Tree
           ref="tree"
-          :key="key"
           :data="items"
           :multiple="multiple"
           @on-select-change="onSelectChange"
@@ -86,7 +85,6 @@ export default {
       selectedItems: [],
       keyword: '',
       initSelected: false,
-      key: Math.random(),
     }
   },
 
@@ -117,12 +115,9 @@ export default {
           item.visible = item.title.includes(val)
         }
 
-        item.render = item.visible ? null : () => null
+        Vue.set(item, 'render', item.visible ? null : this.nullRender)
       }
       this.items.forEach(handler)
-
-      // 强制tree组建重新渲染，以便应用上面所做的render函数更改
-      this.key = Math.random()
     },
 
     data(tree) {
@@ -142,6 +137,10 @@ export default {
   },
 
   methods: {
+    nullRender() {
+      return null
+    },
+
     /** 组件失焦时隐藏下拉菜单 */
     clickOutSide() {
       this.dropdown = false
