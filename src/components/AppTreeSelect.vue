@@ -214,6 +214,8 @@ export default {
      * 更新selectedItems和v-model
      */
     onRemove(removedItem) {
+      if (this.disabled) return
+
       // eslint-disable-next-line
       removedItem.selected = false
       this.selectedItems = this.$refs.tree
