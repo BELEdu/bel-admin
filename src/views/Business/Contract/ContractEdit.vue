@@ -174,6 +174,7 @@
       :model="fdata"
       ref="productForm"
     >
+      <app-form-alert :errors="formErrors"></app-form-alert>
       <!-- 产品选择 -->
       <Form-item
         class="product-product"
@@ -596,6 +597,7 @@ export default {
       this.$refs.productForm
         .validate(valid => valid && this.submit()
           .then(() => this.goBack())
+          .catch(this.errorHandler)
           .catch(() => { this.confirmLoading = false }),
         )
     },
