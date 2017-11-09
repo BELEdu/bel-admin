@@ -26,12 +26,12 @@ git
   .exec(() => console.log('pulling updates...'))
   .pull('origin', 'master')
   .exec(() => {
-    console.log('copying assets...')
     // 复制前先清空laravel中的相关文件夹
-    fs.emptyDir(PUBLIC_PATH)
-      .then(() => {
-        fs.copySync(ASSETS_PATH, PUBLIC_PATH)
-      })
+    console.log('delete files...')
+    fs.emptyDirSync(PUBLIC_PATH)
+
+    console.log('copying assets...')
+    fs.copySync(ASSETS_PATH, PUBLIC_PATH)
 
     // 复制dist中的html文件到laravel中的模板文件夹中
     const HMTL_PATH = path.join(DIST_PATH, 'index.html')
