@@ -2,7 +2,7 @@
   <div class="add-coach-list">
     <list-coach
       @on-success="onSubmit"
-      @on-error="() => this.$emit('on-error')"
+      @on-error="(errors) => this.$emit('on-error', errors || {})"
     ></list-coach>
   </div>
 </template>
@@ -47,8 +47,8 @@
             this.$Message.success('成功添加学习计划！')
             this.$emit('on-success', { close: true })
           })
-          .catch(() => {
-            this.$emit('on-error')
+          .catch((errors) => {
+            this.$emit('on-error', errors)
           })
       },
 

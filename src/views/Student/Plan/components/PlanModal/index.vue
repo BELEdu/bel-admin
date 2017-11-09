@@ -4,6 +4,7 @@
     :mask-closable="false"
     @input="(val) => this.$emit('update:visible', val)"
     width="660"
+    @on-cancel="cancel"
     class-name="plan-modal"
   >
     <Row slot="header" class="plan-modal__header">
@@ -11,6 +12,10 @@
       <Col span="6" class="plan-modal__header-right"></Col>
 
     </Row>
+
+    <Form>
+      <app-form-alert :errors="formErrors"></app-form-alert>
+    </Form>
 
     <div
       class="plan-modal__body"
@@ -36,7 +41,7 @@
    */
 
   import { mapState } from 'vuex'
-  import { broadcast } from '@/mixins'
+  import { broadcast, form } from '@/mixins'
   import { STUDENT } from '@/store/mutationTypes'
   import AddCoach from './add/Coach'
   import AddCoachNight from './add/CoachNight'
@@ -48,7 +53,7 @@
   export default {
     name: 'plan-modal',
 
-    mixins: [broadcast],
+    mixins: [broadcast, form],
 
     components: { AddCoach, AddCoachNight, AddCoachList, ViewCoach, EditCoachList, AppraiseCoach },
 
@@ -143,6 +148,7 @@
 
     methods: {
       cancel() {
+        this.formErrors = {}
         this.currentComId = -1
         this.$emit('update:visible', false)
         this.broadcast(this.currentCom.view, 'on-reset', this.currentCom)
@@ -150,8 +156,9 @@
         this.loading = false
       },
 
-      onError() {
+      onError(errors = {}) {
         this.loading = false
+        this.errorHandler(errors)
       },
 
       prev() {
