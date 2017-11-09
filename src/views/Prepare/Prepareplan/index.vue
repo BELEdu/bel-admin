@@ -91,7 +91,7 @@ export default {
           align: 'center',
           width: 180,
           render: createButton([
-            { text: '查看', type: 'primary', click: row => this.goTo(row.id, row.realname) },
+            { text: '查看', type: 'primary', click: row => this.goToDetail(row.id, row.realname) },
           ]),
         },
       ],
@@ -114,7 +114,7 @@ export default {
     },
 
     // 查看教案
-    goTo(id, name) {
+    goToDetail(id, name) {
       this.$store.commit(PREPARE.PREPAREPLAN.TEACHERNAME, name)
       this.$router.push(`/prepare/prepareplan/${id}`)
     },
