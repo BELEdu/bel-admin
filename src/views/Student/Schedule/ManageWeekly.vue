@@ -88,10 +88,12 @@
                       <p>
                         <span class="text-right">操作：</span>
                         <Button size="small" v-if="list.schedule_operation.confirm" type="primary" @click="handlerModal(list)">确认排课</Button>
-                        <Button size="small" v-else-if="list.schedule_operation.finish" type="primary" @click="handlerModal(list)">确认上课</Button>
-                        <Button size="small" v-else-if="list.schedule_operation.cancel" type="primary" @click="handlerModal(list, true)">撤销</Button>
                         <Button size="small" v-else-if="list.schedule_operation.comment" type="primary" @click="handlerModal(list)">评价</Button>
                         <Button size="small" v-else-if="list.schedule_operation.showComment" type="primary" @click="handlerModal(list)">查看评价</Button>
+                        <template v-else-if="list.schedule_operation.finish || list.schedule_operation.cancel">
+                          <Button size="small" v-if="list.schedule_operation.finish" type="primary" @click="handlerModal(list)">确认上课</Button>
+                          <Button size="small" v-if="list.schedule_operation.cancel" type="primary" @click="handlerModal(list, true)">撤销</Button>
+                        </template>
                         <span v-else>-</span>
                       </p>
                     </div>

@@ -1,6 +1,7 @@
 <template>
   <div
     :is="parentCom"
+    action="撤销"
     :value="visible"
     @input="inputModel"
     :title="currentCom.title"
