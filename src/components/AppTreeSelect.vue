@@ -1,22 +1,51 @@
 <template>
-  <div class="app-tree-select" v-clickoutside="clickOutSide">
-    <div class="ivu-select ivu-select-multiple" :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled}" @click="onDropdown">
+  <div
+    class="app-tree-select"
+    v-clickoutside="clickOutSide"
+  >
+    <div
+      class="ivu-select ivu-select-multiple"
+      :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled}"
+      @click="onDropdown"
+    >
       <div class="ivu-select-selection">
-        <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}">请选择...</span>
-        <div v-if="multiple" class="ivu-tag ivu-tag-checked" v-for="item in selectedItems">
-          <span class="ivu-tag-text">{{ item.title }}</span>
-          <i class="ivu-icon ivu-icon-ios-close-empty" @click.stop="onRemove(item)"></i>
+        <span class="ivu-select-placeholder" :style="{display: selectedItems.length ? 'none' : 'inline'}"
+        >请选择...</span>
+        <div v-if="multiple">
+          <div
+            class="ivu-tag ivu-tag-checked"
+            v-for="item in selectedItems"
+            :key="item.id"
+          >
+            <span class="ivu-tag-text">{{ item.title }}</span>
+            <i class="ivu-icon ivu-icon-ios-close-empty" @click.stop="onRemove(item)"></i>
+          </div>
         </div>
-        <span v-else class="ivu-select-selected-value">{{ selectedItems[0] && selectedItems[0].title }}</span>
+        <span
+          v-else
+          class="ivu-select-selected-value"
+        >{{ selectedItems[0] && selectedItems[0].title }}</span>
         <i class="ivu-icon ivu-icon-ios-close ivu-select-arrow" style="display: none;"></i>
         <i class="ivu-icon ivu-icon-arrow-down-b ivu-select-arrow"></i>
       </div>
     </div>
+
     <div class="ivu-select-dropdown" style="width: 100%;">
-      <Input class="app-tree-dropdown__input original" style="width: calc(100% - 20px);" v-model="keyword" size="small" placeholder="请输入搜索内容"/>
+      <Input
+        class="app-tree-dropdown__input original"
+        style="width: calc(100% - 20px);"
+        v-model="keyword"
+        size="small"
+        placeholder="请输入搜索内容"
+      />
       <div class="app-tree-dropdown" @click.stop>
-        <Tree ref="tree" :data="filteredItems" @on-select-change="onSelectChange" :multiple="multiple"></Tree>
-        <Tree ref="tree2" :data="items" :multiple="multiple" v-if="tree2" v-show="false"></Tree>
+        <Tree
+          ref="tree"
+          :key="key"
+          :data="items"
+          :multiple="multiple"
+          @on-select-change="onSelectChange"
+        />
       </div>
     </div>
   </div>
@@ -33,13 +62,16 @@ export default {
       type: Boolean,
       default: false,
     },
+
     value: {
       required: true,
     },
+
     data: {
       type: Array,
       required: true,
     },
+
     disabled: {
       type: Boolean,
       defalut: false,
@@ -53,28 +85,11 @@ export default {
       selectedItems: [],
       keyword: '',
       initSelected: false,
-      tree2: false,
+      key: Math.random(),
     }
   },
 
   computed: {
-    /**
-     * 经搜索过滤后的树
-     * 如果未输入搜索关键字，返回整棵树，否则根据节点的visible属性过滤出需要显示的节点
-     */
-    filteredItems() {
-      if (this.keyword === '') {
-        return this.items
-      }
-      const handler = (item) => {
-        if (item.visible && item.children) {
-          item.children = item.children.filter(handler)
-        }
-        return item.visible
-      }
-      return this.items.filter(handler)
-    },
-
     formItem() {
       return this.getParentCom('FormItem')
     },
@@ -90,6 +105,7 @@ export default {
      * 根据搜索关键字，判断出每个树节点的可见性
      * 若当前节点为树结构的最后一级，根据其是否含有搜索关键字，设置其visible属性
      * 其它每一个层级的节点，递归地检查其下一级中是否有任何节点visible属性为true，若有，则其本身的visible属性也设为true
+     * 当一个节点的visible判断为false时，改变其render函数使其不渲染，配合CSS样式达到完全隐藏该节点相关元素的效果
      */
     keyword(val) {
       const handler = (item) => {
@@ -99,8 +115,13 @@ export default {
         } else {
           item.visible = item.title.includes(val)
         }
+
+        item.render = item.visible ? null : () => null
       }
       this.items.forEach(handler)
+
+      // 强制tree组建重新渲染，以便应用上面所做的render函数更改
+      this.key = Math.random()
     },
 
     data(tree) {
@@ -120,8 +141,9 @@ export default {
   },
 
   methods: {
+    /** 组件失焦时隐藏下拉菜单 */
     clickOutSide() {
-      this.onClickDocument()
+      this.dropdown = false
     },
 
     /**
@@ -154,29 +176,28 @@ export default {
 
     /**
      * 选中树节点时所做的处理
-     * 如果被选中的树节点不是最后一级，去除其选中状态并过滤掉
+     * 如果被选中的树节点不是最后一级，去除其选中状态，改变其子级展开状态
      * 剩下的所有节点推入selectedItems中，以在视图上显示选中项
      * 最后，用选中项的id更新组件所绑定的v-model
-     *
-     * this.$refs.tree.getSelectedNodes只会取到被搜索关键字过滤后的项
-     * 通过渲染另外一个总是使用items作为data的Tree组件，来正确地获得选中项
      */
-    onSelectChange() {
-      this.tree2 = true
-      this.$nextTick(() => {
-        this.selectedItems = this.$refs.tree2
-          .getSelectedNodes()
-          .filter((item) => {
-            if (item.children) {
-              item.selected = false
-              item.expand = !item.expand
-            }
-            return !item.children
-          })
-
-        this.tree2 = false
-        this.updateValue()
+    onSelectChange(selectedItems) {
+      const nextSelectedItems = selectedItems.filter((item) => {
+        if (item.children) {
+          item.selected = false
+          item.expand = !item.expand
+        }
+        return !item.children
       })
+
+      // 单选情况下，点中非最后一级，nextSelectedItems将为空数组
+      // 这时候不应该给this.selectedItems重新赋值
+      if (nextSelectedItems.length) {
+        this.selectedItems = nextSelectedItems
+      } else {
+        this.selectedItems[0].selected = true
+      }
+
+      this.updateValue()
     },
 
     /**
@@ -204,12 +225,7 @@ export default {
       this.$emit('input', value)
     },
 
-    onClickDocument() {
-      this.dropdown = false
-    },
-
-    init(tree) {
-      // 每次接受到树状数据时，应根据this.value的初始值，设置对应项的selected属性为true
+    markSelected(tree) {
       const handler = (item) => {
         if (item.children) {
           item.children.forEach(handler)
@@ -222,24 +238,21 @@ export default {
         }
       }
       tree.forEach(handler)
+    },
+
+    init(tree) {
+      // 每次接受到树状数据时，应根据this.value的初始值，设置对应项的selected属性为true
+      this.markSelected(tree)
 
       this.items = [...tree]
       this.$nextTick(() => {
-        this.onSelectChange()
+        this.onSelectChange(this.$refs.tree.getSelectedNodes())
       })
     },
   },
 
-  created() {
-    // document.body.addEventListener('click', this.onClickDocument)
-  },
-
   mounted() {
     this.copyData(this.data)
-  },
-
-  beforeDestroy() {
-    // document.body.removeEventListener('click', this.onClickDocument)
   },
 }
 </script>
@@ -287,6 +300,13 @@ export default {
         transform: scaleY(1);
       }
     }
+  }
+
+  /* 隐藏被过滤树节点 */
+  .ivu-tree-arrow:first-of-type:last-of-type,
+  .ivu-tree-arrow + ul,
+  .ivu-tree-arrow + ul ~ ul {
+    display: none;
   }
 </style>
 
