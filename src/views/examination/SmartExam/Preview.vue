@@ -20,7 +20,10 @@
       <aside class="smartexam-preview__aside left">
 
         <!-- 学员按钮组（到时候未考试的要变为disabled） -->
-        <ButtonGroup vertical>
+        <ButtonGroup
+          class="smartexam-preview__btns"
+          vertical
+        >
           <Button
             v-for="item in student_data"
             :key="item.id"
@@ -160,6 +163,10 @@ export default {
 
 <style lang="less">
 .smartexam-preview {
+  &__btns {
+    width: 100%;
+  }
+
   &__aside {
     width:100px;
     max-height: 500px;
