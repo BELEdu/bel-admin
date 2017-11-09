@@ -56,12 +56,13 @@
                   </div>
                   <!--课表模块-->
                   <Tooltip
-                    placement="right"
                     v-for="list in weeklyList[item.value]"
                     :key="list.id"
                     :style="{
                       top: `${courseTop(list.schedule_range)}`,
                     }"
+                    :placement="index > 4 ? 'left-start' : parseInt(courseTop(list.schedule_range), 10) >= 360 ? 'top' : 'right-start'"
+                    :delay="500"
                   >
                     <!--课表标题-->
                     <div
@@ -87,10 +88,11 @@
                       <p>
                         <span class="text-right">操作：</span>
                         <Button size="small" v-if="list.schedule_operation.confirm" type="primary" @click="handlerModal(list)">确认排课</Button>
-                        <Button size="small" v-if="list.schedule_operation.finish" type="primary" @click="handlerModal(list)">确认上课</Button>
-                        <Button size="small" v-if="list.schedule_operation.cancel" type="primary" @click="handlerModal(list, true)">撤销</Button>
-                        <Button size="small" v-if="list.schedule_operation.comment" type="primary" @click="handlerModal(list)">评价</Button>
-                        <Button size="small" v-if="list.schedule_operation.showComment" type="primary" @click="handlerModal(list)">查看评价</Button>
+                        <Button size="small" v-else-if="list.schedule_operation.finish" type="primary" @click="handlerModal(list)">确认上课</Button>
+                        <Button size="small" v-else-if="list.schedule_operation.cancel" type="primary" @click="handlerModal(list, true)">撤销</Button>
+                        <Button size="small" v-else-if="list.schedule_operation.comment" type="primary" @click="handlerModal(list)">评价</Button>
+                        <Button size="small" v-else-if="list.schedule_operation.showComment" type="primary" @click="handlerModal(list)">查看评价</Button>
+                        <span v-else>-</span>
                       </p>
                     </div>
                   </Tooltip>
@@ -368,6 +370,10 @@
 
           .ivu-tooltip-rel {
             width: 100%;
+          }
+
+          .ivu-tooltip-inner {
+            max-width: inherit;
           }
         }
       }
