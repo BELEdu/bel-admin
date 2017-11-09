@@ -227,7 +227,7 @@ export default {
       /* --- 顶部搜索 --- */
 
       likeKeys: [],
-      likeKey: 'knowledge_name',
+      likeKey: 'display_name',
 
       query: {
         'equal[grade_range_subject_id]': 0,
