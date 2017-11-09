@@ -4,8 +4,8 @@
     v-clickoutside="clickOutSide"
   >
     <div
-      class="ivu-select ivu-select-multiple"
-      :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled}"
+      class="ivu-select"
+      :class="{'ivu-select-visible': dropdown, 'ivu-select-disabled': disabled, 'ivu-select-multiple': multiple, 'ivu-select-single': !multiple}"
       @click="onDropdown"
     >
       <div class="ivu-select-selection">
