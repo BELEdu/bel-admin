@@ -18,7 +18,7 @@
             :key="item.id"
           >
             <span class="ivu-tag-text">{{ item.title }}</span>
-            <i class="ivu-icon ivu-icon-ios-close-empty" @click.stop="onRemove(item)"></i>
+            <i class="ivu-icon ivu-icon-ios-close-empty" v-if="!disabled" @click.stop="onRemove(item)"></i>
           </div>
         </div>
         <span
