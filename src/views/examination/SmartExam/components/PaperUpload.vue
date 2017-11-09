@@ -50,8 +50,9 @@
         <img
           :key="image.image_url"
           :src="image.image_url"
+          :alt="image.image_name"
         >
-<!-- :alt="image.name" -->
+
       </li>
     </ul>
 
@@ -131,10 +132,6 @@ export default {
 
       // 上传成功提示信息
       successText: '图片上传成功！',
-
-      // 已上传文件的列表
-      uploadList: null,
-
     }
   },
 
@@ -162,9 +159,9 @@ export default {
     },
   },
 
-  mounted() {
-    this.uploadList = this.$refs.upload.fileList
-  },
+  // mounted() {
+  //   this.uploadList = this.$refs.upload.fileList
+  // },
 
   methods: {
     // 图片上传成功回调

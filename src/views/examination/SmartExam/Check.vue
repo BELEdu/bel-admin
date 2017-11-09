@@ -172,6 +172,16 @@
           </span>
         </Alert>
 
+        <!-- 未考试-->
+        <Alert
+          type="error"
+          show-icon
+        >
+          <span slot="desc">
+            未参加考试
+          </span>
+        </Alert>
+
         <!-- 试卷详情展示 -->
         <paper-preview-detail :data="form"></paper-preview-detail>
 
@@ -194,6 +204,7 @@
 
         <!-- 图片上传组件 -->
         <paper-upload
+          :key="currentStudentTestId"
           :dataList="imageData"
           @on-success="uploadSuccess"
         ></paper-upload>
@@ -294,6 +305,9 @@ export default {
 
       // 线下阅卷图片列表
       imageData: [],
+
+      // 默认上传列表
+      upLoadList: [],
     }
   },
 
