@@ -53,6 +53,7 @@
 
 <script>
 /* eslint-disable no-param-reassign */
+import Vue from 'vue'
 
 export default {
   name: 'app-tree-select',
@@ -183,8 +184,8 @@ export default {
     onSelectChange(selectedItems) {
       const nextSelectedItems = selectedItems.filter((item) => {
         if (item.children) {
-          item.selected = false
-          item.expand = !item.expand
+          Vue.set(item, 'selected', false)
+          Vue.set(item, 'expand', !item.expand)
         }
         return !item.children
       })
@@ -193,8 +194,11 @@ export default {
       // 这时候不应该给this.selectedItems重新赋值
       if (nextSelectedItems.length) {
         this.selectedItems = nextSelectedItems
-      } else if (this.selectedItems[0]) {
-        this.selectedItems[0].selected = true
+      } else {
+        const selectedItem = this.selectedItems[0]
+        if (selectedItem) {
+          Vue.set(selectedItem, 'selected', true)
+        }
       }
 
       this.updateValue()
@@ -234,7 +238,7 @@ export default {
         const mutilpleSelected = this.multiple && this.value.includes(item.id)
         const singleSelected = !this.multiple && this.value === item.id
         if (mutilpleSelected || singleSelected) {
-          item.selected = true
+          Vue.set(item, 'selected', true)
         }
       }
       tree.forEach(handler)
