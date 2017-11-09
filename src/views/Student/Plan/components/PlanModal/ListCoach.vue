@@ -167,8 +167,14 @@
       }),
 
       courseRemain() {
-        const courseRemain = this.currentCourseRemain
+        let courseRemain = this.currentCourseRemain
         let listCost = 0
+        if (this.editList.length) {
+          // 累加已安排的计划课时
+          this.editList.forEach((item) => {
+            courseRemain += item.course_num
+          })
+        }
         if (courseRemain > 0 && this.coachList.items.length) {
           listCost = this.coachList.items.map(item => item.course_num)
             .reduce((preValue, curvalue) => preValue + curvalue)
@@ -223,16 +229,21 @@
       },
 
       addList() {
-        this.$refs.coachForm.validate((valid) => {
-          if (valid) {
-            if (this.courseRemain) {
-              this.handleAdd()
-              this.$emit('add-list')
-            } else {
-              this.$Message.warning('无可用课时添加！')
+        if (this.coachList.items.length) {
+          this.$refs.coachForm.validate((valid) => {
+            if (valid) {
+              if (this.courseRemain) {
+                this.handleAdd()
+                this.$emit('add-list')
+              } else {
+                this.$Message.warning('无可用课时添加！')
+              }
             }
-          }
-        })
+          })
+        } else {
+          this.handleAdd()
+          this.$emit('add-list')
+        }
       },
 
       closeList(index) {
