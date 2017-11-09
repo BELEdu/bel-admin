@@ -42,9 +42,9 @@ export default {
 
   created() {
     // （在用户刷新页面后）若用户已登录，重新连接socket
-    if (this.token) {
-      this.connectToSocket()
-    }
+    // if (this.token) {
+    //   this.connectToSocket()
+    // }
   },
 }
 </script>
