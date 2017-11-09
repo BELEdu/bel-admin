@@ -111,6 +111,11 @@ export default {
         if (item.children && item.children.length) {
           item.children.forEach(handler)
           item.visible = item.children.some(child => child.visible)
+          if (val) {
+            Vue.set(item, 'expand', item.visible)
+          } else {
+            Vue.set(item, 'expand', false)
+          }
         } else {
           item.visible = item.title.includes(val)
         }
