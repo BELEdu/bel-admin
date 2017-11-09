@@ -151,12 +151,6 @@
 
         format: 'yyyy-MM-dd',
 
-        dateOptions: {
-          disabledDate(date) {
-            return date && date.valueOf() < Date.now() - 86400000
-          },
-        },
-
       }
     },
 
@@ -165,6 +159,7 @@
         currentItemData: state => state.student.plan.currentItem.Data,
         isNightCoach: state => state.student.plan.currentItem.isNightCoach,
         editList: state => state.student.plan.currentItem.courseList,
+        editType: state => state.student.plan.currentItem.type,
         currentChapter: state => state.student.plan.currentItem.chapter,
         courseNum: state => state.student.plan.courseNum,
         currentCourseRemain: state => state.student.plan.currentItem.courseRemain,
@@ -180,6 +175,21 @@
           return courseRemain - listCost
         }
         return courseRemain
+      },
+
+      dateOptions() {
+        const self = this
+        return {
+          disabledDate(date) {
+            let status = true
+            if (self.editType === 'edit') {
+              // 编辑时，不能添加小于最后计划的日期
+              status = date.valueOf() < new Date(self.editList[0].course_date).valueOf()
+            }
+
+            return date && date.valueOf() < Date.now() - 86400000 && status
+          },
+        }
       },
 
     },
