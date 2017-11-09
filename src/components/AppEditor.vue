@@ -143,4 +143,8 @@ export default {
 .wrs_tickContainer {
   display: none;
 }
+
+.wrs_linkButton.wrs_imageContainer[title="手册"] {
+  display: none;
+}
 </style>
