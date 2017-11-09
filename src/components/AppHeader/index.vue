@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
-    <img class="app-logo" :src="require('@/assets/logo.png')" alt="厦门大学教学系统">
-    <h1 class="app-title">厦门彩虹狗科技有限公司</h1>
+    <img class="app-logo" :src="require('@/assets/logo-header.png')" alt="爱考拉教育">
+    <!-- <h1 class="app-title">爱考拉教育</h1> -->
     <div class="app-user">
       <span class="app-user__notif">
         <Icon type="android-notifications-none"></Icon>
@@ -199,8 +199,8 @@ export default {
 }
 
 .app-logo {
-  width: 25px;
-  height: 25px;
+  // width: 30px;
+  height: 20px;
   margin-right: 15px;
 }
 

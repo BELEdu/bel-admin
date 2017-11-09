@@ -2,14 +2,14 @@
   <div class="login">
     <div class="login-box">
       <header class="login-box__header">
-        <h1>欢迎登陆爱考拉 SaaS 管理系统</h1>
+        <h1>欢迎登陆爱考拉 SAAS 管理系统</h1>
       </header>
 
       <Form class="login-box__body" :model="form" :rules="rules" :label-width="60" ref="form">
         <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
 
         <div class="login-box__body__content clearfix" @keyup.enter="beforeSubmit">
-          <img class="login-box__logo" :src="require('@/assets/logo.png')" alt="">
+          <img class="login-box__logo" :src="require('@/assets/logo-login.png')" alt="">
 
           <div class="login-box__form">
             <Form-item label="用户名" prop="username">
@@ -93,6 +93,8 @@ export default {
 <style lang="less">
 @import '~vars';
 
+@login-radius: 8px;
+
 .login {
   display: flex;
   justify-content: center;
@@ -103,9 +105,12 @@ export default {
 .login-box {
   width: 500px;
   border: 1px solid @border-color-base;
+  border-radius: @login-radius;
   box-shadow: 0 0 5px @shadow-color;
 
   &__header {
+    border-top-left-radius: @login-radius;
+    border-top-right-radius: @login-radius;
     background-color: @primary-color ;
     color: #fff;
     text-align: center;
@@ -118,12 +123,18 @@ export default {
   }
 
   &__body {
-    padding: 25px 45px;
+    padding: 30px 45px;
 
     &__content {
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+  }
+
+  &__form {
+    .ivu-form-item:last-child{
+      margin-bottom: 0;
     }
   }
 
