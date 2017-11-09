@@ -95,6 +95,7 @@
         <Date-picker
           placeholder="年 / 月 / 日"
           :editable="false"
+          :options="dateOptions"
           v-model="comm_log.communication_at"
         ></Date-picker>
       </Form-item>
@@ -229,6 +230,12 @@ export default {
       },
 
       preConfig: null,
+
+      dateOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() > Date.now()
+        },
+      },
     }
   },
 

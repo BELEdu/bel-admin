@@ -8,6 +8,7 @@
                :editable="editable"
                :open="$attrs.open"
                :confirm="$attrs.confirm"
+               :options="options"
                @on-change="onChange"
                @on-open-change="onOpenChange"
                @on-ok="onOk"
@@ -68,6 +69,7 @@
         type: Boolean,
         default: false,
       },
+      options: Object,
     },
     computed: {
       formItem() {

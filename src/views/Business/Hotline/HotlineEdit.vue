@@ -99,6 +99,7 @@
           v-model="fdata.visited_at"
           formate="yyyy-MM-dd"
           :editable="false"
+          :options="dateOptions"
         ></app-date-picker>
       </Form-item>
       <Form-item label="回访时间" prop="return_visited_at">
@@ -107,6 +108,7 @@
           v-model="fdata.return_visited_at"
           formate="yyyy-MM-dd"
           :editable="false"
+          :options="dateOptions"
         ></app-date-picker>
       </Form-item>
       <Form-item>
@@ -190,6 +192,12 @@ export default {
       },
 
       preConfig: null,
+
+      dateOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() > Date.now()
+        },
+      },
     }
   },
 
