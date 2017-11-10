@@ -222,6 +222,7 @@
             course_num: this.courseRemain < 2 ? this.courseRemain : 2, // 课时
             course_date: null, // 课日期
             course_time: [], // 课时间
+            course_status: 0, // 默认课时状态
             teacher_id: [], // 教师id
             chapter: [], // 章节数组id
           }, ...this.updateList()]
