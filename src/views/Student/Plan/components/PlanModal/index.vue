@@ -158,7 +158,9 @@
 
       onError(errors = {}) {
         this.loading = false
-        this.errorHandler(errors)
+        if (Object.keys(errors).length) {
+          this.errorHandler(errors)
+        }
       },
 
       prev() {
@@ -166,6 +168,7 @@
       },
 
       next() {
+        this.formErrors = {}
         this.loading = true
         if (this.item.type === 'view') {
           this.onSuccess()
