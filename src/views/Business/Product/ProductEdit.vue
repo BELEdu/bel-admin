@@ -29,6 +29,7 @@ d<template>
         </Select>
       </Form-item>
       <Form-item
+        v-if="fdata.product_type !== 5"
         label="学习目标"
         prop="study_target"
       >
@@ -77,6 +78,7 @@ d<template>
         </Select>
       </Form-item>
       <Form-item
+        v-if="fdata.product_type !== 5"
         label="班级容量"
         prop="class_capacity"
       >
@@ -224,6 +226,8 @@ export default {
 
   watch: {
     'fdata.sale_type': 'changeSaleType',
+
+    'fdata.product_type': 'changeProductType',
   },
 
   methods: {
@@ -270,10 +274,12 @@ export default {
     },
 
     getName(value, before) {
-      return before.find(item => value === item.value).display_name
+      const target = before.find(item => value === item.value)
+      return target ? target.display_name : ''
     },
 
     changeSaleType(nv) {
+      // 赠品
       // eslint-disable-next-line
       nv === 1 ? this.offPrice() : this.onPrice()
     },
@@ -285,6 +291,17 @@ export default {
 
     onPrice() {
       this.priceDisabled = false
+    },
+
+    changeProductType(nv) {
+      // 晚辅导
+      // eslint-disable-next-line
+      nv === 5 && this.fitNightStudy()
+    },
+
+    fitNightStudy() {
+      this.fdata.study_target = null
+      this.fdata.class_capacity = null
     },
 
     /* --- business --- */
