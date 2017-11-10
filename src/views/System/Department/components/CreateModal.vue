@@ -6,7 +6,7 @@
     :loading="formLoading"
     @on-ok="beforeSubmit"
   >
-    <Form :model="form" :rules="rules" :label-width="90" ref="form">
+    <Form :model="form" :rules="rules" :label-width="110" ref="form">
       <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
 
       <Form-item :label="label" prop="display_name">
@@ -16,7 +16,7 @@
         </Input>
         <Input v-show="!isXiaoqu" v-model="form.display_name"></Input>
       </Form-item>
-      <Form-item v-if="isCreate && isXiaoqu" label="请输入密码" prop="password">
+      <Form-item v-if="isCreate && isXiaoqu" label="请输入您的密码" prop="password">
         <Input type="password" v-model="form.password" autocomplete="off"></Input>
       </Form-item>
     </Form>
