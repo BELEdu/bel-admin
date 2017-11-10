@@ -2,12 +2,14 @@
   <div class="question-chapter">
     <!-- 搜索栏 -->
     <Form inline class="app-search-form">
+
       <!-- 年段学科 -->
       <Form-item>
         <Select
           v-model="query[`equal[grade_range_subject_id]`]"
           placeholder="选择年段学科"
           style="width:9em;"
+          @on-change="queryReset"
         >
           <Option
             v-for="item in grade_range_subject_id"
@@ -18,6 +20,7 @@
           </Option>
         </Select>
       </Form-item>
+
       <!-- 教材版本 -->
       <Form-item>
         <Select
@@ -26,7 +29,7 @@
           style="width:9em;"
         >
           <Option
-            v-for="item in teaching_version"
+            v-for="item in currentQuestionTypes"
             :value="item.value"
             :key="item.value"
           >
@@ -34,6 +37,7 @@
           </Option>
         </Select>
       </Form-item>
+
       <!-- 关键字检索 -->
       <Form-item>
         <Input placeholder="搜索关键字" v-model="likeValue">
@@ -52,6 +56,7 @@
           </Select>
         </Input>
       </Form-item>
+
       <!-- 搜索 -->
       <Form-item>
         <Button type="primary" icon="ios-search" @click="search">搜索</Button>
@@ -94,9 +99,10 @@
       title="编辑章节"
     >
       <TreeEditor
+        v-if="query[`equal[grade_range_subject_id]`]"
         keyword="章节"
         :data="chapterTree"
-        :default-subject="current_grade_range_subject_id"
+        :default-subject="query[`equal[grade_range_subject_id]`]"
         @create="createChapter"
         @delete="deleteChapter"
         @sort="sortChapter"
@@ -110,9 +116,10 @@
 
     <!-- 编辑章节弹窗 -->
     <edit-modal
+      v-if="query[`equal[grade_range_subject_id]`]"
       v-model="modal.edit"
       :form="form"
-      :default-subject="current_grade_range_subject_id"
+      :default-subject="query[`equal[grade_range_subject_id]`]"
       :is-edit="isEdit"
       @closeEditModal="modal.edit = false"
       @fetchData="fetchData"
@@ -128,7 +135,7 @@
  *  @version 2017-09-12
  */
 
-import Http from '@/utils/http'
+// import Http from '@/utils/http'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import { TreeEditor } from '@/views/components'
@@ -147,15 +154,14 @@ export default {
   data() {
     return {
       likeKeys: [],
-      likeKey: 'chapter_name',
+      likeKey: 'display_name',
       query: {
-        // 'equal[grade_range_subject_id]': null,
+        'equal[grade_range_subject_id]': null,
         'equal[teaching_version]': null,
       },
 
-      current_grade_range_subject_id: 0, // 默认年级学科id
       grade_range_subject_id: [], // 学科年级数据源
-      teaching_version: [], // 教材版本数据源
+      teaching_version: [], // 教材版本数据源汇总
 
       columns: [
         {
@@ -230,10 +236,17 @@ export default {
     }
   },
 
+  computed: {
+    // 当前年级学科对应的教材版本
+    currentQuestionTypes() {
+      return this.teaching_version[this.query['equal[grade_range_subject_id]']]
+    },
+  },
+
   methods: {
     // 打开编辑章节树弹窗
     openChapterModal() {
-      const id = this.$route.query['equal[grade_range_subject_id]'] || this.current_grade_range_subject_id
+      const id = this.$route.query['equal[grade_range_subject_id]'] || this.query['equal[grade_range_subject_id]']
       this.$http.get(`/chapter/tree/${id}`)
         .then((res) => {
           this.modal.chapter = true
@@ -262,11 +275,59 @@ export default {
         })
     },
 
-    // 获取列表数据
-    getData(query, to) {
-      const urlArr = to.fullPath.split('/').slice(2)
-      const url = `/${urlArr.join('/')}`
-      return this.$http.get(url)
+    // 获取列表数据的公共方法getData
+    getData(qs) {
+      // 如果this.grade_range_subject_id长度为0，说明为第一次进入页面，这时应请求before接口的数据
+      const p = this.grade_range_subject_id.length ? Promise.resolve() : this.getBeforeData()
+
+      // qs为空代表目标路由地址没有携带url参数，这时候应该向路由推送equal[grade_range_subject_id]参数，将之设为默认值
+      // 默认值为this。grade_range_subject_id的第一项的id
+      if (!qs) {
+        return p
+          .then(() => {
+            // 获取年级学科列表第一项的id
+            const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+
+            // 重置关键字搜索
+            this.queryReset(firstGradeRangeSubjectId)
+
+            // 跳转路由
+            this.$router.push(`/question/chapter?equal[grade_range_subject_id]=${firstGradeRangeSubjectId}`)
+          })
+      }
+
+      // qs不为空代表目标路由地址有携带url参数，走常规获取列表数据
+      return p
+        .then(this.getListData(qs))
+    },
+
+    // 请求before接口的数据
+    getBeforeData() {
+      return this.$http.get('/chapter/index_before')
+        .then(({
+          grade_range_subject_id,
+          teaching_version,
+          search_fields,
+        }) => {
+          this.grade_range_subject_id = grade_range_subject_id
+          this.teaching_version = teaching_version
+          this.likeKeys = search_fields
+        })
+    },
+
+    // 重置关键字搜索
+    queryReset(subjectId) {
+      this.likeKey = 'display_name'
+      this.likeValue = ''
+      this.query = {
+        'equal[teaching_version]': null,
+        'equal[grade_range_subject_id]': subjectId,
+      }
+    },
+
+    // 请求章节列表接口
+    getListData(qs) {
+      return this.$http.get(`/chapter${qs}`)
         .then((res) => {
           this.list = res
         })
@@ -312,31 +373,9 @@ export default {
   },
 
   created() {
+
   },
 
-  beforeRouteEnter(to, from, next) {
-    Http.get('/chapter/index_before')
-      .then(({
-        grade_range_subject_id,
-        teaching_version,
-        search_fields,
-        current_grade_range_subject_id,
-      }) => {
-        next((vm) => {
-          /* eslint-disable no-param-reassign */
-          vm.grade_range_subject_id = grade_range_subject_id
-          vm.teaching_version = teaching_version
-          vm.likeKeys = search_fields
-          vm.current_grade_range_subject_id = current_grade_range_subject_id
-          // 如果URL中没有年段学科id的话，使用默认年段学科id
-          vm.query = {
-            'equal[grade_range_subject_id]': current_grade_range_subject_id,
-            ...vm.query,
-          }
-          /* eslint-enalbe */
-        })
-      })
-  },
 }
 </script>
 
