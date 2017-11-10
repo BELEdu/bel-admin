@@ -411,7 +411,8 @@ export default {
     },
 
     fetchProducts() {
-      this.$http.get('/contract_step3?sale_status=1')
+      const url = '/contract_step3?sale_status=1&sale_type=2'
+      this.$http.get(url)
         .then(({
           product_list,
           promotion_list,
