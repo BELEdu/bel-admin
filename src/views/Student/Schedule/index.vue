@@ -55,7 +55,15 @@
         columns: [
           { title: '序号', type: 'index', width: 60, align: 'center' },
           { title: '教师姓名', key: 'realname', width: 200, align: 'center' },
-          { title: '学科', key: 'subject_name', align: 'center' },
+          {
+            title: '学科',
+            align: 'center',
+            render: (h, prams) => h('div', {
+              domProps: {
+                innerHTML: prams.row.subject_name,
+              },
+            }),
+          },
           { title: '累计学生数', key: 'students', align: 'center' },
           { title: '待上课数', key: 'ready_courses', align: 'center' },
           { title: '已完成课数', key: 'finish_courses', align: 'center' },
