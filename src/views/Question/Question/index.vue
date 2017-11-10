@@ -8,7 +8,7 @@
           v-model="query[`equal[grade_range_subject_id]`]"
           placeholder="选择年段学科"
           style="width:9em;"
-          @on-change="changeSubject"
+          @on-change="queryReset"
         >
           <Option
             v-for="item in grade_range_subject_id"
@@ -27,7 +27,7 @@
           style="width:9em;"
         >
           <Option
-            v-for="item in question_type_id"
+            v-for="item in currentQuestionTypes"
             :value="item.value"
             :key="item.value"
           >
@@ -154,7 +154,6 @@
  * @version 2017-09-14
  */
 
-import Http from '@/utils/http'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import DetailModal from './components/DetailModal'
@@ -173,14 +172,14 @@ export default {
       likeKeys: [], // 关键字搜索取before接口
       likeKey: 'user_realname',
       query: {
-        // 'equal[grade_range_subject_id]': null,
+        'equal[grade_range_subject_id]': null,
         'equal[question_status]': null,
         'equal[question_type_id]': null,
       },
 
       grade_range_subject_id: [], // 年段及学科数据源
       question_status: [], // 试题状态数据源
-      question_type_id: [], // 试题类型数据源
+      question_type_id: [], // 试题类型数据源汇总
 
       list: {}, // 列表数据
 
@@ -285,6 +284,13 @@ export default {
     }
   },
 
+  computed: {
+    // 当前年级学科对应的教材版本
+    currentQuestionTypes() {
+      return this.question_type_id[this.query['equal[grade_range_subject_id]']]
+    },
+  },
+
   methods: {
     // 添加试题
     addQuestion() {
@@ -350,11 +356,51 @@ export default {
         })
     },
 
-    // 获取列表数据
-    getData(query, to) {
-      const urlArr = to.fullPath.split('/').slice(2)
-      const url = `/${urlArr.join('/')}`
-      return this.$http.get(url)
+    // 获取列表数据的公共方法getData
+    getData(qs) {
+      // 如果this.grade_range_subject_id长度为0，说明为第一次进入页面，这时应请求before接口的数据
+      const p = this.grade_range_subject_id.length ? Promise.resolve() : this.getBeforeData()
+
+      // qs为空代表目标路由地址没有携带url参数，这时候应该向路由推送equal[grade_range_subject_id]参数，将之设为默认值
+      // 默认值为this。grade_range_subject_id的第一项的id
+      if (!qs) {
+        return p
+          .then(() => {
+            // 获取年级学科列表第一项的id
+            const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+
+            // 重置关键字搜索
+            this.queryReset(firstGradeRangeSubjectId)
+
+            // 跳转路由
+            this.$router.push(`/question/question?equal[grade_range_subject_id]=${firstGradeRangeSubjectId}`)
+          })
+      }
+
+      // qs不为空代表目标路由地址有携带url参数，走常规获取列表数据
+      return p
+        .then(this.getListData(qs))
+    },
+
+    // 请求before接口的数据
+    getBeforeData() {
+      return this.$http.get('/question/index_before')
+        .then(({
+          grade_range_subject_id,
+          question_status,
+          search_fields,
+          question_type_id,
+        }) => {
+          this.grade_range_subject_id = grade_range_subject_id
+          this.question_status = question_status
+          this.likeKeys = search_fields
+          this.question_type_id = question_type_id
+        })
+    },
+
+    // 请求试题列表接口
+    getListData(qs) {
+      return this.$http.get(`/question${qs}`)
         .then((res) => {
           this.list = res
         })
@@ -363,32 +409,14 @@ export default {
         })
     },
 
-    /**
-     * 切换科目时重新请求before接口
-     * 重置试题基本信息
-     * 重置query
-     */
-    changeSubject(subjectId) {
-      this.query['equal[question_type_id]'] = ''
-      this.query['equal[question_status]'] = ''
-      this.likeKeys = []
-
-      if (subjectId !== this.grade_range_subject_id) {
-        this.$http.get(`/question/index_before/?grade_range_subject_id=${subjectId}`)
-          .then(({
-            grade_range_subject_id,
-            question_status,
-            search_fields,
-            question_type_id,
-          }) => {
-            this.grade_range_subject_id = grade_range_subject_id
-            this.question_status = question_status
-            this.likeKeys = search_fields
-            this.question_type_id = question_type_id
-          })
-          .catch(({ message }) => {
-            this.errorNotice(message)
-          })
+    // 重置关键字搜索
+    queryReset(subjectId) {
+      this.likeKey = 'user_realname'
+      this.likeValue = ''
+      this.query = {
+        'equal[question_status]': null,
+        'equal[question_type_id]': null,
+        'equal[grade_range_subject_id]': subjectId,
       }
     },
 
@@ -404,29 +432,6 @@ export default {
   created() {
   },
 
-  beforeRouteEnter(to, from, next) {
-    Http.get('/question/index_before')
-      .then(({
-        grade_range_subject_id,
-        question_status,
-        search_fields,
-        question_type_id,
-        current_grade_range_subject_id,
-      }) => {
-        next((vm) => {
-          /* eslint-disable no-param-reassign */
-          vm.grade_range_subject_id = grade_range_subject_id
-          vm.question_status = question_status
-          vm.likeKeys = search_fields
-          vm.question_type_id = question_type_id
-          vm.query = {
-            'equal[grade_range_subject_id]': current_grade_range_subject_id,
-            ...vm.query,
-          }
-          /* eslint-enalbe */
-        })
-      })
-  },
 }
 </script>
 
