@@ -22,9 +22,67 @@
         v-for="(item,index) in choiceItems"
         :key="index"
         :style="{width: `${choiceItemWidth}%`}"
-        v-html="item"
-      ></li>
+      >
+        <!-- 选项文本 -->
+        <section v-html="item.content"></section>
+
+        <!-- 正确答案 -->
+        <Icon
+          v-if="hasStudentAnswer && item.is_correct === 1"
+          size="16"
+          type="checkmark"
+          class="color-success"
+        />
+
+        <!-- 学员选择的答案 -->
+        <Icon
+          v-if="hasStudentAnswer && IsStudentChoiceAnswer(item.id)"
+          size="16"
+          type="android-star"
+          class="color-warning"
+        ></Icon>
+
+      </li>
     </ul>
+
+    <!-- 学员答案展示区域 -->
+    <div v-if="hasStudentAnswer">
+
+      <!-- 判断题 -->
+      <ul v-if="isTrueOrFalse">
+        <li
+          v-for="item in this.data.question_answers"
+        >
+          <!-- 判断题选项 -->
+          <span class="app-question__tf">{{item.option}}</span>
+
+          <!-- 正确答案 -->
+          <Icon
+            v-if="item.is_correct === 1"
+            size="16"
+            type="checkmark"
+            class="color-success"
+          />
+
+          <!-- 学员选择的答案 -->
+          <Icon
+            v-if="IsStudentTfAnswer(item.id)"
+            size="16"
+            type="android-star"
+            class="color-warning"
+          ></Icon>
+        </li>
+      </ul>
+
+      <!-- 填空题 & 解答题 -->
+      <img
+        v-if="isFill || isEssay"
+        :src="data.student_answer[0].answer_content"
+        alt="学员答案图片"
+        class="app-question__student-image"
+      >
+    </div>
+
 
     <!-- 选择展示用数据，调试用 -->
     <!-- <ul v-if="isChoice">
@@ -76,9 +134,25 @@ export default {
   },
 
   computed: {
+
     // 是否为选择题题型
     isChoice() {
       return this.data.question_template === 1
+    },
+
+    // 是否为判断题题型
+    isTrueOrFalse() {
+      return this.data.question_template === 2
+    },
+
+    // 是否为填空题题型
+    isFill() {
+      return this.data.question_template === 3
+    },
+
+    // 是否为解答题题型
+    isEssay() {
+      return this.data.question_template === 4
     },
 
     // 答案共有几项
@@ -99,13 +173,17 @@ export default {
     // 最终用于渲染选择题选项的HTML字符串
     choiceItems() {
       return this.data.question_answers
-        .map(({ option, content }) => (`${option}. ${content}`))
+        .map(({ option, content, id, is_correct }) => ({
+          content: `${option}. ${content}`,
+          id,
+          is_correct,
+        }))
     },
 
     // 计算选择题的每一个选项的字符串长度，返回最长的一项的长度
     choiceMaxLength() {
       const choiceLengths = this.choiceItems
-        .map(content => content.replace(/(<[^<>]+>)|\s/g, ''))
+        .map(({ content }) => content.replace(/(<[^<>]+>)|\s/g, ''))
         .map(filteredContent => filteredContent.length)
 
       return Math.max(...choiceLengths)
@@ -113,7 +191,7 @@ export default {
 
     // （展示用）过滤后数组
     filterArray() {
-      return this.choiceItems.map(content => content.replace(/(<[^<>]+>)|\s/g, ''))
+      return this.choiceItems.map(({ content }) => content.replace(/(<[^<>]+>)|\s/g, ''))
     },
 
     // （展示用）过滤后数组每项字符数
@@ -148,6 +226,33 @@ export default {
       }
       return 100 / this.choiceCountPerLine
     },
+
+
+    hasStudentAnswer() {
+      return !!this.data.student_answer
+    },
+  },
+
+  methods: {
+    // 判断该选项的id是不是学员选择的答案（或之一）
+    IsStudentChoiceAnswer(choiceId) {
+      const studentAnswerArray = this.data.student_answer || null
+      if (studentAnswerArray && studentAnswerArray.length > 0) {
+        return studentAnswerArray
+          .map(item => item.answer_id)
+          .includes(choiceId)
+      }
+      return false
+    },
+
+    // 判断该选项是不是学员的判断题答案
+    IsStudentTfAnswer(tfId) {
+      const studentAnswerArray = this.data.student_answer || null
+      if (studentAnswerArray && studentAnswerArray.length > 0) {
+        return studentAnswerArray[0].answer_id === tfId
+      }
+      return false
+    },
   },
 
 }
@@ -169,10 +274,11 @@ export default {
   &__choice {
     margin-top: 10px;
 
+
     &>li {
       float: left;
 
-      & p {
+      & p , & section{
         display: inline;
       }
     }
@@ -182,10 +288,12 @@ export default {
     vertical-align: middle;
   }
 
-  &__answer {
-    p {
-        display: inline;
-    }
+  &__student-image {
+    max-width: 100%;
+  }
+
+  &__tf {
+    font-size: 16px;
   }
 }
 </style>
