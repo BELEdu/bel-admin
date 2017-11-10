@@ -9,7 +9,7 @@
       <Dropdown class="app-user__identity" placement="bottom-end" @on-click="switchRole">
         <a href="javascript:void(0)">
           <!--目前接口未完善，用户角色列表可能未返回，回导致这里出错，因此这里先作一个临时判断-->
-          {{ currentRole ? currentRole.display_name : '接口未返回角色（调试用）' }}
+          {{ currentRole ? currentRole.display_name : '超级管理员' }}
           <Icon type="arrow-down-b" v-if="otherRoles.length"></Icon>
         </a>
         <Dropdown-menu slot="list" v-if="otherRoles.length">
