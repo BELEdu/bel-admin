@@ -169,16 +169,19 @@
       courseRemain() {
         let courseRemain = this.currentCourseRemain
         let listCost = 0
-        if (this.editList.length) {
-          // 累加已安排的计划课时
+        if (this.editList.length && this.editType === 'edit') {
           this.editList.forEach((item) => {
-            courseRemain += item.course_num
+            // 累加已上课的计划课时
+            if (item.course_status === 2 && item.course_status === 3) {
+              courseRemain += item.course_num
+            }
           })
         }
         if (courseRemain > 0 && this.coachList.items.length) {
           listCost = this.coachList.items.map(item => item.course_num)
             .reduce((preValue, curvalue) => preValue + curvalue)
-          return courseRemain - listCost
+          const num = courseRemain - listCost
+          return num > 0 ? num : 0
         }
         return courseRemain
       },

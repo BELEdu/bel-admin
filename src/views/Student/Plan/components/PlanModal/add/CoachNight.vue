@@ -242,6 +242,7 @@
                 course_date: this.formDateRange[key],
                 course_start: course_time[0],
                 course_end: course_time[1],
+                course_status: 0,
                 chapter: [],
                 course_time: [
                   formatDate(course_time[0], 'HH:mm'),
