@@ -18,6 +18,7 @@
         <Select
           v-if="!hasData"
           v-model="form.product_id"
+          filterable
           placeholder="请选择产品"
         >
           <Option

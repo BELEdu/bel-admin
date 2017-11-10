@@ -185,7 +185,7 @@
           </Form-item>
           <Form-item
             v-for="(item,index) in form.question_answers"
-            :key="index"
+            :key="item"
           >
             <Row>
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
