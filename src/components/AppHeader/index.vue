@@ -18,11 +18,11 @@
           </Dropdown-item>
         </Dropdown-menu>
       </Dropdown>
-      <span class="app-user__name">{{ user.username }}</span>
+      <span class="app-user__name">{{ user.realname }}</span>
       <div class="app-user__menu">
         <Dropdown trigger="click" placement="bottom-end" @on-click="handleUserDropDown">
           <a href="javascript:void(0)">
-            <img class="app-user__avatar" :src="user.avatar || require('@/assets/default-avatar.png')" :alt="user.username">
+            <img class="app-user__avatar" :src="user.avatar || require('@/assets/default-avatar.png')" :alt="user.realname">
           </a>
           <Dropdown-menu slot="list">
             <Dropdown-item name="editPassword">修改密码</Dropdown-item>
@@ -37,8 +37,11 @@
     <app-form-modal v-model="modal" title="修改密码" :loading="formLoading" @on-ok="beforeSubmit" :maskClosable="true">
       <Form class="app-header__edit-password" ref="form" :model="form" :rules="rules" :label-width="90">
         <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
+        <Form-item label="姓名">
+          <span class="color-primary">{{ user.realname }}</span>
+        </Form-item>
         <Form-item label="用户名">
-          <span>{{ user.username }}</span>
+          <span class="color-primary">{{ user.username }}</span>
         </Form-item>
         <Form-item label="原密码" prop="old_password">
           <Input type="password" v-model="form.old_password" autocomplete="off"></Input>
