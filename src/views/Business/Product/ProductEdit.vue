@@ -1,4 +1,4 @@
-<template>
+d<template>
   <main
     class="product-edit"
     v-if="preConfig"
@@ -94,6 +94,7 @@
       </Form-item>
       <Form-item
         label="运营类型"
+        prop="sale_type"
       >
         <Radio-group
           v-model="fdata.sale_type"
@@ -117,11 +118,17 @@
           placeholder="输入每课时单价"
           v-model="fdata.price"
           style="width: 250px;"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="
+            ($route.params.id && fdata.is_used)
+            || priceDisabled
+          "
         ></InputNumber>
         <span>元</span>
       </Form-item>
-      <Form-item label="销售状态">
+      <Form-item
+        label="销售状态"
+        prop="sale_status"
+      >
         <Radio-group
           v-model="fdata.sale_status"
         >
@@ -199,12 +206,24 @@ export default {
         class_capacity: [
           this.$rules.required('班级容量', 'number', 'change'),
         ],
+        sale_type: [
+          this.$rules.required('运营类型', 'number', 'change'),
+        ],
         price: [
           this.$rules.required('每课时单价', 'number', 'change'),
           this.$rules.price,
         ],
+        sale_status: [
+          this.$rules.required('销售状态', 'number', 'change'),
+        ],
       },
+
+      priceDisabled: false,
     }
+  },
+
+  watch: {
+    'fdata.sale_type': 'changeSaleType',
   },
 
   methods: {
@@ -246,11 +265,26 @@ export default {
           this.fdata.class_capacity,
           this.preConfig.class_capacity,
         )
+        + (this.fdata.sale_type === 1 ? '(赠品)' : '')
       return name
     },
 
     getName(value, before) {
       return before.find(item => value === item.value).display_name
+    },
+
+    changeSaleType(nv) {
+      // eslint-disable-next-line
+      nv === 1 ? this.offPrice() : this.onPrice()
+    },
+
+    offPrice() {
+      this.fdata.price = 0
+      this.priceDisabled = true
+    },
+
+    onPrice() {
+      this.priceDisabled = false
     },
 
     /* --- business --- */
