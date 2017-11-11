@@ -37,12 +37,16 @@
     </div>
 
     <!-- 树形结构 -->
-    <Tree
+    <TreeConditionStructure
       ref="tree"
-      :show-checkbox="multiple || type === 'multiple'"
+      :type="
+        multiple || type === 'multiple'
+        ? 'multiple'
+        : 'single'
+      "
       :data="data"
       @on-select-change="singleSelect"
-    ></Tree>
+    />
   </div>
 </template>
 
@@ -56,8 +60,14 @@
  * @param   {Object}  data    - 树形结构数据
  */
 
+import TreeConditionStructure from './TreeConditionStructure'
+
 export default {
   name: 'vTreeSide',
+
+  components: {
+    TreeConditionStructure,
+  },
 
   props: {
     type: {
@@ -86,7 +96,7 @@ export default {
 
     batchSelect() {
       const nodes = this.$refs.tree
-        .getCheckedNodes()
+        .$_getCheckedNodes()
         .filter(node => !node.children)
       const ids = nodes
         .map(node => node.id)

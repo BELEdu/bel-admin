@@ -9,6 +9,12 @@ export default {
       type: Array,
       required: true,
     },
+
+    // 单选 | 多选
+    type: {
+      type: String,
+      default: 'single',
+    },
   },
 
   data: () => ({
@@ -96,6 +102,10 @@ export default {
 
       if (node.parent) this.m_expandParent(node.parent)
     },
+
+    $_getCheckedNodes() {
+      return this.$refs.tree.getCheckedNodes()
+    },
   },
 }
 </script>
@@ -104,6 +114,8 @@ export default {
   <Tree
     ref="tree"
     :data="tree"
+    :multiple="type === 'multiple'"
+    :show-checkbox="type === 'multiple'"
     @on-select-change="v_selectLeaf"
   ></Tree>
 </template>

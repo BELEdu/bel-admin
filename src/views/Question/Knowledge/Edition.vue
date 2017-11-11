@@ -3,16 +3,18 @@
     <aside>
       <TreeSide
         :data="treeData"
-        @batch-select="onBatchSelect"
         type="multiple"
+        @batch-select="onBatchSelect"
       />
     </aside>
+
     <section>
       <div
         class="edition-item"
         v-for="(item, index) in data"
         :key="item.id"
       >
+
         <h3>
           知识点名称:
           <span>{{item.display_name}}</span>
@@ -21,6 +23,7 @@
             @click="deleteEdition(item.id, index)"
           ></i>
         </h3>
+
         <Form :label-width="80" inline>
           <template v-if="subjectId === 5">
             <Form-item
@@ -77,6 +80,7 @@
         </Form>
       </div>
     </section>
+
     <footer v-show="data.length">
       <Button
         type="ghost"
@@ -109,8 +113,8 @@ export default {
     data: [],
     // 树结构数据
     treeData: [],
-    // 选中的树节点
-    treeNodes: [],
+    // 选中的树叶子节点
+    leafNodes: [],
     // 批量按钮loading
     batchLoading: false,
     // 提交按钮loading
@@ -129,6 +133,7 @@ export default {
 
   methods: {
     /* --- Init --- */
+
     fetchTreeData() {
       this.$http.get(`/knowledge/tree/${this.subjectId}`)
         .then((res) => {
@@ -140,7 +145,8 @@ export default {
     /* --- Control --- */
 
     cancel() {
-      this.$router.push(`/question/knowledge?equal[grade_range_subject_id]=${this.subjectId}`)
+      const destination = `/question/knowledge?equal[grade_range_subject_id]=${this.subjectId}`
+      this.$router.push(destination)
     },
 
     confirm() {
@@ -166,13 +172,15 @@ export default {
     /* --- 批量 --- */
 
     onBatchSelect(ids, nodes) {
-      this.treeNodes = nodes
+      this.leafNodes = nodes
       const editionIds = this.data.map(item => item.id)
       const additions = this.contractIds(ids, editionIds)
       const deletions = this.contractIds(editionIds, ids)
+
       if (deletions.length) {
         this.deleteEditions(deletions)
       }
+
       if (additions.length) {
         this.fetchEditions(additions)
       }
@@ -193,7 +201,9 @@ export default {
 
     fetchEditions(ids) {
       this.$store.commit(GLOBAL.LOADING.SHOW)
+
       const url = `/knowledge/batchinfo/${ids.join()}`
+
       return this.$http.get(url)
         .then((res) => {
           this.data.push(...res)
@@ -204,9 +214,35 @@ export default {
     /* 单体 */
     deleteEdition(id, index) {
       this.data.splice(index, 1)
-      const target = this.treeNodes
+
+      const target = this.leafNodes
         .find(node => node.id === id)
+
+      const queue = this.getDeletionQueue(target)
+
+      /* eslint-disable no-param-reassign */
+      queue.forEach((item) => {
+        item.checked = false
+        item.indeterminate = this.setIndeterminate(item)
+      })
+      /* eslint-enable */
+
       target.checked = false
+    },
+
+    getDeletionQueue(node, queue = []) {
+      if (node.parent && node.parent.id) {
+        queue.unshift(node.parent)
+        this.getDeletionQueue(node.parent, queue)
+      }
+
+      return queue
+    },
+
+    setIndeterminate(target) {
+      return target.children
+        .filter(item => item.checked)
+        .length > 1
     },
   },
 
