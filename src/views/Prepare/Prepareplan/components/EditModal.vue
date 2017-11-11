@@ -16,6 +16,7 @@
           class="steps-fix"
           size="small"
         >
+          <Step title="选择教案类型"></Step>
           <Step title="编辑教案"></Step>
           <Step title="课堂练习"></Step>
           <Step title="提交"></Step>
@@ -28,7 +29,6 @@
         v-if="value"
         ref="form"
         :model="form"
-        :rules="rules"
         :label-width="0"
       >
         <app-form-alert
@@ -36,19 +36,41 @@
           fullWidth
         ></app-form-alert>
 
-        <!-- 教案内容 -->
-        <Form-item v-show="step === 1" prop="content">
-          <app-editor
-            :height="250"
-            v-if="value"
-            v-model="form.content"
-          ></app-editor>
-        </Form-item>
+        <!-- 表单区域 -->
+        <div class="prepareplan-edit-modal__wrap" v-if="step === 1 || step === 2">
+
+          <!-- 选择教案类型 -->
+          <Form-item v-show="step === 1" class="prepareplan-edit-modal__radio">
+            <RadioGroup
+              v-model="prepareplanType"
+              type="button"
+              size="large"
+            >
+              <Radio :label="1" :disabled="isShow">录入课件</Radio>
+              <Radio :label="2" :disabled="isShow">网址</Radio>
+            </RadioGroup>
+          </Form-item>
+
+          <!-- 教案内容 -->
+          <Form-item v-if="step === 2 && prepareplanType === 1">
+            <app-editor
+              :height="250"
+              v-if="value"
+              v-model="form.content"
+            ></app-editor>
+          </Form-item>
+
+          <!-- 网址 -->
+          <Form-item v-if="step === 2 && prepareplanType === 2 " class="prepareplan-edit-modal__url">
+            <Input v-model="form.ppt_url" placeholder="请输入PPT课件网站"></Input>
+          </Form-item>
+
+        </div>
 
       </Form>
 
       <!-- 推荐试题 -->
-      <div v-show="step === 2" class="prepareplan-edit-modal__question">
+      <div v-show="step === 3" class="prepareplan-edit-modal__question">
         <!-- 刷新按钮 -->
         <div class="right prepareplan-edit-modal__refresh">
           <Button
@@ -122,7 +144,7 @@
           type="primary"
           size="large"
           :loading="formLoading"
-          @click="beforeSubmit"
+          @click="submit"
         >提交</Button>
 
       </div>
@@ -185,16 +207,13 @@ export default {
   data() {
     return {
       step: 1,
-      stepLength: 2,
+      stepLength: 3,
 
       currentQuestion: {},
       modalActive: false,
 
-      rules: {
-        content: [
-          this.$rules.required('教案详情'),
-        ],
-      },
+      // 教案类型 1.录入课件 2.网址
+      prepareplanType: 1,
     }
   },
 
@@ -210,9 +229,26 @@ export default {
     },
   },
 
+  watch: {
+    'form.content': function formContent(val) {
+      if (val === '') {
+        this.prepareplanType = 2
+      }
+    },
+
+    'form.ppt_url': function formContent(val) {
+      if (val === '') {
+        this.prepareplanType = 1
+      }
+    },
+  },
+
   methods: {
+    // 提交表单（选题或者最终提交）
     submit() {
-      if (this.step === 1) {
+      this.formLoading = true
+
+      if (this.step === 2) {
         if (this.isCreate) {
           this.getQuestionInfo()
         } else {
@@ -224,18 +260,28 @@ export default {
       }
     },
 
+    // 最终表单提交
     submitHandler() {
       if (this.isEdit) {
-        this.$http.patch(`/scheme/${this.form.id}/edit`, this.form)
+        this.$http.patch(`/scheme/${this.form.id}/edit`, {
+          ...this.form,
+          content: this.prepareplanType === 1 ? this.form.content : '',
+          head_url: this.prepareplanType === 2 ? this.form.head_url : '',
+        })
           .then(this.successHandler)
           .catch(this.errorHandler)
       } else {
-        this.$http.post(`/scheme/${this.form.id}/create`, this.form)
+        this.$http.post(`/scheme/${this.form.id}/create`, {
+          ...this.form,
+          content: this.prepareplanType === 1 ? this.form.content : '',
+          head_url: this.prepareplanType === 2 ? this.form.head_url : '',
+        })
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
     },
 
+    // 提交成功回调
     successHandler() {
       this.$Message.success('提交成功')
       this.formLoading = false
@@ -249,25 +295,27 @@ export default {
         .then((res) => {
           this.form.questions = res
           this.formLoading = false
-          if (this.step === 1) {
+          if (this.step === 2) {
             this.step = this.step + 1
           }
         })
         .catch(this.errorHandler)
     },
 
+    // 关闭弹窗
     closeModal() {
       this.$emit('closeEditModal')
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
       this.step = 1
+      this.prepareplanType = 1
     },
 
     // 下一步
     nextStep() {
-      if (this.step === 1) {
-        this.beforeSubmit()
+      if (this.step === 2) {
+        this.submit()
       } else {
         this.step = this.step + 1
       }
@@ -301,6 +349,23 @@ export default {
 .prepareplan-edit-modal{
   &__header {
     margin-bottom: 30px;
+  }
+
+  &__wrap {
+    min-height: 330px;
+  }
+
+  &__radio {
+    text-align: center;
+    padding-top: 130px;
+
+    .ivu-radio-group-item {
+      min-width: 100px;
+    }
+  }
+
+  &__url {
+    padding: 130px 80px;
   }
 
   &__refresh{
