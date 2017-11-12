@@ -210,7 +210,7 @@
 
         <Button
           class="product-delete"
-          v-show="index > 0"
+          v-show="fdata.contract_product.length > 1"
           size="small"
           type="error"
           @click.stop="deleteProduct(index)"
