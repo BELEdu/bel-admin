@@ -81,7 +81,7 @@
             width: 300,
             render: (h, params) => {
               const cost = params.row.course_cost ?
-                (params.row.course_cost / params.row.course_total) * 100 : 0
+                (params.row.course_cost / params.row.course_all) * 100 : 0
               return [
                 h('span', {
                   style: {
