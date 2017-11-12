@@ -23,8 +23,7 @@
         :key="index"
         :style="{width: `${choiceItemWidth}%`}"
       >
-        <!-- 选项文本 -->
-        <section v-html="item.content"></section>
+
 
         <!-- 正确答案 -->
         <Icon
@@ -41,6 +40,9 @@
           type="android-star"
           class="color-warning"
         ></Icon>
+
+        <!-- 选项文本 -->
+        <section v-html="item.content"></section>
 
       </li>
     </ul>
@@ -259,6 +261,8 @@ export default {
 </script>
 
 <style lang="less">
+@import "~vars";
+
 .app-question {
   margin: auto;
   font-family: Times New Roman;
@@ -289,7 +293,10 @@ export default {
   }
 
   &__student-image {
+    margin-top: 10px;
     max-width: 100%;
+    // border:1px solid @success-color;
+    // border-radius: 4px;
   }
 
   &__tf {
