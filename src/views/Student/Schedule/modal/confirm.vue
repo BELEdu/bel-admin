@@ -158,6 +158,12 @@
               }))
             }
             this.$store.dispatch(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, this.currentCourseItem)
+              .then(() => {
+                this.$emit('update:loading', false)
+              })
+          })
+          .catch((errors) => {
+            this.$emit('on-error', errors)
           })
       },
 

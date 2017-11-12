@@ -16,14 +16,18 @@
     <Form>
       <app-form-alert :errors="formErrors"></app-form-alert>
     </Form>
-    <div
-      :is="currentCom.view"
-      v-if="!isRepeal"
-      @on-success="onSuccess"
-      @on-error="onError"
-      @on-reset="onReset"
-    >
-    </div>
+    <template v-if="isRepeal != null && !isRepeal">
+      <div
+        :is="currentCom.view"
+        :loading.sync="dataLoading"
+        @on-success="onSuccess"
+        @on-error="onError"
+        @on-reset="onReset"
+      >
+      </div>
+      <Spin size="large" fix v-if="dataLoading">加载中...</Spin>
+    </template>
+
     <div v-else class="text-center">撤销后，课表将回到待确认状态，是否继续？</div>
   </div>
 </template>
@@ -37,9 +41,8 @@
 
   import { mapState } from 'vuex'
   import { emitter, form } from '@/mixins'
-
-  const confirmModal = () => import('./confirm')
-  const commentModal = () => import('./comment')
+  import confirmModal from './confirm'
+  import commentModal from './comment'
 
   export default {
     name: 'schedule-modal',
@@ -75,6 +78,8 @@
         parentCom: '',
 
         width: 0,
+
+        dataLoading: true,
       }
     },
 
@@ -84,8 +89,10 @@
       }),
 
       currentCom() {
-        return this.comInfo.find(({ course_status }) =>
+        const data = this.comInfo.find(({ course_status }) =>
           course_status === this.currentCourseItem.course_status)
+        this.dataLoading = true
+        return data
       },
     },
 
@@ -125,17 +132,21 @@
       onReset() {
         this.formLoading = false
         this.formErrors = {}
+        setTimeout(() => {
+          this.dataLoading = true
+        }, 300)
       },
 
       onError(errors) {
-        this.errorHandler(errors)
         this.formLoading = false
+        this.dataLoading = false
+        this.errorHandler(errors)
       },
 
-      onSuccess() {
+      onSuccess(param = {}) {
         this.onReset()
         this.$Message.success({
-          content: '操作成功',
+          content: param.message || '操作成功',
           onClose: () => {
             // 更新列表
             this.$emit('on-update')
@@ -170,5 +181,7 @@
 </script>
 
 <style lang="less" scoped>
-
+  .ivu-spin {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
 </style>

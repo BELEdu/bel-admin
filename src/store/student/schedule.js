@@ -67,6 +67,7 @@ export default {
       return Http.get(`/schedule${query}`)
         .then((result) => {
           commit(STUDENT.SCHEDULE.LIST, result)
+          return result
         })
     },
 
@@ -75,6 +76,7 @@ export default {
       return Http.get(`/schedule/weekly/${query}`)
         .then((result) => {
           commit(STUDENT.SCHEDULE.WEEKLY_LIST, result)
+          return result
         })
     },
 
@@ -83,6 +85,7 @@ export default {
       return Http.get(`/schedule/daily/${query}`)
         .then((result) => {
           commit(STUDENT.SCHEDULE.DAILY_LIST, result)
+          return result
         })
     },
 
@@ -91,14 +94,16 @@ export default {
       return Http.get(`/schedule/tip/${query}`)
         .then((result) => {
           commit(STUDENT.SCHEDULE.GET_TIP, result)
+          return result
         })
     },
 
     // 获取当前班级数据源
     [STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER]({ commit }, { classes_id }) {
       return Http.get(`/plan/store_before/${classes_id}`)
-        .then(({ chapterTree }) => {
-          commit(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, chapterTree)
+        .then((result) => {
+          commit(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, result.chapterTree)
+          return result
         })
     },
   },
