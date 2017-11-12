@@ -346,7 +346,6 @@ export default {
   watch: {
     // 每当父组件的年级学科改变时，预请求知识点树数据
     subjectId(val) {
-      console.log(val)
       this.getKnowledgeTree(val)
     },
   },
