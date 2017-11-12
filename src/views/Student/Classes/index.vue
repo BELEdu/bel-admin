@@ -380,9 +380,9 @@ export default {
         })
     },
 
-    // 获取排课专员数据源（先取学管师）
+    // 获取排课专员数据源
     getCourseList() {
-      this.$http.get('/teacher_list?attr=is_student_admin')
+      this.$http.get('/teacher_list?attr=is_student_schedule')
         .then((res) => {
           this.courseList = res
         })
