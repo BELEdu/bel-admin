@@ -81,8 +81,13 @@
     data() {
       return {
         formData: {
-          course_chapter: [],
+          classes_name: '',
+          sort_value: 0,
+          schedule_date: '',
+          schedule_range: '',
           course_num: 0,
+          schedule_teacher_name: '',
+          course_chapter: [],
           attendance: [],
         },
 
