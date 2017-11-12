@@ -311,9 +311,6 @@ export default {
       type: Object,
       required: true,
     },
-    defaultSubject: {
-      type: Number,
-    },
     isEdit: {
       type: Boolean,
       required: true,
@@ -342,13 +339,14 @@ export default {
 
     // 年级学科
     subjectId() {
-      return +this.$route.query['equal[grade_range_subject_id]'] || this.defaultSubject
+      return +this.$route.query['equal[grade_range_subject_id]']
     },
   },
 
   watch: {
     // 每当父组件的年级学科改变时，预请求知识点树数据
     subjectId(val) {
+      console.log(val)
       this.getKnowledgeTree(val)
     },
   },

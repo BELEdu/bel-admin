@@ -119,7 +119,6 @@
       v-if="query[`equal[grade_range_subject_id]`]"
       v-model="modal.edit"
       :form="form"
-      :default-subject="query[`equal[grade_range_subject_id]`]"
       :is-edit="isEdit"
       @closeEditModal="modal.edit = false"
       @fetchData="fetchData"
