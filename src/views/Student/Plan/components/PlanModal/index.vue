@@ -101,16 +101,24 @@
         if (this.currentComId < 0) {
           // 判断显示相应组件
           switch (planStatus) {
+            // 未计划状态
             case 0: {
               // 判断晚辅导班
               viewId = this.isNightCoach ? 2 : 1
               break
             }
+            // 计划中状态
             case 1: {
               viewId = this.item.type === 'view' ? 4 : 3
               break
             }
+            // 计划已取消状态
             case 3: {
+              viewId = 4
+              break
+            }
+            // 计划已结束状态
+            case 10: {
               viewId = 4
               break
             }
