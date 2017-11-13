@@ -1,6 +1,7 @@
 <template>
   <div
     :is="parentCom"
+    v-show="visible"
     action="撤销"
     :value="visible"
     @input="inputModel"
@@ -41,7 +42,6 @@
 
   import { mapState } from 'vuex'
   import { emitter, form } from '@/mixins'
-  import { STUDENT } from '@/store/mutationTypes'
   import confirmModal from './confirm'
   import commentModal from './comment'
 
@@ -100,12 +100,6 @@
     watch: {
       isRepeal(val) {
         this.switchCom(val)
-      },
-
-      visible(val) {
-        if (!val) {
-          this.$store.commit(STUDENT.SCHEDULE.COURSE_ITEM, {})
-        }
       },
     },
 
