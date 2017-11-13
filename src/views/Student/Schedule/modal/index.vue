@@ -144,10 +144,10 @@
       },
 
       onSuccess(param = {}) {
-        this.onReset()
         this.$Message.success({
           content: param.message || '操作成功',
           onClose: () => {
+            this.onReset()
             // 更新列表
             this.$emit('on-update')
             this.$emit('update:visible', false)
