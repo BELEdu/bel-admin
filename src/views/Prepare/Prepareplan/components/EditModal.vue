@@ -19,7 +19,7 @@
           <Step title="编辑教案"></Step>
           <Step title="PPT"></Step>
           <Step title="课堂练习"></Step>
-          <Step title="提交"></Step>
+          <Step title="提交" v-if="!isShow"></Step>
         </Steps>
 
       </div>
@@ -59,18 +59,27 @@
                 <Col :span="7">
                   <!-- PPT标题 -->
                   <Form-item>
-                    <Input v-model="ppt.url" placeholder="请输入课件标题"></Input>
+                    <Input
+                      v-model="ppt.url"
+                      :readonly="isShow"
+                      placeholder="请输入课件标题"
+                    ></Input>
                   </Form-item>
                 </Col>
                 <Col :span="2" class="text-center">网址</Col>
                 <Col :span="8">
                   <!-- PPT网址 -->
                   <Form-item>
-                    <Input v-model="ppt.display_name" placeholder="请输入PPT课件网址，例如： www.ppj.io"></Input>
+                    <Input
+                      v-model="ppt.display_name"
+                      :readonly="isShow"
+                      placeholder="请输入PPT课件网址，例如： www.ppj.io"
+                    ></Input>
                   </Form-item>
                 </Col>
                 <Col :span="1" :offset="1">
                   <Button
+                    v-if="!isShow"
                     type="error"
                     @click="remove(index)"
                   >删除</Button>
@@ -85,9 +94,21 @@
                   class="prepareplan-edit-modal__add"
                   type="dashed"
                   long
+                  v-if="!isShow"
                   :disabled="!canAdd"
                   @click="add"
                 >添加</Button>
+                <!-- 缺省提示 -->
+                <Alert
+                  class="prepareplan-edit-modal__alert"
+                  v-if="form.attachments.length === 0"
+                  type="warning"
+                  show-icon
+                >
+                  <template slot="desc">
+                      尚未添加PPT课件
+                  </template>
+                </Alert>
               </Col>
             </Row>
 
@@ -408,6 +429,10 @@ export default {
   &__add {
     border-color: @primary-color;
     color: @primary-color;
+  }
+
+  &__alert {
+    margin-top: 10px;
   }
 
   &__refresh{
