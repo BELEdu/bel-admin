@@ -444,7 +444,9 @@ export default {
       const contractId = this.$route.params.id
       if (contractId) return Promise.resolve()
 
-      const url = `/student/number/${this.fdata.student_number}`
+      const number = this.fdata.student_number.trim()
+
+      const url = `/student/number/${number}`
       return this.$http.get(url)
         .then(({ id, ...rest }) => {
           this.fdata = { ...this.fdata, ...rest }
