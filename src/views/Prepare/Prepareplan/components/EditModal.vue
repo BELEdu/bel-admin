@@ -71,7 +71,6 @@
                 </Col>
                 <Col :span="1" :offset="1">
                   <Button
-                    v-if="form.attachments.length >1"
                     type="error"
                     @click="remove(index)"
                   >删除</Button>

@@ -100,10 +100,10 @@ const defaultPlanForm = {
   content: '', // 教案富文本
   questions: [], // 课堂练习 习题id
   attachments: [ // ppt网址
-    {
-      display_name: '',
-      url: '',
-    },
+    // {
+    //   display_name: '',
+    //   url: '',
+    // },
   ],
 }
 
