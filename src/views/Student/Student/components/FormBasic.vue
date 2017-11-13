@@ -15,6 +15,8 @@
 
         <Form-item label="学员头像" >
 
+          <crop-upload></crop-upload>
+
           <!-- 头像上传组件 -->
           <avatar-upload
             :img-url="form.head_url"
@@ -147,6 +149,7 @@
 
 <script>
 import AvatarUpload from './AvatarUpload'
+import CropUpload from './CropUpload'
 
 export default {
   name: 'app-student-student-edit-form-basic',
@@ -188,6 +191,7 @@ export default {
 
   components: {
     AvatarUpload,
+    CropUpload,
   },
 
   methods: {
