@@ -16,8 +16,8 @@
           class="steps-fix"
           size="small"
         >
-          <Step title="选择教案类型"></Step>
           <Step title="编辑教案"></Step>
+          <Step title="PPT"></Step>
           <Step title="课堂练习"></Step>
           <Step title="提交"></Step>
         </Steps>
@@ -39,20 +39,8 @@
         <!-- 表单区域 -->
         <div class="prepareplan-edit-modal__wrap" v-if="step === 1 || step === 2">
 
-          <!-- 选择教案类型 -->
-          <Form-item v-show="step === 1" class="prepareplan-edit-modal__radio">
-            <RadioGroup
-              v-model="prepareplanType"
-              type="button"
-              size="large"
-            >
-              <Radio :label="1" :disabled="isShow">录入课件</Radio>
-              <Radio :label="2" :disabled="isShow">网址</Radio>
-            </RadioGroup>
-          </Form-item>
-
           <!-- 教案内容 -->
-          <Form-item v-if="step === 2 && prepareplanType === 1">
+          <Form-item v-show="step === 1">
             <app-editor
               :height="250"
               v-if="value"
@@ -60,12 +48,54 @@
             ></app-editor>
           </Form-item>
 
-          <!-- 网址 -->
-          <Form-item v-if="step === 2 && prepareplanType === 2 " class="prepareplan-edit-modal__url">
-            <Input v-model="form.ppt_url" placeholder="请输入PPT课件网站"></Input>
-          </Form-item>
+          <!-- PPT网址 -->
+          <div v-show="step === 2">
+            <Form-item
+              v-for="(ppt,index) in form.attachments"
+              :key="index"
+            >
+              <Row>
+                <Col :span="2" :offset="1" class="text-center">标题</Col>
+                <Col :span="7">
+                  <!-- PPT标题 -->
+                  <Form-item>
+                    <Input v-model="ppt.url" placeholder="请输入课件标题"></Input>
+                  </Form-item>
+                </Col>
+                <Col :span="2" class="text-center">网址</Col>
+                <Col :span="8">
+                  <!-- PPT网址 -->
+                  <Form-item>
+                    <Input v-model="ppt.display_name" placeholder="请输入PPT课件网址，例如： www.ppj.io"></Input>
+                  </Form-item>
+                </Col>
+                <Col :span="1" :offset="1">
+                  <Button
+                    v-if="form.attachments.length >1"
+                    type="error"
+                    @click="remove(index)"
+                  >删除</Button>
+                </Col>
+              </Row>
+            </Form-item>
+
+            <!-- 添加按钮 -->
+            <Row>
+              <Col :span="17" :offset="3">
+                <Button
+                  class="prepareplan-edit-modal__add"
+                  type="dashed"
+                  long
+                  :disabled="!canAdd"
+                  @click="add"
+                >添加</Button>
+              </Col>
+            </Row>
+
+          </div>
 
         </div>
+        <!-- 表单区域结束 -->
 
       </Form>
 
@@ -136,7 +166,7 @@
           type="primary"
           size="large"
           :loading="formLoading"
-          @click="nextStep"
+          @click="beforeNextStep"
         >下一步</Button>
 
         <Button
@@ -170,6 +200,12 @@
 
 import { form } from '@/mixins'
 import { Question, QuestionAnalysisDialog } from '@/views/components'
+
+// 默认ppt数组项
+const defaultPpt = {
+  display_name: '',
+  url: '',
+}
 
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
@@ -212,12 +248,12 @@ export default {
       currentQuestion: {},
       modalActive: false,
 
-      // 教案类型 1.录入课件 2.网址
-      prepareplanType: 1,
+
     }
   },
 
   computed: {
+    // modal标题
     title() {
       const text = `${this.form.classes_name} —— 第 ${this.form.sort_value} 节课`
       if (this.isCreate) {
@@ -227,32 +263,37 @@ export default {
       }
       return `查看教案：${text}`
     },
-  },
 
-  watch: {
-    'form.content': function formContent(val) {
-      if (val === '') {
-        this.prepareplanType = 2
-      }
-    },
-
-    'form.ppt_url': function formContent(val) {
-      if (val === '') {
-        this.prepareplanType = 1
-      }
+    // 是否可添加
+    canAdd() {
+      const pptArray = this.form.attachments
+      const urlOk = !pptArray.map(({ url }) => url).some(url => url === '')
+      const nameOk = !pptArray.map(({ display_name }) => display_name).some(name => name === '')
+      return urlOk && nameOk
     },
   },
 
   methods: {
+    // 移除ppt
+    remove(index) {
+      this.form.attachments.splice(index, 1)
+    },
+
+    // 添加ppt
+    add() {
+      this.form.attachments.push(defaultPpt)
+    },
+
     // 提交表单（选题或者最终提交）
     submit() {
       this.formLoading = true
 
       if (this.step === 2) {
+        // 如果是添加教案，则请求智能推题系统，否则直接读取接口中的数据
         if (this.isCreate) {
           this.getQuestionInfo()
         } else {
-          this.step = this.step + 1
+          this.nextStep()
           this.formLoading = false
         }
       } else {
@@ -263,19 +304,11 @@ export default {
     // 最终表单提交
     submitHandler() {
       if (this.isEdit) {
-        this.$http.patch(`/scheme/${this.form.id}/edit`, {
-          ...this.form,
-          content: this.prepareplanType === 1 ? this.form.content : '',
-          head_url: this.prepareplanType === 2 ? this.form.head_url : '',
-        })
+        this.$http.patch(`/scheme/${this.form.id}/edit`, this.form)
           .then(this.successHandler)
           .catch(this.errorHandler)
       } else {
-        this.$http.post(`/scheme/${this.form.id}/create`, {
-          ...this.form,
-          content: this.prepareplanType === 1 ? this.form.content : '',
-          head_url: this.prepareplanType === 2 ? this.form.head_url : '',
-        })
+        this.$http.post(`/scheme/${this.form.id}/create`, this.form)
           .then(this.successHandler)
           .catch(this.errorHandler)
       }
@@ -296,7 +329,7 @@ export default {
           this.form.questions = res
           this.formLoading = false
           if (this.step === 2) {
-            this.step = this.step + 1
+            this.nextStep()
           }
         })
         .catch(this.errorHandler)
@@ -309,16 +342,32 @@ export default {
       this.formErrors = {}
       this.formLoading = false
       this.step = 1
-      this.prepareplanType = 1
+    },
+
+    // 下一步之前做的判断
+    beforeNextStep() {
+      if (this.step === 1) {
+        // 当他在编辑教案这一步骤
+        if (this.form.content === '') {
+          this.$Message.warning('请先添加教案')
+        } else {
+          this.nextStep()
+        }
+      } else if (this.step === 2) {
+        // 当他在编辑教案这一步骤
+        if (this.canAdd) {
+          this.submit()
+        } else {
+          this.$Message.warning('请先完善PPT信息')
+        }
+      } else {
+        this.nextStep()
+      }
     },
 
     // 下一步
     nextStep() {
-      if (this.step === 2) {
-        this.submit()
-      } else {
-        this.step = this.step + 1
-      }
+      this.step = this.step + 1
     },
 
     // 上一步
@@ -346,6 +395,8 @@ export default {
 </script>
 
 <style lang="less">
+@import '~vars';
+
 .prepareplan-edit-modal{
   &__header {
     margin-bottom: 30px;
@@ -355,17 +406,9 @@ export default {
     min-height: 330px;
   }
 
-  &__radio {
-    text-align: center;
-    padding-top: 130px;
-
-    .ivu-radio-group-item {
-      min-width: 100px;
-    }
-  }
-
-  &__url {
-    padding: 130px 80px;
+  &__add {
+    border-color: @primary-color;
+    color: @primary-color;
   }
 
   &__refresh{

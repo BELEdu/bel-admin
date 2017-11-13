@@ -99,7 +99,12 @@ const defaultPlanForm = {
   id: null, // 教案id
   content: '', // 教案富文本
   questions: [], // 课堂练习 习题id
-  ppt_url: '', // ppt网址
+  attachments: [ // ppt网址
+    {
+      display_name: '',
+      url: '',
+    },
+  ],
 }
 
 export default {
