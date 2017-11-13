@@ -244,21 +244,24 @@
         <Select
           size="small"
           v-model="item.promotion_id"
-          @on-change="selectPromotion(index)"
         >
-          <Option :value="-1">无</Option>
+          <Option
+            :value="-1"
+            @click.native="selectPromotion(index, { promotion_id: -1 })"
+          >无</Option>
           <Option
             v-for="promotion in promotionList"
             v-show="filterPromotions(promotion, item.promotion_id)"
             :value="promotion.id"
             :key="promotion.id"
+            @click.native="selectPromotion(index, promotion)"
           >
             {{promotion.display_name}}
           </Option>
         </Select>
         <Button
           class="product-delete"
-          v-show="index > 0"
+          v-show="fdata.contract_promotion.length > 1"
           size="small"
           type="error"
           @click.stop="deletePromotion(index)"
@@ -532,39 +535,37 @@ export default {
     },
 
     deletePromotion(index) {
-      const list = this.fdata.contract_promotion
-      if (list.length > 1) list.splice(index, 1)
+      this.fdata.contract_promotion.splice(index, 1)
       this.calcMoney()
     },
 
-    selectPromotion(index) {
+    selectPromotion(index, promotion) {
       // 添加优惠信息
       const list = this.fdata.contract_promotion
-      const promotion = this.promotionList
-        .find(item => item.id === list[index].promotion_id)
-      if (promotion) {
-        list[index] = { ...list[index], ...promotion }
-      }
+      list[index] = { ...list[index], ...promotion }
+
       // 重置优惠列表
       this.fdata.contract_promotion = list.slice(0, index + 1)
-      // 计算优惠后金额
-      this.calcMoney()
+
+      this.$nextTick(() => this.calcMoney())
     },
 
     calcMoney() {
-      this.fdata.money = this.fdata
-        .contract_promotion
+      this.fdata.money = this.fdata.contract_promotion
         .reduce((acc, promotion) => {
           const {
             promotion_id: id,
             promotion_type: type,
           } = promotion
+
           if (id >= 0 && type === 1) {
             return this.calcMinus(acc, promotion)
           }
+
           if (id >= 0 && type === 2) {
             return this.calcDiscount(acc, promotion)
           }
+
           return acc
         }, this.fdata.original_money)
     },
