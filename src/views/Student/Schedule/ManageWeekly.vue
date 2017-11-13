@@ -184,17 +184,13 @@
       // 获取班级周课表数据
       getData(qs, to) {
         // 默认请求当天所属一周开始结束日期
-        if (!this.baseDate) {
-          this.baseDate = new Date()
-          this.query['between[course_date]'] = []
-        }
-        this.startDate = formatDate(startOfWeek(this.baseDate, { weekStartsOn: 1 }))
         const query = to.query['between[course_date]'] ? qs : this.parse({ ...to.query,
           'between[course_date]': [
             formatDate(startOfWeek(new Date(), { weekStartsOn: 1 })),
             formatDate(endOfWeek(new Date(), { weekStartsOn: 1 })),
           ] })
         const cId = to.params.id || this.userId
+
         if (cId) {
           return this.$store.dispatch(STUDENT.SCHEDULE.WEEKLY_LIST, `${cId}${query}`)
         }

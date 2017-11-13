@@ -56,13 +56,13 @@ export default {
 
     // 查看上一周课表，把baseDate减去7天
     getPrevWeek() {
-      this.baseDate = addDays(this.baseDate, -7)
+      this.baseDate = addDays(this.baseDate || this.startDate, -7)
       this.$nextTick(() => this.search())
     },
 
     // 查看上一周课表，把baseDate加上7天
     getNextWeek() {
-      this.baseDate = addDays(this.baseDate, 7)
+      this.baseDate = addDays(this.baseDate || this.startDate, 7)
       this.$nextTick(() => this.search())
     },
 
@@ -72,13 +72,24 @@ export default {
       const day = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
       return day[num]
     },
+
+    // 更新参数值
+    updateConfVal(to) {
+      const courseDate = to.query['between[course_date]']
+      const startDate = courseDate ? courseDate[0] : new Date()
+      this.startDate = formatDate(startOfWeek(startDate, { weekStartsOn: 1 }))
+    }
   },
 
-  created() {
-    const startDate = this.query['between[course_date]'][0]
-    this.startDate = formatDate(startOfWeek(startDate || new Date(), { weekStartsOn: 1 }))
-    if (startDate) {
-      this.baseDate = startDate
-    }
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.updateConfVal(to)
+      vm.baseDate = vm.startDate
+    })
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.updateConfVal(to)
+    next()
   },
 }
