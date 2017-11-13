@@ -6,6 +6,7 @@
         v-for="item in commentList"
         :key="item.student_id"
         @click="switchComment(item)"
+        class="ellipsis"
         :class="{active: item.student_id === currentStudent.student_id}"
       >{{ item.student_name }} <Icon v-if="item.student_id === currentStudent.student_id" type="arrow-right-b"></Icon></li>
     </ul>
@@ -23,7 +24,7 @@
               v-model="list.comment"
               :disabled="true"
               :autosize="{minRows: 4,maxRows: 6}"
-            ></Input>
+            />
           </div>
           <div class="comment-modal__commit-time">
             {{list.comment_date}}
@@ -112,7 +113,11 @@
             } else {
               this.commentList = [...result]
             }
+            this.$emit('update:loading', false)
             this.switchComment(this.commentList[0])
+          })
+          .catch((errors) => {
+            this.$emit('on-error', errors)
           })
       },
 
@@ -122,6 +127,9 @@
           .then((result) => {
             this.studentCommented = [...result]
             this.loadingMore = false
+          })
+          .catch((errors) => {
+            this.$emit('on-error', errors)
           })
       },
 
@@ -168,6 +176,7 @@
   @import "~vars.less";
 
   .comment-modal {
+    min-height: 188px;
     margin: 10px;
     font-size: 14px;
     position: relative;

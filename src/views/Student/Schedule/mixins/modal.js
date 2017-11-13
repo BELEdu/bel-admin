@@ -26,13 +26,22 @@ export default {
     }
   },
 
+  watch: {
+    dialog: {
+      handler(val) {
+        if (!val.visible) {
+          setTimeout(() => {
+            this.isRepeal = null
+          }, 300)
+        }
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     handlerModal(row, status = false) {
-      if (status) {
-        this.isRepeal = true
-      } else {
-        this.isRepeal = false
-      }
+      this.isRepeal = status
       this.dialog.visible = true
       this.isDialogRender = true
       this.$store.commit(STUDENT.SCHEDULE.COURSE_ITEM, row)

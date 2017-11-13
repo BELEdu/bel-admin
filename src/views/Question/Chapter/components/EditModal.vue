@@ -311,9 +311,6 @@ export default {
       type: Object,
       required: true,
     },
-    defaultSubject: {
-      type: Number,
-    },
     isEdit: {
       type: Boolean,
       required: true,
@@ -342,7 +339,7 @@ export default {
 
     // 年级学科
     subjectId() {
-      return +this.$route.query['equal[grade_range_subject_id]'] || this.defaultSubject
+      return +this.$route.query['equal[grade_range_subject_id]']
     },
   },
 

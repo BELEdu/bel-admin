@@ -81,8 +81,13 @@
     data() {
       return {
         formData: {
-          course_chapter: [],
+          classes_name: '',
+          sort_value: 0,
+          schedule_date: '',
+          schedule_range: '',
           course_num: 0,
+          schedule_teacher_name: '',
+          course_chapter: [],
           attendance: [],
         },
 
@@ -153,6 +158,12 @@
               }))
             }
             this.$store.dispatch(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, this.currentCourseItem)
+              .then(() => {
+                this.$emit('update:loading', false)
+              })
+          })
+          .catch((errors) => {
+            this.$emit('on-error', errors)
           })
       },
 
