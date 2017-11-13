@@ -172,7 +172,7 @@
         if (this.editList.length && this.editType === 'edit') {
           this.editList.forEach((item) => {
             // 累加已上课的计划课时
-            if (item.course_status === 2 && item.course_status === 3) {
+            if (item.course_status === 2 || item.course_status === 3) {
               courseRemain += item.course_num
             }
           })
