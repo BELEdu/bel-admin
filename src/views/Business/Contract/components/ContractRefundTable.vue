@@ -67,7 +67,7 @@ export default {
         align: 'center',
       },
       {
-        key: 'number',
+        key: 'refund_number',
         title: '退订数量',
         align: 'center',
       },
