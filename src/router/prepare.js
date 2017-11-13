@@ -164,4 +164,18 @@ export default [
       ],
     },
   },
+
+  // 试卷报告配置
+  {
+    path: '/prepare/reportprofiles/:id',
+    name: 'PrepareReportProfiles',
+    component: views.PrepareReportProfiles,
+    meta: {
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '试卷中心' },
+        { name: '报告配置' },
+      ],
+    },
+  },
 ]
