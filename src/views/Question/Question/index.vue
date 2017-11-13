@@ -351,6 +351,7 @@ export default {
           this.fetchData()
         })
         .catch(({ message }) => {
+          this.loading.outline = false
           this.modal.outline = false
           this.$Message.error(message)
         })
