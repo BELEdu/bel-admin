@@ -97,14 +97,8 @@ export { default as StudentStudentEdit } from './Student/Student/Edit'
 export { default as StudentStudentReview } from './Student/Student/Review'
 export { default as StudentStudentReviewProduct } from './Student/Student/Review/Product'
 
-// 旧版学员管理
-export { default as StudentStudentDetail } from './Student/Student/Detail'
-export { default as StudentStudentDetailMeeting } from './Student/Student/Detail/Meeting'
-export { default as StudentStudentDetailMeetingEdit } from './Student/Student/Detail/Meeting/Edit'
-
 // 班级管理
 export { default as StudentClasses } from './Student/Classes'
-export { default as StudentClassesEdit } from './Student/Classes/Edit'
 
 // 学习计划
 export { default as StudentPlan } from './Student/Plan'

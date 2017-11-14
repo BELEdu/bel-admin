@@ -167,62 +167,6 @@ export default [
     ],
   },
 
-  // 旧版
-  {
-    path: '/student/student/:studentId',
-    name: 'StudentStudentDetail',
-    redirect: '/student/student/detail/editold',
-    component: views.StudentStudentDetail,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        STUDENT_STUDENT,
-        { name: '学员详情' },
-      ],
-    },
-    children: [
-      // 交流会
-      {
-        path: '/student/student/:studentId/Meeting',
-        name: 'StudentStudentDetailMeeting',
-        component: views.StudentStudentDetailMeeting,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            STUDENT_STUDENT,
-            { name: '交流会' },
-          ],
-        },
-      },
-      {
-        path: '/student/student/:studentId/Meeting/edit',
-        name: 'StudentStudentDetailMeetingAdd',
-        component: views.StudentStudentDetailMeetingEdit,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            STUDENT_STUDENT,
-            { name: '交流会' },
-            { name: '添加交流会' },
-          ],
-        },
-      },
-      {
-        path: '/student/student/:studentId/Meeting/edit/:meetingId',
-        name: 'StudentStudentDetailMeetingEdit',
-        component: views.StudentStudentDetailMeetingEdit,
-        meta: {
-          breadcrumb: [
-            { name: '学员管理' },
-            STUDENT_STUDENT,
-            { name: '交流会' },
-            { name: '编辑交流会' },
-          ],
-        },
-      },
-    ],
-  },
-
   /* 班级管理 */
 
   // 班级列表
@@ -234,30 +178,6 @@ export default [
       breadcrumb: [
         STUDENT,
         STUDENT_CLASSES,
-      ],
-    },
-  },
-  {
-    path: '/student/classes/edit',
-    name: 'StudentClassesAdd',
-    component: views.StudentClassesEdit,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        STUDENT_CLASSES,
-        { name: '添加班级' },
-      ],
-    },
-  },
-  {
-    path: '/student/classes/edit/:id',
-    name: 'StudentClassesEdit',
-    component: views.StudentClassesEdit,
-    meta: {
-      breadcrumb: [
-        { name: '学员管理' },
-        STUDENT_CLASSES,
-        { name: '编辑班级' },
       ],
     },
   },
