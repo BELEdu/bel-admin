@@ -49,6 +49,7 @@
 
     <!-- 试卷预览 -->
     <PaperPreviewDialog
+      v-if="treeEntries"
       :visible.sync="previewModal.visible"
       :data="paper"
       :loading="previewModal.loading"
@@ -165,7 +166,7 @@ export default {
     },
 
     fetchUpdationInfo() {
-      return this.$http.get(this.$route.meta.putUri)
+      return this.$http.get(this.$route.meta.submitUri)
     },
 
     m_dealUpdationInfo(paper) {
@@ -205,8 +206,7 @@ export default {
     },
 
     v_getPrecondition(subjectId) {
-      // route配置：this.$route.meta.beforeUri
-      const host = '/question_center/index_before'
+      const host = this.$route.meta.beforeUri
 
       const url = subjectId
         ? `${host}?grade_range_subject_id=${subjectId}` : host
@@ -222,6 +222,7 @@ export default {
           // 树结构数据
           knowledge_tree,
           chapter_tree,
+          user_label_list,
         }) => {
           this.subjects = {
             data: grade_range_subject_id,
@@ -235,6 +236,7 @@ export default {
           this.treeData = {
             knowledge_tree,
             chapter_tree,
+            user_label_list,
           }
 
           this.m_initTreeEntries()
@@ -249,6 +251,15 @@ export default {
     m_initTreeEntries() {
       this.treeEntries = []
 
+      if (this.treeData.user_label_list) {
+        this.treeEntries.push({
+          label: '按我的标签',
+          key: 'equal[user_label_id]',
+          tree: this.treeData.user_label_list,
+          selectedLeafId: '',
+        })
+      }
+
       if (this.treeData.knowledge_tree) {
         this.treeEntries.push({
           label: '按知识点',
@@ -258,7 +269,7 @@ export default {
         })
       }
 
-      if (this.treeData.knowledge_tree) {
+      if (this.treeData.chapter_tree) {
         this.treeEntries.push({
           label: '按章节',
           key: 'equal[chapter_id]',
@@ -319,8 +330,8 @@ export default {
       this.previewModal.visible = true
     },
 
-    v_cancel() {
-      this.$router.push('/prepare/papercenter')
+    v_complete() {
+      this.$router.push(this.$route.meta.backRoute)
     },
 
     /* --- Business --- */
@@ -328,10 +339,10 @@ export default {
     vm_createPaper(paper) {
       this.previewModal.loading = true
 
-      const { action, putUri } = this.$route.meta
+      const { action, submitUri } = this.$route.meta
 
-      this.$http[action](putUri, paper)
-        .then(() => this.v_cancel())
+      this.$http[action](submitUri, paper)
+        .then(() => this.v_complete())
         .catch(() => {
           this.$Notice.error({
             title: '创建试卷失败',

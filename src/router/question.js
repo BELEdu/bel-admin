@@ -55,18 +55,8 @@ const QUESTION_PAPER_CREATION_COMPOSITION = {
 }
 
 const QUESTION_PAPER_EDITION_COMPOSITION = {
-  name: '组卷',
-  link: '/question/paper/composition/:id',
-}
-
-const QUESTION_PAPER_CREATION = {
-  name: '生成试卷',
-  link: '/question/paper/creation',
-}
-
-const QUESTION_PAPER_EDITION = {
   name: '编辑试卷',
-  link: '/question/paper/creation/:id',
+  link: '/question/paper/composition/:id',
 }
 
 export default [
@@ -129,6 +119,7 @@ export default [
       ],
     },
   },
+
   // 添加试题
   {
     path: QUESTION_QUESTION_ADD.link,
@@ -142,6 +133,7 @@ export default [
       ],
     },
   },
+
   // 编辑试题
   {
     path: QUESTION_QUESTION_EDIT.link,
@@ -190,9 +182,13 @@ export default [
   {
     path: QUESTION_PAPER_CREATION_COMPOSITION.link,
     name: 'QuestionPaperCompositionCreation',
-    component: views.QuestionPaperComposition,
+    component: views.PrepareQuestion,
     meta: {
-      source: 'paperCompose',
+      action: 'post',
+      beforeUri: '/question/for_paper_before',
+      fetchUri: '/question/for_paper',
+      submitUri: '/paper',
+      backRoute: '/question/paper',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
@@ -205,46 +201,23 @@ export default [
   {
     path: QUESTION_PAPER_EDITION_COMPOSITION.link,
     name: 'QuestionPaperCompositionUpdation',
-    component: views.QuestionPaperComposition,
+    component: views.PrepareQuestion,
     meta: {
-      source: 'paperCompose',
+      action: 'patch',
+      beforeUri: '/question/for_paper_before',
+      fetchUri: '/question/for_paper',
+      submitUri: '钩子中生成',
+      backRoute: '/question/paper',
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
         QUESTION_PAPER_EDITION_COMPOSITION,
       ],
     },
-  },
-
-  // 生成试卷页 - 新建
-  {
-    path: QUESTION_PAPER_CREATION.link,
-    name: 'QuestionPaperCreation',
-    component: views.QuestionPaperCreation,
-    meta: {
-      source: 'paperCompose',
-      breadcrumb: [
-        { name: '题库中心' },
-        QUESTION_PAPER,
-        QUESTION_PAPER_CREATION_COMPOSITION,
-        QUESTION_PAPER_CREATION,
-      ],
-    },
-  },
-
-  // 生成试卷页 - 编辑
-  {
-    path: QUESTION_PAPER_EDITION.link,
-    name: 'QuestionPaperEdition',
-    component: views.QuestionPaperCreation,
-    meta: {
-      source: 'paperCompose',
-      breadcrumb: [
-        { name: '题库中心' },
-        QUESTION_PAPER,
-        QUESTION_PAPER_EDITION_COMPOSITION,
-        QUESTION_PAPER_EDITION,
-      ],
+    beforeEnter(to, from, next) {
+      // eslint-disable-next-line
+      to.meta.submitUri = `/paper/${to.params.id}`
+      next()
     },
   },
 
@@ -262,5 +235,4 @@ export default [
       ],
     },
   },
-
 ]

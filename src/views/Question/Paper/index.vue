@@ -228,8 +228,7 @@ export default {
     },
 
     toComposePaper() {
-      const url = '/question/paper/composition'
-        + `?equal[grade_range_subject_id]=${this.subjectId}`
+      const url = `/question/paper/composition?${this.currentSubject}`
       this.$router.push(url)
     },
 
@@ -244,7 +243,7 @@ export default {
     /* edit */
 
     onEditPaper(row) {
-      const url = `/question/paper/creation/${row.id}?${this.currentSubject}`
+      const url = `/question/paper/composition/${row.id}?${this.currentSubject}`
       this.$router.push(url)
     },
 

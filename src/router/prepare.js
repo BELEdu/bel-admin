@@ -88,8 +88,10 @@ export default [
     component: views.PrepareQuestion,
     meta: {
       action: 'patch',
+      beforeUri: '/question_center/index_before',
       fetchUri: '/question_center',
-      putUri: '钩子中生成',
+      submitUri: '钩子中生成',
+      backRoute: '/prepare/papercenter',
       breadcrumb: [
         { name: '备课管理' },
         PREPARE_PAPER,
@@ -98,7 +100,7 @@ export default [
     },
     beforeEnter(to, from, next) {
       // eslint-disable-next-line
-      to.meta.putUri = `/paper_center/${to.params.id}`
+      to.meta.submitUri = `/paper_center/${to.params.id}`
       next()
     },
   },
@@ -128,8 +130,10 @@ export default [
     component: views.PrepareQuestion,
     meta: {
       action: 'post',
+      beforeUri: '/question_center/index_before',
       fetchUri: '/question_center',
-      putUri: '/paper_center',
+      submitUri: '/paper_center',
+      backRoute: '/prepare/papercenter',
       breadcrumb: [
         { name: '备课管理' },
         { name: '题库列表' },
