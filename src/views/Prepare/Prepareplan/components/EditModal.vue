@@ -60,7 +60,7 @@
                   <!-- PPT标题 -->
                   <Form-item>
                     <Input
-                      v-model="ppt.url"
+                      v-model="ppt.display_name"
                       :readonly="isShow"
                       placeholder="请输入课件标题"
                     ></Input>
@@ -71,7 +71,7 @@
                   <!-- PPT网址 -->
                   <Form-item>
                     <Input
-                      v-model="ppt.display_name"
+                      v-model="ppt.url"
                       :readonly="isShow"
                       placeholder="请输入PPT课件网址，例如： www.ppj.io"
                     ></Input>
