@@ -39,6 +39,11 @@ const QUESTION_PAPER = {
   link: '/question/paper',
 }
 
+const QUESTION_PAPER_REPORT = {
+  name: '报告配置',
+  link: '/question/paper/report/:id',
+}
+
 const QUESTION_PAPER_DETAIL = {
   name: '试卷详情',
   link: '/question/paper/:id',
@@ -163,6 +168,20 @@ export default [
       breadcrumb: [
         { name: '题库中心' },
         QUESTION_PAPER,
+      ],
+    },
+  },
+
+  // 试卷报告配置页
+  {
+    path: QUESTION_PAPER_REPORT.link,
+    name: 'QuestionPaperReport',
+    component: views.QuestionPaperReport,
+    meta: {
+      breadcrumb: [
+        { name: '题库中心' },
+        QUESTION_PAPER,
+        { name: '报告配置' },
       ],
     },
   },

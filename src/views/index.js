@@ -22,6 +22,7 @@ export { default as QuestionPaper } from './Question/Paper'
 export { default as QuestionPaperDetail } from './Question/Paper/Detail'
 export { default as QuestionPaperComposition } from './Question/Paper/Composition'
 export { default as QuestionPaperCreation } from './Question/Paper/Creation'
+export { default as QuestionPaperReport } from './Question/Paper/Report'
 
 
 /* 算法中心 */

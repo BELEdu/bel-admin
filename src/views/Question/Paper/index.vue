@@ -169,6 +169,11 @@ export default {
               type: 'info',
               click: this.onCheckPaper,
             },
+            {
+              text: '报告配置',
+              type: 'warning',
+              click: this.onConfigReport,
+            },
           ]),
         },
       ],
@@ -240,6 +245,11 @@ export default {
 
     onEditPaper(row) {
       const url = `/question/paper/creation/${row.id}?${this.currentSubject}`
+      this.$router.push(url)
+    },
+
+    onConfigReport({ id }) {
+      const url = `/question/paper/report/${id}`
       this.$router.push(url)
     },
   },
