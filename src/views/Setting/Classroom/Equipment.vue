@@ -79,6 +79,11 @@
           { title: '设备类型', key: 'equipment_type_name', align: 'center' },
           { title: '设备状态', key: 'equipment_status_name', align: 'center' },
           {
+            title: '是否占用',
+            align: 'center',
+            render: (h, param) => h('span', null, param.row.is_used ? '是' : '否'),
+          },
+          {
             title: '操作',
             align: 'center',
             width: 140,
