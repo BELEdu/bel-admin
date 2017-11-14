@@ -85,7 +85,7 @@
             render: createButton([
               { text: '删除',
                 type: 'error',
-                isShow: ({ row }) => row.equipment_status === 2,
+                isShow: ({ row }) => row.operation.delete,
                 click: (row) => {
                   this.deleteHandler(row)
                 },
