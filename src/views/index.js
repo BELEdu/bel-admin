@@ -137,8 +137,6 @@ export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detai
 // 试卷中心
 export { default as PreparePaper } from './Prepare/Paper'
 export { default as PreparePaperSmartpaper } from './Prepare/Paper/Smartpaper'
-// 试卷报告配置
-export { default as PrepareReportProfiles } from './Prepare/Reportprofiles'
 
 // abolish 智能组卷
 export { default as Smartquestion } from './Prepare/Smartquestion'
