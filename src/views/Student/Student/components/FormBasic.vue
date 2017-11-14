@@ -15,14 +15,19 @@
 
         <Form-item label="学员头像" >
 
-          <crop-upload></crop-upload>
-
-          <!-- 头像上传组件 -->
-          <avatar-upload
+          <!-- 头像裁剪组件 -->
+          <crop-upload
             :img-url="form.head_url"
             :img-name="form.head_name"
             @on-success="changeAvatar"
-          ></avatar-upload>
+          ></crop-upload>
+
+          <!-- 头像上传组件 -->
+          <!-- <avatar-upload
+            :img-url="form.head_url"
+            :img-name="form.head_name"
+            @on-success="changeAvatar"
+          ></avatar-upload> -->
 
         </Form-item>
 
