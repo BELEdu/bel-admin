@@ -20,7 +20,7 @@
         <!-- 学生设备 -->
         <Form-item
           v-for="(item,index) in students"
-          :key="index"
+          :key="item.student_id"
           :label="item.student.display_name"
         >
           <Select
