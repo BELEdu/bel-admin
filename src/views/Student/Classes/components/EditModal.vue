@@ -345,6 +345,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="less">
 @import '~vars';
 </style>
