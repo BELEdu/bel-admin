@@ -7,8 +7,8 @@
       title="管理学校参考线"
       :width="600"
       :loading="loading.modal"
-      @on-ok="closeModal()"
-      @on-cancel="closeModal()"
+      @on-ok="closeModal"
+      @on-cancel="closeModal"
       :maskClosable="true"
       class="refer-modal"
     >
@@ -22,9 +22,9 @@
 
           <Row>
             <Col span="9">
-              <Form-item prop="school_id" label="选择学校">
+              <Form-item prop="campuse_id" label="选择学校">
                 <Select
-                  v-model="form.school_id"
+                  v-model="form.campuse_id"
                   placeholder="请选择学校"
                 >
                   <Option
@@ -37,9 +37,9 @@
             </Col>
 
             <Col span="4" offset="1">
-              <Form-item prop="normal" label="普通生分值" required>
+              <Form-item prop="normal_score" label="普通生分值" required>
                 <InputNumber
-                  v-model="form.normal"
+                  v-model="form.normal_score"
                   :min="0"
                   :precision="0"
                 ></InputNumber>
@@ -47,9 +47,9 @@
             </Col>
 
             <Col span="4" offset="1">
-              <Form-item prop="high" label="优秀生分值" required>
+              <Form-item prop="excellent_score" label="优秀生分值" required>
                 <InputNumber
-                  v-model="form.high"
+                  v-model="form.excellent_score"
                   :min="0"
                   :precision="0"
                 ></InputNumber>
@@ -82,7 +82,7 @@
       v-model="deleteModal"
       title="删除确认"
       :loading="loading.delete"
-      @on-ok="deleteLabel()"
+      @on-ok="deleteItem()"
       action="删除"
     >
       <div class="text-center">删除该标签 <span class="color-primary">" {{deleteName}} "</span> 后将无法再恢复，是否继续删除？</div>
@@ -97,8 +97,7 @@
  * @version 2017-11-14
  */
 
-// import { mapState } from 'vuex'
-// import { LABEL } from '@/store/mutationTypes'
+
 import { form } from '@/mixins'
 import { createButton } from '@/utils'
 
@@ -112,6 +111,10 @@ export default {
       type: Boolean,
       required: true,
       default: false,
+    },
+    id: {
+      type: Number,
+      required: true,
     },
     data: {
       type: Array,
@@ -131,31 +134,31 @@ export default {
       },
 
       deleteModal: false, // 删除模态框
-      deleteId: null, // 待删除标签id
-      deleteName: '', // 待删除标签名称
+      deleteId: null, // 待删除参考线id
+      deleteName: '', // 待删除参考线名称
 
       form: {
-        school_id: null,
-        normal: 0,
-        high: 0,
+        campuse_id: null,
+        normal_score: 0,
+        excellent_score: 0,
       },
 
       rules: {
-        school_id: [
-          this.$rules.required('学校', 'array', 'change'),
+        campuse_id: [
+          this.$rules.required('学校', 'number', 'change'),
         ],
       },
 
       columns: [
-        { title: '学校', key: 'display_name', align: 'center' },
-        { title: '普通生分值', key: 'normal', align: 'center' },
-        { title: '优秀生分值', key: 'high', align: 'center' },
+        { title: '学校', key: 'campuse_name', align: 'center' },
+        { title: '普通生分值', key: 'normal_score', align: 'center' },
+        { title: '优秀生分值', key: 'excellent_score', align: 'center' },
         {
           title: '操作',
           align: 'center',
           width: 100,
           render: createButton([
-            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.display_name) },
+            { text: '删除', type: 'error', click: row => this.openDeleteModal(row.id, row.campuse_name) },
           ]),
         },
       ],
@@ -164,9 +167,10 @@ export default {
   },
 
   computed: {
-    // ...mapState({
-    //   list: state => state.label.list,
-    // }),
+    // 当普通生分值大于优秀生分值时，返回true
+    isWrong() {
+      return this.form.normal_score > this.form.excellent_score
+    },
   },
 
   watch: {
@@ -186,18 +190,26 @@ export default {
       this.formErrors = {}
     },
 
-    submit() { // 添加用户标签
-      this.formLoading = true
-      // this.$store.dispatch(LABEL.CREATE, this.form)
-      //   .then(this.successHandler)
-      //   .catch(this.errorHandler)
-      this.successHandler()
+    submit() { // 添加参考线
+      if (this.isWrong) {
+        this.$Message.warning('普通生分值不能大于优秀生分值，请修改！')
+        this.formLoading = false
+      } else {
+        this.formLoading = true
+        this.$http.post(`/paper/${this.id}/refer_school`, {
+          ...this.form,
+          paper_id: this.id,
+        })
+          .then(this.successHandler)
+          .catch(this.errorHandler)
+      }
     },
 
-    successHandler() { // 添加用户标签成功
+    successHandler() { // 添加参考线成功
       this.resetHandler()
       this.formLoading = false
       this.$Message.success('添加成功！')
+      this.$emit('updateData')
     },
 
     openDeleteModal(id, name) { // 打开删除确认模态框
@@ -206,22 +218,21 @@ export default {
       this.deleteModal = true
     },
 
-    deleteLabel() { // 删除用户标签
+    deleteItem() { // 删除参考线
       this.loading.delete = true
-      // this.$store.dispatch(LABEL.DELETE, this.deleteId)
-      //   .then(() => {
-      //     this.loading.delete = false
-      //     this.deleteModal = false
-      //     this.$Message.warning('删除成功')
-      //   })
-      //   .catch(({ message }) => {
-      //     this.loading.delete = false
-      //     this.$Message.error(message)
-      //   })
-      this.loading.delete = false
-      this.deleteModal = false
-      this.$Message.warning('删除成功')
+      this.$http.delete(`/paper/${this.id}/refer_school/${this.deleteId}`)
+        .then(() => {
+          this.loading.delete = false
+          this.deleteModal = false
+          this.$Message.warning('删除成功')
+          this.$emit('updateData')
+        })
+        .catch(({ message }) => {
+          this.loading.delete = false
+          this.$Message.error(message)
+        })
     },
+
   },
 
 }
