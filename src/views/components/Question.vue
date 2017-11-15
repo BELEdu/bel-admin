@@ -229,9 +229,11 @@ export default {
       return 100 / this.choiceCountPerLine
     },
 
-
+    // 是否有学员答案，要存在这个数组并且这个数组不为0
     hasStudentAnswer() {
-      return !!this.data.student_answer
+      const thisArray = this.data.student_answer
+      const hasThisArray = !!thisArray
+      return hasThisArray && thisArray.length > 0
     },
   },
 
