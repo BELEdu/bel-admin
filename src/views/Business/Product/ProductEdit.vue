@@ -32,6 +32,7 @@ d<template>
         v-if="fdata.product_type !== 5"
         label="学习目标"
         prop="study_target"
+        key="study_target"
       >
         <Select
           placeholder="请选择......"
@@ -303,6 +304,7 @@ export default {
     fitNightStudy() {
       this.fdata.study_target = null
       this.fdata.class_capacity = null
+      this.fdata.grade_range_subject_id = null
     },
 
     /* --- business --- */

@@ -90,6 +90,7 @@ export default {
     <div class="paper-preview__totalscore">
       <span>考试总分</span>
       <Input :value="totalScore" disabled></Input>
+      <span>分</span>
     </div>
 
     <PaperPreviewSection
@@ -111,7 +112,7 @@ export default {
   &__totalscore {
     margin-bottom: 24px;
 
-    & > span {
+    & > span:first-of-type {
       display: inline-block;
       margin-right: 4px;
       padding: 10px 12px 10px 0;
@@ -120,7 +121,8 @@ export default {
     }
 
     & .ivu-input-wrapper {
-      width: 198px;
+      margin-right: 8px;
+      width: 201px;
     }
   }
 }
