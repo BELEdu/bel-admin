@@ -187,6 +187,7 @@
         <Select
           v-model="item.product_id"
           @on-change="calcProductMoney(item)"
+          filterable
         >
           <Option
             v-for="product in productList"
@@ -343,7 +344,7 @@ export default {
       // 表单验证
       rules: formRules(this),
       // 流程控制
-      process: 1,
+      process: 3,
       // step2: 表单渲染
       studentFormRender: studentFormRender(),
       // step2: 校园数据
