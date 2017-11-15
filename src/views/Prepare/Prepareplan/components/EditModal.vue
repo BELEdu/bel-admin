@@ -51,7 +51,7 @@
           <!-- PPT网址 -->
           <div v-show="step === 2">
             <Form-item
-              v-for="(ppt,index) in form.attachments"
+              v-for="(ppt,index) in form.attachment"
               :key="index"
             >
               <Row>
@@ -101,7 +101,7 @@
                 <!-- 缺省提示 -->
                 <Alert
                   class="prepareplan-edit-modal__alert"
-                  v-if="form.attachments.length === 0"
+                  v-if="form.attachment.length === 0"
                   type="warning"
                   show-icon
                 >
@@ -286,7 +286,7 @@ export default {
 
     // 是否可添加
     canAdd() {
-      const pptArray = this.form.attachments
+      const pptArray = this.form.attachment
       const urlOk = !pptArray.map(({ url }) => url).some(url => url === '')
       const nameOk = !pptArray.map(({ display_name }) => display_name).some(name => name === '')
       return urlOk && nameOk
@@ -296,12 +296,12 @@ export default {
   methods: {
     // 移除ppt
     remove(index) {
-      this.form.attachments.splice(index, 1)
+      this.form.attachment.splice(index, 1)
     },
 
     // 添加ppt
     add() {
-      this.form.attachments.push(defaultPpt)
+      this.form.attachment.push({ ...defaultPpt })
     },
 
     // 提交表单（选题或者最终提交）
