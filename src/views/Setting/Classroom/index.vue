@@ -143,7 +143,7 @@
           {
             title: '校区',
             align: 'center',
-            render: (h, param) => h('span', null, `${param.row.department.display_name}`),
+            render: (h, param) => h('span', null, `${param.row.department ? param.row.department.display_name : ''}`),
           },
           { title: '教室编号', key: 'classroom_number', align: 'center' },
           {
