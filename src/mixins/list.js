@@ -120,8 +120,13 @@ export default {
     },
 
     push(query, isSearch) {
-      const copy = { ...this.$route.query }
-
+      const copy = {}
+      Object.keys(this.$route.query).forEach((item) => {
+        // 过滤上一次排序条件
+        if (!/order\[\w+]/.test(item)) {
+          copy[item] = this.$route.query[item]
+        }
+      })
       // 如果是搜索按钮触发的，需要处理like查询
       if (isSearch) {
         // 清理已经存在的like查询
