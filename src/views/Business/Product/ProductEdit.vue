@@ -62,6 +62,7 @@ d<template>
         </Select>
       </Form-item>
       <Form-item
+        v-if="fdata.product_type !== 5"
         label="学科"
         prop="grade_range_subject_id"
       >
