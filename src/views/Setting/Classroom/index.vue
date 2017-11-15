@@ -201,6 +201,7 @@
 
       // 获取教室编号
       getClassNumber(id) {
+        if (!id) return false
         return this.$http.get(`/setting/classroom/classroom_number?department_id=${id}`)
           .then(({ classroom_number }) => {
             this.dialog.form.classroom_number = classroom_number
