@@ -52,21 +52,29 @@
       @on-ok="deleteItem"
       action="删除"
     >
-      <div class="text-center">该试卷删除后将无法恢复，是否继续删除？</div>
+      <div class="text-center">该评语删除后将无法恢复，是否继续删除？</div>
     </app-warn-modal>
 
     <!-- 学校参考线弹窗 -->
     <refer-modal
       v-model="referModal.active"
-      :data="referData"
+      :id="id"
+      :data="referModal.data"
       :campuses="campuses"
-      @closeLabelModal="referModal.active = false"
+      @closeReferModal="referModal.active = false"
+      @updateData="openReferModal"
     ></refer-modal>
 
+    <!-- 新增/编辑评语弹窗 -->
     <remark-modal
       v-model="remarkModal.active"
+      :id="id"
+      :remarkId="remarkId"
       :isEdit="remarkModal.isEdit"
+      :form="remarkModal.form"
+      :types="types"
       @closeRemarkModal="remarkModal.active = false"
+      @update="fetchData"
     ></remark-modal>
 
   </div>
@@ -79,12 +87,23 @@
  * @author zhoumenglin
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
+import { mapState } from 'vuex'
+import { QUESTION } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import { ConditionRadio } from '@/views/components'
 import ReferModal from './components/ReferModal'
 import RemarkModal from './components/RemarkModal'
+
+// 默认表单
+const defaultForm = {
+  dimension: null, // 配置类型
+  sub_dimension: null, // 配置子类型
+  match_type: null, // 匹配类型
+  match_start: 0, // 匹配值 - 起始
+  match_end: 0, // 匹配值 - 结束
+  description: '', // 评语
+}
 
 export default {
   name: 'QuestionPaperReport',
@@ -100,11 +119,11 @@ export default {
   data() {
     return {
       columns: [
-        { title: '配置类型', key: '1', align: 'center' },
-        { title: '配置子类型', key: '2', align: 'center' },
-        { title: '匹配类型', key: '3', align: 'center' },
-        { title: '匹配值', key: '4', align: 'center', width: 120 },
-        { title: '评语', key: '5', align: 'center', width: 400 },
+        { title: '配置类型', key: 'dimension_name', align: 'center' },
+        { title: '配置子类型', key: 'sub_dimension_name', align: 'center' },
+        { title: '匹配类型', key: 'match_type_name', align: 'center' },
+        { title: '匹配值', key: 'match_range', align: 'center', width: 120 },
+        { title: '评语', key: 'description', align: 'center', width: 400 },
         {
           title: '操作',
           key: 10,
@@ -127,20 +146,25 @@ export default {
       // 配置id
       remarkId: null,
 
-      // 配置类型数据源
+      // 配置类型数据源（列表用）
       dimension: [],
 
       // 学校数据源
       campuses: [],
 
+      // 配置类型数据源（编辑弹窗用）
+      types: [],
+
       // 评语弹窗配置参数
       remarkModal: {
         active: false,
         isEdit: false,
+        form: { ...defaultForm },
       },
 
       // 参考线弹窗配置参数
       referModal: {
+        data: [],
         active: false,
       },
 
@@ -148,18 +172,6 @@ export default {
       deleteModal: {
         active: false,
         loading: false,
-      },
-
-      // 模拟列表假数据
-      list: {
-        data: Array(10).fill({
-          id: 10086,
-          1: '难度得分',
-          2: '容易',
-          3: '数值范围',
-          4: '80-100',
-          5: '整体学科水平较好，知识点综合运用熟练度及迁移能力有待提高。',
-        }),
       },
 
       // 参考线假数据
@@ -174,6 +186,10 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      list: state => state.question.report.list,
+    }),
+
     // 试卷id
     id() {
       return +this.$router.currentRoute.params.id
@@ -191,50 +207,82 @@ export default {
     deleteItem() {
       this.deleteModal.loading = true
 
-      // 这里要接口
-      this.deleteModal.loading = false
-      this.deleteModal.active = false
-      this.$Message.warning('删除成功')
+      this.$store.dispatch(QUESTION.REPORT.DELETE, {
+        id: this.id,
+        remarkId: this.remarkId,
+      })
+        .then(() => {
+          this.deleteModal.loading = false
+          this.deleteModal.active = false
+          this.$Message.warning('删除成功！')
+        })
+        .catch(({ message }) => {
+          this.deleteModal.loading = false
+          this.$Message.warning(message)
+        })
     },
 
     // 打开参考线弹窗
     openReferModal() {
-      // 请求接口
-      this.$Message.warning(`请求试卷id为${this.id}的参考线列表数据`)
-      this.referModal.active = true
+      this.$http.get(`/paper/${this.id}/refer_school`)
+        .then((res) => {
+          this.referModal.data = res
+          this.referModal.active = true
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 打开评语弹窗
     openRemarkModal(type, id) {
-      this.remarkId = id
-      this.remarkModal.active = true
+      this.remarkId = id || null
+
       switch (type) {
         case 'edit':
-          this.isEdit = true
-          this.getDetailData(id)
+          this.remarkModal.isEdit = true
+          this.getDetailData()
           break
 
         default:
-          this.isEdit = false
+          this.remarkModal.isEdit = false
+          this.remarkModal.active = true
           break
       }
     },
 
     // 获取详情数据
-    getDetailData(id) {
-      this.$Message.warning(`请求id为${id}的详情数据`)
+    getDetailData() {
+      this.$http.get(`/paper/${this.id}/refer/${this.remarkId}`)
+        .then((res) => {
+          this.remarkModal.form = { ...res }
+          this.remarkModal.active = true
+        })
+        .catch(({ message }) => {
+          this.errorNotice(message)
+        })
     },
 
     // 获取before接口数据
     getBeforeData() {
       this.$http.get(`/paper/${this.id}/refer/index_before`)
-        .then(({ dimension, campuses }) => {
+        .then(({
+          dimension,
+          campuses,
+          types,
+        }) => {
           this.dimension = dimension
           this.campuses = campuses
+          this.types = types
         })
         .catch(({ message }) => {
           this.errorNotice(message)
         })
+    },
+
+    // 获取列表数据
+    getData(qs) {
+      return this.$store.dispatch(QUESTION.REPORT.INIT, { qs, id: this.id })
     },
 
     // 接口错误处理
@@ -248,7 +296,6 @@ export default {
 
   created() {
     this.getBeforeData()
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 }
 </script>

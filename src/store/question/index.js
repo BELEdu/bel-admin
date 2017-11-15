@@ -8,11 +8,13 @@
 import chapter from './chapter'
 import question from './question'
 import paper from './paper'
+import report from './report'
 
 export default {
   modules: {
     chapter,
     question,
     paper,
+    report,
   },
 }
