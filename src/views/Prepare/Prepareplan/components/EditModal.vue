@@ -73,7 +73,7 @@
                     <Input
                       v-model="ppt.url"
                       :readonly="isShow"
-                      placeholder="请输入PPT课件网址，例如： www.ppj.io"
+                      placeholder="请输入PPT课件网址，例如： http://h5.ppj.io/"
                     ></Input>
                   </Form-item>
                 </Col>
@@ -95,7 +95,7 @@
                   type="dashed"
                   long
                   v-if="!isShow"
-                  :disabled="!canAdd"
+                  :disabled="!canAdd && !isMatchUrl"
                   @click="add"
                 >添加</Button>
                 <!-- 缺省提示 -->
@@ -168,6 +168,15 @@
 
       <!-- 自定义底部 -->
       <div slot="footer">
+
+        <!-- 网址校验报错 -->
+        <p
+          class="left color-error prepareplan-edit-modal__tips"
+          v-if="!isMatchUrl && step === 2 "
+        >
+          网址请输入PP匠生成的完整H5链接，例如：http://h5.ppj.io/
+        </p>
+
         <Button
           type="ghost"
           size="large"
@@ -185,6 +194,7 @@
           v-if="step < stepLength"
           type="primary"
           size="large"
+          :disabled="!isMatchUrl && step === 2"
           :loading="formLoading"
           @click="beforeNextStep"
         >下一步</Button>
@@ -268,7 +278,6 @@ export default {
       currentQuestion: {},
       modalActive: false,
 
-
     }
   },
 
@@ -290,6 +299,14 @@ export default {
       const urlOk = !pptArray.map(({ url }) => url).some(url => url === '')
       const nameOk = !pptArray.map(({ display_name }) => display_name).some(name => name === '')
       return urlOk && nameOk
+    },
+
+    // 校验用户输入的是否是网址，返回是否匹配,true匹配，false不匹配
+    isMatchUrl() {
+      const pptArray = this.form.attachment
+      const reg = /^http:\/\/h5.ppj.io\/.*$/
+      const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
+      return !hasNoMatch
     },
   },
 
@@ -446,6 +463,10 @@ export default {
 
   &__action {
     margin:12px auto;
+  }
+
+  &__tips {
+    margin-top: 8px;
   }
 }
 </style>
