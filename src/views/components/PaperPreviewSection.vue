@@ -36,10 +36,14 @@ export default {
 
   computed: {
     sectionScore() {
-      return this.data.questions.reduce((
+      const score = this.data.questions.reduce((
         acc,
         question,
       ) => acc + question.score, 0)
+
+      this.$set(this.data, 'sectionScore', score)
+
+      return score
     },
   },
 

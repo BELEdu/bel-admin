@@ -43,6 +43,16 @@ export default {
     },
   },
 
+  computed: {
+    totalScore() {
+      return this.data.question_types
+        .reduce((acc, type) => (type.sectionScore
+          ? acc + type.sectionScore
+          : acc
+        ), 0)
+    },
+  },
+
   methods: {
     v_figureViewIndex(sIndex) {
       return this.data.question_types.reduce((
@@ -77,6 +87,11 @@ export default {
       :data="data"
     />
 
+    <div class="paper-preview__totalscore">
+      <span>考试总分</span>
+      <Input :value="totalScore" disabled></Input>
+    </div>
+
     <PaperPreviewSection
       v-for="(section, sIndex) in data.question_types"
       v-if="section.questions.length"
@@ -92,5 +107,21 @@ export default {
 .paper-preview {
   max-height: 700px;
   overflow: auto;
+
+  &__totalscore {
+    margin-bottom: 24px;
+
+    & > span {
+      display: inline-block;
+      margin-right: 4px;
+      padding: 10px 12px 10px 0;
+      width: 80px;
+      text-align: right;
+    }
+
+    & .ivu-input-wrapper {
+      width: 198px;
+    }
+  }
 }
 </style>
