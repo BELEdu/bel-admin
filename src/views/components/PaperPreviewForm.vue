@@ -145,12 +145,11 @@ export default {
       const paper = this.data
       const display = this.getDisplayName
       const campusName = this.data.campuses[0].length
-        ? this.getPlaceName()
-        : ''
+        ? this.getPlaceName() : ''
 
       paper.display_name = `${display(paper.year, this.year.data, '', '年')}`
         + ` ${campusName}`
-        + ` ${display(paper.grade, this.grade.data)}`
+        + ` ${display(paper.grade, this.grade.data, '', paper.subjectName)}`
         + ` ${display(paper.paper_type, this.paper_type.data)}`
         + `${display(paper.subject_type, this.subjects.data, '(', ')')}`
     },

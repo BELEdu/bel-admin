@@ -49,11 +49,11 @@
 
     <!-- 试卷预览 -->
     <PaperPreviewDialog
-      v-if="treeEntries"
       :visible.sync="previewModal.visible"
       :data="paper"
       :loading="previewModal.loading"
       @on-ok="vm_createPaper"
+      @on-close="paperVisible = false"
     />
   </div>
 </template>
@@ -74,6 +74,20 @@ import {
   PaperPreviewDialog,
   TreeCondition,
 } from '@/views/components'
+
+const paperFactory = () => ({
+  grade_range_subject_id: null,
+  campuses: [[]],
+  grade: null,
+  subject_type: null,
+  paper_type: null,
+  year: null,
+  display_name: '',
+  exam_time: 0,
+  question_types: [],
+  // 前端视图附加数据
+  subjectName: '',
+})
 
 export default {
   name: 'PrepareQuestion',
@@ -110,17 +124,7 @@ export default {
     buffer: { data: [] },
 
     // 组卷试题数据
-    paper: {
-      grade_range_subject_id: null,
-      campuses: [[]],
-      grade: null,
-      subject_type: null,
-      paper_type: null,
-      year: null,
-      display_name: '',
-      exam_time: 0,
-      question_types: [],
-    },
+    paper: paperFactory(),
 
     previewModal: {
       visible: false,
@@ -136,22 +140,37 @@ export default {
       const index = url.indexOf('?')
       return index > -1 ? url.slice(index) : ''
     },
+
+    subjectID() {
+      const id = this.$route.query['equal[grade_range_subject_id]']
+        || this.paper.grade_range_subject_id
+
+      return parseInt(id, 10)
+    },
   },
 
-  created() {
-    const { action } = this.$route.meta
+  beforeRouteEnter(to, from, next) {
+    const { action } = to.meta
 
-    return action === 'patch'
-      ? this.initUpdation()
-      : this.initCreation()
+    next((vm) => {
+      if (action === 'patch') {
+        vm.initUpdation()
+      } else {
+        vm.initCreation()
+      }
+    })
+  },
+
+  beforeRouteLeave(to, from, next) {
+    this.paper = paperFactory()
+    next()
   },
 
   methods: {
     /* --- Initialization --- */
 
     initCreation() {
-      const currentSubject = this.$route.query['equal[grade_range_subject_id]']
-      this.v_getPrecondition(currentSubject)
+      this.v_getPrecondition(this.subjectID)
     },
 
     initUpdation() {
@@ -170,11 +189,15 @@ export default {
     },
 
     m_dealUpdationInfo(paper) {
-      this.resetUrlSubject(paper.grade_range_subject_id)
+      const id = paper.grade_range_subject_id
 
-      this.v_getPrecondition(paper.grade_range_subject_id)
+      this.resetUrlSubject(id)
+
+      this.v_getPrecondition(id)
         .then(() => {
           this.paper = this.paperUpdation(paper)
+          // 视图学科数据生成
+          this.paper.subjectName = this.filterSubjectName(id)
           this.vm_onPaperPreview()
         })
     },
@@ -205,11 +228,11 @@ export default {
         })
     },
 
-    v_getPrecondition(subjectId) {
+    v_getPrecondition(subjectID) {
       const host = this.$route.meta.beforeUri
 
-      const url = subjectId
-        ? `${host}?grade_range_subject_id=${subjectId}` : host
+      const url = subjectID
+        ? `${host}?grade_range_subject_id=${subjectID}` : host
 
       return this.$http.get(url)
         .then(({
@@ -242,7 +265,7 @@ export default {
           this.m_initTreeEntries()
 
           this.m_generatePaper(
-            subjectId || current_grade_range_subject_id,
+            subjectID || current_grade_range_subject_id,
             question_type_id.data,
           )
         })
@@ -280,9 +303,11 @@ export default {
     },
 
     // 生成试卷信息，变换学科，重置选题;
-    m_generatePaper(currentSubject, types) {
+    m_generatePaper(subjectID, types) {
       // 科目生成
-      this.paper.grade_range_subject_id = currentSubject
+      this.paper.grade_range_subject_id = subjectID
+      // 视图学科数据生成
+      this.paper.subjectName = this.filterSubjectName(subjectID)
       // 题型生成
       this.paper.question_types = types
         .map(type => ({
@@ -303,12 +328,6 @@ export default {
         .then((res) => { this.buffer = res })
     },
 
-    recombineQuery(fragment) {
-      return this.queryUrl
-        ? `?${this.queryUrl}&${fragment}`
-        : `?${fragment}`
-    },
-
     // 通过side-tree获取数据，无记忆
     searchData(queryUrl) {
       this.$store.commit(GLOBAL.LOADING.SHOW)
@@ -322,6 +341,21 @@ export default {
         .then(() => {
           this.$store.commit(GLOBAL.LOADING.HIDE)
         })
+    },
+
+    /* --- Assitance --- */
+
+    recombineQuery(fragment) {
+      return this.queryUrl
+        ? `?${this.queryUrl}&${fragment}`
+        : `?${fragment}`
+    },
+
+    filterSubjectName(id) {
+      const name = this.subjects.data
+        .find(subject => subject.id === id)
+
+      return name ? name.display_name.slice(2) : ''
     },
 
     /* --- Control--- */
