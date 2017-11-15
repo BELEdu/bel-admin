@@ -25,7 +25,12 @@
       <h2><Icon type="ios-albums"/> 教室管理</h2>
       </Col>
       <Col :span="12" class="text-right">
-      <Button type="primary" icon="plus-round" @click="editHandler(false)">添加教室</Button>
+      <Button
+        type="primary"
+        icon="plus-round"
+        v-if="this.verifyPermissions('front.setting.classroom.store')"
+        @click.native="editHandler(false)"
+      >添加教室</Button>
       </Col>
     </Row>
 
@@ -88,13 +93,13 @@
    * @version 2017-10-27
    */
 
-  import { list, form } from '@/mixins'
+  import { list, form, verify } from '@/mixins'
   import { createButton } from '@/utils'
 
   export default {
     name: 'setting-classroom',
 
-    mixins: [list, form],
+    mixins: [list, form, verify],
 
     data() {
       return {
@@ -160,12 +165,14 @@
             render: createButton([
               { text: '编辑',
                 type: 'primary',
+                isShow: () => this.verifyPermissions('front.setting.classroom.update'),
                 click: (row) => {
                   this.editHandler(row)
                 },
               },
               { text: '查看设备',
                 type: 'primary',
+                isShow: () => this.verifyPermissions('front.setting.classroom.show'),
                 click: (row) => {
                   this.showHandler(row)
                 },
