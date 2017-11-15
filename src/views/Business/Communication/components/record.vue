@@ -29,6 +29,7 @@
         <Date-picker
           placeholder="年 / 月 / 日"
           :editable="false"
+          :options="dateOptions"
           v-model="fdata.communication_at"
         ></Date-picker>
       </Form-item>
@@ -133,6 +134,12 @@ export default {
       fdata: initFdata(),
 
       confirmLoading: false,
+
+      dateOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() > Date.now()
+        },
+      },
     }
   },
 
