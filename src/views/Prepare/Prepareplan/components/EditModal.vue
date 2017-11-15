@@ -51,7 +51,7 @@
           <!-- PPT网址 -->
           <div v-show="step === 2">
             <Form-item
-              v-for="(ppt,index) in form.attachment"
+              v-for="(ppt,index) in form.attachments"
               :key="index"
             >
               <Row>
@@ -73,7 +73,7 @@
                     <Input
                       v-model="ppt.url"
                       :readonly="isShow"
-                      placeholder="请输入PPT课件网址，例如： http://h5.ppj.io/"
+                      placeholder="请输入PP匠H5链接，例：http://h5.ppj.io/123"
                     ></Input>
                   </Form-item>
                 </Col>
@@ -101,12 +101,12 @@
                 <!-- 缺省提示 -->
                 <Alert
                   class="prepareplan-edit-modal__alert"
-                  v-if="form.attachment.length === 0"
+                  v-if="form.attachments.length === 0"
                   type="warning"
                   show-icon
                 >
                   <template slot="desc">
-                      尚未添加PPT课件
+                    尚未添加PPT课件
                   </template>
                 </Alert>
               </Col>
@@ -120,7 +120,7 @@
       </Form>
 
       <!-- 推荐试题 -->
-      <div v-show="step === 3" class="prepareplan-edit-modal__question">
+      <div v-show="step === 3" class="prepareplan-edit-modal__question clearfix">
         <!-- 刷新按钮 -->
         <div class="right prepareplan-edit-modal__refresh">
           <Button
@@ -169,12 +169,17 @@
       <!-- 自定义底部 -->
       <div slot="footer">
 
-        <!-- 网址校验报错 -->
+        <!-- 校验提示-->
         <p
           class="left color-error prepareplan-edit-modal__tips"
-          v-if="!isMatchUrl && step === 2 "
         >
-          网址请输入PP匠生成的完整H5链接，例如：http://h5.ppj.io/
+          <span v-if="!isMatchUrl && step === 2 ">
+            网址请输入PP匠生成的完整H5链接，例：http://h5.ppj.io/123
+          </span>
+
+          <span v-if="isEmptyQuestion && step === 3 ">
+            课堂练习题目不能为空
+          </span>
         </p>
 
         <Button
@@ -203,6 +208,7 @@
           v-show="!isShow && step === stepLength"
           type="primary"
           size="large"
+          :disabled="isEmptyQuestion && step === 3"
           :loading="formLoading"
           @click="submit"
         >提交</Button>
@@ -295,7 +301,7 @@ export default {
 
     // 是否可添加
     canAdd() {
-      const pptArray = this.form.attachment
+      const pptArray = this.form.attachments
       const urlOk = !pptArray.map(({ url }) => url).some(url => url === '')
       const nameOk = !pptArray.map(({ display_name }) => display_name).some(name => name === '')
       return urlOk && nameOk
@@ -303,22 +309,27 @@ export default {
 
     // 校验用户输入的是否是网址，返回是否匹配,true匹配，false不匹配
     isMatchUrl() {
-      const pptArray = this.form.attachment
+      const pptArray = this.form.attachments
       const reg = /^http:\/\/h5.ppj.io\/.*$/
       const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
       return !hasNoMatch
+    },
+
+    // 判断是否无课堂练习
+    isEmptyQuestion() {
+      return this.form.questions.length === 0
     },
   },
 
   methods: {
     // 移除ppt
     remove(index) {
-      this.form.attachment.splice(index, 1)
+      this.form.attachments.splice(index, 1)
     },
 
     // 添加ppt
     add() {
-      this.form.attachment.push({ ...defaultPpt })
+      this.form.attachments.push({ ...defaultPpt })
     },
 
     // 提交表单（选题或者最终提交）

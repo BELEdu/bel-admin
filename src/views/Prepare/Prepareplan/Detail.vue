@@ -99,7 +99,7 @@ const defaultPlanForm = {
   id: null, // 教案id
   content: '', // 教案富文本
   questions: [], // 课堂练习 习题id
-  attachment: [], // ppt网址 数组
+  attachments: [], // ppt网址 数组
 }
 
 export default {

@@ -35,7 +35,7 @@
         <!-- 第一步信息填写 -->
         <div v-show="step===1" class="smartexam-add-modal__form">
 
-          <Form-item label="测试类型">
+          <Form-item label="测试类型" required>
             <RadioGroup
               v-model="form.test_type"
               type="button"
@@ -80,7 +80,7 @@
             </Select>
           </Form-item>
 
-          <Form-item label="考试时长" prop="duration">
+          <Form-item label="考试时长" prop="duration" required>
             <InputNumber
               :step="5"
               :min="0"
@@ -89,14 +89,14 @@
             &nbsp;&nbsp;分钟
           </Form-item>
 
-          <Form-item label="答题方式">
+          <Form-item label="答题方式" required>
             <RadioGroup v-model="form.answer_type" type="button">
               <Radio :label="1" :disabled="isPractice">线上答题</Radio>
               <Radio :label="2" :disabled="isPractice">线下答题</Radio>
             </RadioGroup>
           </Form-item>
 
-          <Form-item label="试卷来源">
+          <Form-item label="试卷来源" required>
             <RadioGroup v-model="form.paper_source" type="button">
               <Radio :label="1" :disabled="isPractice">智能组卷</Radio>
               <Radio :label="2" :disabled="isPractice">选择试卷</Radio>
@@ -130,6 +130,7 @@
             label="题型题量"
             v-show="isSmartPaper && form.param.length>0"
             prop="param"
+            required
           >
             <Row>
               <Col span="8"
@@ -314,6 +315,7 @@ export default {
     isSmartPaper() { // 试卷来源是否为智能组卷
       return this.form.paper_source === 1
     },
+
   },
 
   watch: {
@@ -504,7 +506,7 @@ export default {
 
   &__form {
     margin: auto;
-    width: 500px;
+    width: 600px;
     margin-top: 15px;
   }
 
