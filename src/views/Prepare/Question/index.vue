@@ -169,9 +169,131 @@ export default {
   methods: {
     /* --- Initialization --- */
 
+    /* Common */
+
+    v_getPrecondition(subjectID) {
+      const host = this.$route.meta.beforeUri
+
+      const url = subjectID
+        ? `${host}?grade_range_subject_id=${subjectID}` : host
+
+      return this.$http.get(url)
+        .then(({
+          // 高级搜索
+          current_grade_range_subject_id,
+          grade_range_subject_id,
+          question_type_id,
+          paper_type,
+          question_difficulty,
+          // 树结构数据
+          knowledge_tree,
+          chapter_tree,
+          user_label_list,
+        }) => {
+          this.subjects = {
+            data: grade_range_subject_id,
+            default: current_grade_range_subject_id,
+          }
+          this.advanceConditions = {
+            question_type_id,
+            paper_type,
+            question_difficulty,
+          }
+          this.treeData = {
+            knowledge_tree,
+            chapter_tree,
+            user_label_list,
+          }
+
+          this.m_initTreeEntries()
+
+          this.m_generatePaper(
+            subjectID || current_grade_range_subject_id,
+            question_type_id.data,
+          )
+        })
+    },
+
+
+    // 生成试卷信息，变换学科，重置选题;
+    m_generatePaper(subjectID, types) {
+      // 科目生成
+      this.paper.grade_range_subject_id = subjectID
+      // 视图学科数据生成
+      this.paper.subjectName = this.filterSubjectName(subjectID)
+      // 题型生成
+      this.paper.question_types = types
+        .map(type => ({
+          question_type_id: type.id,
+          display_name: type.display_name,
+          best_score: 0,
+          questions: [],
+        }))
+    },
+
+    m_initTreeEntries() {
+      this.treeEntries = []
+
+      if (this.treeData.user_label_list) {
+        this.treeEntries.push({
+          label: '按我的标签',
+          key: 'equal[user_label_id]',
+          tree: this.treeData.user_label_list,
+          selectedLeafId: '',
+        })
+      }
+
+      if (this.treeData.knowledge_tree) {
+        this.treeEntries.push({
+          label: '按知识点',
+          key: 'equal[knowledge_id]',
+          tree: this.treeData.knowledge_tree,
+          selectedLeafId: '',
+        })
+      }
+
+      if (this.treeData.chapter_tree) {
+        this.treeEntries.push({
+          label: '按章节',
+          key: 'equal[chapter_id]',
+          tree: this.treeData.chapter_tree,
+          selectedLeafId: '',
+        })
+      }
+    },
+
+    getData(queryUrl) {
+      const host = this.$route.meta.fetchUri
+
+      const url = queryUrl
+        ? `${host}${queryUrl}&per_page=20`
+        : `${host}?per_page=20`
+
+      return this.$http.get(url)
+        .then((res) => { this.buffer = res })
+    },
+
+    searchData(queryUrl) {
+      this.$store.commit(GLOBAL.LOADING.SHOW)
+      this.getData(queryUrl)
+        .catch(() => {
+          this.$Notice.error({
+            title: '无法访问数据，请稍后再试',
+            duration: 0,
+          })
+        })
+        .then(() => {
+          this.$store.commit(GLOBAL.LOADING.HIDE)
+        })
+    },
+
+    /* Creation */
+
     initCreation() {
       this.v_getPrecondition(this.subjectID)
     },
+
+    /* Edition */
 
     initUpdation() {
       this.fetchUpdationInfo()
@@ -225,121 +347,6 @@ export default {
             .find(({ question_type_id }) => question_type_id === target)
 
           return section || type
-        })
-    },
-
-    v_getPrecondition(subjectID) {
-      const host = this.$route.meta.beforeUri
-
-      const url = subjectID
-        ? `${host}?grade_range_subject_id=${subjectID}` : host
-
-      return this.$http.get(url)
-        .then(({
-          // 高级搜索
-          current_grade_range_subject_id,
-          grade_range_subject_id,
-          question_type_id,
-          paper_type,
-          question_difficulty,
-          // 树结构数据
-          knowledge_tree,
-          chapter_tree,
-          user_label_list,
-        }) => {
-          this.subjects = {
-            data: grade_range_subject_id,
-            default: current_grade_range_subject_id,
-          }
-          this.advanceConditions = {
-            question_type_id,
-            paper_type,
-            question_difficulty,
-          }
-          this.treeData = {
-            knowledge_tree,
-            chapter_tree,
-            user_label_list,
-          }
-
-          this.m_initTreeEntries()
-
-          this.m_generatePaper(
-            subjectID || current_grade_range_subject_id,
-            question_type_id.data,
-          )
-        })
-    },
-
-    m_initTreeEntries() {
-      this.treeEntries = []
-
-      if (this.treeData.user_label_list) {
-        this.treeEntries.push({
-          label: '按我的标签',
-          key: 'equal[user_label_id]',
-          tree: this.treeData.user_label_list,
-          selectedLeafId: '',
-        })
-      }
-
-      if (this.treeData.knowledge_tree) {
-        this.treeEntries.push({
-          label: '按知识点',
-          key: 'equal[knowledge_id]',
-          tree: this.treeData.knowledge_tree,
-          selectedLeafId: '',
-        })
-      }
-
-      if (this.treeData.chapter_tree) {
-        this.treeEntries.push({
-          label: '按章节',
-          key: 'equal[chapter_id]',
-          tree: this.treeData.chapter_tree,
-          selectedLeafId: '',
-        })
-      }
-    },
-
-    // 生成试卷信息，变换学科，重置选题;
-    m_generatePaper(subjectID, types) {
-      // 科目生成
-      this.paper.grade_range_subject_id = subjectID
-      // 视图学科数据生成
-      this.paper.subjectName = this.filterSubjectName(subjectID)
-      // 题型生成
-      this.paper.question_types = types
-        .map(type => ({
-          question_type_id: type.id,
-          display_name: type.display_name,
-          questions: [],
-        }))
-    },
-
-    getData(queryUrl) {
-      const host = this.$route.meta.fetchUri
-
-      const url = queryUrl
-        ? `${host}${queryUrl}&per_page=20`
-        : `${host}?per_page=20`
-
-      return this.$http.get(url)
-        .then((res) => { this.buffer = res })
-    },
-
-    // 通过side-tree获取数据，无记忆
-    searchData(queryUrl) {
-      this.$store.commit(GLOBAL.LOADING.SHOW)
-      this.getData(queryUrl)
-        .catch(() => {
-          this.$Notice.error({
-            title: '无法访问数据，请稍后再试',
-            duration: 0,
-          })
-        })
-        .then(() => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
         })
     },
 

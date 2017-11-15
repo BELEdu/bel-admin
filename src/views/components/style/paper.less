@@ -14,17 +14,6 @@
 @font-size-mid:           14px;
 @font-size-small:         12px;
 
-/* 题型 mixin */
-.section() {
-  border-radius: @border-radius;
-  padding: @layout-padding;
-  background-color: @bg-color;
-
-  & > h2 {
-    margin-bottom: 10px;
-  }
-}
-
 /* 题目 mixin */
 .question() {
   position: relative;
@@ -39,6 +28,17 @@
    border: @border-primary;
   }
 }
+
+/* 题型 mixin */
+.section() {
+  .question();
+  background-color: @bg-color;
+
+  & > h2 {
+    margin-bottom: 10px;
+  }
+}
+
 
 /* 试卷section、topic hover mixin */
 .recbar() {

@@ -73,6 +73,15 @@ export default {
 
 <template>
   <div class="paper-preview-section">
+    <div class="paper-preview-section__recbar">
+      <span>学霸题型得分率</span>
+      <InputNumber
+        v-model="data.best_score"
+        size="small"
+        :min="0"
+      ></InputNumber>
+    </div>
+
     <h2>
       {{vIndex}}、
       {{data.display_name}}
@@ -100,5 +109,15 @@ export default {
 
 .paper-preview-section {
   .section();
+
+  &:hover {
+    .paper-preview-section__recbar {
+      display: block;
+    }
+  }
+}
+
+.paper-preview-section__recbar {
+  .recbar();
 }
 </style>

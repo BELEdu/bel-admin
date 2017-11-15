@@ -42,6 +42,12 @@ export default {
     m_initQuestion() {
       this.$set(this.data, 'question_id', this.data.id)
       this.$set(this.data, 'score', this.data.score || 0)
+      // eslint-disable-next-line
+      this.data.normal_duration
+        || this.$set(this.data, 'normal_duration', 0)
+      // eslint-disable-next-line
+      this.data.excellent_duration
+        || this.$set(this.data, 'excellent_duration', 0)
     },
 
     /* --- Business --- */
@@ -62,6 +68,14 @@ export default {
     v_sortQuestion(type) {
       this.$emit('on-sort', this.qIndex, type)
     },
+
+    vm_fixDuration(opposite, val) {
+      const trigger = opposite === 'excellent_duration'
+        ? this.data[opposite] < val
+        : this.data[opposite] > val
+
+      if (trigger) this.data[opposite] = val
+    },
   },
 }
 </script>
@@ -76,6 +90,19 @@ export default {
     />
     <!-- 操作条 -->
     <div class="paper-preview-question__recbar">
+      <span>答题时长</span>
+      <InputNumber
+        size="small"
+        v-model="data.normal_duration"
+        :min="0"
+        @on-change="(val) => vm_fixDuration('excellent__duration', val)"
+      ></InputNumber>
+      <InputNumber
+        size="small"
+        v-model="data.excellent_duration"
+        :min="0"
+        @on-change="(val) => vm_fixDuration('normal_duration', val)"
+      ></InputNumber>
       <span>分值</span>
       <InputNumber
         size="small"
