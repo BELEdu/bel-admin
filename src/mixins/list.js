@@ -50,7 +50,7 @@ export default {
             return { ...result, [key]: [start, end] }
           }
 
-          return { ...result, [key]: value || '' }
+          return { ...result, [key]: value }
         }, {})
     },
   },
