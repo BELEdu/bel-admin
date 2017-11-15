@@ -34,6 +34,15 @@ export default {
     },
   },
 
+  computed: {
+    questionsAmount() {
+      const amount = this.data.question_types
+        .reduce((acc, type) => acc + type.questions.length, 0)
+
+      return amount
+    },
+  },
+
   methods: {
     v_closeDialog() {
       this.$emit('update:visible', false)
@@ -59,7 +68,15 @@ export default {
       :data="data"
       in-modal
     />
-    <div slot="footer">
+    <div
+      class="paper-preview-dialog__footer"
+      slot="footer"
+    >
+      <span
+        v-show="!questionsAmount"
+      >
+        ❉ 请选择题目，再保存试卷
+      </span>
       <Button
         type="text"
         @click="v_closeDialog"
@@ -70,6 +87,7 @@ export default {
         type="primary"
         :loading="loading"
         @click="v_createPaper"
+        :disabled="!questionsAmount"
       >
         保存
       </Button>
@@ -78,5 +96,14 @@ export default {
 </template>
 
 <style lang="less">
+@import '~vars';
 
+.paper-preview-dialog__footer {
+
+  & > span {
+    float: left;
+    line-height: 32px;
+    color: @error-color;
+  }
+}
 </style>
