@@ -344,7 +344,7 @@ export default {
       // 表单验证
       rules: formRules(this),
       // 流程控制
-      process: 3,
+      process: 1,
       // step2: 表单渲染
       studentFormRender: studentFormRender(),
       // step2: 校园数据
