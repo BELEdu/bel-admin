@@ -36,17 +36,15 @@
                   :type="buttonFormat(item.test_status,item.id)"
                   long
                   class="text-right"
-                  :disabled="item.test_status === 2"
+                  :disabled="item.test_status === 0"
                   @click="changeStudentTestId(item.id)"
                 >
                   <!-- 姓名 -->
-                  <span class="left">{{item.id}}</span>
+                  <span class="left">{{item.student.display_name || item.student_id}}</span>
                   <!-- 未选择设备显示未考试 -->
-                  <span v-if="item.test_status === 2">(未考)</span>
+                  <span v-if="item.test_status === 0">（未考试）</span>
                   <!-- 待阅卷和已阅卷显示得分 -->
-                  <span >{{item.total_score}}分</span>
-                  <!-- 已阅卷显示打钩 -->
-                  <!-- <Icon v-if="item.test_status === 3" type="checkmark-round" /> -->
+                  <span v-if="item.test_status === 4 || item.test_status === 3 ">{{item.answer_score}} 分</span>
                 </Button>
               </Col>
             </Row>
@@ -128,6 +126,7 @@
                 class="smartexam-check__form__submit"
                 type="primary"
                 long
+                :disabled="currentStudentTestStatus === 4"
                 :loading="formLoading"
                 @click="submit"
               >提交阅卷</Button>
@@ -160,7 +159,7 @@
       <!-- 阅卷（线上） -->
       <section
         class="smartexam-check__online"
-        v-if="true"
+        v-if="currentStudentAnswerType === 1"
       >
         <!-- 待交卷 -->
         <Alert
@@ -172,16 +171,6 @@
           </span>
         </Alert>
 
-        <!-- 未考试-->
-        <Alert
-          type="error"
-          show-icon
-        >
-          <span slot="desc">
-            未参加考试
-          </span>
-        </Alert>
-
         <!-- 试卷详情展示 -->
         <paper-preview-detail :data="form"></paper-preview-detail>
 
@@ -190,7 +179,7 @@
       <!-- 阅卷（线下） -->
       <section
         class="smartexam-check__offline"
-        v-if="true"
+        v-if="currentStudentAnswerType === 2"
       >
         <!-- 待上传 -->
         <Alert type="warning"
@@ -325,9 +314,28 @@ export default {
     // 当前选中的学员的姓名
     currentStudentName() {
       if (this.currentStudentTestId) {
-        return this.student_data.find(item => item.id === this.currentStudentTestId).id
+        return this.student_data
+          .find(item => item.id === this.currentStudentTestId).student.display_name
       }
       return ''
+    },
+
+    // 当前选中的学员的阅卷类型
+    currentStudentTestStatus() {
+      if (this.currentStudentTestId) {
+        return this.student_data
+          .find(item => item.id === this.currentStudentTestId).test_status
+      }
+      return null
+    },
+
+    // 当前选中的学员的测试类型，1.线上 2.线下
+    currentStudentAnswerType() {
+      if (this.currentStudentTestId) {
+        return this.student_data
+          .find(item => item.id === this.currentStudentTestId).test.answer_type
+      }
+      return null
     },
 
     // 当前学员的所有试题组成的数组
@@ -364,6 +372,7 @@ export default {
         .some(item => item === 0)
     },
 
+    // 上传图片之前按照最终顺序重新排序
     imageDataFinal() {
       return this.imageData.map((val, key) => ({
         ...val,
@@ -470,19 +479,16 @@ export default {
       }
       switch (test_status) {
         // 待阅卷
-        case 0:
+        case 3:
           return 'ghost'
         // 已阅卷
-        case 1:
-          return 'success'
-        case 2:
-          return 'ghost'
-        case 3:
-          return 'success'
         case 4:
+          return 'success'
+        // 待交卷
+        case 2:
           return 'dashed'
         default:
-          return 'ghost'
+          return 'warning'
       }
     },
 
