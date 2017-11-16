@@ -114,6 +114,7 @@ export default {
         .then(() => {
           // 指定wiris编辑器的资源请求地址（图标、字体等等）
           window.com.wiris.js.defaultBasePath = '/assets/1.0.0/lib/wiris/editor/resources'
+          window.com.wiris.js.defaultServicePath = '/assets/1.0.0/lib/wiris/editor'
         })
         .then(this.init)
     }
