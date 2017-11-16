@@ -126,12 +126,13 @@
                 class="smartexam-check__form__submit"
                 type="primary"
                 long
-                :disabled="currentStudentTestStatus === 4"
+                :disabled="currentStudentTestStatus === 4 || currentStudentTestStatus === 2"
                 :loading="formLoading"
                 @click="submit"
               >提交阅卷</Button>
 
               <Button
+                :disabled="!currentStudentTestStatus === 2"
                 class="smartexam-check__form__submit"
                 type="warning"
                 long
@@ -163,6 +164,7 @@
       >
         <!-- 待交卷 -->
         <Alert
+          v-if="currentStudentAnswerType === 2"
           type="warning"
           show-icon
         >
