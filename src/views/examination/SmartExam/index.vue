@@ -184,7 +184,7 @@ export default {
       },
 
       columns: [
-        { title: '测试编号', key: 'test_number', align: 'center', width: 100, sortable: 'custom' },
+        { title: '测试编号', key: 'id', align: 'center', width: 100, sortable: 'custom' },
         { title: '测试对象', key: 'test_object_name', align: 'center' },
         { title: '课序', key: 'course_sort', align: 'center', width: 70, sortable: 'custom' },
         { title: '测试类型', key: 'test_type_name', align: 'center', width: 100 },
