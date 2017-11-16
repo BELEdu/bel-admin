@@ -217,6 +217,7 @@ export default {
             {
               text: '开始测试',
               type: 'success',
+              isShow: ({ row }) => row.operation.start,
               click: row => this.openStartModal(row.id, row.test_number, row.answer_type),
             },
           ]),
