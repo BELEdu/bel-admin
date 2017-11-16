@@ -42,7 +42,7 @@
           <!-- 教案内容 -->
           <Form-item v-show="step === 1">
             <app-editor
-              :height="250"
+              :height="450"
               v-if="value"
               v-model="form.content"
             ></app-editor>
