@@ -95,7 +95,7 @@ export default {
         size="small"
         v-model="data.normal_duration"
         :min="0"
-        @on-change="(val) => vm_fixDuration('excellent__duration', val)"
+        @on-change="(val) => vm_fixDuration('excellent_duration', val)"
       ></InputNumber>
       <InputNumber
         size="small"
