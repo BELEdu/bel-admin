@@ -101,6 +101,10 @@ export default {
       currentStudentTestId: null, // 当前选中的测试学员的测试id
 
       data: null, // 试卷信息
+
+      apiHead: process.env.NODE_ENV === 'production' ?
+        `https://${window.location.hostname.replace(/([^.]+)\./, '$1-api.')}`
+        : 'https://oa-api.caihonggou.com',
     }
   },
 
@@ -127,7 +131,7 @@ export default {
 
     // 下载word
     download() {
-      window.open(`/down_word/${this.currentStudentTestId}`)
+      window.open(`${this.apiHead}/down_word/${this.currentStudentTestId}`)
     },
 
     // 获取试卷详情
