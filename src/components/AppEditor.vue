@@ -57,6 +57,10 @@ export default {
       // CKEDITOR.config.width = this.width
       // 上面两行代码是全局性设置，这里需要在初始化编辑器时单独把config传入，以便每个实例实现不同的尺寸
       const config = {
+        // 默认字体大小
+        fontSize_defaultLabel: '14px',
+        // 默认清除格式(注意:来自word(对话框)的粘贴不会受到这个配置的影响。)
+        forcePasteAsPlainText: true,
         width: `${this.width}px`,
         height: `${this.height}px`,
       }
