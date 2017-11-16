@@ -31,7 +31,7 @@
             :type="buttonFormat(item.id)"
             @click="changeStudentTestId(item.id)"
           >
-            {{ item.id }}
+            {{ item.student.display_name }}
           </Button>
         </ButtonGroup>
 
@@ -45,26 +45,7 @@
           :data="data"
         ></paper-preview-header>
 
-        <!-- 待上传 -->
-        <Alert type="warning"
-          show-icon
-        >
-          <span slot="desc">
-            未上传学员答卷
-          </span>
-        </Alert>
-
-        <!-- 待提交 -->
-        <Alert
-          type="warning"
-          show-icon
-        >
-          <span slot="desc">
-              未提交答卷
-          </span>
-        </Alert>
-
-        <!-- 这里到时候还要展示各种提交情况，未提交，上传拍照等 -->
+        <!-- 试卷主体 -->
         <paper-preview-detail
           :data="data"
         ></paper-preview-detail>
@@ -118,6 +99,7 @@ export default {
     testid() {
       return +this.$route.params.testid
     },
+
   },
 
   methods: {

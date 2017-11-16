@@ -139,7 +139,7 @@
     <add-modal
       v-model="addModal.active"
       @closeAddModal="addModal.active = false"
-      @update="fetchData"
+      @update="goTo(1)"
     ></add-modal>
 
   </div>

@@ -10,7 +10,6 @@
     <div class="smartexam-device">
       <Form
         ref="form"
-        :rules="rules"
         :model="form"
         :label-width="100"
         v-if="isOnline"
@@ -98,7 +97,6 @@ export default {
         start_test: [],
       },
 
-      rules: {},
     }
   },
 
@@ -138,7 +136,6 @@ export default {
     // 关闭弹窗
     closeModal() {
       this.$emit('closeDeviceModal')
-      this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
     },
