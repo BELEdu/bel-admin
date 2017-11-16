@@ -16,7 +16,7 @@
 
       <Form-item label="产品名称" prop="product_id">
         <Select
-          v-if="!hasData"
+          v-if="!hasData && value"
           v-model="form.product_id"
           filterable
           placeholder="请选择产品"

@@ -23,6 +23,7 @@
         prop="dimension"
       >
         <Select
+          v-if="value"
           v-model="form.dimension"
           :disabled="isEdit"
           filterable
