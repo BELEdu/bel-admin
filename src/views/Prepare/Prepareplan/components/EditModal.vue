@@ -73,7 +73,7 @@
                     <Input
                       v-model="ppt.url"
                       :readonly="isShow"
-                      placeholder="请输入PP匠H5链接，例：http://h5.ppj.io/123"
+                      placeholder="请输入PP匠H5链接，例：https://saas-ppt.aikaola.com/data/1"
                     ></Input>
                   </Form-item>
                 </Col>
@@ -174,7 +174,7 @@
           class="left color-error prepareplan-edit-modal__tips"
         >
           <span v-if="!isMatchUrl && step === 2 ">
-            网址请输入PP匠生成的完整H5链接，例：http://h5.ppj.io/123
+            请输入PPT发布程序上的链接，例：https://saas-ppt.aikaola.com/data/2
           </span>
 
           <span v-if="isEmptyQuestion && step === 3 ">
@@ -310,7 +310,7 @@ export default {
     // 校验用户输入的是否是网址，返回是否匹配,true匹配，false不匹配
     isMatchUrl() {
       const pptArray = this.form.attachments
-      const reg = /^http:\/\/h5.ppj.io\/.*$/
+      const reg = /^https:\/\/saas-ppt\.aikaola\.com\/.*$/
       const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
       return !hasNoMatch
     },
