@@ -80,7 +80,11 @@
             </Select>
           </Form-item>
 
-          <Form-item label="考试时长" prop="duration" required>
+          <Form-item
+            v-show="!isPractice"
+            label="考试时长"
+            required
+          >
             <InputNumber
               :step="5"
               :min="0"
@@ -271,9 +275,6 @@ export default {
         course_id: [
           this.$rules.required('课序', 'number', 'change'),
         ],
-        duration: [
-          { validator: this.durationCheck, trigger: 'change' },
-        ],
         paper_id: [
           { validator: this.peperSelectCheck, trigger: 'change' },
         ],
@@ -389,15 +390,6 @@ export default {
         }
       } else {
         this.paperData = []
-      }
-    },
-
-    // 考试时长表单自定义校验
-    durationCheck(rule, value, callback) {
-      if (value < 1) {
-        callback(new Error('请设置考试时长'))
-      } else {
-        callback()
       }
     },
 

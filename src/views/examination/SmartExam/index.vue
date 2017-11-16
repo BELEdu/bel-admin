@@ -205,11 +205,13 @@ export default {
             {
               text: '查看试卷',
               type: 'primary',
+              isShow: ({ row }) => row.operation.show,
               click: row => this.$router.push(`/examination/smartexam/${row.id}/preview`),
             },
             {
               text: '阅卷',
               type: 'warning',
+              isShow: ({ row }) => row.operation.inspection,
               click: row => this.$router.push(`/examination/smartexam/${row.id}/check`),
             },
             {
