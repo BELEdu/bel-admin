@@ -127,7 +127,7 @@ export default {
 
     // 下载word
     download() {
-      window.open(`https://${window.location.hostname}/down_word/${this.currentStudentTestId}`)
+      window.open(`/down_word/${this.currentStudentTestId}`)
     },
 
     // 获取试卷详情
