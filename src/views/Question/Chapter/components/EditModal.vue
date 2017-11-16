@@ -383,20 +383,26 @@ export default {
       const { data } = this.form
       if (value) {
         this.$http.get(`/knowledge/${value}`)
-          .then(({
-            duration,
-            frequency,
-            score,
-            art_duration,
-            art_frequency,
-            art_score,
-          }) => {
-            data[index].duration = duration
-            data[index].frequency = frequency
-            data[index].score = score
-            data[index].art_duration = art_duration
-            data[index].art_frequency = art_frequency
-            data[index].art_score = art_score
+          // .then(({
+          //   duration,
+          //   frequency,
+          //   score,
+          //   art_duration,
+          //   art_frequency,
+          //   art_score,
+          // }) => {
+          //   data[index].duration = duration
+          //   data[index].frequency = frequency
+          //   data[index].score = score
+          //   data[index].art_duration = art_duration
+          //   data[index].art_frequency = art_frequency
+          //   data[index].art_score = art_score
+          // })
+          .then((res) => {
+            data[index] = {
+              ...res,
+              chapter_knowledge_type: 0,
+            }
           })
           .catch(({ message }) => {
             this.$Message.error(message)
