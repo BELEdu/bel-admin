@@ -372,7 +372,9 @@ export default {
 
     // 智能推题
     getQuestionInfo() {
-      return this.$http.post('/scheme/intelligence')
+      return this.$http.post('/scheme/intelligence', {
+        id: this.form.id,
+      })
         .then((res) => {
           this.form.questions = res
           this.formLoading = false
