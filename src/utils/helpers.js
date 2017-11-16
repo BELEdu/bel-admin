@@ -5,8 +5,8 @@
 const map = items => items.map(item => ({
   can_choose: item.can_choose,
   label: item.display_name,
-  value: item.can_choose ? item.role_id : item.id,
-  children: item.children ? map(item.children) : [],
+  value: item.can_choose ? item.role_id : `${item.p_id}${item.id}${item.role_id}`,
+  children: item.children && !item.can_choose ? map(item.children) : [],
 }))
 
 /**
@@ -26,7 +26,7 @@ export const generatePaths = (data) => {
 
   const loop = (items, path) => {
     items.forEach((item) => {
-      const updatedPath = [...path, item.can_choose ? item.role_id : item.id]
+      const updatedPath = [...path, item.can_choose ? item.role_id : `${item.p_id}${item.id}${item.role_id}`]
       if (item.children) {
         loop(item.children, updatedPath)
       } else {
