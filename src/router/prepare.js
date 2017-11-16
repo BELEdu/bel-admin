@@ -136,7 +136,7 @@ export default [
       backRoute: '/prepare/papercenter',
       breadcrumb: [
         { name: '备课管理' },
-        { name: '题库列表' },
+        { name: '试题中心' },
       ],
     },
   },
