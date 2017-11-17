@@ -29,7 +29,7 @@
         type="primary"
         icon="plus-round"
         v-if="this.verifyPermissions('front.setting.classroom.store')"
-        @click.native="editHandler(false)"
+        @click.native="addHandler(false)"
       >添加教室</Button>
       </Col>
     </Row>
@@ -51,10 +51,22 @@
     >
       <Form :model="dialog.form" ref="classForm" :rules="dialog.rulesForm" class="setting-classroom__dialog">
         <app-form-alert :errors="formErrors"></app-form-alert>
-        <FormItem prop="department_id" label="校区">
-          <Select v-model="dialog.form.department_id" :disabled="dialog.type !== 'add'" @on-change="getClassNumber(dialog.form.department_id)">
+        <FormItem prop="department_id" label="校区" v-if="dialog.type === 'add'">
+          <Select
+            v-model="dialog.form.department_id"
+            :disabled="dialog.type !== 'add'"
+            @on-change="getClassNumber(dialog.form.department_id)"
+            placeholder="请选择校区"
+          >
             <Option v-for="list in dialog.schoolList" :key="list.id" :value="list.id">{{list.display_name}}</Option>
           </Select>
+        </FormItem>
+        <FormItem v-else prop="department_id">
+          <Input
+            placeholder="请选择校区"
+            type="text"
+            disabled
+            v-model="dialog.form.department_name"/>
         </FormItem>
         <FormItem prop="classroom_number" label="教室编号">
           <Input
@@ -208,24 +220,41 @@
           })
       },
 
-      // 添加|编辑教室
-      editHandler(item = '') {
+      // 添加教室
+      addHandler() {
         this.$http.get('/setting/classroom/store_before')
           .then(({ school_list }) => {
             this.dialog.schoolList = [...school_list]
-            if (item) {
-              // 编辑
-              this.dialog.currentItem = item
-              const { department_id, classroom_number, remark } = this.dialog.currentItem
-              this.dialog.form = { department_id, classroom_number, remark }
-              this.dialog.type = 'edit'
-              this.dialog.title = '编辑教室'
-            } else {
-              // 添加
-              this.dialog.type = 'add'
-              this.dialog.title = '添加教室'
-            }
+            this.dialog.type = 'add'
+            this.dialog.title = '添加教室'
             this.dialog.visible = true
+          })
+      },
+
+      // 编辑教室
+      editHandler(item) {
+        this.dialog.schoolList = []
+        this.dialog.currentItem = item
+        const { department_id, classroom_number, remark } = this.dialog.currentItem
+        this.$http.get(`/setting/classroom/${item.id}`)
+          .then(({ department }) => {
+            try {
+              this.dialog.form = {
+                department_id,
+                classroom_number,
+                remark,
+                department_name: department.display_name,
+              }
+            } catch (error) {
+              throw error
+            }
+
+            this.dialog.type = 'edit'
+            this.dialog.title = '编辑教室'
+            this.dialog.visible = true
+          })
+          .catch(() => {
+            this.$Notice.error({ title: '数据有误，请确认数据是否存在问题', duration: 3 })
           })
       },
 
@@ -258,7 +287,7 @@
                     onClose: () => {
                       this.dialog.loading = false
                       this.dialog.visible = false
-                      this.fetchData()
+                      this.goTo()
                     },
                   })
                 })
@@ -280,9 +309,10 @@
       // 取消跟关闭操作
       cancelHandler() {
         this.dialog.form = {
-          department_id: '',
-          classroom_number: '',
-          remark: '',
+          department_name: null,
+          department_id: null,
+          classroom_number: null,
+          remark: null,
         }
         this.$refs.classForm.resetFields()
       },

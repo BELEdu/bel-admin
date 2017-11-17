@@ -229,7 +229,7 @@
                     this.$refs.addForm.resetFields()
                     this.dialog.loading = false
                     this.dialog.visible = false
-                    this.fetchData()
+                    this.goTo()
                   },
                 })
               })
