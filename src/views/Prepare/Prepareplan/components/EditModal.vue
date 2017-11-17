@@ -73,7 +73,7 @@
                     <Input
                       v-model="ppt.url"
                       :readonly="isShow"
-                      placeholder="请输入PP匠H5链接，例：https://saas-ppt.aikaola.com/data/1"
+                      placeholder="请输入PPT发布程序上的链接"
                     ></Input>
                   </Form-item>
                 </Col>

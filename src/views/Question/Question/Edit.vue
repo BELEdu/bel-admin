@@ -185,7 +185,7 @@
           </Form-item>
           <Form-item
             v-for="(item,index) in form.question_answers"
-            :key="item"
+            :key="item.id || item.mark"
           >
             <Row>
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
@@ -419,7 +419,10 @@ export default {
 
     // 添加填空题选项
     addFill() {
-      this.form.question_answers.push({ ...defaultAnswer })
+      this.form.question_answers.push({
+        ...defaultAnswer,
+        mark: Math.random(),
+      })
     },
 
     // 移除填空题选项
@@ -499,7 +502,10 @@ export default {
           //   this.form.question_answers = Array(3).fill({ ...defaultAnswer })
           //   break
           default:
-            this.form.question_answers = [{ ...defaultAnswer }]
+            this.form.question_answers = [{
+              ...defaultAnswer,
+              mark: Math.random(),
+            }]
             break
         }
       }
