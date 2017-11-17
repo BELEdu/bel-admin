@@ -144,7 +144,9 @@
         </Form-item>
 
         <Form-item label="所有签约校区" v-if="isReview">
-          <span class="color-primary">{{form.department_name}}</span>
+          <span class="color-primary">
+            {{form.department_name===''?'学员未签约':form.department_name}}
+          </span>
         </Form-item>
 
       </Col>

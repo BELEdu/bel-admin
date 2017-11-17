@@ -132,7 +132,7 @@
               >提交阅卷</Button>
 
               <Button
-                :disabled="!currentStudentTestStatus === 2"
+                :disabled="!(currentStudentTestStatus === 2) "
                 class="smartexam-check__form__submit"
                 type="warning"
                 long
@@ -460,7 +460,7 @@ export default {
         case 3:
           return 'yellow'
         default:
-          return 'blue'
+          return 'default'
       }
     },
 
@@ -474,21 +474,25 @@ export default {
       return 0
     },
 
-    // 学员测试状态 1：待测试（未考试，未选择设备） 2：待阅卷 3：已阅卷 4：待提交
+    // 学员测试状态 0:未考试（待测试） 2:待交卷  3:待阅卷 4:已阅卷
     buttonFormat(test_status, student_test_id) {
       if (this.currentStudentTestId === student_test_id) {
         return 'primary'
       }
       switch (test_status) {
-        // 待阅卷
-        case 3:
-          return 'ghost'
-        // 已阅卷
-        case 4:
-          return 'success'
         // 待交卷
         case 2:
           return 'dashed'
+
+        // 待阅卷
+        case 3:
+          return 'ghost'
+
+        // 已阅卷
+        case 4:
+          return 'success'
+
+        // 缺省状态
         default:
           return 'warning'
       }
@@ -541,6 +545,8 @@ export default {
           data: this.imageDataFinal,
         })
           .then(() => {
+            // 保存成功要刷新一下学员的状态
+            this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
             this.saveLoading = false
             this.$Message.success('保存成功')
           })
@@ -558,9 +564,12 @@ export default {
   created() {
     this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
       .then(() => {
-        // 这里还有待优化，先取第一个学生，获取试卷信息和试卷图片信息
-        const firstStudentId = this.student_data[0].id
+        // 取第一个不是未考试学生的id
+        const firstStudentId = this.student_data
+          .find(student => student.test_status !== 0).id
+
         this.currentStudentTestId = firstStudentId
+
         this.getPaperData(firstStudentId)
           .then(() => {
             this.$store.commit(GLOBAL.LOADING.HIDE)
@@ -573,6 +582,8 @@ export default {
 </script>
 
 <style lang="less">
+@import '~vars';
+
 .smartexam-check {
 
   &__collapse {
@@ -591,6 +602,10 @@ export default {
 
     &__btn {
       margin: 7.5px 0;
+      .ivu-btn-ghost {
+        color:@primary-color;
+        border-color: @primary-color;
+      }
     }
 
     &__tips {
@@ -617,10 +632,6 @@ export default {
     margin-left: 366px;
     overflow: hidden;
     width: 885px;
-
-    &__offline {}
-
-    &__online {}
   }
 
   &__form {
@@ -638,6 +649,10 @@ export default {
 
     &__item{
       padding-left: 12px;
+
+      .ivu-tag {
+        border:0;
+      }
     }
 
     &__submit{
