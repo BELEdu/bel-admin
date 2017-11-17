@@ -75,6 +75,10 @@ export default {
     this.$refs.composition.fetchData(to)
     next()
   },
+
+  mounted() {
+    this.$refs.composition.fetchData(this.$route)
+  },
 }
 </script>
 

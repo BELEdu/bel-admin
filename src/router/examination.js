@@ -123,6 +123,7 @@ export default [
     path: '/examination/wrongquestion/:id',
     component: views.ExaminationWrongQuestionDetail,
     meta: {
+      beforeUri: '/question_center/index_before',
       fetchUri: '钩子中生成',
       breadcrumb: [
         { name: '测试管理' },

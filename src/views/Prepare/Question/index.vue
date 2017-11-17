@@ -149,16 +149,14 @@ export default {
     },
   },
 
-  beforeRouteEnter(to, from, next) {
-    const { action } = to.meta
+  created() {
+    const { action } = this.$route.meta
 
-    next((vm) => {
-      if (action === 'patch') {
-        vm.initUpdation()
-      } else {
-        vm.initCreation()
-      }
-    })
+    if (action === 'patch') {
+      this.initUpdation()
+    } else {
+      this.initCreation()
+    }
   },
 
   beforeRouteLeave(to, from, next) {
