@@ -132,6 +132,7 @@
               >提交阅卷</Button>
 
               <Button
+                v-if="false"
                 :disabled="!(currentStudentTestStatus === 2) "
                 class="smartexam-check__form__submit"
                 type="warning"

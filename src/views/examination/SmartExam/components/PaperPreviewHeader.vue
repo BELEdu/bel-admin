@@ -1,11 +1,7 @@
 <template>
   <div class="paper-preview-header">
     <header>
-      <h2>这里是试卷名称</h2>
-      <!-- <span>年级: </span>
-      <span>| 类型: </span>
-      <span>| 区域: </span>
-      <span>| 年份: </span> -->
+      <h2>{{data.paper_name || '暂无试卷标题'}}</h2>
 
        总分：<span class="color-error">{{paperTotalScore}}</span> 分
       | 题数：<span class="color-error">{{paperTotalCount}} </span>题
