@@ -158,7 +158,7 @@ export default {
     },
 
     // 跳页
-    goTo(page) {
+    goTo(page = 1) {
       this.push({ page })
     },
 
