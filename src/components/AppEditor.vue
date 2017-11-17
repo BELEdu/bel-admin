@@ -59,8 +59,6 @@ export default {
       const config = {
         // 默认字体大小
         fontSize_defaultLabel: '14px',
-        // 默认清除格式(注意:来自word(对话框)的粘贴不会受到这个配置的影响。)
-        forcePasteAsPlainText: true,
         width: `${this.width}px`,
         height: `${this.height}px`,
       }
