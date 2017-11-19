@@ -140,7 +140,7 @@
         </Form-item>
 
         <Form-item label="建档人" v-if="isReview">
-          <span class="color-primary">{{form.user_id}}</span>
+          <span class="color-primary">{{form.user_name}}</span>
         </Form-item>
 
         <Form-item label="所有签约校区" v-if="isReview">
