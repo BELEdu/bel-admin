@@ -24,7 +24,7 @@
       <!-- 教材版本 -->
       <Form-item>
         <Select
-          v-model="query[`equal[teaching_version]`]"
+          v-model="query[`equal[teach_material]`]"
           placeholder="选择教材版本"
           style="width:9em;"
         >
@@ -156,7 +156,7 @@ export default {
       likeKey: 'display_name',
       query: {
         'equal[grade_range_subject_id]': null,
-        'equal[teaching_version]': null,
+        'equal[teach_material]': null,
       },
 
       grade_range_subject_id: [], // 学科年级数据源

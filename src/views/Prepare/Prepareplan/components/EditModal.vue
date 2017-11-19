@@ -129,9 +129,10 @@
             type="dashed"
             shape="circle"
             icon="refresh"
-            size="small"
+            :loading="questionLoading"
             @click="getQuestionInfo()"
           >换一批</Button>
+
         </div>
 
         <!-- 试题列表 -->
@@ -156,12 +157,12 @@
             <Button
               v-if="!isShow"
               class="color-error right"
-              type="text"
+              type="dashed"
               shape="circle"
               icon="close"
               size="small"
               @click="removeQuestion(index)"
-            ></Button>
+            >删除</Button>
           </div>
         </div>
       </div>
@@ -284,6 +285,8 @@ export default {
       currentQuestion: {},
       modalActive: false,
 
+      questionLoading: false,
+
     }
   },
 
@@ -372,6 +375,8 @@ export default {
 
     // 智能推题
     getQuestionInfo() {
+      this.questionLoading = true
+
       return this.$http.post('/scheme/intelligence', {
         id: this.form.id,
       })
@@ -383,6 +388,9 @@ export default {
           }
         })
         .catch(this.errorHandler)
+        .then(() => {
+          this.questionLoading = false
+        })
     },
 
     // 关闭弹窗
@@ -434,11 +442,6 @@ export default {
     // 移除试题
     removeQuestion(index) {
       this.form.questions.splice(index, 1)
-    },
-
-    // 换一批试题
-    refreshQuestion() {
-      this.$Message.success('换一批')
     },
   },
 }
