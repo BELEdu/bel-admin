@@ -114,7 +114,7 @@ export default {
         },
         {
           title: '学管师',
-          key: 'counsellor_name',
+          key: 'study_teacher_name',
           align: 'center',
         },
         {
