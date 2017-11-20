@@ -9,10 +9,13 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query['equal[equipment_status]']">
+        <Select v-model="query['equal[equipment_status]']" placeholder="设备状态" style="width: 6em;">
           <Option value="">全部</Option>
-          <Option value="1">在线</Option>
-          <Option value="2">离线</Option>
+          <Option
+            v-for="item in equipmentStatus"
+            :key="item.value"
+            :value="item.value"
+          >{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -51,6 +54,7 @@
    * @version 2017-10-27
    */
 
+  import { mapState } from 'vuex'
   import { list, form } from '@/mixins'
   import { createButton } from '@/utils'
 
@@ -107,6 +111,12 @@
           deleteLoading: false,
         },
       }
+    },
+
+    computed: {
+      ...mapState({
+        equipmentStatus: state => state.dicts.equipment_status,
+      }),
     },
 
     methods: {

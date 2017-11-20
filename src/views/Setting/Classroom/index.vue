@@ -3,16 +3,27 @@
     <Form inline class="app-search-form">
       <Form-item>
         <Input v-model="likeValue" placeholder="请输入关键字">
-        <Select v-model="likeKey" slot="prepend" style="width:6em;">
-          <Option v-for="key in likeKeys" :key="key.value" :value="key.value">{{ key.label }}</Option>
-        </Select>
+          <Select v-model="likeKey" slot="prepend" style="width:6em;">
+            <Option
+              v-for="key in likeKeys"
+              :key="key.value"
+              :value="key.value"
+            >{{ key.label }}</Option>
+          </Select>
         </Input>
       </Form-item>
       <Form-item>
-        <Select v-model="query['equal[classroom_status]']">
+        <Select
+          v-model="query['equal[classroom_status]']"
+          placeholder="教室状态"
+          style="width: 6em;"
+        >
           <Option value="">全部</Option>
-          <Option value="1">上课</Option>
-          <Option value="2">下课</Option>
+          <Option
+            v-for="item in classRoomStatus"
+            :key="item.value"
+            :value="item.value"
+          >{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -105,6 +116,7 @@
    * @version 2017-10-27
    */
 
+  import { mapState } from 'vuex'
   import { list, form, verify } from '@/mixins'
   import { createButton } from '@/utils'
 
@@ -201,6 +213,12 @@
 
         list: {},
       }
+    },
+
+    computed: {
+      ...mapState({
+        classRoomStatus: state => state.dicts.classroom_status,
+      }),
     },
 
     methods: {

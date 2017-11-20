@@ -17,10 +17,7 @@
       <Form-item>
         <Select v-model="query['equal[course_status]']" placeholder="课表状态" style="width:6em;">
           <Option value="">全部</Option>
-          <Option value="0">待确认</Option>
-          <Option value="1">待上课</Option>
-          <Option value="2">已上课</Option>
-          <Option value="3">已评价</Option>
+          <Option v-for="item in scheduleStatus" :key="item.value" :value="item.value">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -166,6 +163,7 @@
 
     computed: {
       ...mapState({
+        scheduleStatus: state => state.dicts.schedule_status,
         weeklyList: state => state.student.schedule.weekList,
         courseTip: state => state.student.schedule.tip.ready_courses,
         userId: state => state.user.id,

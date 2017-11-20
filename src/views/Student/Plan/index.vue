@@ -11,10 +11,7 @@
       <Form-item>
         <Select v-model="query[`equal[plan_status]`]" placeholder="请选择状态" style="width:9em;">
           <Option value="">全部</Option>
-          <Option :value="0">未计划</Option>
-          <Option :value="1">计划中</Option>
-          <Option :value="3">已取消</Option>
-          <Option :value="4">已结束</Option>
+          <Option v-for="item in planStatus" :key="item.value" :value="item.value">{{ item.display_name }}</Option>
         </Select>
       </Form-item>
       <Form-item>
@@ -143,6 +140,7 @@
 
     computed: {
       ...mapState({
+        planStatus: state => state.dicts.plan_status,
         list: state => state.student.plan.list,
       }),
     },

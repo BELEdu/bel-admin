@@ -102,7 +102,7 @@
 
     data() {
       return {
-        qurey: {
+        query: {
           'equal[province_code]': '',
           'equal[city_code]': '',
           'equal[display_name]': '',
@@ -194,13 +194,20 @@
 
     watch: {
       areaCode(val) {
-        this.query['equal[province_code]'] = val[0] || ''
-        this.query['equal[city_code]'] = val[1] || ''
+        if (val.length) {
+          this.query['equal[province_code]'] = val[0]
+          this.query['equal[city_code]'] = val[1]
+        } else {
+          this.query['equal[province_code]'] = ''
+          this.query['equal[city_code]'] = ''
+        }
       },
     },
 
     methods: {
-      getData(qs) {
+      getData(qs, to) {
+        this.areaCode = to.query['equal[province_code]'] ?
+          [to.query['equal[province_code]'], to.query['equal[city_code]']] : []
         return this.$store.dispatch(SETTING.SCHOOL.LIST, qs)
       },
 
