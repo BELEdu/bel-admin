@@ -70,6 +70,11 @@ const router = new Router({
           path: '*',
           name: '404',
           component: views.NotFound,
+          meta: {
+            breadcrumb: [
+              { name: '找不到页面-爱考拉教育' },
+            ],
+          },
         },
       ],
     },
@@ -86,7 +91,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.breadcrumb) {
     document.title = to.meta.breadcrumb
       .reduce((title, item) => (
-        title ? `${item.name} - ${title}` : item.name
+        title ? `${item.name} - ${title} - 爱考拉教育` : item.name
       ), '')
   }
 
