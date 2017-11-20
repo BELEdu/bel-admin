@@ -141,7 +141,10 @@ const store = new Vuex.Store({
     // 登录
     [GLOBAL.LOGIN]({ commit }, data) {
       return Http.post('/auth/login', data)
-        .then(res => commit(GLOBAL.LOGIN, res))
+        .then((res) => {
+          commit(GLOBAL.LOGIN, res)
+          return res
+        })
     },
 
     // 切换角色
