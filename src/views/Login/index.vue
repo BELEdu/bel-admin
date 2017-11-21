@@ -37,12 +37,12 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-import { form } from '@/mixins'
+import { form, menu } from '@/mixins'
 
 export default {
   name: 'app-login',
 
-  mixins: [form],
+  mixins: [form, menu],
 
   data() {
     return {
@@ -75,19 +75,7 @@ export default {
         .then(({ permissions }) => {
           // 若登录成功，通知父组件连接socket，并转跳到首页
           this.$emit('login')
-
-          // 处理第一个菜单的子菜单路由为默认进入页
-          const firstChildMenu = permissions.length && permissions[0].children
-          let path = '/index'
-          if (firstChildMenu.length) {
-            const pathRouter = firstChildMenu[0].name.split('.')
-            if (pathRouter[2]) {
-              path = `/${pathRouter[1]}/${pathRouter[2]}`
-            } else {
-              path = `/${pathRouter[1]}`
-            }
-          }
-          this.$router.push(path)
+          this.defaultRouterPath(permissions)
         })
         .catch(this.errorHandler)
     },

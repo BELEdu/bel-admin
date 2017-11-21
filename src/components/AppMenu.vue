@@ -27,9 +27,12 @@
  */
 
 import { mapState } from 'vuex'
+import { emitter } from '@/mixins'
 
 export default {
   name: 'app-menu',
+
+  mixins: [emitter],
 
   data: () => ({
     icons: {
@@ -50,12 +53,26 @@ export default {
   computed: {
     ...mapState(['permissions']),
 
+    menuCom() {
+      return this.findComponentDownward(this, 'Menu')
+    },
+
     partials() {
       return this.$route.path.split('/')
     },
 
     // 设置当前展开的菜单
     openNames() {
+      this.$nextTick(() => {
+        // 更新展开的子目录
+        /* eslint no-param-reassign: ["error", { "props": false }] */
+        const items = this.findComponentsDownward(this.menuCom, 'Submenu')
+        if (items.length) {
+          items.forEach((item) => {
+            item.opened = this.menuCom.openNames.indexOf(item.name) > -1
+          })
+        }
+      })
       return [`front${this.partials.slice(0, 2).join('.')}`]
     },
 

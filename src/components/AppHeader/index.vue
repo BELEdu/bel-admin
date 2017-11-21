@@ -73,13 +73,13 @@
 
 import { mapState, mapGetters } from 'vuex'
 import { GLOBAL } from '@/store/mutationTypes'
-import { form } from '@/mixins'
+import { form, menu } from '@/mixins'
 import LabelModal from './components/LabelModal'
 
 export default {
   name: 'app-header',
 
-  mixins: [form],
+  mixins: [form, menu],
 
   components: {
     LabelModal,
@@ -139,7 +139,8 @@ export default {
     switchRole(id) {
       this.$store.dispatch(GLOBAL.SWITCH, id)
         .then(() => {
-          this.$router.push('/index')
+          // this.$router.push('/index')
+          this.defaultRouterPath()
           this.$Message.success({
             content: '角色已切换',
           })

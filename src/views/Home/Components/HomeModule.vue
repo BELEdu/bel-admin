@@ -35,13 +35,13 @@
 
   import { Waterfall, WaterfallSlot } from 'vue-waterfall'
   import { debounce, isNumber } from 'lodash'
-  import { broadcast } from '@/mixins'
+  import { emitter } from '@/mixins'
   import { GLOBAL } from '@/store/mutationTypes'
   import DataModule from './DataModule'
 
   export default {
     name: 'home-module',
-    mixins: [broadcast],
+    mixins: [emitter],
     components: { Waterfall, WaterfallSlot, DataModule },
     props: {
       data: {

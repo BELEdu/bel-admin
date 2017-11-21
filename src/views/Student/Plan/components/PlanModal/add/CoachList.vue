@@ -15,13 +15,13 @@
    */
 
   import { mapState } from 'vuex'
-  import { broadcast } from '@/mixins'
+  import { emitter } from '@/mixins'
   import ListCoach from '../ListCoach'
 
   export default {
     name: 'add-coach-list',
 
-    mixins: [broadcast],
+    mixins: [emitter],
 
     components: {
       ListCoach,
