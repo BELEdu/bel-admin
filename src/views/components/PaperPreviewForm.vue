@@ -194,7 +194,7 @@ export default {
           :data="campuses"
           v-model="data.campuses[index]"
           :clearable="false"
-          @input="() => vm_autoName(index === 0)"
+          @on-change="() => vm_autoName(index === 0)"
         ></Cascader>
         <Icon
           v-show="index"
