@@ -82,7 +82,7 @@
   import { mapState } from 'vuex'
   import { STUDENT } from '@/store/mutationTypes'
   import { formatDate, parseDate } from '@/utils/date'
-  import { broadcast } from '@/mixins'
+  import { emitter } from '@/mixins'
   import addDays from 'date-fns/add_days'
   import differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
   import getDay from 'date-fns/get_day'
@@ -90,7 +90,7 @@
   export default {
     name: 'add-coach-night',
 
-    mixins: [broadcast],
+    mixins: [emitter],
 
     data() {
       return {

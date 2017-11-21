@@ -41,7 +41,7 @@
    */
 
   import { mapState } from 'vuex'
-  import { broadcast, form } from '@/mixins'
+  import { emitter, form } from '@/mixins'
   import { STUDENT } from '@/store/mutationTypes'
   import AddCoach from './add/Coach'
   import AddCoachNight from './add/CoachNight'
@@ -53,7 +53,7 @@
   export default {
     name: 'plan-modal',
 
-    mixins: [broadcast, form],
+    mixins: [emitter, form],
 
     components: { AddCoach, AddCoachNight, AddCoachList, ViewCoach, EditCoachList, AppraiseCoach },
 
