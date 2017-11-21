@@ -345,6 +345,8 @@ export default {
       rules: formRules(this),
       // 流程控制
       process: 1,
+      // step1: 是否已经过了第一步
+      studentFetched: false,
       // step2: 表单渲染
       studentFormRender: studentFormRender(),
       // step2: 校园数据
@@ -441,22 +443,26 @@ export default {
     /* --- 第一步 --- */
 
     fetchStudentInfo() {
-      // 更新合同数据
       const contractId = this.$route.params.id
-      if (contractId) return Promise.resolve()
+      // 更新合同数据 或者 已经取过学生数据
+      if (this.studentFetched || contractId) return Promise.resolve()
 
       const number = this.fdata.student_number.trim()
-
       const url = `/student/number/${number}`
+
       return this.$http.get(url)
         .then(({ id, ...rest }) => {
           this.fdata = { ...this.fdata, ...rest }
+          this.studentFetched = true
         })
-        .catch(() => this.$Notice.error({
-          title: '错误',
-          desc: '学生信息请求出错',
-          duration: 0,
-        }))
+        .catch(() => {
+          this.$Notice.error({
+            title: '错误',
+            desc: '学生信息请求出错',
+            duration: 0,
+          })
+          throw new Error('学生信息请求出错')
+        })
     },
 
     /* --- 第二步 --- */
