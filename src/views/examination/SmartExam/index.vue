@@ -173,7 +173,7 @@ export default {
     return {
       likeKeys: [
         { label: '测试对象', value: 'test_object_name' },
-        { label: '测试编号', value: 'test_number' },
+        { label: '测试编号', value: 'id' },
       ],
       likeKey: 'test_object_name',
       query: {
