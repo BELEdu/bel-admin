@@ -121,6 +121,8 @@
       :form="form"
       :is-edit="isEdit"
       @closeEditModal="modal.edit = false"
+      @addKnowledge="addKnowledge"
+      @removeKnowledge="removeKnowledge"
       @fetchData="fetchData"
     ></edit-modal>
 
@@ -139,6 +141,18 @@ import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import { TreeEditor } from '@/views/components'
 import EditModal from './components/EditModal'
+
+// 知识点项
+const defaultKnowledge = {
+  id: null,
+  duration: 0, // 理科时长
+  frequency: 0, // 理科频次
+  score: 0, // 理科分值
+  art_duration: 0, // 文科频次时长
+  art_frequency: 0, // 文科频次
+  art_score: 0, // 文科频次
+  chapter_knowledge_type: 0, // 是否属于本节
+}
 
 export default {
   name: 'question-chapter',
@@ -272,6 +286,16 @@ export default {
         .catch(({ message }) => {
           this.$Message.error(message)
         })
+    },
+
+    // 添加知识点
+    addKnowledge() {
+      this.form.data.push({ ...defaultKnowledge })
+    },
+
+    // 移除知识点
+    removeKnowledge(index) {
+      this.form.data.splice(index, 1)
     },
 
     // 获取列表数据的公共方法getData

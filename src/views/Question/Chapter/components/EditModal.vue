@@ -285,16 +285,16 @@
 
 import { form } from '@/mixins'
 
-const defaultKnowledge = {
-  id: null,
-  duration: 0, // 理科时长
-  frequency: 0, // 理科频次
-  score: 0, // 理科分值
-  art_duration: 0, // 文科频次时长
-  art_frequency: 0, // 文科频次
-  art_score: 0, // 文科频次
-  chapter_knowledge_type: 0, // 是否属于本节
-}
+// const defaultKnowledge = {
+//   id: null,
+//   duration: 0, // 理科时长
+//   frequency: 0, // 理科频次
+//   score: 0, // 理科分值
+//   art_duration: 0, // 文科频次时长
+//   art_frequency: 0, // 文科频次
+//   art_score: 0, // 文科频次
+//   chapter_knowledge_type: 0, // 是否属于本节
+// }
 
 export default {
   name: 'question-chapter-edit-modal',
@@ -370,12 +370,14 @@ export default {
 
     // 添加知识点
     addKnowledge() {
-      this.form.data.push({ ...defaultKnowledge })
+      // this.form.data.push({ ...defaultKnowledge })
+      this.$emit('addKnowledge')
     },
 
     // 移除知识点
     removeKnowledge(index) {
-      this.form.data.splice(index, 1)
+      this.$emit('removeKnowledge', index)
+      // this.form.data.splice(index, 1)
     },
 
     // 更改&选择知识点时获取该知识点详情
@@ -383,27 +385,28 @@ export default {
       const { data } = this.form
       if (value) {
         this.$http.get(`/knowledge/${value}`)
-          // .then(({
-          //   duration,
-          //   frequency,
-          //   score,
-          //   art_duration,
-          //   art_frequency,
-          //   art_score,
-          // }) => {
-          //   data[index].duration = duration
-          //   data[index].frequency = frequency
-          //   data[index].score = score
-          //   data[index].art_duration = art_duration
-          //   data[index].art_frequency = art_frequency
-          //   data[index].art_score = art_score
-          // })
-          .then((res) => {
-            data[index] = {
-              ...res,
-              chapter_knowledge_type: 0,
-            }
+          .then(({
+            duration,
+            frequency,
+            score,
+            art_duration,
+            art_frequency,
+            art_score,
+          }) => {
+            data[index].duration = duration
+            data[index].frequency = frequency
+            data[index].score = score
+            data[index].art_duration = art_duration
+            data[index].art_frequency = art_frequency
+            data[index].art_score = art_score
           })
+          // .then((res) => {
+          //   data[index] = {
+          //     ...data[index],
+          //     ...res,
+          //     chapter_knowledge_type: data[index].chapter_knowledge_type,
+          //   }
+          // })
           .catch(({ message }) => {
             this.$Message.error(message)
           })
