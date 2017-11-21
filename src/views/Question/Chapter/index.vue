@@ -167,7 +167,7 @@ export default {
   data() {
     return {
       likeKeys: [],
-      likeKey: 'display_name',
+      likeKey: 'chapter_name',
       query: {
         'equal[grade_range_subject_id]': null,
         'equal[teach_material]': null,

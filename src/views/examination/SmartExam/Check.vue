@@ -381,6 +381,10 @@ export default {
         sort: key,
       }))
     },
+
+    submitData() {
+      return this.form
+    },
   },
 
   methods: {
