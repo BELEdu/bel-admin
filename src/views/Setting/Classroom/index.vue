@@ -83,7 +83,7 @@
           <Input
             placeholder="请填写教室编号"
             type="text"
-            :disabled="dialog.type !== 'add'"
+            disabled
             v-model="dialog.form.classroom_number"/>
         </FormItem>
         <FormItem label="备注">
