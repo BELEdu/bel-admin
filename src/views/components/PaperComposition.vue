@@ -122,22 +122,26 @@ export default {
     <div class="paper-composition-assistance"
       v-if="buffer && buffer.data"
     >
-      <Button
-        v-if="buffer.data && buffer.data.length
-          && buffer.data.every(question => v_questionSelected(question))
-        "
-        type="text"
-        @click="vm_batchRemoveQuestions"
-      >
-        取消全部加入
-      </Button>
-      <Button
-        v-else
-        type="text"
-        @click="vm_batchInsertQuestions"
-      >
-        本页全部加入
-      </Button>
+      <template v-if="$attrs.compositionType !== 'readOnly'">
+        <Button
+          v-if="
+            buffer.data
+            && buffer.data.length
+            && buffer.data.every(question => v_questionSelected(question))
+          "
+          type="text"
+          @click="vm_batchRemoveQuestions"
+        >
+          取消全部加入
+        </Button>
+        <Button
+          v-else
+          type="text"
+          @click="vm_batchInsertQuestions"
+        >
+          本页全部加入
+        </Button>
+      </template>
       <span>
         总共<em>{{buffer.data.length}}</em>题
       </span>
