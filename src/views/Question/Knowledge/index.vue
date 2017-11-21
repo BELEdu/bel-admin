@@ -1,7 +1,7 @@
 <template>
   <div class="question-knowledge">
     <!-- 顶部搜索栏 -->
-    <Form class="app-search-form app-search-form-layout">
+    <App-table-form @on-submit="search">
       <!-- 年段+学科 -->
       <Form-item>
         <Select
@@ -57,16 +57,7 @@
           </Select>
         </Input>
       </Form-item>
-      <!-- 查询按钮 -->
-      <Form-item>
-        <Button
-          type="primary" icon="ios-search"
-          @click="search"
-        >
-          搜索
-        </Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 中部辅助栏 -->
     <div class="app-content-topbar">

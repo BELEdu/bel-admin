@@ -1,7 +1,7 @@
 <template>
   <div class="qusetion-paper">
     <!-- 顶部搜索栏 -->
-    <Form class="app-search-form app-search-form-layout">
+    <App-table-form @on-submit="search">
       <!-- 关键字检索 -->
       <Form-item>
         <Input
@@ -24,16 +24,7 @@
           </Select>
         </Input>
       </Form-item>
-      <!-- 查询按钮 -->
-      <Form-item>
-        <Button
-          type="primary" icon="ios-search"
-          @click="search"
-        >
-          搜索
-        </Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 科目过滤 -->
     <ConditionRadioSubject

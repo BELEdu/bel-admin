@@ -1,7 +1,7 @@
 <template>
   <div class="examination-wrongquestion">
     <!-- 顶部 搜索栏 -->
-    <Form class="app-search-form app-search-form-layout">
+    <App-table-form @on-submit="search">
       <!-- 关键字检索 -->
       <Form-item>
         <Input
@@ -9,32 +9,22 @@
           v-model="likeValue"
           style="width: calc(7em + 200px);"
         >
-          <Select
-            v-model="likeKey"
-            slot="prepend"
-            style="width: 7em"
+        <Select
+          v-model="likeKey"
+          slot="prepend"
+          style="width: 7em"
+        >
+          <Option
+            v-for="likeKey in likeKeys"
+            :key="likeKey.field_name"
+            :value="likeKey.field_name"
           >
-            <Option
-              v-for="likeKey in likeKeys"
-              :key="likeKey.field_name"
-              :value="likeKey.field_name"
-            >
-              {{ likeKey.display_name }}
-            </Option>
-          </Select>
+            {{ likeKey.display_name }}
+          </Option>
+        </Select>
         </Input>
       </Form-item>
-      <!-- 查询按钮 -->
-      <Form-item>
-        <Button
-          type="primary"
-          icon="ios-search"
-          @click="search"
-        >
-          搜索
-        </Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 中部 列表title栏 -->
     <div class="app-content-topbar">

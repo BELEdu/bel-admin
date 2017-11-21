@@ -1,6 +1,6 @@
 <template>
   <div class="algorthm-knowledge">
-    <Form class="app-search-form app-search-form-layout">
+    <App-table-form @on-submit="search">
       <!-- 特殊字段搜索 -->
       <Form-item>
         <Select
@@ -40,12 +40,7 @@
           </Select>
         </Input>
       </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">
-          搜索
-        </Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <div
       class="app-content-header"

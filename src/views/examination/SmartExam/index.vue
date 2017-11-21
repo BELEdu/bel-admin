@@ -1,8 +1,7 @@
 <template>
   <div class="smartexam">
-
     <!-- 搜索 -->
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <!-- 关键字 -->
       <Form-item>
         <Input v-model="likeValue" placeholder="请输入关键字">
@@ -74,11 +73,7 @@
           >{{ item.display_name }}</Option>
         </Select>
       </Form-item>
-
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 操作 -->
     <Row

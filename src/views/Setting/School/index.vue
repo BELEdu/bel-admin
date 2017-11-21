@@ -1,16 +1,13 @@
 <template>
   <div class="setting-school">
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <Form-item>
         <app-map-cascader v-model="areaCode" :level="2"></app-map-cascader>
       </Form-item>
       <Form-item>
         <Input v-model="query['equal[display_name]']" placeholder="请输入学校名称"/>
       </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col :span="12">

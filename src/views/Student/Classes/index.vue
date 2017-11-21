@@ -1,7 +1,7 @@
 <template>
   <div class="student-class">
 
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <!-- 关键字搜索 -->
       <Form-item>
         <Input
@@ -37,10 +37,7 @@
         </Select>
       </Form-item>
 
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 操作 -->
     <Row

@@ -1,6 +1,6 @@
 <template>
   <div class="setting-classroom">
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <Form-item>
         <Input v-model="likeValue" placeholder="请输入关键字">
           <Select v-model="likeKey" slot="prepend" style="width:6em;">
@@ -26,10 +26,7 @@
           >{{ item.display_name }}</Option>
         </Select>
       </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col :span="12">

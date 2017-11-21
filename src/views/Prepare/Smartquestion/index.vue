@@ -1,17 +1,14 @@
 <template>
   <div class="papercenter">
     <!-- 上部 搜索栏 -->
-    <Form class="app-search-form">
+    <App-table-form @on-submit="search">
       <Form-item>
         <Date-picker format="yyyy/MM/dd" type="daterange" placeholder="请选择时间段..."></Date-picker>
       </Form-item>
       <Form-item>
         <Input placeholder="请输入关键字"></Input>
       </Form-item>
-      <Form-item>
-        <Button type="primary">查询搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
     <!-- 上部 搜索栏 end -->
     <!-- 中部 列表title栏 -->
     <Row class="app-content-header">

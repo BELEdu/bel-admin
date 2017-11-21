@@ -1,10 +1,7 @@
 <template>
   <main class="communication">
     <!-- 顶部搜索 -->
-    <Form
-      v-if="preConfig"
-      class="app-search-form app-search-form-layout"
-    >
+    <App-table-form v-if="preConfig" @on-submit="search">
       <!-- 关键字检索 -->
       <Form-item>
         <Input
@@ -61,17 +58,7 @@
           </Option>
         </Select>
       </Form-item>
-      <!-- 查询按钮 -->
-      <Form-item>
-        <Button
-          type="primary"
-          icon="ios-search"
-          @click="search"
-        >
-          搜索
-        </Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
     <!-- end 顶部搜索 -->
 
     <Row class="app-content-topbar">

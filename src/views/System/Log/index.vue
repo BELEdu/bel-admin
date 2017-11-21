@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <Form-item>
         <app-date-picker
           type="daterange"
@@ -12,10 +12,7 @@
       <Form-item>
         <Input type="text" v-model="query['equal[model_name]']" placeholder="请输入关键字"></Input>
       </Form-item>
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">查询</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <Row class="app-content-header" type="flex" justify="space-between">
       <Col>

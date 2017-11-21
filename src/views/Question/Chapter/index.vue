@@ -1,8 +1,7 @@
 <template>
   <div class="question-chapter">
     <!-- 搜索栏 -->
-    <Form inline class="app-search-form">
-
+    <App-table-form @on-submit="search">
       <!-- 年段学科 -->
       <Form-item>
         <Select
@@ -56,12 +55,7 @@
           </Select>
         </Input>
       </Form-item>
-
-      <!-- 搜索 -->
-      <Form-item>
-        <Button type="primary" icon="ios-search" @click="search">搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <Row
       class="app-content-header"
@@ -167,7 +161,7 @@ export default {
   data() {
     return {
       likeKeys: [],
-      likeKey: 'chapter_name',
+      likeKey: '',
       query: {
         'equal[grade_range_subject_id]': null,
         'equal[teach_material]': null,
@@ -335,12 +329,13 @@ export default {
           this.grade_range_subject_id = grade_range_subject_id
           this.teaching_version = teaching_version
           this.likeKeys = search_fields
+          this.likeKey = this.likeKeys[0].field_name
         })
     },
 
     // 重置关键字搜索
     queryReset(subjectId) {
-      this.likeKey = 'display_name'
+      this.likeKey = this.likeKeys[0].field_name
       this.likeValue = ''
       this.query = {
         'equal[teaching_version]': null,

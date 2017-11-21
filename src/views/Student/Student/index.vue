@@ -1,7 +1,6 @@
 <template>
   <div class="student-info">
-
-    <Form inline class="app-search-form">
+    <App-table-form @on-submit="search">
       <!-- 关键字搜索 -->
       <Form-item>
         <Input
@@ -61,16 +60,7 @@
           placeholder="请选择首签日期"
         />
       </Form-item>
-
-      <!-- 搜索按钮 -->
-      <Form-item>
-        <Button
-          type="primary"
-          icon="ios-search"
-          @click="search"
-        >搜索</Button>
-      </Form-item>
-    </Form>
+    </App-table-form>
 
     <!-- 操作按钮 -->
     <Row
