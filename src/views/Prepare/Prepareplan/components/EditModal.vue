@@ -128,15 +128,15 @@
             class="color-primary"
             type="dashed"
             shape="circle"
-            icon="refresh"
+            icon="plus"
             :loading="questionLoading"
-            @click="getQuestionInfo()"
-          >换一批</Button>
+            @click="getQuestionInfo"
+          >加一批</Button>
 
         </div>
 
         <!-- 试题列表 -->
-        <div v-for="(item,index) in form.questions" :key="index">
+        <div v-for="(item,index) in form.questions" :key="item.id">
           <question
             :index="index+1"
             :data="item"
@@ -381,7 +381,11 @@ export default {
         id: this.form.id,
       })
         .then((res) => {
-          this.form.questions = res
+          this.form.questions = [
+            ...this.form.questions,
+            ...res,
+          ]
+
           this.formLoading = false
           if (this.step === 2) {
             this.nextStep()
