@@ -10,7 +10,7 @@
           style="width: 150px;"
         >
           <Option
-            v-for="item in subjects.data"
+            v-for="item in subjects"
             :value="item.id"
             :key="item.id"
           >
@@ -175,11 +175,11 @@
       class="question-knowledge__structure"
       v-model="structureModal.active"
       title="编辑知识点"
+      @on-cancel="fetchData"
     >
       <TreeEditor
         keyword="知识点"
-        :data="this.structureModal.data"
-        :default-subject="this.subjects.default"
+        :data="structureModal.data"
         @create="createNode"
         @delete="deleteNode"
         @sort="sortNode"
@@ -217,7 +217,6 @@ export default {
     return {
       /* --- 顶部搜索 --- */
 
-      likeKeys: [],
       likeKey: 'display_name',
 
       query: {
@@ -225,10 +224,9 @@ export default {
         'equal[knowledge_importance]': '',
       },
 
-      subjects: {
-        default: 0,
-        data: [],
-      },
+      likeKeys: [],
+
+      subjects: [],
 
       importances: [],
 
@@ -327,11 +325,50 @@ export default {
 
   methods: {
     /* 获取列表数据 */
-    getData(query, to) {
-      const urlArr = to.fullPath.split('/').slice(2)
-      const url = `/${urlArr.join('/')}`
+
+    fetchBefore() {
+      return Http.get('/knowledge/index_before')
+        .then(({
+          grade_range_subject_id,
+          search_fields,
+          knowledge_importance,
+        }) => {
+          this.subjects = grade_range_subject_id
+          this.likeKeys = search_fields
+          this.importances = knowledge_importance
+        })
+    },
+
+    getData(query) {
+      if (query) return this.m_getData(query)
+
+      const asyncFlow = this.subjects.length
+        ? Promise.resolve()
+        : this.fetchBefore()
+
+      return asyncFlow
+        .then(() => {
+          this.m_resetSearchField()
+          const queryUri = `equal[grade_range_subject_id]=${this.subjects[0].id}`
+          const path = `/question/knowledge?${queryUri}`
+          this.$router.push(path)
+        })
+    },
+
+    m_getData(query) {
+      const url = `/knowledge${query}`
       return this.$http.get(url)
         .then((res) => { this.buffer = res })
+    },
+
+    m_resetSearchField() {
+      this.likeKey = 'display_name'
+      this.likeValue = ''
+
+      this.query = {
+        'equal[grade_range_subject_id]': this.subjects[0].id,
+        'equal[knowledge_importance]': '',
+      }
     },
 
     /* 编辑知识点 */
@@ -368,10 +405,10 @@ export default {
 
     activateStructure() {
       this.structureLoading = true
+
       const host = '/knowledge/tree'
       const id = this.$route.query['equal[grade_range_subject_id]']
-        ? this.$route.query['equal[grade_range_subject_id]']
-        : this.subjects.default
+
       this.$http.get(`${host}/${id}`)
         .then((res) => {
           this.structureModal.data = res
@@ -406,28 +443,6 @@ export default {
         : this.subjects.default
       this.$router.push(`/question/knowledge/edition/${id}`)
     },
-  },
-
-  beforeRouteEnter(to, from, next) {
-    Http.get('/knowledge/index_before')
-      .then(({
-        current_grade_range_subject_id,
-        grade_range_subject_id,
-        search_fields,
-        knowledge_importance,
-      }) => {
-        next((vm) => {
-          /* eslint-disable no-param-reassign */
-          vm.subjects = {
-            default: current_grade_range_subject_id,
-            data: grade_range_subject_id,
-          }
-          vm.query['equal[grade_range_subject_id]'] = current_grade_range_subject_id
-          vm.likeKeys = search_fields
-          vm.importances = knowledge_importance
-          /* eslint-enalbe */
-        })
-      })
   },
 }
 </script>

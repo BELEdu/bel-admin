@@ -130,11 +130,6 @@ export default {
       type: Array,
       required: true,
     },
-    // 默认学科
-    defaultSubject: {
-      type: Number,
-      required: true,
-    },
   },
 
   data: () => ({
@@ -172,8 +167,7 @@ export default {
     data(value) {
       this.tree = this.tree2way([...value])
       this.rootNode.children = this.tree
-      const subject_id = this.$route.query['equal[grade_range_subject_id]']
-      this.rootNode.subject_id = subject_id || this.defaultSubject
+      this.rootNode.subject_id = this.$route.query['equal[grade_range_subject_id]']
     },
 
     // 初始空树&删光时候的层级初始
