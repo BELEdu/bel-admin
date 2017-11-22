@@ -31,7 +31,12 @@
         <span v-else class="color-primary">{{form.product_name}}</span>
       </Form-item>
 
-      <Form-item label="教材版本" prop="teach_material">
+      <Form-item
+        label="教材版本"
+        prop="teach_material"
+        v-if="!isNightCoach"
+        required
+      >
         <Select
           v-if="!hasData"
           v-model="form.teach_material"
@@ -201,13 +206,13 @@ export default {
 
       rules: {
         product_id: [
-          this.$rules.required('产品名称', 'number', 'blur'),
+          this.$rules.required('产品名称', 'number', 'change'),
         ],
         teach_material: [
-          this.$rules.required('教材版本', 'number', 'blur'),
+          { validator: this.teachMaterialCheck, trigger: 'change' },
         ],
         customer_relationships_id: [
-          this.$rules.required('排课专员', 'number', 'blur'),
+          this.$rules.required('排课专员', 'number', 'change'),
         ],
         teachers: [
           this.$rules.required('教师', 'array', 'blur'),
@@ -228,11 +233,25 @@ export default {
       return this.form.product_id || null
     },
 
+    // 已选中的产品的产品类型
+    currentProductType() {
+      if (this.currentProductId) {
+        return this.productList
+          .find(product => product.id === this.currentProductId).product_type
+      }
+      return null
+    },
+
+    // 已选中的产品是否是晚辅导
+    isNightCoach() {
+      return this.currentProductType === 5
+    },
+
     // 已选中的产品的班级学科id
     currentProductSubject() {
       if (this.currentProductId) {
         return this.productList
-          .find(item => item.id === this.currentProductId).grade_range_subject_id
+          .find(product => product.id === this.currentProductId).grade_range_subject_id
       }
       return null
     },
@@ -278,6 +297,18 @@ export default {
   },
 
   methods: {
+    teachMaterialCheck(rule, value, callback) {
+      if (this.isNightCoach !== 5) {
+        if (value) {
+          callback()
+        } else {
+          callback(new Error('教材版本不能为空'))
+        }
+      } else {
+        callback()
+      }
+    },
+
     // 选择学生添加
     addStudent(id) {
       if (id) {
