@@ -1,26 +1,73 @@
 <template>
-  <div class="login">
-    <div class="login-box">
-      <header class="login-box__header">
-        <h1>欢迎登陆爱考拉 SAAS 管理系统</h1>
-      </header>
+  <div
+    class="login"
+    :style="{backgroundImage:`url(${require('@/assets/bg-login-lg.jpg')})`}"
+  >
+    <div class="login-box clearfix">
 
-      <Form class="login-box__body" :model="form" :rules="rules" :label-width="60" ref="form">
-        <app-form-alert :errors="formErrors" :fullWidth="true"></app-form-alert>
+      <!-- 左侧背景 -->
+      <div
+        class="login-box__left"
+        :style="{backgroundImage:`url(${require('@/assets/bg-login-sm.png')})`}"
+      >
+        <img
+          class="login-box__logo"
+          :src="require('@/assets/logo-login.png')"
+          alt="logo"
+        >
+      </div>
+
+      <!-- 右侧表单 -->
+      <Form
+        class="login-box__body"
+        :model="form"
+        :rules="rules"
+        :label-width="60"
+        ref="form"
+      >
+        <!-- 标题 -->
+        <h1 class="login-box__body__title">欢迎登录爱考拉SAAS管理系统</h1>
+
+        <!-- 错误提示 -->
+        <app-form-alert
+          :errors="formErrors"
+          :fullWidth="true"
+        ></app-form-alert>
 
         <div class="login-box__body__content clearfix" @keyup.enter="beforeSubmit">
-          <img class="login-box__logo" :src="require('@/assets/logo-login.png')" alt="">
 
           <div class="login-box__form">
-            <Form-item label="用户名" prop="username">
-              <Input v-model="form.username"></Input>
+            <Form-item
+              label="用户名"
+              prop="username"
+            >
+              <Input
+                v-model="form.username"
+                placeholder="请输入用户名"
+              ></Input>
             </Form-item>
-            <Form-item label="密码" prop="password">
-              <Input type="password" v-model="form.password" autocomplete="off"></Input>
+
+            <Form-item
+              label="密码"
+              prop="password"
+            >
+              <Input
+                v-model="form.password"
+                type="password"
+                placeholder="请输入密码"
+                autocomplete="off"
+              ></Input>
             </Form-item>
-            <Form-item>
-              <Button type="primary" @click="beforeSubmit" :loading="formLoading" long>登录</Button>
-            </Form-item>
+
+            <Button
+              class="login-box__form__button"
+              type="primary"
+              @click="beforeSubmit"
+              :loading="formLoading"
+              size="large"
+              long
+            >登录</Button>
+
           </div>
         </div>
       </Form>
@@ -94,58 +141,112 @@ export default {
 @import '~vars';
 
 @login-radius: 8px;
+@login-width: 1000px;
+@login-height: 580px;
+@input-height: 34px;
+@form-width:280px;
 
 .login {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+
+  background-color : @disabled-color;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: cover;
 }
 
 .login-box {
-  width: 500px;
+  width: @login-width;
+  height: @login-height;
   border: 1px solid @border-color-base;
   border-radius: @login-radius;
-  box-shadow: 0 0 5px @shadow-color;
+  box-shadow: 0 0 30px @shadow-color;
+  overflow: hidden;
+  background-color : #fff;
 
-  &__header {
-    border-top-left-radius: @login-radius;
-    border-top-right-radius: @login-radius;
-    background-color: @primary-color ;
-    color: #fff;
-    text-align: center;
-
-    & > h1 {
-      height: 50px;
-      font-size: 16px;
-      line-height: 50px;
-    }
+  &__left {
+    position: relative;
+    float: left;
+    width: @login-width*0.595;
+    height: 100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size: cover;
   }
 
   &__body {
-    padding: 30px 45px;
+    float: left;
+    width: @login-width*0.4;
+    height: 100%;
+
+    &__title {
+      width: 100%;
+      font-size: 22px;
+      font-weight: normal;
+      text-align: center;
+      color: #333;
+      margin-top: 145px;
+      margin-bottom: 40px;
+    }
 
     &__content {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-  }
 
-  &__form {
-    .ivu-form-item:last-child{
-      margin-bottom: 0;
+    .app-form-alert {
+      margin:0 60px;
     }
   }
 
-  &__alert {
-    margin-top: -10px;
-    margin-bottom: 15px;
+  &__form {
+    width: @form-width;
+
+    &__button {
+      margin-top: 40px;
+    }
+
+    .ivu-form-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .ivu-form-item-label {
+      padding: 0 15px 0 0;
+      overflow: hidden;
+      text-align: justify;
+      height: @input-height;
+      line-height: @input-height;
+      font-size: 14px;
+
+      &::before {
+        display: none;
+      }
+
+      &::after {
+        content:'';
+        display: inline-block;
+        width: 100%;
+      }
+    }
+
+    .ivu-input{
+      height: @input-height;
+      font-size: 14px;
+    }
   }
 
   &__logo {
-    width: 120px;
-    height: 120px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -75px;
+    margin-top: -80px;
+    width: 150px;
+    height: 160px;
   }
 }
 
