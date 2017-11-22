@@ -5,6 +5,7 @@
       <!-- 年段学科 -->
       <Form-item>
         <Select
+          v-if="currentSubjectId"
           v-model="query[`equal[grade_range_subject_id]`]"
           placeholder="选择年段学科"
           style="width:9em;"
@@ -28,11 +29,11 @@
           style="width:9em;"
         >
           <Option
-            v-for="item in currentQuestionTypes"
-            :value="item.value"
-            :key="item.value"
+            v-for="version in currentTeachingVersionData"
+            :value="version.value"
+            :key="version.value"
           >
-            {{item.display_name}}
+            {{version.display_name}}
           </Option>
         </Select>
       </Form-item>
@@ -91,12 +92,12 @@
       class="question-knowledge__structure"
       v-model="modal.chapter"
       title="编辑章节"
+      @on-cancel="fetchData"
     >
       <TreeEditor
-        v-if="query[`equal[grade_range_subject_id]`]"
+        v-if="currentSubjectId"
         keyword="章节"
         :data="chapterTree"
-        :default-subject="query[`equal[grade_range_subject_id]`]"
         @create="createChapter"
         @delete="deleteChapter"
         @sort="sortChapter"
@@ -110,7 +111,7 @@
 
     <!-- 编辑章节弹窗 -->
     <edit-modal
-      v-if="query[`equal[grade_range_subject_id]`]"
+      v-if="currentSubjectId"
       v-model="modal.edit"
       :form="form"
       :is-edit="isEdit"
@@ -244,26 +245,18 @@ export default {
   },
 
   computed: {
-    // 当前年级学科对应的教材版本
-    currentQuestionTypes() {
-      return this.teaching_version[this.query['equal[grade_range_subject_id]']]
+    // 当前年级学科
+    currentSubjectId() {
+      return this.query['equal[grade_range_subject_id]']
+    },
+
+    // 当前年级学科对应的教材版本数据源
+    currentTeachingVersionData() {
+      return this.teaching_version[this.currentSubjectId]
     },
   },
 
   methods: {
-    // 打开编辑章节树弹窗
-    openChapterModal() {
-      const id = this.$route.query['equal[grade_range_subject_id]'] || this.query['equal[grade_range_subject_id]']
-      this.$http.get(`/chapter/tree/${id}`)
-        .then((res) => {
-          this.modal.chapter = true
-          this.chapterTree = res
-        })
-        .catch(({ message }) => {
-          this.$Message.error(message)
-        })
-    },
-
     // 打开编辑章节 & 查看章节弹窗
     openEditModal(id, type) {
       if (type === 'edit') {
@@ -292,6 +285,52 @@ export default {
       this.form.data.splice(index, 1)
     },
 
+    // 打开编辑章节树弹窗
+    openChapterModal() {
+      // 年级学科id和教材id都是优先从路由获取
+      const gradeSubjectId = this.$route.query['equal[grade_range_subject_id]']
+      const teachMaterialId = this.$route.query['equal[teach_material]']
+
+      this.$http.get(`/chapter/tree/${gradeSubjectId}/${teachMaterialId}`)
+        .then((res) => {
+          this.modal.chapter = true
+          this.chapterTree = res
+        })
+        .catch(({ message }) => {
+          this.$Message.error(message)
+        })
+    },
+
+    // 添加章节
+    createChapter(data, success, fail) {
+      this.$http.post('/chapter', {
+        ...data,
+        teach_material: this.query['equal[teach_material]'],
+      })
+        .then((res) => {
+          success(res)
+          this.fetchData()
+        })
+        .catch(error => fail(error))
+    },
+
+    // 删除章节
+    deleteChapter(id, success, fail) {
+      this.$http.delete(`/chapter/${id}`)
+        .then((res) => {
+          success(res)
+          this.fetchData()
+        })
+        .catch(error => fail(error))
+    },
+
+    // 排序章节
+    sortChapter(data, success, fail) {
+      this.$http.patch(`/chapter/sort/${data.id}`, data)
+        .then(() => success())
+        .catch(error => fail(error))
+    },
+
     // 获取列表数据的公共方法getData
     getData(qs) {
       // 如果this.grade_range_subject_id长度为0，说明为第一次进入页面，这时应请求before接口的数据
@@ -304,12 +343,14 @@ export default {
           .then(() => {
             // 获取年级学科列表第一项的id
             const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+            // 获取对应该年级学科的教材版本的第一项的id
+            const firstTeachMaterialId = this.teaching_version[firstGradeRangeSubjectId][0].value
 
             // 重置关键字搜索
             this.queryReset(firstGradeRangeSubjectId)
 
             // 跳转路由
-            this.$router.push(`/question/chapter?equal[grade_range_subject_id]=${firstGradeRangeSubjectId}`)
+            this.$router.push(`/question/chapter?equal[grade_range_subject_id]=${firstGradeRangeSubjectId}&equal[teach_material]=${firstTeachMaterialId}`)
           })
       }
 
@@ -335,10 +376,13 @@ export default {
 
     // 重置关键字搜索
     queryReset(subjectId) {
+      // 对应该年级学科的教材版本的第一项的教材id
+      const firstTeachMaterialId = this.teaching_version[subjectId][0].value
+
       this.likeKey = this.likeKeys[0].field_name
       this.likeValue = ''
       this.query = {
-        'equal[teaching_version]': null,
+        'equal[teach_material]': firstTeachMaterialId,
         'equal[grade_range_subject_id]': subjectId,
       }
     },
@@ -352,33 +396,6 @@ export default {
         .catch(({ message }) => {
           this.errorNotice(message)
         })
-    },
-
-    // 添加章节
-    createChapter(data, success, fail) {
-      this.$http.post('/chapter', data)
-        .then((res) => {
-          success(res)
-          this.fetchData()
-        })
-        .catch(error => fail(error))
-    },
-
-    // 删除章节
-    deleteChapter(id, success, fail) {
-      this.$http.delete(`/chapter/${id}`)
-        .then((res) => {
-          success(res)
-          this.fetchData()
-        })
-        .catch(error => fail(error))
-    },
-
-    // 排序章节
-    sortChapter(data, success, fail) {
-      this.$http.patch(`/chapter/sort/${data.id}`, data)
-        .then(() => success())
-        .catch(error => fail(error))
     },
 
     // 接口错误处理
