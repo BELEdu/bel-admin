@@ -456,12 +456,12 @@ export default {
           this.studentFetched = true
         })
         .catch(() => {
-          this.$Notice.error({
-            title: '错误',
-            desc: '学生信息请求出错',
+          this.$Message.error({
+            content: '学员编号不存在',
+            closable: true,
             duration: 0,
           })
-          throw new Error('学生信息请求出错')
+          throw new Error('学员编号不存在')
         })
     },
 
