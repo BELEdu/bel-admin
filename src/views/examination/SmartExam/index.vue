@@ -115,7 +115,7 @@
     >
       <div class="text-center">
         删除该编号为
-        <span class="color-primary">{{currentNumber}}</span>
+        <span class="color-primary">{{currentId}}</span>
         的测试后将无法再回复，<br>是否继续删除？
       </div>
     </app-warn-modal>
@@ -125,7 +125,7 @@
       v-model="deviceModal.active"
       :students="student_data"
       :answer-type='currentAnswerType'
-      :test-number="currentNumber"
+      :test-number="currentId"
       @closeDeviceModal="deviceModal.active = false"
       @update="fetchData"
     ></device-modal>
@@ -195,7 +195,7 @@ export default {
               text: '删除',
               type: 'error',
               isShow: ({ row }) => row.operation.destroy,
-              click: row => this.openDeleteModal(row.id, row.test_number),
+              click: row => this.openDeleteModal(row.id),
             },
             {
               text: '查看试卷',
@@ -213,7 +213,7 @@ export default {
               text: '开始测试',
               type: 'success',
               isShow: ({ row }) => row.operation.start,
-              click: row => this.openStartModal(row.id, row.test_number, row.answer_type),
+              click: row => this.openStartModal(row.id, row.answer_type),
             },
           ]),
         },
@@ -235,7 +235,6 @@ export default {
       },
 
       currentId: null, // 当前选中的测试id
-      currentNumber: '', // 当前选中的测试编号
       currentAnswerType: 1, // 当前测试的答题方式 1：线上 2：线下
 
       // 删除弹窗
@@ -273,8 +272,7 @@ export default {
     },
 
     // 打开删除弹窗
-    openDeleteModal(id, number) {
-      this.currentNumber = number
+    openDeleteModal(id) {
       this.currentId = id
       this.deleteModal.active = true
     },
@@ -296,8 +294,8 @@ export default {
     },
 
     // 打开开始测试弹窗
-    openStartModal(id, number, answerType) {
-      this.currentNumber = number
+    openStartModal(id, answerType) {
+      this.currentId = id
       this.currentAnswerType = answerType
 
       this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, id)

@@ -68,10 +68,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    testNumber: {
-      type: String,
-      required: true,
-    },
+    testNumber: {},
     students: {
       type: Array,
       required: true,

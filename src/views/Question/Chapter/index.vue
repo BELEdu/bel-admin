@@ -337,7 +337,7 @@ export default {
       const p = this.grade_range_subject_id.length ? Promise.resolve() : this.getBeforeData()
 
       // qs为空代表目标路由地址没有携带url参数，这时候应该向路由推送equal[grade_range_subject_id]参数，将之设为默认值
-      // 默认值为this。grade_range_subject_id的第一项的id
+      // 默认值为this.grade_range_subject_id的第一项的id
       if (!qs) {
         return p
           .then(() => {
