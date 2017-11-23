@@ -120,7 +120,7 @@
       </Form>
 
       <!-- 推荐试题 -->
-      <div v-show="step === 3">
+      <div v-if="step === 3">
         <!-- 刷新按钮 -->
         <div class="prepareplan-edit-modal__refresh text-right">
           <Button
