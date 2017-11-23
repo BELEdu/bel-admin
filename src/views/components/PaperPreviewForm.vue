@@ -149,7 +149,8 @@ export default {
 
       paper.display_name = `${display(paper.year, this.year.data, '', '年')}`
         + ` ${campusName}`
-        + ` ${display(paper.grade, this.grade.data, '', paper.subjectName)}`
+        + ` ${display(paper.grade, this.grade.data)}`
+        + `${paper.subjectName}`
         + ` ${display(paper.paper_type, this.paper_type.data)}`
         + `${display(paper.subject_type, this.subjects.data, '(', ')')}`
     },

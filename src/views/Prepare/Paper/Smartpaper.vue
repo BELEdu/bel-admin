@@ -7,6 +7,7 @@
       class="app-form-entire"
       :label-width="130"
     >
+      <app-form-alert :errors="formErrors"></app-form-alert>
       <Form-item label="选择科目" required>
         <AppButtonRadio
           v-model="fdata.subject_id"
@@ -74,6 +75,7 @@
  *
  * @author huojinzhao
  */
+import { form } from '@/mixins'
 import { GLOBAL } from '@/store/mutationTypes'
 import {
   PaperPreviewDialog,
@@ -86,8 +88,21 @@ const initFdata = subject_id => ({
   knowledge: [],
 })
 
+const paperFactory = () => ({
+  campuses: [[]],
+  grade: null,
+  subject_type: null,
+  paper_type: null,
+  year: null,
+  display_name: '',
+  exam_time: 0,
+  question_types: [],
+})
+
 export default {
   name: 'PreparePaperSmartpaper',
+
+  mixins: [form],
 
   components: {
     PaperPreviewDialog,
@@ -96,25 +111,21 @@ export default {
   data: () => ({
     preConfig: null,
 
-    fdata: initFdata(1),
+    fdata: initFdata(10),
 
     previewModal: {
       visible: false,
-      data: {
-        campuses: [[]],
-        grade: null,
-        subject_type: null,
-        paper_type: null,
-        year: null,
-        display_name: '',
-        exam_time: 0,
-        question_types: [],
-      },
+      data: paperFactory(),
       loading: false,
     },
 
     loading: false,
   }),
+
+  created() {
+    this.v_getPreConfig()
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
 
   methods: {
     /* --- Initialization --- */
@@ -132,7 +143,7 @@ export default {
 
     m_initPreConfig(before) {
       this.fdata = initFdata(this.fdata.subject_id)
-      // this.fdata.subject_id = before.current_grade_range_subject_id
+      this.fdata.knowledge = []
       this.preConfig = before
       this.m_constructQuestionTypes(before.question_type_id.data)
     },
@@ -145,30 +156,34 @@ export default {
         }))
     },
 
-    /* --- Business --- */
+    /* --- Control --- */
 
     v_cancel() {
       this.$router.push('/prepare/papercenter')
     },
 
+    /* --- Business --- */
+
     v_composePaper() {
+      this.formErrors = {}
       this.loading = true
 
       this.$http.post('/paper_center/intelligence', this.fdata)
         .then(res => this.m_composePaper(res))
-        .catch(() => this.$Notice.error({
-          title: '请求数据失败',
-          duration: 0,
-        }))
+        .catch(this.errorHandler)
         .then(() => { this.loading = false })
     },
 
     m_composePaper(paper) {
+      const id = this.fdata.subject_id
+
       this.previewModal.data = {
-        ...this.previewModal.data,
+        ...paperFactory(),
         ...paper,
         ...{
-          grade_range_subject_id: this.fdata.subject_id,
+          // 视图学科数据生成
+          subjectName: this.filterSubjectName(id),
+          grade_range_subject_id: id,
         },
       }
       this.m_openPreview()
@@ -195,11 +210,16 @@ export default {
     m_openPreview() {
       this.previewModal.visible = true
     },
-  },
 
-  created() {
-    this.v_getPreConfig()
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+
+    /* --- Assistance --- */
+
+    filterSubjectName(id) {
+      const name = this.preConfig.grade_range_subject_id
+        .find(subject => subject.id === id)
+
+      return name ? name.display_name.slice(2) : ''
+    },
   },
 }
 </script>
