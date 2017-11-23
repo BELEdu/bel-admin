@@ -339,10 +339,10 @@ export default {
       const loop = setInterval(() => {
         if (newWin.closed) {
           clearInterval(loop)
-          console.log('关了')
           const qdata = localStorage.getItem('sm')
-          console.log(qdata)
           this.localQuestion = qdata
+          // console.log('关了')
+          // console.log(qdata)
         }
       }, 1000)
 
