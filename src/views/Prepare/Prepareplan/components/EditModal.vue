@@ -120,52 +120,27 @@
       </Form>
 
       <!-- 推荐试题 -->
-      <div v-show="step === 3" class="prepareplan-edit-modal__question clearfix">
+      <div v-show="step === 3">
         <!-- 刷新按钮 -->
-        <div class="right prepareplan-edit-modal__refresh">
+        <div class="prepareplan-edit-modal__refresh text-right">
           <Button
             v-if="!isShow"
-            class="color-primary"
-            type="dashed"
-            shape="circle"
+            type="primary"
             icon="plus"
             :loading="questionLoading"
             @click="getQuestionInfo"
           >加一批</Button>
-
         </div>
 
-        <!-- 试题列表 -->
-        <div v-for="(item,index) in form.questions" :key="item.id">
-          <question
-            :index="index+1"
-            :data="item"
-            :width="500"
-          ></question>
+        <!-- 试题列表组件 -->
+        <question-list
+          :data="form.questions"
+          :width="818"
+        ></question-list>
 
-          <!-- 试题操作 -->
-          <div class="prepareplan-edit-modal__action">
-            <Button
-              class="color-primary"
-              type="dashed"
-              shape="circle"
-              icon="chatbox-working"
-              size="small"
-              @click="openModal(index)"
-            >查看解析</Button>
-
-            <Button
-              v-if="!isShow"
-              class="color-error right"
-              type="dashed"
-              shape="circle"
-              icon="close"
-              size="small"
-              @click="removeQuestion(index)"
-            >删除</Button>
-          </div>
-        </div>
       </div>
+
+
 
       <!-- 自定义底部 -->
       <div slot="footer">
@@ -237,6 +212,7 @@
 
 import { form } from '@/mixins'
 import { Question, QuestionAnalysisDialog } from '@/views/components'
+import QuestionList from './QuestionList'
 
 // 默认ppt数组项
 const defaultPpt = {
@@ -252,6 +228,7 @@ export default {
   components: {
     Question,
     QuestionAnalysisDialog,
+    QuestionList,
   },
 
   props: {
@@ -436,17 +413,6 @@ export default {
     lastStep() {
       this.step = this.step - 1
     },
-
-    // 打开解析弹窗
-    openModal(index) {
-      this.modalActive = true
-      this.currentQuestion = this.form.questions[index]
-    },
-
-    // 移除试题
-    removeQuestion(index) {
-      this.form.questions.splice(index, 1)
-    },
   },
 }
 </script>
@@ -474,15 +440,6 @@ export default {
 
   &__refresh{
     margin-bottom: 15px;
-  }
-
-  &__question {
-    width: 500px;
-    margin:auto;
-  }
-
-  &__action {
-    margin:12px auto;
   }
 
   &__tips {
