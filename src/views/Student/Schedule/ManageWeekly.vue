@@ -89,6 +89,7 @@
                           <Button size="small" v-if="list.schedule_operation.cancel" type="primary" @click.native="handlerModal(list, true)">撤销</Button>
                         </template>
                         <span v-else>-</span>
+                        <Button size="small" v-if="list.schedule_operation.draft" type="primary" @click.native="handlerNotesModal(list)">笔记</Button>
                       </p>
                     </div>
                   </Tooltip>
@@ -118,6 +119,9 @@
       v-if="isDialogRender"
       @on-update="fetchData"
     ></course-modal>
+
+    <!--查看学员笔记-->
+    <notes-modal :visible.sync="dialog.notes"></notes-modal>
   </div>
 </template>
 

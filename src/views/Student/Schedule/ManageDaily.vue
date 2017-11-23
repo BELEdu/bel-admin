@@ -42,6 +42,9 @@
       v-if="isDialogRender"
       @on-update="fetchData"
     ></course-modal>
+
+    <!--查看学员笔记-->
+    <notes-modal :visible.sync="dialog.notes"></notes-modal>
   </div>
 </template>
 
@@ -129,17 +132,16 @@
                   this.handlerModal(row)
                 },
               },
+              { text: '查看笔记',
+                isShow: ({ row }) => row.schedule_operation.draft,
+                type: 'primary',
+                click: (row) => {
+                  this.handlerNotesModal(row)
+                },
+              },
             ]),
           },
         ],
-
-        dialog: {
-          visible: false,
-        },
-
-        isDialogRender: false,
-
-        isRepeal: false,
       }
     },
 
