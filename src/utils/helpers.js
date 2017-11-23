@@ -1,11 +1,24 @@
 /**
+ * 判断取值
+ * @author chenliangshan
+ */
+const getValue = (item) => {
+  if (item.can_choose && item.role_id) {
+    return +item.role_id
+  } else if (item.role_id !== undefined) {
+    return +`${item.p_id}${item.id}${item.role_id}`
+  }
+  return +`${item.id}`
+}
+
+/**
  * 递归转换
  * @author lmh
  */
 const map = items => items.map(item => ({
   can_choose: item.can_choose,
   label: item.display_name,
-  value: item.can_choose ? item.role_id : `${item.p_id}${item.id}${item.role_id}`,
+  value: getValue(item),
   children: item.children && !item.can_choose ? map(item.children) : [],
 }))
 
@@ -26,7 +39,7 @@ export const generatePaths = (data) => {
 
   const loop = (items, path) => {
     items.forEach((item) => {
-      const updatedPath = [...path, item.can_choose ? item.role_id : `${item.p_id}${item.id}${item.role_id}`]
+      const updatedPath = [...path, getValue(item)]
       if (item.children) {
         loop(item.children, updatedPath)
       } else {
