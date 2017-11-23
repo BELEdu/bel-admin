@@ -27,7 +27,7 @@
     </App-table-form>
 
     <!-- 科目过滤 -->
-    <ConditionRadioSubject
+    <ConditionRadioQuery
       v-if="subjects"
       :data="subjects.data"
       :default="subjects.default"
@@ -91,7 +91,7 @@ import { list, tableCommon } from '@/mixins'
 import { createButton } from '@/utils'
 import {
   ConditionRadio,
-  ConditionRadioSubject,
+  ConditionRadioQuery,
 } from '@/views/components'
 
 export default {
@@ -101,7 +101,7 @@ export default {
 
   components: {
     ConditionRadio,
-    ConditionRadioSubject,
+    ConditionRadioQuery,
   },
 
   data() {
@@ -219,8 +219,15 @@ export default {
       this.$router.push('/prepare/papercenter/smartpaper')
     },
 
-    v_toUpdate({ id }) {
-      this.$router.push(`/prepare/papercenter/edit/${id}`)
+    v_toUpdate({
+      id,
+      grade_range_subject_id,
+    }) {
+      const path = `/prepare/papercenter/edit/${id}`
+      const subject = `?equal[grade_range_subject_id]=${grade_range_subject_id}`
+      const url = `${path}${subject}`
+
+      this.$router.push(url)
     },
 
     v_toCheck({ id }) {

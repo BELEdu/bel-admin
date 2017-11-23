@@ -16,11 +16,22 @@
     <!-- 右：主体 -->
     <section>
       <!-- 上部：科目过滤 -->
-      <ConditionRadioSubject
+      <ConditionRadioQuery
         v-if="subjects"
         :data="subjects.data"
         :default="subjects.default"
-        @change="v_getPrecondition"
+        @change="value => vm_fetchBefore({ subjectID: value })"
+      />
+
+      <!-- 上部：教材过滤 -->
+      <ConditionRadioQuery
+        v-if="teachMaterials"
+        :data="teachMaterials.data"
+        :default="teachMaterials.default"
+        label="教材"
+        tag="equal[teach_materials]"
+        spread
+        @change="value => vm_fetchBefore({ teachMaterialsID: value })"
       />
 
       <!-- 上部：高级搜索 -->
@@ -65,11 +76,10 @@
  * @author huojinzhao
  */
 
-import { list } from '@/mixins'
 import { GLOBAL } from '@/store/mutationTypes'
 import {
   ConditionRadio,
-  ConditionRadioSubject,
+  ConditionRadioQuery,
   PaperComposition,
   PaperPreviewDialog,
   TreeCondition,
@@ -85,17 +95,15 @@ const paperFactory = () => ({
   display_name: '',
   exam_time: 0,
   question_types: [],
-  // 前端视图附加数据
+  // 前端视图拼凑试卷标题附加数据
   subjectName: '',
 })
 
 export default {
   name: 'PrepareQuestion',
 
-  mixins: [list],
-
   components: {
-    ConditionRadioSubject,
+    ConditionRadioQuery,
     ConditionRadio,
     PaperComposition,
     PaperPreviewDialog,
@@ -107,6 +115,9 @@ export default {
   data: () => ({
     // server: 学科选择数据
     subjects: null,
+
+    // server: 教材筛选数据
+    teachMaterials: null,
 
     // server：树结构数据
     treeData: {
@@ -143,20 +154,34 @@ export default {
 
     subjectID() {
       const id = this.$route.query['equal[grade_range_subject_id]']
-        || this.paper.grade_range_subject_id
+        || (this.subjects ? this.subjects.data[0].value : '')
+
+      return parseInt(id, 10)
+    },
+
+    teachMaterialsID() {
+      const id = this.$route.query['equal[teach_materials]']
+        || (this.teachMaterials ? this.teachMaterials.data[0].value : '')
 
       return parseInt(id, 10)
     },
   },
 
-  created() {
-    const { action } = this.$route.meta
+  beforeRouteEnter(to, from, next) {
+    const { action } = to.meta
 
-    if (action === 'patch') {
-      this.initUpdation()
-    } else {
-      this.initCreation()
-    }
+    next((vm) => {
+      if (action === 'patch') {
+        vm.initUpdation()
+      } else {
+        vm.initCreation()
+      }
+    })
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    next()
+    this.m_fetchData(to)
   },
 
   beforeRouteLeave(to, from, next) {
@@ -169,17 +194,33 @@ export default {
 
     /* Common */
 
-    v_getPrecondition(subjectID) {
+    getBeforeUrl(subjectID, teachMaterialsID) {
       const host = this.$route.meta.beforeUri
 
-      const url = subjectID
-        ? `${host}?grade_range_subject_id=${subjectID}` : host
+      const subject = subjectID
+        ? `?grade_range_subject_id=${subjectID}` : ''
+
+      const symbol = subjectID ? '&' : '?'
+
+      const teachMaterials = teachMaterialsID
+        ? `${symbol}teach_materials=${teachMaterialsID}` : ''
+
+      return `${host}${subject}${teachMaterials}`
+    },
+
+    vm_fetchBefore({
+      subjectID = this.subjectID,
+      teachMaterialsID = '',
+    } = {}) {
+      const url = this.getBeforeUrl(subjectID, teachMaterialsID)
 
       return this.$http.get(url)
         .then(({
           // 高级搜索
           current_grade_range_subject_id,
           grade_range_subject_id,
+          current_teach_materials,
+          teach_materials,
           question_type_id,
           paper_type,
           question_difficulty,
@@ -192,11 +233,20 @@ export default {
             data: grade_range_subject_id,
             default: current_grade_range_subject_id,
           }
+
+          this.teachMaterials = teach_materials
+            ? {
+              data: teach_materials.data,
+              default: current_teach_materials,
+            }
+            : null
+
           this.advanceConditions = {
             question_type_id,
             paper_type,
             question_difficulty,
           }
+
           this.treeData = {
             knowledge_tree,
             chapter_tree,
@@ -205,16 +255,17 @@ export default {
 
           this.m_initTreeEntries()
 
-          this.m_generatePaper(
-            subjectID || current_grade_range_subject_id,
+          // eslint-disable-next-line
+          !teachMaterialsID && this.m_generatePaper(
+            this.subjectID,
             question_type_id.data,
           )
         })
     },
 
-
     // 生成试卷信息，变换学科，重置选题;
     m_generatePaper(subjectID, types) {
+      this.paper = paperFactory()
       // 科目生成
       this.paper.grade_range_subject_id = subjectID
       // 视图学科数据生成
@@ -260,23 +311,13 @@ export default {
       }
     },
 
-    getData(queryUrl) {
-      const host = this.$route.meta.fetchUri
-
-      const url = queryUrl
-        ? `${host}${queryUrl}&per_page=20`
-        : `${host}?per_page=20`
-
-      return this.$http.get(url)
-        .then((res) => { this.buffer = res })
-    },
-
-    searchData(queryUrl) {
+    m_fetchData(route = this.$route) {
       this.$store.commit(GLOBAL.LOADING.SHOW)
-      this.getData(queryUrl)
+
+      return this.getData(this.getQueryUrl(route.query))
         .catch(() => {
           this.$Notice.error({
-            title: '无法访问数据，请稍后再试',
+            title: '无法访问试题数据，请稍后再试',
             duration: 0,
           })
         })
@@ -285,10 +326,46 @@ export default {
         })
     },
 
+    getData(query) {
+      const asyncFlow = this.subjects && query
+        ? Promise.resolve()
+        : this.vm_fetchBefore()
+
+      return asyncFlow
+        .then(() => (
+          query
+            ? this.m_getData(query)
+            : this.$router.push(this.m_resetSearchField())
+        ))
+    },
+
+    m_getData(query) {
+      const host = this.$route.meta.fetchUri
+
+      const url = `${host}${query}&per_page=20`
+
+      return this.$http.get(url)
+        .then((res) => { this.buffer = res })
+    },
+
+    m_resetSearchField() {
+      const subject = `equal[grade_range_subject_id]=${this.subjects.data[0].value}`
+
+      const materials = this.teachMaterials
+      const teach = materials
+        ? `equal[teach_materials]=${materials.data[0].value}` : ''
+
+      const path = teach
+        ? `${this.$route.path}?${subject}&${teach}`
+        : `${this.$route.path}?${subject}`
+
+      return path
+    },
+
     /* Creation */
 
     initCreation() {
-      this.v_getPrecondition(this.subjectID)
+      this.m_fetchData()
     },
 
     /* Edition */
@@ -298,7 +375,7 @@ export default {
         .then(res => this.m_dealUpdationInfo(res))
         .catch(() => {
           this.$Notice.error({
-            title: '无法访问数据，请稍后再试',
+            title: '无法访问试卷数据，请稍后再试',
             duration: 0,
           })
         })
@@ -311,23 +388,13 @@ export default {
     m_dealUpdationInfo(paper) {
       const id = paper.grade_range_subject_id
 
-      this.resetUrlSubject(id)
-
-      this.v_getPrecondition(id)
+      this.m_fetchData()
         .then(() => {
           this.paper = this.paperUpdation(paper)
           // 视图学科数据生成
           this.paper.subjectName = this.filterSubjectName(id)
           this.vm_onPaperPreview()
         })
-    },
-
-    resetUrlSubject(subjectId) {
-      const query = {
-        'equal[grade_range_subject_id]': subjectId,
-      }
-
-      this.$router.push({ query })
     },
 
     paperUpdation(paper) {
@@ -350,17 +417,24 @@ export default {
 
     /* --- Assitance --- */
 
-    recombineQuery(fragment) {
-      return this.queryUrl
-        ? `?${this.queryUrl}&${fragment}`
-        : `?${fragment}`
-    },
-
     filterSubjectName(id) {
       const name = this.subjects.data
         .find(subject => subject.id === id)
 
       return name ? name.display_name.slice(2) : ''
+    },
+
+    getQueryUrl(query) {
+      const url = Object.keys(query).reduce((
+        acc,
+        val,
+        index,
+      ) => {
+        const separator = index === 0 ? '?' : '&'
+        return `${acc}${separator}${val}=${query[val]}`
+      }, '')
+
+      return url
     },
 
     /* --- Control--- */

@@ -72,12 +72,12 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    this.$refs.composition.fetchData(to)
+    this.$refs.composition.m_fetchData(to)
     next()
   },
 
   mounted() {
-    this.$refs.composition.fetchData(this.$route)
+    this.$refs.composition.m_fetchData(this.$route)
   },
 }
 </script>

@@ -27,7 +27,7 @@
     </App-table-form>
 
     <!-- 科目过滤 -->
-    <ConditionRadioSubject
+    <ConditionRadioQuery
       v-if="subjects"
       :data="subjects.data"
       :default="subjects.default"
@@ -82,7 +82,7 @@ import { list, tableCommon } from '@/mixins'
 import { createButton } from '@/utils'
 import {
   ConditionRadio,
-  ConditionRadioSubject,
+  ConditionRadioQuery,
 } from '@/views/components'
 
 export default {
@@ -92,7 +92,7 @@ export default {
 
   components: {
     ConditionRadio,
-    ConditionRadioSubject,
+    ConditionRadioQuery,
   },
 
   data() {
@@ -234,7 +234,9 @@ export default {
     /* edit */
 
     onEditPaper(row) {
-      const url = `/question/paper/composition/${row.id}?${this.currentSubject}`
+      const path = `/question/paper/composition/${row.id}`
+      const subject = `?equal[grade_range_subject_id]=${row.grade_range_subject_id}`
+      const url = `${path}${subject}`
       this.$router.push(url)
     },
 

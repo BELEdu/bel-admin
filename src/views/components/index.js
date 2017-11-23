@@ -9,8 +9,8 @@ export {
 } from './ConditionRadio'
 
 export {
-  default as ConditionRadioSubject,
-} from './ConditionRadioSubject'
+  default as ConditionRadioQuery,
+} from './ConditionRadioQuery'
 
 export {
   default as PaperComposition,

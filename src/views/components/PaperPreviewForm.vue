@@ -51,7 +51,7 @@ export default {
         { required: true, message: '必须选择类型信息' },
       ],
       display_name: [
-        { required: true, message: '必须填写试卷标题' },
+        { required: true, message: '必须填写试卷标题', trigger: 'blur' },
       ],
       exam_time: [
         { required: true, message: '必须填写考试时长' },
