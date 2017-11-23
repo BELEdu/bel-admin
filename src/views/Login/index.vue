@@ -146,22 +146,25 @@ export default {
 @input-height: 34px;
 @form-width:280px;
 
-.login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-
+.cover-img() {
   background-color : @disabled-color;
   background-repeat:no-repeat;
   background-position:center;
   background-size: cover;
 }
 
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  .cover-img()
+}
+
 .login-box {
   width: @login-width;
   height: @login-height;
-  border: 1px solid @border-color-base;
   border-radius: @login-radius;
   box-shadow: 0 0 30px @shadow-color;
   overflow: hidden;
@@ -170,11 +173,10 @@ export default {
   &__left {
     position: relative;
     float: left;
-    width: @login-width*0.595;
+    width: @login-width*0.6;
     height: 100%;
-    background-repeat:no-repeat;
-    background-position:center;
-    background-size: cover;
+
+    .cover-img()
   }
 
   &__body {
