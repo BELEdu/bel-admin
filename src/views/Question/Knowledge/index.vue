@@ -340,19 +340,16 @@ export default {
     },
 
     getData(query) {
-      if (query) return this.m_getData(query)
-
       const asyncFlow = this.subjects.length
         ? Promise.resolve()
         : this.fetchBefore()
 
       return asyncFlow
-        .then(() => {
-          this.m_resetSearchField()
-          const queryUri = `equal[grade_range_subject_id]=${this.subjects[0].id}`
-          const path = `/question/knowledge?${queryUri}`
-          this.$router.push(path)
-        })
+        .then(() => (
+          query
+            ? this.m_getData(query)
+            : this.$router.push(this.m_resetSearchField())
+        ))
     },
 
     m_getData(query) {
@@ -369,6 +366,9 @@ export default {
         'equal[grade_range_subject_id]': this.subjects[0].id,
         'equal[knowledge_importance]': '',
       }
+
+      const queryUri = `equal[grade_range_subject_id]=${this.subjects[0].id}`
+      return `/question/knowledge?${queryUri}`
     },
 
     /* 编辑知识点 */
