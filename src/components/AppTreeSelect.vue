@@ -53,6 +53,7 @@
 <script>
 /* eslint-disable no-param-reassign */
 import Vue from 'vue'
+import isEqual from 'lodash/isEqual'
 
 export default {
   name: 'app-tree-select',
@@ -139,6 +140,12 @@ export default {
       if (val.length && !this.isSelected) this.isSelected = true
     },
 
+    value(newVal, oldVal) {
+      if (!isEqual(newVal, oldVal)) {
+        this.init(this.items)
+      }
+    },
+
   },
 
   methods: {
@@ -196,13 +203,13 @@ export default {
 
       // 单选情况下，点中非最后一级，nextSelectedItems将为空数组
       // 这时候不应该给this.selectedItems重新赋值
-      if (nextSelectedItems.length) {
-        this.selectedItems = nextSelectedItems
-      } else {
+      if (!this.multiple && !nextSelectedItems.length) {
         const selectedItem = this.selectedItems[0]
         if (selectedItem) {
           Vue.set(selectedItem, 'selected', true)
         }
+      } else {
+        this.selectedItems = nextSelectedItems
       }
 
       this.updateValue()
@@ -245,6 +252,8 @@ export default {
         const singleSelected = !this.multiple && this.value === item.id
         if (mutilpleSelected || singleSelected) {
           Vue.set(item, 'selected', true)
+        } else {
+          Vue.set(item, 'selected', false)
         }
       }
       tree.forEach(handler)
