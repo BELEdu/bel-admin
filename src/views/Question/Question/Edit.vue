@@ -266,7 +266,7 @@ import { form, goBack } from '@/mixins'
 const defaultAnswer = {
   option: '', // 选项
   content: '', // 内容
-  is_correct: 0, // 是否是正确选项
+  is_correct: 1, // 是否是正确选项
 }
 
 export default {
@@ -485,17 +485,17 @@ export default {
         switch (this.questionTemplateFormat) {
           case 1:
             this.form.question_answers = [
-              { ...defaultAnswer, option: 'A' },
-              { ...defaultAnswer, option: 'B' },
-              { ...defaultAnswer, option: 'C' },
-              { ...defaultAnswer, option: 'D' },
+              { ...defaultAnswer, option: 'A', is_correct: 0 },
+              { ...defaultAnswer, option: 'B', is_correct: 0 },
+              { ...defaultAnswer, option: 'C', is_correct: 0 },
+              { ...defaultAnswer, option: 'D', is_correct: 0 },
             ]
             break
           case 2:
             this.tureOrFalseData = 1
             this.form.question_answers = [
-              { ...defaultAnswer, option: '√', is_correct: 1 },
-              { ...defaultAnswer, option: '×' },
+              { ...defaultAnswer, option: '√' },
+              { ...defaultAnswer, option: '×', is_correct: 0 },
             ]
             break
           // case 3:
