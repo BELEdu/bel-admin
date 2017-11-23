@@ -22,13 +22,13 @@
 
           <Button
             type="warning"
-            :disabled="index === 0"
+            v-if="index !== 0"
             @click="sortQuestion(index,-1)"
           >上移</Button>
 
           <Button
             type="warning"
-            :disabled="index === (data.length-1)"
+            v-if="index !== (data.length-1)"
             @click="sortQuestion(index,1)"
           >下移</Button>
 

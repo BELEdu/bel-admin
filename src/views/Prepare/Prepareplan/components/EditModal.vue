@@ -121,8 +121,9 @@
 
       <!-- 推荐试题 -->
       <div v-if="step === 3">
-        <!-- 刷新按钮 -->
+        <!-- 按钮 -->
         <div class="prepareplan-edit-modal__refresh text-right">
+          <!-- 加一批题目 -->
           <Button
             v-if="!isShow"
             type="primary"
@@ -130,6 +131,14 @@
             :loading="questionLoading"
             @click="getQuestionInfo"
           >加一批</Button>
+
+          <!-- 选题 -->
+          <!-- <Button
+            v-if="!isShow"
+            type="warning"
+            icon="android-cart"
+            @click="openNewTab"
+          >去选题</Button> -->
         </div>
 
         <!-- 试题列表组件 -->
@@ -220,6 +229,15 @@ const defaultPpt = {
   url: '',
 }
 
+// const winObj = window.open('https://www.baidu.com/')
+
+// const loop = setInterval(() => {
+//   if (winObj.closed) {
+//     clearInterval(loop)
+//     alert('closed')
+//   }
+// }, 1000)
+
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
 
@@ -264,6 +282,7 @@ export default {
 
       questionLoading: false,
 
+      localQuestion: null,
     }
   },
 
@@ -302,6 +321,36 @@ export default {
   },
 
   methods: {
+    // 打开新页面
+    openNewTab() {
+      const url = '/prepare/question?equal%5Bgrade_range_subject_id%5D=10&equal%5Bteach_materials%5D=120'
+      const newWin = window.open(url)
+
+      // window.open(url)
+
+      // newWin.addEventListener('unload', () => {
+      //   console.log('关了')
+      // // })
+
+      // newWin.addEventListener('closed', () => {
+      //   console.log('关了')
+      // })
+
+      const loop = setInterval(() => {
+        if (newWin.closed) {
+          clearInterval(loop)
+          console.log('关了')
+          const qdata = localStorage.getItem('sm')
+          console.log(qdata)
+          this.localQuestion = qdata
+        }
+      }, 1000)
+
+      // window.addEventListener('storage', () => console.log('hi'), false)
+
+      // newWin.onunload = () => console.log('关了')
+    },
+
     // 移除ppt
     remove(index) {
       this.form.attachments.splice(index, 1)
