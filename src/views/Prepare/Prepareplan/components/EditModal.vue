@@ -132,13 +132,13 @@
             @click="getQuestionInfo"
           >加一批</Button>
 
-          <!-- 选题 -->
-          <!-- <Button
+          <!-- 手动选题 -->
+          <Button
             v-if="!isShow"
             type="warning"
             icon="android-cart"
-            @click="openNewTab"
-          >去选题</Button> -->
+            @click="changeQuestions"
+          >手动选题</Button>
         </div>
 
         <!-- 试题列表组件 -->
@@ -148,7 +148,6 @@
         ></question-list>
 
       </div>
-
 
 
       <!-- 自定义底部 -->
@@ -229,15 +228,6 @@ const defaultPpt = {
   url: '',
 }
 
-// const winObj = window.open('https://www.baidu.com/')
-
-// const loop = setInterval(() => {
-//   if (winObj.closed) {
-//     clearInterval(loop)
-//     alert('closed')
-//   }
-// }, 1000)
-
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
 
@@ -283,6 +273,8 @@ export default {
       questionLoading: false,
 
       localQuestion: null,
+
+      newWin: null,
     }
   },
 
@@ -321,34 +313,36 @@ export default {
   },
 
   methods: {
-    // 打开新页面
-    openNewTab() {
-      const url = '/prepare/question?equal%5Bgrade_range_subject_id%5D=10&equal%5Bteach_materials%5D=120'
-      const newWin = window.open(url)
 
-      // window.open(url)
+    // 前往手动选题页面
+    changeQuestions() {
+      localStorage.removeItem('prepareplanQuestions')
+      const url = `/prepare/myprepareplan/question?equal[grade_range_subject_id]=${this.form.grade_range_subject_id}`
+      // 打开一个新标签
+      this.newWin = window.open(url, String(Date.now()), '', false)
 
-      // newWin.addEventListener('unload', () => {
-      //   console.log('关了')
-      // // })
+      // 监听localStorage的变化
+      window.addEventListener('storage', this.dealQuestionsStore)
+    },
 
-      // newWin.addEventListener('closed', () => {
-      //   console.log('关了')
-      // })
+    // 监听回调函数
+    dealQuestionsStore() {
+      const questionsStr = localStorage.getItem('prepareplanQuestions')
+      const questionsJson = JSON.parse(questionsStr)
 
-      const loop = setInterval(() => {
-        if (newWin.closed) {
-          clearInterval(loop)
-          const qdata = localStorage.getItem('sm')
-          this.localQuestion = qdata
-          // console.log('关了')
-          // console.log(qdata)
-        }
-      }, 1000)
+      if (questionsJson) {
+        this.newWin.close()
+        // console.log(questionsJson)
 
-      // window.addEventListener('storage', () => console.log('hi'), false)
+        // 添加到课堂练习中
+        this.form.questions = [
+          ...this.form.questions,
+          ...questionsJson,
+        ]
 
-      // newWin.onunload = () => console.log('关了')
+        // 回调成功后关闭这个监听
+        window.removeEventListener('storage', this.dealQuestionsStore)
+      }
     },
 
     // 移除ppt
