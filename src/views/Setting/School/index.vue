@@ -5,7 +5,7 @@
         <app-map-cascader v-model="areaCode" :level="2"></app-map-cascader>
       </Form-item>
       <Form-item>
-        <Input v-model="query['equal[display_name]']" placeholder="请输入学校名称"/>
+        <Input v-model="query['like[display_name]']" placeholder="请输入学校名称"/>
       </Form-item>
     </App-table-form>
 
@@ -102,7 +102,7 @@
         query: {
           'equal[province_code]': '',
           'equal[city_code]': '',
-          'equal[display_name]': '',
+          'like[display_name]': '',
         },
 
         areaCode: [],
