@@ -325,7 +325,11 @@
       // 查看设备
       showHandler(item) {
         this.dialog.currentItem = item
-        this.dialog.view = true
+        this.$http.get(`/setting/classroom/equipment/${item.id}`)
+          .then((res) => {
+            this.dialog.currentItem.equipment = res
+            this.dialog.view = true
+          })
       },
 
       // 取消跟关闭操作
