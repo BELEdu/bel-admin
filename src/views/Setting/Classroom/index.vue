@@ -125,13 +125,12 @@
     data() {
       return {
         likeKeys: [
-          { label: '校区', value: 'display_name' },
-          { label: '教室编号', value: 'equipment_number' },
-          { label: '教师名称', value: 'equipment_type_name' },
+          { label: '校区', value: 'department_name' },
+          { label: '教室编号', value: 'classroom_number' },
           { label: '教室设备', value: 'equipment_display_number' },
         ],
 
-        likeKey: 'display_name',
+        likeKey: 'department_name',
 
         query: {
           'equal[classroom_status]': '',
@@ -169,13 +168,21 @@
           {
             title: '校区',
             align: 'center',
-            render: (h, param) => h('span', null, `${param.row.department ? param.row.department.display_name : ''}`),
+            render: (h, param) => h('span', null, `${param.row.department_name}`),
           },
-          { title: '教室编号', key: 'classroom_number', align: 'center' },
+          {
+            title: '教室编号',
+            align: 'center',
+            key: 'classroom_number',
+          },
           {
             title: '教室设备',
             align: 'center',
-            render: (h, param) => param.row.equipment.map(item => h('p', null, `${item.equipment_display_number}`)),
+            render: (h, param) => h('div', {
+              domProps: {
+                innerHTML: `${param.row.equipment_numbers}`,
+              },
+            }, null),
           },
           { title: '教室状态', key: 'classroom_status_name', align: 'center' },
           { title: '备注', key: 'remark', align: 'center' },
