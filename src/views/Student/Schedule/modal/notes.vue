@@ -8,17 +8,7 @@
     :ok-btn="false"
     class="notes-modal"
   >
-    <Row v-for="(item, index) in items" :key="index">
-      <Col :span="12">
-      {{ item.display_name }}
-      </Col>
-      <Col :span="6">
-      <a :href="item.url" target="_blank">查看笔记</a>
-      </Col>
-      <Col :span="6">
-      <a :href="`${item.url}?attname=${item.display_name}.${item.url.split('.')[item.url.split('.').length - 1]}`">下载笔记</a>
-      </Col>
-    </Row>
+    <Table class="app-table" :columns="viewColumns" :data="items" border></Table>
   </app-form-modal>
 </template>
 
@@ -30,6 +20,7 @@
    */
 
   import { mapState } from 'vuex'
+  import { createButton } from '@/utils'
 
   export default {
     name: 'notes-modal',
@@ -44,6 +35,33 @@
     data() {
       return {
         items: [],
+
+        viewColumns: [
+          { title: '姓名', key: 'display_name', align: 'center' },
+          { title: '添加时间', key: 'created_at', align: 'center' },
+          {
+            title: '操作',
+            align: 'center',
+            render: createButton([
+              { text: '查看笔记',
+                type: 'primary',
+                click: (row) => {
+                  window.open(row.url, '_blank')
+                },
+              },
+              { text: '下载笔记',
+                type: 'primary',
+                click: (row) => {
+                  const link = document.createElement('a')
+                  link.href = `${row.url}?attname=${row.display_name}.${row.url.split('.')[row.url.split('.').length - 1]}`
+                  document.body.appendChild(link)
+                  link.click()
+                  link.remove()
+                },
+              },
+            ]),
+          },
+        ],
       }
     },
 
