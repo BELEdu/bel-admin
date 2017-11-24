@@ -1,8 +1,11 @@
 <template>
   <div class="view-coach">
-    <Row class="view-coach__header">
+    <Row
+      class="view-coach__header"
+      v-if="progressList.end_status && currentItemData.plan_status !== 10"
+    >
       <Col>
-        <Button type="warning" icon="power" @click="overPlan" v-if="progressList.end_status && currentItemData.plan_status !== 10">结束计划</Button>
+        <Button type="warning" icon="power" @click="overPlan">结束计划</Button>
       </Col>
     </Row>
     <Timeline>
@@ -99,6 +102,7 @@
 
     &__header {
       text-align: right;
+      padding-bottom: 10px;
     }
 
     .content{
