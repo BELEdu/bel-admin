@@ -7,6 +7,7 @@
       :data="data"
       size="small"
       @change="changeQuery"
+      :readonly="readOnly"
     />
   </div>
 </template>
@@ -43,6 +44,11 @@ export default {
     },
 
     spread: {
+      type: Boolean,
+      default: false,
+    },
+
+    readOnly: {
       type: Boolean,
       default: false,
     },

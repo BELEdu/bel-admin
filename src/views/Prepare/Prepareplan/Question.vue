@@ -1,5 +1,5 @@
 <template>
-  <div class="question-paper-composition">
+   <div class="question-paper-composition">
     <!-- 插槽 学员信息 -->
     <slot
       name="header"
@@ -20,18 +20,8 @@
         v-if="subjects"
         :data="subjects.data"
         :default="subjects.default"
-        @change="value => vm_fetchBefore({ subjectID: value })"
-      />
-
-      <!-- 上部：教材过滤 -->
-      <ConditionRadioQuery
-        v-if="teachMaterials"
-        :data="teachMaterials.data"
-        :default="teachMaterials.default"
-        label="教材"
-        tag="equal[teach_materials]"
-        spread
-        @change="value => vm_fetchBefore({ teachMaterialsID: value })"
+        @change="value => vm_fetchBefore(value)"
+        readOnly
       />
 
       <!-- 上部：高级搜索 -->
@@ -45,33 +35,17 @@
 
       <!-- 下部：组卷 -->
       <PaperComposition
-        v-bind="$attrs"
         :buffer="buffer"
         :paper.sync="paper"
-        @on-preview="vm_onPaperPreview"
+        @on-preview="v_selecteCompleted"
       />
-
-      <!-- 插槽 题目扩展 -->
-      <slot
-        name="improvement"
-        :data="buffer.data"
-      ></slot>
     </section>
-
-    <!-- 试卷预览 -->
-    <PaperPreviewDialog
-      :visible.sync="previewModal.visible"
-      :data="paper"
-      :loading="previewModal.loading"
-      @on-ok="vm_createPaper"
-      @on-close="paperVisible = false"
-    />
   </div>
 </template>
 
 <script>
 /**
- * 题库中心 - 试卷 - 组卷中心
+ * 备课管理 - 教案 - 换题
  *
  * @author huojinzhao
  */
@@ -81,7 +55,6 @@ import {
   ConditionRadio,
   ConditionRadioQuery,
   PaperComposition,
-  PaperPreviewDialog,
   TreeCondition,
 } from '@/views/components'
 
@@ -95,29 +68,21 @@ const paperFactory = () => ({
   display_name: '',
   exam_time: 0,
   question_types: [],
-  // 前端视图拼凑试卷标题附加数据
-  subjectName: '',
 })
 
 export default {
-  name: 'PrepareQuestion',
+  name: 'PreparePrepareplanQuestion',
 
   components: {
     ConditionRadioQuery,
     ConditionRadio,
     PaperComposition,
-    PaperPreviewDialog,
     TreeCondition,
   },
-
-  inheritAttrs: false,
 
   data: () => ({
     // server: 学科选择数据
     subjects: null,
-
-    // server: 教材筛选数据
-    teachMaterials: null,
 
     // server：树结构数据
     treeData: {
@@ -137,11 +102,6 @@ export default {
     // 组卷试题数据
     paper: paperFactory(),
 
-    previewModal: {
-      visible: false,
-      loading: false,
-    },
-
     treeEntries: null,
   }),
 
@@ -152,25 +112,10 @@ export default {
 
       return parseInt(id, 10)
     },
-
-    teachMaterialsID() {
-      const id = this.$route.query['equal[teach_materials]']
-        || (this.teachMaterials ? this.teachMaterials.data[0].value : '')
-
-      return parseInt(id, 10)
-    },
   },
 
-  beforeRouteEnter(to, from, next) {
-    const { action } = to.meta
-
-    next((vm) => {
-      if (action === 'patch') {
-        vm.initUpdation()
-      } else {
-        vm.initCreation()
-      }
-    })
+  created() {
+    this.initCreation()
   },
 
   beforeRouteUpdate(to, from, next) {
@@ -178,43 +123,27 @@ export default {
     this.m_fetchData(to)
   },
 
-  beforeRouteLeave(to, from, next) {
-    this.paper = paperFactory()
-    next()
-  },
-
   methods: {
-    /* --- Initialization --- */
-
-    /* Common */
-
-    getBeforeUrl(subjectID, teachMaterialsID) {
-      const host = this.$route.meta.beforeUri
-
-      const subject = subjectID
-        ? `?grade_range_subject_id=${subjectID}` : ''
-
-      const symbol = subjectID ? '&' : '?'
-
-      const teachMaterials = teachMaterialsID
-        ? `${symbol}teach_materials=${teachMaterialsID}` : ''
-
-      return `${host}${subject}${teachMaterials}`
+    initCreation() {
+      this.m_fetchData()
     },
 
-    vm_fetchBefore({
-      subjectID = this.subjectID,
-      teachMaterialsID = '',
-    } = {}) {
-      const url = this.getBeforeUrl(subjectID, teachMaterialsID)
+    getBeforeUrl(subjectID) {
+      const host = this.$route.meta.beforeUri
+
+      return subjectID
+        ? `${host}?grade_range_subject_id=${subjectID}`
+        : host
+    },
+
+    vm_fetchBefore(subjectID = this.subjectID) {
+      const url = this.getBeforeUrl(subjectID)
 
       return this.$http.get(url)
         .then(({
           // 高级搜索
           current_grade_range_subject_id,
           grade_range_subject_id,
-          current_teach_materials,
-          teach_materials,
           question_type_id,
           paper_type,
           question_difficulty,
@@ -227,13 +156,6 @@ export default {
             data: grade_range_subject_id,
             default: current_grade_range_subject_id,
           }
-
-          this.teachMaterials = teach_materials
-            ? {
-              data: teach_materials.data,
-              default: current_teach_materials,
-            }
-            : null
 
           this.advanceConditions = {
             question_type_id,
@@ -249,21 +171,15 @@ export default {
 
           this.m_initTreeEntries()
 
-          // eslint-disable-next-line
-          !teachMaterialsID && this.m_generatePaper(
+          this.m_generatePaper(
             this.subjectID,
             question_type_id.data,
           )
         })
     },
 
-    // 生成试卷信息，变换学科，重置选题;
+    // 生成试卷结构数据
     m_generatePaper(subjectID, types) {
-      this.paper = paperFactory()
-      // 科目生成
-      this.paper.grade_range_subject_id = subjectID
-      // 视图学科数据生成
-      this.paper.subjectName = this.filterSubjectName(subjectID)
       // 题型生成
       this.paper.question_types = types
         .map(type => ({
@@ -339,83 +255,22 @@ export default {
       const url = `${host}${query}&per_page=20`
 
       return this.$http.get(url)
-        .then((res) => { this.buffer = res })
+        .then((res) => {
+          // 和PrepareQuestion不一样
+          // 后者题目初始化 question_id = id 是在Preview中进行的
+          // 后期调整，应该在Compositon中进行
+          res.data.forEach((item) => {
+            // eslint-disable-next-line
+            item.question_id = item.id
+          })
+          this.buffer = res
+        })
     },
 
     m_resetSearchField() {
       const subject = `equal[grade_range_subject_id]=${this.subjects.data[0].value}`
 
-      const materials = this.teachMaterials
-      const teach = materials
-        ? `equal[teach_materials]=${materials.data[0].value}` : ''
-
-      const path = teach
-        ? `${this.$route.path}?${subject}&${teach}`
-        : `${this.$route.path}?${subject}`
-
-      return path
-    },
-
-    /* Creation */
-
-    initCreation() {
-      this.m_fetchData()
-    },
-
-    /* Edition */
-
-    initUpdation() {
-      this.fetchUpdationInfo()
-        .then(res => this.m_dealUpdationInfo(res))
-        .catch(() => {
-          this.$Notice.error({
-            title: '无法访问试卷数据，请稍后再试',
-            duration: 0,
-          })
-        })
-    },
-
-    fetchUpdationInfo() {
-      return this.$http.get(this.$route.meta.submitUri)
-    },
-
-    m_dealUpdationInfo(paper) {
-      const id = paper.grade_range_subject_id
-
-      this.m_fetchData()
-        .then(() => {
-          this.paper = this.paperUpdation(paper)
-          // 视图学科数据生成
-          this.paper.subjectName = this.filterSubjectName(id)
-          this.vm_onPaperPreview()
-        })
-    },
-
-    paperUpdation(paper) {
-      const question_types = this.sectionsUpdation(paper.question_types)
-
-      return { ...this.paper, ...paper, question_types }
-    },
-
-    sectionsUpdation(sections) {
-      return this.paper.question_types
-        .map((type) => {
-          const target = type.question_type_id
-
-          const section = sections
-            .find(({ question_type_id }) => question_type_id === target)
-
-          return section || type
-        })
-    },
-
-    /* --- Assitance --- */
-
-    filterSubjectName(id) {
-      const name = this.subjects.data
-        .find(subject => subject.id === id)
-
-      return name ? name.display_name.slice(2) : ''
+      return `${this.$route.path}?${subject}`
     },
 
     getQueryUrl(query) {
@@ -431,32 +286,13 @@ export default {
       return url
     },
 
-    /* --- Control--- */
+    v_selecteCompleted() {
+      const data = this.paper.question_types
+        .filter(type => type.questions.length)
 
-    vm_onPaperPreview() {
-      this.previewModal.visible = true
-    },
+      const question = JSON.stringify(data)
 
-    v_complete() {
-      this.$router.push(this.$route.meta.backRoute)
-    },
-
-    /* --- Business --- */
-
-    vm_createPaper(paper) {
-      this.previewModal.loading = true
-
-      const { action, submitUri } = this.$route.meta
-
-      this.$http[action](submitUri, paper)
-        .then(() => this.v_complete())
-        .catch(() => {
-          this.$Notice.error({
-            title: '创建试卷失败',
-            duration: 0,
-          })
-          this.previewModal.loading = false
-        })
+      localStorage.setItem('prepareplanQuestions', question)
     },
   },
 }

@@ -133,6 +133,7 @@ export { default as ExaminationWrongQuestionDetail } from './examination/WrongQu
 // 教案管理
 export { default as PreparePrepareplan } from './Prepare/Prepareplan'
 export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detail'
+export { default as PreparePrepareplanQuestion } from './Prepare/Prepareplan/Question'
 
 // 试卷中心
 export { default as PreparePaper } from './Prepare/Paper'

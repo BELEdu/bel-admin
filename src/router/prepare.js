@@ -37,6 +37,20 @@ export default [
     },
   },
   {
+    path: '/prepare/myprepareplan/question',
+    name: 'PreparePrepareplanQuestion',
+    component: views.PreparePrepareplanQuestion,
+    meta: {
+      beforeUri: '/question/for_paper_before',
+      fetchUri: '/question/for_paper',
+      breadcrumb: [
+        { name: '备课管理' },
+        { name: '我的教案' },
+        { name: '手动换题' },
+      ],
+    },
+  },
+  {
     path: '/prepare/prepareplan/:id',
     name: 'PreparePrepareplanDetail',
     component: views.PreparePrepareplanDetail,
