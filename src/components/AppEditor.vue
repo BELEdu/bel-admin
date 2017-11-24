@@ -46,12 +46,38 @@ export default {
       // 自定义工具栏
       CKEDITOR.config.toolbar = [
         {
+          name: 'clipboard',
+          items: ['Undo', 'Redo'],
+        },
+        {
+          name: 'basicstyles',
+          items: ['Bold', 'Italic', 'Underline', 'Strike'],
+        },
+        {
+          name: 'colors',
+          items: ['TextColor'],
+        },
+        {
+          name: 'align',
+          items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+        },
+        {
+          name: 'paragraph',
+          items: ['Outdent', 'Indent'],
+        },
+        {
+          name: 'insert',
+          items: ['base64image', 'Table'],
+        },
+        {
           name: 'base',
-          items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'base64image', 'SpecialChar', 'Table', 'Wiris'],
+          items: ['Subscript', 'Superscript', 'SpecialChar', 'Wiris'],
         },
       ]
 
-      CKEDITOR.config.extraPlugins = 'wiris,base64pasteanddrag,base64image'
+      CKEDITOR.config.plugins = 'dialogui,dialog,basicstyles,notification,button,toolbar,clipboard,enterkey,entities,floatingspace,wysiwygarea,indent,indentlist,fakeobjects,link,list,undo,panelbutton,panel,floatpanel,colorbutton,justify,table,base64pasteanddrag,base64image'
+
+      CKEDITOR.config.extraPlugins = 'wiris'
 
       // CKEDITOR.config.height = this.height
       // CKEDITOR.config.width = this.width
