@@ -39,10 +39,12 @@
     </article>
 
     <!-- 试题解析弹窗 -->
-    <QuestionAnalysisDialog
+    <question-analysis-dialog
       :visible.sync="analysisModal.active"
       :data="analysis"
-    />
+    >
+      <span></span>
+    </question-analysis-dialog>
 
   </div>
 </template>
