@@ -18,7 +18,7 @@
           <section slot="content">
             <!-- 小贴士 -->
             <div class="smartexam-check__aside__tips">
-              <Tag>未考试</Tag>
+              <Tag>未测试</Tag>
               <Tag type="border">待交卷</Tag>
               <Tag type="border" color="blue">待阅卷</Tag>
               <Tag color="green">已阅卷</Tag>
@@ -36,15 +36,15 @@
                   :type="buttonFormat(item.test_status,item.id)"
                   long
                   class="text-right"
-                  :disabled="item.test_status === 0"
+                  :disabled="isNoTest(item.test_status)"
                   @click="changeStudentTestId(item.id)"
                 >
                   <!-- 姓名 -->
                   <span class="left">{{item.student.display_name || item.student_id}}</span>
                   <!-- 未选择设备显示未考试 -->
-                  <span v-if="item.test_status === 0">（未考试）</span>
+                  <span>{{item.test_status_name}}</span>
                   <!-- 待阅卷和已阅卷显示得分 -->
-                  <span v-if="item.test_status === 4 || item.test_status === 3 ">{{item.answer_score}} 分</span>
+                  <span v-if="isShowScore(item.test_status)">({{item.answer_score}}分)</span>
                 </Button>
               </Col>
             </Row>
@@ -104,13 +104,28 @@
                           size="small"
                           @on-change="(value) => changeQuestionAnswer(value,tindex,qindex)"
                         >
-                          <Radio :label="1">
+                          <!-- 对 -->
+                          <Radio
+                            :label="1"
+                            :disabled="!isShowScore(currentStudentTestStatus)"
+                          >
                             <Icon class="color-success" type="checkmark-round" />
                           </Radio>
-                          <Radio :label="3" v-if="isHalfWrongQuestion(question.question_template)">
+
+                          <!-- 半对错 -->
+                          <Radio
+                            :label="3"
+                            :disabled="!isShowScore(currentStudentTestStatus)"
+                            v-if="isHalfWrongQuestion(question.question_template)"
+                          >
                             <Icon class="color-warning" type="minus-round" />
                           </Radio>
-                          <Radio :label="2">
+
+                          <!-- 错 -->
+                          <Radio
+                            :label="2"
+                            :disabled="!isShowScore(currentStudentTestStatus)"
+                          >
                             <Icon class="color-error" type="close-round" />
                           </Radio>
                         </RadioGroup>
@@ -126,18 +141,18 @@
                 class="smartexam-check__form__submit"
                 type="primary"
                 long
-                :disabled="currentStudentTestStatus === 4 || currentStudentTestStatus === 2"
+                v-if="currentStudentTestStatus === 3"
                 :loading="formLoading"
                 @click="submit"
               >提交阅卷</Button>
 
               <Button
-                :disabled="!(currentStudentTestStatus === 2) "
+                v-if="currentStudentTestStatus === 2"
                 class="smartexam-check__form__submit"
                 type="warning"
                 long
                 :loading="formLoading"
-                @click="submit"
+                @click="noCommitPaper"
               >未交卷</Button>
 
             </Form>
@@ -149,7 +164,7 @@
 
     </aside>
 
-    <!-- 展示（上传图片）区域 -->
+    <!-- 展示试卷 && 上传图片区域 -->
     <div class="smartexam-check__sidebar">
 
       <!-- 试卷公共头部 -->
@@ -162,19 +177,32 @@
         class="smartexam-check__online"
         v-if="currentStudentAnswerType === 1"
       >
-        <!-- 待交卷 -->
-        <Alert
-          v-if="currentStudentAnswerType === 2"
-          type="warning"
+        <!-- 未测试 -->
+        <Alert type="error"
           show-icon
+          v-if="isNoTest(currentStudentTestStatus)"
         >
           <span slot="desc">
-            未提交答卷
+            学员未测试
           </span>
         </Alert>
 
-        <!-- 试卷详情展示 -->
-        <paper-preview-detail :data="form"></paper-preview-detail>
+        <!-- 非未测试以外的状态 -->
+        <div v-else>
+          <!-- 待交卷 -->
+          <Alert
+            v-if="currentStudentAnswerType === 2"
+            type="warning"
+            show-icon
+          >
+            <span slot="desc">
+              未提交答卷
+            </span>
+          </Alert>
+
+          <!-- 试卷详情展示 -->
+          <paper-preview-detail :data="form"></paper-preview-detail>
+        </div>
 
       </section>
 
@@ -183,32 +211,45 @@
         class="smartexam-check__offline"
         v-if="currentStudentAnswerType === 2"
       >
-        <!-- 待上传 -->
-        <Alert type="warning"
-          v-if="imageData.length === 0"
+        <!-- 未测试 -->
+        <Alert type="error"
           show-icon
+          v-if="isNoTest(currentStudentTestStatus)"
         >
           <span slot="desc">
-            未上传学员答卷
+            学员未测试
           </span>
         </Alert>
 
-        <!-- 图片上传组件 -->
-        <paper-upload
-          :key="currentStudentTestId"
-          :dataList="imageData"
-          @on-success="uploadSuccess"
-        ></paper-upload>
+        <!-- 非未测试以外的状态 -->
+        <div v-else>
+          <!-- 待上传 -->
+          <Alert type="warning"
+            v-if="imageData.length === 0"
+            show-icon
+          >
+            <span slot="desc">
+              未上传学员答卷
+            </span>
+          </Alert>
 
-        <!-- 保存按钮 -->
-        <Button
-          long
-          type="primary"
-          size="large"
-          :loading="saveLoading"
-          @click="saveImage"
-          class="smartexam-check__save"
-        >保存</Button>
+          <!-- 图片上传组件 -->
+          <paper-upload
+            :key="currentStudentTestId"
+            :dataList="imageData"
+            @on-success="uploadSuccess"
+          ></paper-upload>
+
+          <!-- 保存按钮 -->
+          <Button
+            long
+            type="primary"
+            size="large"
+            :loading="saveLoading"
+            @click="saveImage"
+            class="smartexam-check__save"
+          >保存</Button>
+        </div>
 
       </section>
 
@@ -388,6 +429,39 @@ export default {
   },
 
   methods: {
+    // 是否未考试
+    isNoTest(status) {
+      switch (status) {
+        case 0:
+          return true
+        case 7:
+          return true
+        default:
+          return false
+      }
+    },
+
+    // 是否显示得分
+    isShowScore(status) {
+      switch (status) {
+        case 3:
+          return true
+        case 4:
+          return true
+        default:
+          return false
+      }
+    },
+
+
+    // 未交卷
+    noCommitPaper() {
+      this.formLoading = true
+      this.$http.post(`/test/not_answer/${this.currentStudentTestId}`)
+        .then(this.successHandler)
+        .catch(this.errorHandler)
+    },
+
     // 提交阅卷
     submit() {
       if (this.needToCheckContinue) {
@@ -478,7 +552,7 @@ export default {
       return 0
     },
 
-    // 学员测试状态 0:未考试（待测试） 2:待交卷  3:待阅卷 4:已阅卷
+    // 学员测试状态 0或7:未考试（未交卷） 2:待交卷  3:待阅卷 4:已阅卷
     buttonFormat(test_status, student_test_id) {
       if (this.currentStudentTestId === student_test_id) {
         return 'primary'
@@ -496,7 +570,7 @@ export default {
         case 4:
           return 'success'
 
-        // 缺省状态
+        // 缺省状态 0:未选择设备 7:未交卷 都属于未考试
         default:
           return 'warning'
       }
@@ -569,8 +643,7 @@ export default {
     this.$store.dispatch(EXAMINATION.SMARTEXAM.STUDENT_DATA, this.testid)
       .then(() => {
         // 取第一个不是未考试学生的id
-        const firstStudentId = this.student_data
-          .find(student => student.test_status !== 0).id
+        const firstStudentId = this.student_data[0].id
 
         this.currentStudentTestId = firstStudentId
 
@@ -609,6 +682,10 @@ export default {
       .ivu-btn-ghost {
         color:@primary-color;
         border-color: @primary-color;
+      }
+
+      .ivu-btn {
+        padding: 6px 8px;
       }
     }
 
