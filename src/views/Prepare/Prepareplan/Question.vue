@@ -289,10 +289,11 @@ export default {
     v_selecteCompleted() {
       const data = this.paper.question_types
         .filter(type => type.questions.length)
+        .reduce((acc, type) => [...acc, ...type.questions], [])
 
-      const question = JSON.stringify(data)
+      const questions = JSON.stringify(data)
 
-      localStorage.setItem('prepareplanQuestions', question)
+      localStorage.setItem('prepareplanQuestions', questions)
     },
   },
 }
