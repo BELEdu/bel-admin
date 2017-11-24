@@ -18,6 +18,16 @@
           >{{ item.display_name }}</Option>
         </Select>
       </Form-item>
+      <Form-item>
+        <Select v-model="query['equal[equipment_type]']" placeholder="设备类型" style="width: 6em;">
+          <Option value="">全部</Option>
+          <Option
+            v-for="item in equipmentType"
+            :key="item.value"
+            :value="item.value"
+          >{{ item.display_name }}</Option>
+        </Select>
+      </Form-item>
     </App-table-form>
 
     <Row class="app-content-header" type="flex" justify="space-between">
@@ -63,16 +73,15 @@
     data() {
       return {
         likeKeys: [
-          { label: '硬件编号', value: 'hardware_number' },
           { label: '设备编号', value: 'equipment_display_number' },
-          { label: '设备类型', value: 'equipment_type_name' },
-          { label: '教室编号', value: 'equipment_number' },
+          { label: '教室编号', value: 'classroom_number' },
         ],
 
-        likeKey: 'hardware_number',
+        likeKey: 'equipment_display_number',
 
         query: {
           'equal[equipment_status]': '',
+          'equal[equipment_type]': '',
         },
 
         columns: [
@@ -113,6 +122,7 @@
     computed: {
       ...mapState({
         equipmentStatus: state => state.dicts.equipment_status,
+        equipmentType: state => state.dicts.equipment_type,
       }),
     },
 
