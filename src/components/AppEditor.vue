@@ -75,9 +75,7 @@ export default {
         },
       ]
 
-      CKEDITOR.config.plugins = 'dialogui,dialog,basicstyles,notification,button,toolbar,clipboard,enterkey,entities,floatingspace,wysiwygarea,indent,indentlist,fakeobjects,link,list,undo,panelbutton,panel,floatpanel,colorbutton,justify,table,base64pasteanddrag,base64image'
-
-      CKEDITOR.config.extraPlugins = 'wiris'
+      CKEDITOR.config.extraPlugins = 'wiris,base64pasteanddrag,base64image'
 
       // CKEDITOR.config.height = this.height
       // CKEDITOR.config.width = this.width
