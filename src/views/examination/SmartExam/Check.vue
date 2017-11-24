@@ -521,6 +521,8 @@ export default {
     // 是否是半对错题型（解答题）
     isHalfWrongQuestion(question_template) {
       switch (question_template) {
+        case 3:
+          return true
         case 4:
           return true
         default:
