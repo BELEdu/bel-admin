@@ -21,12 +21,13 @@
 
       <!-- 测试时间 -->
       <Form-item>
-        <Date-picker
+        <app-date-picker
+          style="width:20em;"
           v-model="query['between[test_at]']"
-          format="yyyy-MM-dd"
-          type="daterange"
+          format="yyyy-MM-dd HH:mm"
+          type="datetimerange"
           placeholder="请选择测试时间"
-        ></Date-picker>
+        ></app-date-picker>
       </Form-item>
 
       <!-- 测试类型 -->

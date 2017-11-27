@@ -26,14 +26,13 @@
       </Form-item>
       <!-- 日期范围搜索 -->
       <Form-item>
-        <Date-picker
+        <app-date-picker
+          style="width:20em;"
           v-model="query['between[apply_date]']"
-          format="yyyy-MM-dd" type="daterange" placement="bottom-start"
+          format="yyyy-MM-dd HH:mm"
+          type="datetimerange"
           placeholder="申请日期范围"
-          style="width: 200px"
-          :editable="false"
-        >
-        </Date-picker>
+        ></app-date-picker>
       </Form-item>
       <!-- 特殊字段搜索 -->
       <Form-item>

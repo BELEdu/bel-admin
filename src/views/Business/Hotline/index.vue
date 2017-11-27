@@ -26,16 +26,14 @@
       </Form-item>
       <!-- 日期范围搜索 -->
       <Form-item>
-        <Date-picker
+        <app-date-picker
+          style="width:16em;"
           v-model="query['between[visited_at]']"
           format="yyyy-MM-dd"
           type="daterange"
-          placement="bottom-start"
           placeholder="来访日期范围"
-          style="width: 200px"
           :editable="false"
-        >
-        </Date-picker>
+        ></app-date-picker>
       </Form-item>
       <!-- 当前状态搜索 -->
       <Form-item>

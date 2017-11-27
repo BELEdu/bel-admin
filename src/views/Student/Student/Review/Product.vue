@@ -24,12 +24,13 @@
 
       <!-- 签约日期 -->
       <Form-item>
-        <Date-picker
+        <app-date-picker
+          style="width:20em;"
           v-model="query['between[contract_date]']"
-          format="yyyy-MM-dd"
-          type="daterange"
+          format="yyyy-MM-dd HH:mm"
+          type="datetimerange"
           placeholder="请选择签约日期"
-        ></Date-picker>
+        ></app-date-picker>
       </Form-item>
 
       <!-- 搜索按钮 -->
