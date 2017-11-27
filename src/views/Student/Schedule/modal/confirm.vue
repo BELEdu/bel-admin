@@ -143,22 +143,22 @@
         // 获取课表信息
         this.$http.get(`${this.url}${this.currentCourseItem.id}`)
           .then(({ course_chapter, ...result }) => {
-            this.formData = {
-              ...this.formData,
-              ...result,
-              course_fact: result.course_num,
-              course_chapter: course_chapter.map(({ id }) => id),
-            }
-            if (result.student && result.student.length) {
-              this.formData.attendance = result.student.map(item => ({
-                student_id: item.id,
-                is_attend: 1,
-                is_valid: 1,
-                display_name: item.display_name,
-              }))
-            }
             this.$store.dispatch(STUDENT.SCHEDULE.COURSE_ITEM_CHAPTER, this.currentCourseItem)
               .then(() => {
+                this.formData = {
+                  ...this.formData,
+                  ...result,
+                  course_fact: result.course_num,
+                  course_chapter: course_chapter.map(({ id }) => id),
+                }
+                if (result.student && result.student.length) {
+                  this.formData.attendance = result.student.map(item => ({
+                    student_id: item.id,
+                    is_attend: 1,
+                    is_valid: 1,
+                    display_name: item.display_name,
+                  }))
+                }
                 this.$emit('update:loading', false)
               })
           })
@@ -208,10 +208,6 @@
 </script>
 
 <style lang="less" scoped>
-  .course-confirm {
-
-  }
-
   .course-info-item {
     &, .ivu-form-item {
       margin-bottom: 0;

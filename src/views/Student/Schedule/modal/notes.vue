@@ -82,7 +82,7 @@
 
     methods: {
       init() {
-        if (this.currentCourseItem.id) {
+        if (this.visible && this.currentCourseItem.id) {
           this.$http.get(`/schedule/draft/${this.currentCourseItem.id}`)
             .then((res) => {
               this.items = res
