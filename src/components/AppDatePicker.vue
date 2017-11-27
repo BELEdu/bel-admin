@@ -1,18 +1,20 @@
 <template>
-  <Date-picker :type="type"
-               v-model="dateVal"
-               :format="format"
-               :placeholder="placeholder"
-               :disabled="disabled"
-               :readonly="readonly"
-               :editable="editable"
-               :open="$attrs.open"
-               :confirm="$attrs.confirm"
-               :options="options"
-               @on-change="onChange"
-               @on-open-change="onOpenChange"
-               @on-ok="onOk"
-               @on-clear="onClear">
+  <Date-picker 
+    :type="type"
+    :value="dateVal"
+    :format="format"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    :readonly="readonly"
+    :editable="editable"
+    :open="$attrs.open"
+    :confirm="$attrs.confirm"
+    :options="options"
+    @on-change="onChange"
+    @on-open-change="onOpenChange"
+    @on-ok="onOk"
+    @on-clear="onClear"
+  >
     <slot></slot>
   </Date-picker>
 </template>
@@ -22,9 +24,6 @@
    * @author    chenliangshan
    * @version   2017/07/20
    */
-
-  import { formatDate } from '@/utils/date'
-  import isEqual from 'lodash/isEqual'
 
   export default {
     name: 'app-date-picker',
@@ -83,18 +82,26 @@
       value(val) {
         this.dateVal = val
       },
-      dateVal(val, oldVal) {
-        if (val && !isEqual(val, oldVal) &&
-          (Object.prototype.toString.call(val) === '[object Date]' ||
-            (Object.prototype.toString.call(val) === '[object Array]' &&
-              Object.prototype.toString.call(val[0]) === '[object Date]'))) {
-          return this.dateFormat(val)
-        }
+      dateVal(val) {
         return this.$emit('input', val)
       },
     },
     methods: {
       onChange(val) {
+        let date = val
+
+        if ((!val || !val[0]) && this.formItem.prop && this.getFormRequired()) {
+          this.formItem.validate('', (valid) => {
+            this.$emit('on-validate', valid)
+          })
+        }
+  
+        // 处理日期范围为空时的情况
+        if (typeof val === 'object' && !val[0]) {
+          date = []
+        }
+
+        this.$emit('input', date)
         this.$emit('on-change', val)
       },
       onOpenChange() {
@@ -118,27 +125,6 @@
       getFormRequired() {
         const rules = this.formItem.getRules()
         return rules.map(item => item.required).indexOf(true) > -1
-      },
-      // 日期格式转换
-      dateFormat(val) {
-        let date = val
-        const handlerFormatDate = data => formatDate(data, this.format)
-        if (this.dateType === 'string') {
-          date = handlerFormatDate(date)
-        } else if (this.dateType === 'daterange') {
-          date = [handlerFormatDate(date[0]), handlerFormatDate(date[1])]
-        } else if (this.dateType === 'date' && typeof date === 'string') {
-          date = new Date(date)
-        }
-
-        if (((Object.prototype.toString.call(date) === '[object Array]' && date[0]) || date) &&
-          this.formItem.prop && this.getFormRequired()) {
-          this.formItem.validate('', (valid) => {
-            this.$emit('on-validate', valid)
-          })
-        }
-
-        this.$emit('input', date)
       },
     },
   }
