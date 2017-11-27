@@ -341,9 +341,3 @@
     },
   }
 </script>
-
-<style lang="less" scoped>
-  .setting-classroom {
-
-  }
-</style>
