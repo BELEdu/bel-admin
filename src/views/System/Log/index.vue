@@ -4,9 +4,7 @@
       <Form-item>
         <app-date-picker
           type="daterange"
-          date-type="daterange"
           v-model="query['between[created_at]']"
-          @on-change="val => query['between[created_at]'] = !val[0] ? [] : val"
           placeholder="选择日期"></app-date-picker>
       </Form-item>
       <Form-item>

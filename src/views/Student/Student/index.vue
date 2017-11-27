@@ -53,12 +53,12 @@
 
       <!-- 首签日期 -->
       <Form-item>
-        <Date-picker
+        <app-date-picker
           v-model="query['between[original_contractor_at]']"
-          format="yyyy-MM-dd"
-          type="daterange"
+          format="yyyy-MM-dd HH:mm:ss"
+          type="datetimerange"
           placeholder="请选择首签日期"
-        />
+        ></app-date-picker>
       </Form-item>
     </App-table-form>
 
@@ -152,6 +152,7 @@ export default {
 
   data() {
     return {
+      testDate: [],
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
         { label: '学员编号', value: 'number' },

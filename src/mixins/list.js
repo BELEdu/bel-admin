@@ -15,7 +15,7 @@
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
-import format from 'date-fns/format'
+// import format from 'date-fns/format'
 
 export default {
   data() {
@@ -37,18 +37,18 @@ export default {
             return { ...result, [key]: [] }
           }
 
-          // 处理值为日期的情况
-          if (value.toISOString) {
-            return { ...result, [key]: format(value, 'YYYY-MM-DD') }
-          }
+          // // 处理值为日期的情况
+          // if (value.toISOString) {
+          //   return { ...result, [key]: format(value, 'YYYY-MM-DD') }
+          // }
 
-          // 处理between查询的值
-          if (typeof value === 'object') {
-            const [startDate, endDate] = value
-            const start = format(startDate, 'YYYY-MM-DD')
-            const end = format(endDate, 'YYYY-MM-DD')
-            return { ...result, [key]: [start, end] }
-          }
+          // // 处理between查询的值
+          // if (typeof value === 'object') {
+          //   const [startDate, endDate] = value
+          //   const start = format(startDate, 'YYYY-MM-DD')
+          //   const end = format(endDate, 'YYYY-MM-DD')
+          //   return { ...result, [key]: [start, end] }
+          // }
 
           return { ...result, [key]: value }
         }, {})
