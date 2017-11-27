@@ -257,26 +257,22 @@
       editHandler(item) {
         this.dialog.schoolList = []
         this.dialog.currentItem = item
-        const { department_id, classroom_number, remark } = this.dialog.currentItem
         this.$http.get(`/setting/classroom/${item.id}`)
-          .then(({ department }) => {
-            try {
-              this.dialog.form = {
-                department_id,
-                classroom_number,
-                remark,
-                department_name: department.display_name,
-              }
-            } catch (error) {
-              throw error
+          .then(({
+            department_id,
+            classroom_number,
+            department_name,
+            remark,
+          }) => {
+            this.dialog.form = {
+              department_id,
+              classroom_number,
+              remark,
+              department_name,
             }
-
             this.dialog.type = 'edit'
             this.dialog.title = '编辑教室'
             this.dialog.visible = true
-          })
-          .catch(() => {
-            this.$Notice.error({ title: '数据有误，请确认数据是否存在问题', duration: 3 })
           })
       },
 
