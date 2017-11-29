@@ -207,7 +207,13 @@ export default {
             {
               text: '阅卷',
               type: 'warning',
-              isShow: ({ row }) => row.operation.inspection,
+              isShow: ({ row }) => row.operation.inspection && row.test_status === 3,
+              click: row => this.$router.push(`/examination/smartexam/${row.id}/check`),
+            },
+            {
+              text: '查看阅卷',
+              type: 'success',
+              isShow: ({ row }) => row.operation.inspection && row.test_status === 4,
               click: row => this.$router.push(`/examination/smartexam/${row.id}/check`),
             },
             {
