@@ -66,19 +66,19 @@ export default {
         return this.$router.push(history)
       }
       // 无切换历史
-      const stuid = this.$route.params.id
+      const { id, typeID } = this.$route.params
       return this.$router
-        .push(this.getOppositeUrl(target, stuid))
+        .push(this.getOppositeUrl(target, id, typeID))
     },
 
-    getOppositeUrl(target, id) {
-      return `/algorithm/knowledge/${target}/${id}`
+    getOppositeUrl(target, id, typeID) {
+      return `/algorithm/knowledge/${target}/${id}/${typeID}`
     },
   },
 
   beforeRouteLeave(to, from, next) {
     const urlArr = from.path.split('/')
-    const source = urlArr[urlArr.length - 2]
+    const source = urlArr[urlArr.length - 3]
     const record = this[`${source}Record`]
     record(from.fullPath)
     next()

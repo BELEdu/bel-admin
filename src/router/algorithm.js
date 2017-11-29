@@ -13,12 +13,12 @@ const ALGORITHM_KNOWLEDGE = {
 
 const ALGORITHM_KNOWLEDGE_SHOW = {
   name: '学员知识点详情',
-  link: '/algorithm/knowledge/show/:id',
+  link: '/algorithm/knowledge/show/:id/:typeID',
 }
 
 const ALGORITHM_KNOWLEDGE_DETAIL = {
   name: '学员知识点明细',
-  link: '/algorithm/knowledge/detail/:id',
+  link: '/algorithm/knowledge/detail/:id/:typeID',
 }
 
 export default [

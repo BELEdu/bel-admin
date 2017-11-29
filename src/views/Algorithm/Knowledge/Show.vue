@@ -174,10 +174,13 @@ export default {
   },
 
   methods: {
-    toCheckInfo(row) {
+    toCheckInfo({
+      knowledge_id,
+      knowledge_name,
+    }) {
+      const { id, typeID } = this.$route.params
       const url = '/algorithm/knowledge/detail/'
-        + `${this.$route.params.id}`
-        + `${row}`
+        + `${id}/${typeID}/${knowledge_id}`
 
       this.$http.get(url)
         .then((res) => {
@@ -185,7 +188,7 @@ export default {
             // eslint-disable-next-line
             item.created_at = item.created_at.slice(0, 10)
           })
-          this.infosLabel = row.knowledge_name
+          this.infosLabel = knowledge_name
           this.infos = res
           this.infoModal.active = true
         })
@@ -206,7 +209,6 @@ export default {
     }
 
     & .ivu-modal-body {
-      padding-right: 1px;
       max-height: 500px;
       overflow: auto;
     }

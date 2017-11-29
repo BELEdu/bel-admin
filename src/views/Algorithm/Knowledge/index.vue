@@ -107,7 +107,7 @@ export default {
         },
         {
           title: '学科',
-          key: 3,
+          key: 'subject_name',
           align: 'center',
         },
         {
@@ -140,9 +140,9 @@ export default {
   },
 
   methods: {
-    // eslint-disable-next-line
-    toCheck(row) {
-      this.$router.push(`/algorithm/knowledge/show/${row.id}`)
+    toCheck({ student_id: id, subject_type: type }) {
+      const url = `/algorithm/knowledge/show/${id}/${type}`
+      this.$router.push(url)
     },
 
     getData(query, to) {
