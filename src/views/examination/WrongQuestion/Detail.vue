@@ -2,7 +2,9 @@
   <div class="examination-wrongquestion-detail">
     <PrepareQuestion
       ref="composition"
-      compositionType="readOnly"
+      :question-config="{
+        select: false,
+      }"
     >
       <!-- 上部 学生信息条 -->
       <template
@@ -36,7 +38,7 @@
           v-for="question in props.data"
           :key="question.number"
           :data="question"
-          compositionType="readOnly"
+          v-update:config="{ select: false }"
         />
 
         <div
@@ -69,6 +71,20 @@ export default {
   components: {
     PrepareQuestion,
     PaperCompositionQuestion,
+  },
+
+  directives: {
+    update: {
+      bind(el, { value, arg }, vnode) {
+        if (value) {
+          // eslint-disable-next-line
+          vnode.componentInstance[arg] = {
+            ...vnode.componentInstance[arg],
+            ...value,
+          }
+        }
+      },
+    },
   },
 
   beforeRouteUpdate(to, from, next) {

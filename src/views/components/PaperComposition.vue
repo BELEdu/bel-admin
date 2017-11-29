@@ -35,6 +35,30 @@ export default {
       type: Object,
       required: true,
     },
+
+    questionConfig: {
+      type: Object,
+      default: () => ({ select: true }),
+    },
+
+    panelConfig: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+
+  directives: {
+    update: {
+      bind(el, { value, arg }, vnode) {
+        if (value) {
+          // eslint-disable-next-line
+          vnode.componentInstance[arg] = {
+            ...vnode.componentInstance[arg],
+            ...value,
+          }
+        }
+      },
+    },
   },
 
   data: () => ({
@@ -122,7 +146,7 @@ export default {
     <div class="paper-composition-assistance"
       v-if="buffer && buffer.data"
     >
-      <template v-if="$attrs.compositionType !== 'readOnly'">
+      <template v-if="questionConfig.select">
         <Button
           v-if="
             buffer.data
@@ -159,9 +183,9 @@ export default {
       <PaperCompositionQuestion
         v-for="(question, qIndex) in buffer.data"
         :key="question.number"
-        v-bind="$attrs"
         :data="question"
         :selected="v_questionSelected(question)"
+        v-update:config="questionConfig"
         @on-insert="vm_insertQuestion"
         @on-remove="vm_removeQuestion"
         @on-analyse="vm_onAnalysis"
@@ -174,8 +198,9 @@ export default {
     />
 
     <PaperCompositionPanel
-      v-if="$attrs.compositionType !== 'readOnly'"
+      v-if="questionConfig.select"
       :data="paper"
+      v-update:config="panelConfig"
       @on-preview="$emit('on-preview')"
     />
   </div>

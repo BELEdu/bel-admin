@@ -16,6 +16,12 @@ export default {
     },
   },
 
+  data: () => ({
+    config: {
+      title: '预览试卷',
+    },
+  }),
+
   methods: {
     v_previewPaper() {
       this.$emit('on-preview')
@@ -40,7 +46,7 @@ export default {
         long
         @click="v_previewPaper()"
       >
-        预览试卷
+        {{config.title}}
       </Button>
     </li>
   </ul>

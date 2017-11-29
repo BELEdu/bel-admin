@@ -33,26 +33,12 @@ export default {
     },
   },
 
-  computed: {
-    // 根据类型显示控制按钮
-    controlPanel() {
-      let panel = null
-      switch (this.$attrs.compositionType) {
-        case 'readOnly':
-          panel = {
-            compose: false,
-          }
-          break
-
-        default:
-          panel = {
-            compose: true,
-          }
-      }
-
-      return panel
+  data: () => ({
+    config: {
+      select: true,
+      carrier: '试卷',
     },
-  },
+  }),
 
   methods: {
     v_removeQuestion() {
@@ -82,13 +68,13 @@ export default {
     />
     <!-- 题目控件 -->
     <div class="paper-composition-question__toolbar">
-      <template v-if="controlPanel.compose">
+      <template v-if="config.select">
         <Button
           v-if="selected"
           size="small"
           @click="v_removeQuestion"
         >
-          移除试卷
+          移出{{config.carrier}}
         </Button>
         <Button
           v-else
@@ -96,7 +82,7 @@ export default {
           type="primary"
           @click="v_insertQuestion"
           >
-          加入试卷
+          加入{{config.carrier}}
         </Button>
       </template>
       <Button

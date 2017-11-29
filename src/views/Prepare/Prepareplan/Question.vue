@@ -37,6 +37,8 @@
       <PaperComposition
         :buffer="buffer"
         :paper.sync="paper"
+        :panel-config="{ title: '加入试题' }"
+        :question-config="{ select: true, carrier: '试题' }"
         @on-preview="v_selecteCompleted"
       />
     </section>
