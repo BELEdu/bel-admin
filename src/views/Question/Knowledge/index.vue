@@ -121,15 +121,40 @@
             :max="100"
           ></InputNumber>
         </Form-item>
+        <Form-item
+          label="重要性"
+        >
+          <InputNumber
+            v-model="editionInfo.knowledge_importance"
+            :min="0"
+            :max="100"
+          ></InputNumber>
+        </Form-item>
       </Form>
       <Form v-else
         :label-width="80" inline
       >
+         <Form-item
+          label="文科频次"
+        >
+          <InputNumber
+            v-model="editionInfo.art_frequency"
+          ></InputNumber>
+        </Form-item>
         <Form-item
           label="理科频次"
         >
           <InputNumber
             v-model="editionInfo.frequency"
+          ></InputNumber>
+        </Form-item>
+        <Form-item
+          label="文科分值"
+        >
+          <InputNumber
+            v-model="editionInfo.art_score"
+            :min="0"
+            :max="100"
           ></InputNumber>
         </Form-item>
         <Form-item
@@ -142,17 +167,19 @@
           ></InputNumber>
         </Form-item>
         <Form-item
-          label="文科频次"
+          label="文科重要性"
         >
           <InputNumber
-            v-model="editionInfo.art_frequency"
+            v-model="editionInfo.art_knowledge_importance"
+            :min="0"
+            :max="100"
           ></InputNumber>
         </Form-item>
         <Form-item
-          label="文科分值"
+          label="理科重要性"
         >
           <InputNumber
-            v-model="editionInfo.art_score"
+            v-model="editionInfo.knowledge_importance"
             :min="0"
             :max="100"
           ></InputNumber>
@@ -296,28 +323,28 @@ export default {
   computed: {
     isNotBranch() {
       const subject = this.$route.query['equal[grade_range_subject_id]']
-      return subject !== 5
+      return Number(subject) !== 5
     },
 
     colConfig() {
       const config = [...this.tableConfig]
 
-      if (!this.isNotBranch) {
-        config.splice(4, 1,
-          {
-            title: '文科重要性',
-            key: 'knowledge_importance',
-            align: 'center',
-            sortable: 'custom',
-          },
-          {
-            title: '理科重要性',
-            key: 'art_knowledge_importance',
-            align: 'center',
-            sortable: 'custom',
-          },
-        )
-      }
+      if (this.isNotBranch) return config
+
+      config.splice(4, 1,
+        {
+          title: '理科重要性',
+          key: 'knowledge_importance',
+          align: 'center',
+          sortable: 'custom',
+        },
+        {
+          title: '文科重要性',
+          key: 'art_knowledge_importance',
+          align: 'center',
+          sortable: 'custom',
+        },
+      )
 
       return config
     },

@@ -27,11 +27,27 @@
         <Form :label-width="80" inline>
           <template v-if="subjectId === 5">
             <Form-item
+              label="文科频次"
+            >
+              <InputNumber
+                :min="0"
+                v-model="item.art_frequency"
+              ></InputNumber>
+            </Form-item>
+            <Form-item
               label="理科频次"
             >
               <InputNumber
                 :min="0"
                 v-model="item.frequency"
+              ></InputNumber>
+            </Form-item>
+            <Form-item
+              label="文科分值"
+            >
+              <InputNumber
+                :min="0"
+                v-model="item.art_score"
               ></InputNumber>
             </Form-item>
             <Form-item
@@ -43,22 +59,25 @@
               ></InputNumber>
             </Form-item>
             <Form-item
-              label="文科频次"
+              label="文科重要性"
             >
               <InputNumber
+                v-model="item.art_knowledge_importance"
                 :min="0"
-                v-model="item.art_frequency"
+                :max="100"
               ></InputNumber>
             </Form-item>
             <Form-item
-              label="文科分值"
+              label="理科重要性"
             >
               <InputNumber
+                v-model="item.knowledge_importance"
                 :min="0"
-                v-model="item.art_score"
+                :max="100"
               ></InputNumber>
             </Form-item>
           </template>
+
           <template v-else>
             <Form-item
               label="考试频次"
@@ -74,6 +93,15 @@
               <InputNumber
                 :min="0"
                 v-model="item.score"
+              ></InputNumber>
+            </Form-item>
+            <Form-item
+              label="重要性"
+            >
+              <InputNumber
+                v-model="item.knowledge_importance"
+                :min="0"
+                :max="100"
               ></InputNumber>
             </Form-item>
           </template>
