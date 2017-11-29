@@ -291,7 +291,6 @@ export default {
     v_selecteCompleted() {
       const data = this.paper.question_types
         .filter(type => type.questions.length)
-        .reduce((acc, type) => [...acc, ...type.questions], [])
 
       const questions = JSON.stringify(data)
 

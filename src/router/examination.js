@@ -15,6 +15,11 @@ const EXAMINATION_SMARTEXAM = {
   name: '智能测试',
   link: '/examination/smartexam',
 }
+const EXAMINATION_SMARTEXAM_QUESTION = {
+  routeName: 'ExaminationSmartExamQuestion',
+  name: '手动换题',
+  link: '/examination/smartexam/question',
+}
 const EXAMINATION_SMARTEXAM_CHECK = {
   routeName: 'ExaminationSmartExamCheck',
   name: '阅卷',
@@ -44,6 +49,22 @@ export default [
       breadcrumb: [
         EXAMINATION,
         EXAMINATION_SMARTEXAM,
+      ],
+    },
+  },
+
+  // 手动换题
+  {
+    path: EXAMINATION_SMARTEXAM_QUESTION.link,
+    name: EXAMINATION_SMARTEXAM_QUESTION.routeName,
+    component: views.PreparePrepareplanQuestion,
+    meta: {
+      beforeUri: '/question/for_paper_before',
+      fetchUri: '/question/for_paper',
+      breadcrumb: [
+        EXAMINATION,
+        EXAMINATION_SMARTEXAM,
+        EXAMINATION_SMARTEXAM_QUESTION,
       ],
     },
   },

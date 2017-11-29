@@ -157,6 +157,15 @@
       <!-- 第二步试卷展示 -->
       <div v-if="step===2">
 
+        <!-- 手动换题按钮 -->
+        <div class="text-right smartexam-add-modal__change-question" v-if="isSmartPaper">
+          <Button
+            type="warning"
+            icon="android-cart"
+            @click="changeQuestions"
+          >手动换题</Button>
+        </div>
+
         <!-- 选择学员 -->
         <Select v-model="currentStudent" filterable>
           <Option
@@ -317,6 +326,17 @@ export default {
       return this.form.paper_source === 1
     },
 
+    // 当前学生的试卷
+    currentStudentPaper: {
+      get() {
+        return this.form.question_info
+          .find(student => student.student_id === this.currentStudent).question_types
+      },
+      set(val) {
+        this.form.question_info
+          .find(student => student.student_id === this.currentStudent).question_types = val
+      },
+    },
   },
 
   watch: {
@@ -347,6 +367,49 @@ export default {
   },
 
   methods: {
+    // 前往手动选题页面
+    changeQuestions() {
+      localStorage.removeItem('prepareplanQuestions')
+      const url = `/examination/smartexam/question?equal[grade_range_subject_id]=${this.currentSubjectType}`
+      // 打开一个新标签
+      this.newWin = window.open(url, String(Date.now()), '', false)
+
+      // 监听localStorage的变化
+      window.addEventListener('storage', this.dealQuestionsStore)
+    },
+
+    // 监听回调函数
+    dealQuestionsStore() {
+      const questionTypesStr = localStorage.getItem('prepareplanQuestions')
+      const questionTypesJson = JSON.parse(questionTypesStr)
+
+      if (questionTypesJson) {
+        this.newWin.close()
+
+        // 合并同类题型
+        this.mergeQuestionTypes(questionTypesJson)
+
+        // 回调成功后关闭这个监听
+        window.removeEventListener('storage', this.dealQuestionsStore)
+      }
+    },
+
+    // 合并同类题型
+    mergeQuestionTypes(questionTypesJson) {
+      this.currentStudentPaper = this.currentStudentPaper.map((currentType) => {
+        const type = questionTypesJson
+          .find(newType => currentType.question_type_id === newType.question_type_id)
+
+        return type ? {
+          ...currentType,
+          questions: [
+            ...currentType.questions,
+            ...type.questions,
+          ],
+        } : currentType
+      })
+    },
+
     // 处理题型模板中的index
     v_figureViewIndex(sIndex, data) {
       return data.reduce((
@@ -491,6 +554,10 @@ export default {
 
 <style lang="less">
 .smartexam-add-modal {
+
+  &__change-question {
+    margin-bottom: 15px;
+  }
 
   &__alert {
     margin-top: 15px;

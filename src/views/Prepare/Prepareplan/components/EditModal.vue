@@ -138,7 +138,7 @@
             type="warning"
             icon="android-cart"
             @click="changeQuestions"
-          >手动选题</Button>
+          >手动换题</Button>
         </div>
 
         <!-- 试题列表组件 -->
@@ -328,7 +328,9 @@ export default {
     // 监听回调函数
     dealQuestionsStore() {
       const questionsStr = localStorage.getItem('prepareplanQuestions')
+      // 将题型中的题目过滤成一个数组
       const questionsJson = JSON.parse(questionsStr)
+        .reduce((acc, type) => [...acc, ...type.questions], [])
 
       if (questionsJson) {
         this.newWin.close()
