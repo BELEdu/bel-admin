@@ -46,6 +46,10 @@ export default {
       // 自定义工具栏
       CKEDITOR.config.toolbar = [
         {
+          name: 'document',
+          items: ['Preview', 'Print'],
+        },
+        {
           name: 'clipboard',
           items: ['Undo', 'Redo'],
         },
@@ -60,6 +64,10 @@ export default {
         {
           name: 'align',
           items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+        },
+        {
+          name: 'styles',
+          items: ['Styles', 'Format', 'Font', 'FontSize'],
         },
         {
           name: 'paragraph',
