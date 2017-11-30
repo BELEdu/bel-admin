@@ -138,6 +138,8 @@ export default {
         })
       }
       if (val.length && !this.isSelected) this.isSelected = true
+
+      this.updateValue()
     },
 
     value(newVal, oldVal) {
@@ -211,8 +213,6 @@ export default {
       } else {
         this.selectedItems = nextSelectedItems
       }
-
-      this.updateValue()
     },
 
     /**
@@ -227,7 +227,6 @@ export default {
       removedItem.selected = false
       this.selectedItems = this.$refs.tree
         .getSelectedNodes()
-      this.updateValue()
     },
 
     updateValue() {
@@ -237,9 +236,10 @@ export default {
       } else if (this.selectedItems[0]) {
         value = this.selectedItems[0].id
       }
-
-      this.$emit('change', value)
-      this.$emit('input', value)
+      if (!isEqual(value, this.value)) {
+        this.$emit('change', value)
+        this.$emit('input', value)
+      }
     },
 
     markSelected(tree) {
