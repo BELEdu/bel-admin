@@ -134,7 +134,7 @@
         this.formLoading = false
         this.formErrors = {}
         setTimeout(() => {
-          this.dataLoading = true
+          this.dataLoading = false
         }, 300)
       },
 
