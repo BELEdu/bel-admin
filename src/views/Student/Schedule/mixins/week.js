@@ -44,7 +44,7 @@ export default {
       const date = val || new Date()
       this.query['between[course_date]'] = [
         formatDate(startOfWeek(date, { weekStartsOn: 1 })),
-        endOfWeek(date, { weekStartsOn: 1 }),
+        formatDate(endOfWeek(date, { weekStartsOn: 1 })),
       ]
     },
   },
