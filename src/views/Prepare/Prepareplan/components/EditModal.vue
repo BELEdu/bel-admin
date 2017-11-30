@@ -144,6 +144,7 @@
         <!-- 试题列表组件 -->
         <question-list
           :data="form.questions"
+          :show-action="!isShow"
           :width="818"
         ></question-list>
 

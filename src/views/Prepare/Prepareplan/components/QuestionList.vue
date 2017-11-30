@@ -22,19 +22,20 @@
 
           <Button
             type="warning"
-            v-if="index !== 0"
+            v-if="index !== 0 && showAction"
             @click="sortQuestion(index,-1)"
           >上移</Button>
 
           <Button
             type="warning"
-            v-if="index !== (data.length-1)"
+            v-if="index !== (data.length-1) && showAction"
             @click="sortQuestion(index,1)"
           >下移</Button>
 
           <Button
             type="error"
-            @click="removeQuestion(index)"
+            v-if="showAction"
+            @click="removeQuestion(index) "
           >删除</Button>
 
         </ButtonGroup>
@@ -77,6 +78,10 @@ export default {
     width: {
       type: [Number, String],
       default: 500,
+    },
+    showAction: {
+      type: Boolean,
+      rquired: true,
     },
   },
 
