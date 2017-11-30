@@ -84,7 +84,7 @@ export default {
 
     <h2>
       {{vIndex}}、
-      {{data.question_type_name}}
+      {{data.display_name}}
       （
         共{{data.questions.length}}小题，
         总计{{sectionScore}}分
