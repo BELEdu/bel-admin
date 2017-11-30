@@ -36,7 +36,7 @@
     </Row>
     <Row v-if="currentCourseItem.course_status === 1">
       <Col :span="10">
-        <Form-item prop="course_chapter" label="实际课时：">
+        <Form-item prop="course_fact" label="实际课时：">
           <Select v-model="formData.course_fact">
             <Option v-for="item in 16" :key="item" :disabled="item > formData.course_num" :value="item">{{ item }}</Option>
           </Select>
