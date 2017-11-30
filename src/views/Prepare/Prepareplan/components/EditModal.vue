@@ -4,6 +4,7 @@
       :value="value"
       @input="value => $emit('input', value)"
       :title="title"
+      :mask-closable="false"
       @on-cancel="closeModal"
       width="850"
     >

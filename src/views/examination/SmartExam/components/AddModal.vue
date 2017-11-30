@@ -5,6 +5,7 @@
       @input="value => $emit('input', value)"
       title="添加测试"
       @on-cancel="closeModal"
+      :mask-closable="false"
       width="950"
     >
       <!-- 头部信息展示 -->
