@@ -53,7 +53,8 @@
       <!-- 判断题 -->
       <ul v-if="isTrueOrFalse">
         <li
-          v-for="item in this.data.question_answers"
+          v-for="(item, index) in this.data.question_answers"
+          :key="index"
         >
           <!-- 判断题选项 -->
           <span class="app-question__tf">{{item.option}}</span>
@@ -176,7 +177,7 @@ export default {
     choiceItems() {
       return this.data.question_answers
         .map(({ option, content, id, is_correct }) => ({
-          content: `${option}. ${content}`,
+          content: `${option}. <div style="display:inline-block;vertical-align: top;">${content}</div>`,
           id,
           is_correct,
         }))
@@ -284,7 +285,7 @@ export default {
     &>li {
       float: left;
 
-      & p , & section{
+      & section{
         display: inline;
       }
     }
