@@ -36,9 +36,9 @@
 
     <div class="app-content-topbar">
       <h2>知识点详情列表</h2>
-      <span>知识点列表</span>
-      <span>薄弱知识点：70个</span>
-      <span>总知识点： 172个</span>
+      <span>学员：{{buffer.student_name}}</span>
+      <span>薄弱知识点：{{buffer.count_weak_knowledge}}个</span>
+      <span>总知识点： {{buffer.count_knowledge}}个</span>
       <Button
         type="primary"
         @click="toggleList('detail')"
