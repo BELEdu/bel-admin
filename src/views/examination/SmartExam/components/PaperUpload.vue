@@ -18,7 +18,7 @@
             <Button
               type="primary"
               icon="image"
-              @click="imgPreview(image.url)"
+              @click="imgPreview(image.image_url)"
             ></Button>
 
             <!-- 上移 -->
@@ -206,8 +206,8 @@ export default {
     },
 
     // 图片预览
-    imgPreview(url) {
-      window.open(`${url}`)
+    imgPreview(imgUrl) {
+      window.open(`${imgUrl}`)
     },
 
     // 图片排序
