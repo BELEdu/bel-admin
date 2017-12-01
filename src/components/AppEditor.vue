@@ -19,6 +19,10 @@ export default {
       type: Number,
       default: 250,
     },
+    config: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   data() {
@@ -93,6 +97,7 @@ export default {
         fontSize_defaultLabel: '14px',
         width: `${this.width}px`,
         height: `${this.height}px`,
+        ...this.config,
       }
 
       function isWysiwygareaAvailable() {
