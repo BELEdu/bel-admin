@@ -68,13 +68,13 @@ export default {
             .map(({ option, is_correct }) => ({ option, is_correct }))
             .filter(({ is_correct }) => is_correct)
             .map(({ option }) => option)
-            .join('，')
+            .join('， ')
         case 2:
           return question_answers.find(answer => answer.is_correct === 1).option
         case 3:
           return question_answers
             .map(({ content }) => content)
-            .join('；')
+            .join('； ')
         case 4:
           return question_answers[0].content
         default:
@@ -106,9 +106,9 @@ export default {
   }
 
   &__answer {
-    p {
-        display: inline;
-    }
+    // p {
+    //     display: inline;
+    // }
   }
 
   // 使富文本区域中的图片居中
