@@ -1,15 +1,16 @@
 <template>
   <div class="app-question" :style="{width:`${width}px`}">
+
     <!-- 索引 -->
-    <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span>
+    <!-- <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span> -->
 
     <!-- 分数 -->
-    <span class="left" v-if="score || score === 0 ">（{{score}}分）&nbsp;&nbsp;</span>
+    <!-- <span class="left" v-if="score || score === 0 ">（{{score}}分）&nbsp;&nbsp;</span> -->
 
     <!-- 题目 -->
     <article
-      class="clearfix"
-      v-html="data.content"
+      :style="{overflow:'hidden'}"
+      v-html="formatQuestionContent"
     >
     </article>
 
@@ -24,9 +25,9 @@
         :style="{width: `${choiceItemWidth}%`}"
       >
 
-
         <!-- 正确答案 -->
         <Icon
+          class=""
           v-if="hasStudentAnswer && item.is_correct === 1"
           size="16"
           type="checkmark"
@@ -137,6 +138,19 @@ export default {
   },
 
   computed: {
+    // 题目格式化
+    formatQuestionContent() {
+      // 如果有分数拼上分数
+      if (this.score || this.score === 0) {
+        this.data.content = `<span>（${this.score}分）&nbsp;&nbsp;</span>${this.data.content}`
+      }
+      // 如果有索引拼上索引
+      if (this.index) {
+        this.data.content = `<span>${this.index}.&nbsp;&nbsp;</span>${this.data.content}`
+      }
+
+      return this.data.content
+    },
 
     // 是否为选择题题型
     isChoice() {

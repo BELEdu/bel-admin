@@ -5,13 +5,19 @@
   >
     <app-editor-title>
       <!-- <Button type="success" icon="search">下载预览</Button> -->
-      <Button
-        type="primary"
-        class="right"
-        icon="archive"
-        @click="download"
-      >Word直接下载</Button>
+      <div class="right">
+        <Button
+          type="primary"
+          icon="archive"
+          @click="download"
+        >Word直接下载</Button>
 
+        <Button
+          type="warning"
+          icon="archive"
+          @click="openPrintModal"
+        >编辑器打印</Button>
+      </div>
     </app-editor-title>
 
 
@@ -38,21 +44,33 @@
       </aside>
 
       <!-- 右侧试卷展示部分 -->
-      <div class="smartexam-preview__sidebar left">
+      <div class="smartexam-preview__sidebar left" >
 
-        <!-- 试卷公共头部 -->
-        <paper-preview-header
-          :data="data"
-        ></paper-preview-header>
+        <!-- 打印区域 -->
+        <div ref="paperDom">
 
-        <!-- 试卷主体 -->
-        <paper-preview-detail
-          :data="data"
-        ></paper-preview-detail>
+          <!-- 试卷公共头部 -->
+          <paper-preview-header
+            :data="data"
+          ></paper-preview-header>
+
+          <!-- 试卷主体 -->
+          <paper-preview-detail
+            :width="650"
+            :data="data"
+          ></paper-preview-detail>
+
+        </div>
 
       </div>
 
     </div>
+
+    <print-modal
+      v-model="printModal.active"
+      :data="printModal.content"
+      @closePrintModal="printModal.active = false"
+    ></print-modal>
 
   </div>
 </template>
@@ -66,8 +84,10 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
+import printBg from '@/assets/A4.jpg'
 import PaperPreviewDetail from './components/PaperPreviewDetail'
 import PaperPreviewHeader from './components/PaperPreviewHeader'
+import PrintModal from './components/PrintModal'
 
 export default {
   name: 'app-examination-smartexam-preview',
@@ -75,6 +95,7 @@ export default {
   components: {
     PaperPreviewHeader,
     PaperPreviewDetail,
+    PrintModal,
   },
 
   data() {
@@ -86,6 +107,11 @@ export default {
       apiHead: process.env.NODE_ENV === 'production' ?
         `https://${window.location.hostname.replace(/([^.]+)\./, '$1-api.')}`
         : 'https://oa-api.caihonggou.com',
+
+      printModal: {
+        active: false,
+        content: '',
+      },
     }
   },
 
@@ -103,6 +129,28 @@ export default {
   },
 
   methods: {
+    openPrintModal() {
+      this.$nextTick(() => {
+        const data = this.$refs.paperDom.innerHTML
+        this.printModal.content = `
+        <style>
+        body{height: auto;margin: 0 auto;background: #fff url(${printBg}) repeat-y center top;}
+        ul{list-style:none;}
+        .topic-item__control{display:none;}
+        .app-question__student-image{display:none;}
+        @media print {
+          body {background: none !important;}
+          .cke_editable div.cke_pagebreak {
+            background: none !important;
+            border-top: none !important;
+            border-bottom: none !important;
+          }
+        }
+        </style>${data}`
+        this.printModal.active = true
+      })
+    },
+
     // 按钮模板
     buttonFormat(id) {
       if (this.currentStudentTestId === id) {

@@ -23,7 +23,7 @@
               :index="index + 1"
               :data="item"
               :score="item.score"
-              :width="850"
+              :width="width"
             ></question>
             <div class="topic-item__control">
               <Button
@@ -65,6 +65,11 @@ export default {
       type: Object,
       required: true,
     },
+
+    width: {
+      type: [String, Number],
+      default: 850,
+    },
   },
 
   data() {
@@ -94,7 +99,7 @@ export default {
 @import '../mixins/paper.less';
 
 .paper-preview-detail {
-  width: calc(@layout-width - 90px);
+  width: calc(@layout-width - 280px);
 
   & > article {
 
