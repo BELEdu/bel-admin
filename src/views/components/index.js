@@ -45,6 +45,22 @@ export {
 } from './PaperPreviewSection'
 
 export {
+  default as PaperReadonly,
+} from './PaperReadonly'
+
+export {
+  default as PaperReadonlyHeader,
+} from './PaperReadonlyHeader'
+
+export {
+  default as PaperReadonlyBody,
+} from './PaperReadonlyBody'
+
+export {
+  default as PaperPrintModal,
+} from './PaperPrintModal'
+
+export {
   default as Question,
 } from './Question'
 
