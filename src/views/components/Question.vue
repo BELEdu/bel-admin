@@ -49,8 +49,10 @@
     </ul>
 
     <!-- 学员答案展示区域 -->
-    <div v-if="hasStudentAnswer">
-
+    <div
+      v-if="hasStudentAnswer"
+      class="app-question__student-answer"
+    >
       <!-- 判断题 -->
       <ul v-if="isTrueOrFalse">
         <li
@@ -83,8 +85,8 @@
         v-if="isFill || isEssay"
         :src="data.student_answer[0].answer_content"
         alt="学员答案图片"
-        class="app-question__student-image"
       >
+
     </div>
 
 
@@ -310,10 +312,12 @@ export default {
   }
 
   &__student-image {
-    margin-top: 10px;
-    max-width: 100%;
-    // border:1px solid @success-color;
-    // border-radius: 4px;
+    &>img {
+      margin-top: 10px;
+      max-width: 100%;
+      // border:1px solid @success-color;
+      // border-radius: 4px;
+    }
   }
 
   &__tf {
