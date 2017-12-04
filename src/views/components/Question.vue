@@ -311,7 +311,7 @@ export default {
     vertical-align: middle;
   }
 
-  &__student-image {
+  &__student-answer {
     &>img {
       margin-top: 10px;
       max-width: 100%;
