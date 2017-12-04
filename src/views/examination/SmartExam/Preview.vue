@@ -44,33 +44,24 @@
       </aside>
 
       <!-- 右侧试卷展示部分 -->
-      <div class="smartexam-preview__sidebar left" >
-
-        <!-- 打印区域 -->
-        <div ref="paperDom">
-
-          <!-- 试卷公共头部 -->
-          <paper-preview-header
-            :data="data"
-          ></paper-preview-header>
-
-          <!-- 试卷主体 -->
-          <paper-preview-detail
-            :width="650"
-            :data="data"
-          ></paper-preview-detail>
-
-        </div>
-
+      <div
+        class="smartexam-preview__sidebar left"
+        ref="paperDom"
+      >
+        <!-- 试卷展示组件（打印区域） -->
+        <paper-readonly
+          :width="650"
+          :data="data"
+        />
       </div>
 
     </div>
 
-    <print-modal
-      v-model="printModal.active"
+    <!-- 编辑器打印试卷组件 -->
+    <paper-print-modal
+      :visible.sync="printModal.active"
       :data="printModal.content"
-      @closePrintModal="printModal.active = false"
-    ></print-modal>
+    />
 
   </div>
 </template>
@@ -84,18 +75,14 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
-import printBg from '@/assets/A4.jpg'
-import PaperPreviewDetail from './components/PaperPreviewDetail'
-import PaperPreviewHeader from './components/PaperPreviewHeader'
-import PrintModal from './components/PrintModal'
+import { PaperReadonly, PaperPrintModal } from '@/views/components'
 
 export default {
   name: 'app-examination-smartexam-preview',
 
   components: {
-    PaperPreviewHeader,
-    PaperPreviewDetail,
-    PrintModal,
+    PaperReadonly,
+    PaperPrintModal,
   },
 
   data() {
@@ -129,24 +116,11 @@ export default {
   },
 
   methods: {
+    // 打开编辑器打印弹窗，并获取试卷 Dom 的 innerHTML 传入编辑器
     openPrintModal() {
       this.$nextTick(() => {
-        const data = this.$refs.paperDom.innerHTML
-        this.printModal.content = `
-        <style>
-        body{height: auto;margin: 0 auto;background: #fff url(${printBg}) repeat-y center top;}
-        ul{list-style:none;}
-        .topic-item__control{display:none;}
-        .app-question__student-image{display:none;}
-        @media print {
-          body {background: none !important;}
-          .cke_editable div.cke_pagebreak {
-            background: none !important;
-            border-top: none !important;
-            border-bottom: none !important;
-          }
-        }
-        </style>${data}`
+        const contentHtml = this.$refs.paperDom.innerHTML
+        this.printModal.content = contentHtml
         this.printModal.active = true
       })
     },

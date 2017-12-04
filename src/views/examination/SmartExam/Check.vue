@@ -168,9 +168,9 @@
     <div class="smartexam-check__sidebar">
 
       <!-- 试卷公共头部 -->
-      <paper-preview-header
+      <paper-readonly-header
         :data="form"
-      ></paper-preview-header>
+      ></paper-readonly-header>
 
       <!-- 阅卷（线上） -->
       <section
@@ -201,7 +201,9 @@
           </Alert>
 
           <!-- 试卷详情展示 -->
-          <paper-preview-detail :data="form"></paper-preview-detail>
+          <paper-readonly-body
+            :data="form"
+          ></paper-readonly-body>
         </div>
 
       </section>
@@ -296,11 +298,10 @@
  * @version 2017-10-23
  */
 
-import { form } from '@/mixins'
 import { mapState } from 'vuex'
+import { form } from '@/mixins'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
-import PaperPreviewDetail from './components/PaperPreviewDetail'
-import PaperPreviewHeader from './components/PaperPreviewHeader'
+import { PaperReadonlyHeader, PaperReadonlyBody } from '@/views/components'
 import PaperUpload from './components/PaperUpload'
 
 export default {
@@ -309,8 +310,8 @@ export default {
   mixins: [form],
 
   components: {
-    PaperPreviewHeader,
-    PaperPreviewDetail,
+    PaperReadonlyHeader,
+    PaperReadonlyBody,
     PaperUpload,
   },
 
@@ -714,7 +715,7 @@ export default {
   &__sidebar{
     margin-left: 366px;
     overflow: hidden;
-    width: 885px;
+    width: 690px;
   }
 
   &__form {
