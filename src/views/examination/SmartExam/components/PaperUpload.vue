@@ -119,10 +119,10 @@ export default {
         : 'https://oa-api.caihonggou.com',
 
       // 请求接口的右边部分
-      api: 'test/upload',
+      api: '/test/upload',
 
       // 文件大小限制，单位 kb
-      maxSize: 2048,
+      maxSize: 5120,
 
       // 支持的文件类型
       format: ['jpg', 'jpeg', 'png'],
@@ -138,7 +138,7 @@ export default {
   computed: {
     // 拼接成真正的完整接口地址
     action() {
-      return `${this.apiHead}/v1/${this.api}`
+      return `${this.apiHead}/v1${this.api}`
     },
 
     // 请求头
@@ -241,7 +241,9 @@ export default {
   &__item {
     position: relative;
     border: 1px solid  #fff;
+    line-height: 1;
     cursor: pointer;
+    margin-bottom: 10px;
 
     &:hover {
       border: 1px solid  @primary-color;
@@ -262,7 +264,7 @@ export default {
       display: none;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,.1);
+      background: rgba(0,0,0,.15);
     }
 
     &__btns{
