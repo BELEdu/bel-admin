@@ -8,16 +8,16 @@
     class="print-modal"
   >
     <!-- 加载loading -->
-    <Spin v-if="isLoading" fix>试卷正在加载中...</Spin>
+    <Spin v-if="!loadOk" fix>试卷正在加载中...</Spin>
 
     <!-- 富文本编辑器 -->
     <app-editor
-      v-if="isRender"
+      v-if="isfirstRender"
       ref="myEditor"
       :config="config"
       :height="978"
       :value="formatData"
-      @init="() => this.isLoading = false"
+      @init="() => this.loadOk = true"
     ></app-editor>
 
   </Modal>
@@ -51,8 +51,8 @@ export default {
 
   data() {
     return {
-      isRender: false, // 是否第一次加载（用于编辑器加载静态资源）
-      isLoading: true, // 加载标志
+      isfirstRender: false, // 是否第一次加载（用于编辑器加载静态资源）
+      loadOk: false, // 编辑器加载成功
 
       // 编辑器配置
       config: {
@@ -87,7 +87,7 @@ export default {
     // 监听：当弹窗为打开状态时，调用编辑器的setData方法将格式化后的HTML代码注入
     visible(val) {
       if (val) {
-        this.isRender = val
+        this.isfirstRender = val
 
         this.$nextTick(() => {
           if (this.$refs.myEditor.editor) {
