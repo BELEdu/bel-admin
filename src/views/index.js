@@ -134,6 +134,7 @@ export { default as ExaminationWrongQuestionDetail } from './examination/WrongQu
 export { default as PreparePrepareplan } from './Prepare/Prepareplan'
 export { default as PreparePrepareplanDetail } from './Prepare/Prepareplan/Detail'
 export { default as PreparePrepareplanQuestion } from './Prepare/Prepareplan/Question'
+export { default as PreparePrepareplanPreview } from './Prepare/Prepareplan/Preview'
 
 // 试卷中心
 export { default as PreparePaper } from './Prepare/Paper'

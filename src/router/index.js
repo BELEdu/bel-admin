@@ -37,6 +37,18 @@ const router = new Router({
       },
     },
     {
+      path: '/preview-prepareplan',
+      name: 'PreparePrepareplanPreview',
+      component: views.PreparePrepareplanPreview,
+      meta: {
+        breadcrumb: [
+          { name: '备课管理' },
+          { name: '我的教案' },
+          { name: '教案预览' },
+        ],
+      },
+    },
+    {
       path: '/',
       name: 'Main',
       component: views.Main,

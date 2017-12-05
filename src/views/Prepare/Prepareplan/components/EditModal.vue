@@ -343,7 +343,7 @@ export default {
     // 试卷预览
     previewPreparePlan() {
       localStorage.removeItem('previewPreparePlan')
-      const url = 'https://cn.bing.com/'
+      const url = '/preview-prepareplan'
       window.open(url, String(Date.now()), '', false)
       localStorage.setItem('previewPreparePlan', this.form.content)
     },

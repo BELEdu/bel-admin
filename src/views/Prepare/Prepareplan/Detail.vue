@@ -140,6 +140,11 @@ export default {
             { text: '添加', type: 'warning', isShow: ({ row }) => row.scheme_operation.create, click: row => this.openEditModal('create', row.id) },
             { text: '编辑', type: 'success', isShow: ({ row }) => row.scheme_operation.edit, click: row => this.openEditModal('edit', row.id) },
             { text: '查看', type: 'primary', isShow: ({ row }) => row.scheme_operation.show, click: row => this.openEditModal('show', row.id) },
+            {
+              text: '预览',
+              type: 'warning',
+              click: row => this.toPreview(row.id),
+            },
           ]),
         },
       ],
