@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import defaultConfig from './config'
+
 window.CKEDITOR_BASEPATH = '/assets/1.0.0/lib/ckeditor/'
 
 export default {
@@ -22,6 +24,10 @@ export default {
     config: {
       type: Object,
       default: () => ({}),
+    },
+    type: {
+      type: String,
+      default: 'lesson',
     },
   },
 
@@ -47,56 +53,14 @@ export default {
     init() {
       const CKEDITOR = window.CKEDITOR
 
-      // 自定义工具栏
-      CKEDITOR.config.toolbar = [
-        {
-          name: 'document',
-          items: ['Preview', 'Print'],
-        },
-        {
-          name: 'clipboard',
-          items: ['Undo', 'Redo'],
-        },
-        {
-          name: 'basicstyles',
-          items: ['Bold', 'Italic', 'Underline', 'Strike'],
-        },
-        {
-          name: 'colors',
-          items: ['TextColor'],
-        },
-        {
-          name: 'align',
-          items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-        },
-        {
-          name: 'styles',
-          items: ['Styles', 'Format', 'Font', 'FontSize'],
-        },
-        {
-          name: 'paragraph',
-          items: ['Outdent', 'Indent'],
-        },
-        {
-          name: 'insert',
-          items: ['base64image', 'Table'],
-        },
-        {
-          name: 'base',
-          items: ['Subscript', 'Superscript', 'SpecialChar', 'Wiris'],
-        },
-      ]
-
-      CKEDITOR.config.extraPlugins = 'wiris,base64pasteanddrag,base64image'
-
-      // CKEDITOR.config.height = this.height
-      // CKEDITOR.config.width = this.width
       // 上面两行代码是全局性设置，这里需要在初始化编辑器时单独把config传入，以便每个实例实现不同的尺寸
       const config = {
         // 默认字体大小
         fontSize_defaultLabel: '14px',
         width: `${this.width}px`,
         height: `${this.height}px`,
+        extraPlugins: 'wiris,base64pasteanddrag,base64image',
+        ...defaultConfig[this.type],
         ...this.config,
       }
 
