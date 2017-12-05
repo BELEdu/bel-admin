@@ -142,16 +142,18 @@ export default {
   computed: {
     // 题目格式化
     formatQuestionContent() {
+      // 先将题目用行内块状元素包裹
+      let inlineContent = `<div style="display:inline-block;vertical-align: top;">${this.data.content}</div>`
       // 如果有分数拼上分数
       if (this.score || this.score === 0) {
-        this.data.content = `<span>（${this.score}分）&nbsp;&nbsp;</span>${this.data.content}`
+        inlineContent = `<span>（${this.score}分）&nbsp;&nbsp;</span>${inlineContent}`
       }
       // 如果有索引拼上索引
       if (this.index) {
-        this.data.content = `<span>${this.index}.&nbsp;&nbsp;</span>${this.data.content}`
+        inlineContent = `<span>${this.index}.&nbsp;&nbsp;</span>${inlineContent}`
       }
-
-      return this.data.content
+      // 返回拼接后的html
+      return inlineContent
     },
 
     // 是否为选择题题型
@@ -193,7 +195,7 @@ export default {
     choiceItems() {
       return this.data.question_answers
         .map(({ option, content, id, is_correct }) => ({
-          content: `${option}. <div style="display:inline-block;vertical-align: top;">${content}</div>`,
+          content: `<span>${option}. </span><div style="display:inline-block;vertical-align: top;">${content}</div>`,
           id,
           is_correct,
         }))
