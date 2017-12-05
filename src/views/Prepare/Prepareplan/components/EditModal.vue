@@ -40,13 +40,31 @@
         <!-- 表单区域 -->
         <div class="prepareplan-edit-modal__wrap" v-if="step === 1 || step === 2">
 
+          <!-- 加载loading -->
+          <Spin v-if="!editorLoadOk" fix>编辑器正在加载中...</Spin>
+
           <!-- 教案内容 -->
           <Form-item v-show="step === 1">
+
+            <!-- 教案预览 -->
+            <div class="prepareplan-edit-modal__preview">
+              <Button
+                v-if="editorLoadOk"
+                type="warning"
+                icon="search"
+                @click="previewPreparePlan"
+              >教案预览</Button>
+            </div>
+
+            <!-- 富文本编辑器 -->
             <app-editor
-              :height="450"
-              v-if="value"
-              v-model="form.content"
+              v-if="editorFirstRender"
+              ref="myEditor"
+              :height="600"
+              :value="form.content"
+              @init="() => this.editorLoadOk = true"
             ></app-editor>
+
           </Form-item>
 
           <!-- PPT网址 -->
@@ -124,14 +142,14 @@
       <div v-if="step === 3">
         <!-- 按钮 -->
         <div class="prepareplan-edit-modal__refresh text-right">
-          <!-- 加一批题目 -->
+          <!-- 推一批题目 -->
           <Button
             v-if="!isShow"
             type="primary"
             icon="plus"
             :loading="questionLoading"
             @click="getQuestionInfo"
-          >加一批</Button>
+          >推一批</Button>
 
           <!-- 手动选题 -->
           <Button
@@ -140,6 +158,7 @@
             icon="android-cart"
             @click="changeQuestions"
           >手动换题</Button>
+
         </div>
 
         <!-- 试题列表组件 -->
@@ -202,14 +221,6 @@
       </div>
     </Modal>
 
-    <!-- 试题解析弹窗 -->
-    <question-analysis-dialog
-      :visible.sync="modalActive"
-      :data="currentQuestion"
-    >
-      <span></span>
-    </question-analysis-dialog>
-
   </div>
 </template>
 
@@ -221,7 +232,7 @@
  */
 
 import { form } from '@/mixins'
-import { Question, QuestionAnalysisDialog } from '@/views/components'
+import { Question } from '@/views/components'
 import QuestionList from './QuestionList'
 
 // 默认ppt数组项
@@ -237,7 +248,6 @@ export default {
 
   components: {
     Question,
-    QuestionAnalysisDialog,
     QuestionList,
   },
 
@@ -266,17 +276,18 @@ export default {
 
   data() {
     return {
-      step: 1,
-      stepLength: 3,
 
-      currentQuestion: {},
-      modalActive: false,
+      step: 1, // 当前步骤
+      stepLength: 3, // 步骤总数
 
       questionLoading: false,
 
       localQuestion: null,
 
       newWin: null,
+
+      editorFirstRender: false, // 是否第一次加载（用于加载编辑器静态文件）
+      editorLoadOk: false, // 编辑器是否加载完毕
     }
   },
 
@@ -314,7 +325,28 @@ export default {
     },
   },
 
+  watch: {
+    // 监听：当弹窗为打开状态时，调用编辑器的setData方法将格式化后的HTML代码注入
+    value(val) {
+      if (val) {
+        this.editorFirstRender = val
+        this.$nextTick(() => {
+          if (this.$refs.myEditor.editor) {
+            this.$refs.myEditor.editor.setData(this.form.content)
+          }
+        })
+      }
+    },
+  },
+
   methods: {
+    // 试卷预览
+    previewPreparePlan() {
+      localStorage.removeItem('previewPreparePlan')
+      const url = 'https://cn.bing.com/'
+      window.open(url, String(Date.now()), '', false)
+      localStorage.setItem('previewPreparePlan', this.form.content)
+    },
 
     // 前往手动选题页面
     changeQuestions() {
@@ -474,6 +506,11 @@ export default {
 
   &__wrap {
     min-height: 330px;
+  }
+
+  &__preview {
+    margin-bottom: 15px;
+    text-align: right;
   }
 
   &__add {
