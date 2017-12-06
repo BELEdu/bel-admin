@@ -2,9 +2,12 @@
   <Modal
     class="question-analysis-dialog"
     :value="visible"
+    width="844"
     @input="toggleAnalysis"
     title="试题解析"
   >
+
+    <!-- 试题信息 -->
     <header v-if="Object.keys($slots).length === 0">
       <span>题目ID: {{data.question_id}}</span>
       <span>题型: {{data.question_type_name}}</span>
@@ -16,10 +19,12 @@
 
     <slot></slot>
 
+    <!-- 题目解析 -->
     <QuestionAnalysis
       :data="data"
     />
 
+    <!-- 底部 -->
     <div
       slot="footer"
     >
@@ -28,6 +33,7 @@
         @click="deactivateAnalysis"
       >返回</Button>
     </div>
+
   </Modal>
 </template>
 
@@ -77,8 +83,9 @@ export default {
 
 <style lang="less">
 .question-analysis-dialog {
-  & .ivu-modal {
-    width: 600px !important;
+
+  .ivu-modal-body {
+    padding: 16px 25px;
   }
 
   & header {
