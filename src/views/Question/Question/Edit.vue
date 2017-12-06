@@ -104,7 +104,7 @@
         </Row>
 
         <Form-item label="题目" prop="content">
-          <app-editor v-if="!isLoading" v-model="form.content"></app-editor>
+          <app-editor v-if="!isLoading" type="paper" v-model="form.content"></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
