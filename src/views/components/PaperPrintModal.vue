@@ -45,7 +45,7 @@ export default {
     },
     width: {
       type: [String, Number],
-      default: 829,
+      default: 846,
     },
   },
 
@@ -56,18 +56,23 @@ export default {
 
       // 编辑器配置
       config: {
-        width: '21cm',
+        width: '21.5cm', // 预留0.5cm给滚动条
       },
     }
   },
 
   computed: {
-    // 临时处理一些会对打印产生影响的样式
+    /**
+     * 临时处理一些会对打印产生影响的样式
+     * p、ul&li、img还有待考量
+     */
     formatData() {
       return `
         <style>
         body{height: auto;margin: 0 auto;background: #fff url(${printBg}) repeat-y center top;}
         ul{list-style:none;}
+        p{margin:0;}
+        img {vertical-align: middle;}
         .topic-item__control{display:none;}
         .app-question__student-answer{display:none;}
         @media print {
