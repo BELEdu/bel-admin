@@ -32,6 +32,12 @@ export default {
       type: Number,
       required: true,
     },
+
+    // 试题宽度
+    width: {
+      type: [Number, String],
+      default: '21cm',
+    },
   },
 
   computed: {
@@ -95,6 +101,7 @@ export default {
       v-for="(question, qIndex) in data.questions"
       :key="question.question_id"
       v-model="question.score"
+      :width="width"
       :data="question"
       :q-index="qIndex"
       :q-length="data.questions.length"
