@@ -73,7 +73,7 @@
                     <!--课表详细内容-->
                     <div slot="content">
                       <p><span class="text-right">上课时间：</span>{{list.schedule_range}}</p>
-                      <div v-if="list.chapter_name"><span class="text-right" style="display: inline-block;min-width: 5em">内容：</span><br/><p style="padding-left: 5em;" v-html="list.chapter_name"></p></div>
+                      <div v-if="list.chapter_name"><span class="text-right" style="display: inline-block;min-width: 5em">内容：</span><p style="padding-left: 5em;" v-html="list.chapter_name"></p></div>
                       <p><span class="text-right">计划课时：</span>{{list.course_num}}</p>
                       <p v-if="list.course_fact"><span class="text-right">实际课时：</span>{{list.course_fact}}</p>
                       <p><span class="text-right">上课状态：</span>{{list.course_status_name}}</p>
@@ -293,6 +293,11 @@
 
     .weekly-list {
       text-align: center;
+
+      &, p {
+        margin: 0;
+        padding: 0;
+      }
 
       &__header {
         border-left: 1px solid @border-color-base;

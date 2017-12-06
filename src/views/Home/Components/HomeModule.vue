@@ -102,6 +102,12 @@
 <style lang="less">
   .waterfall-block {
     padding: 2px;
+    
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
     .ivu-card {
       background-color: #fff;
       position: relative;
