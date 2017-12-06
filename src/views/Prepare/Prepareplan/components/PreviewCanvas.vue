@@ -223,7 +223,7 @@ export default {
      */
     convertHtmlToSvg(html) {
       const doc = document.implementation.createHTMLDocument('');
-      doc.write(html);
+      doc.write(html.replace(/(data-latex="[^"]+")|(<img[^>]+file[^>]+>)/g, ''));
 
       const xml = (new XMLSerializer())
         .serializeToString(doc)
