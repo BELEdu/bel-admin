@@ -124,7 +124,7 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: '21cm',
+      default: 790,
     },
     index: {
       type: [Number, String],

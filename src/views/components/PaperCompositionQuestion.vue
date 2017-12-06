@@ -29,7 +29,7 @@ export default {
 
     width: {
       type: [Number, String],
-      default: '21cm',
+      default: 790,
     },
   },
 

@@ -198,7 +198,7 @@ export default {
     background-color: @bg-color;
     border: 1px solid @border-color-split ;
     border-top: 0px;
-    padding: 0 10px 10px 10px;
+    padding: 10px;
 
     &>div {
       margin: auto;

@@ -77,7 +77,7 @@ export default {
     // 试题宽度，默认以A4纸比例
     width: {
       type: [String, Number],
-      default: '21cm',
+      default: 790,
     },
   },
 
@@ -96,7 +96,7 @@ export default {
   computed: {
     // 是否使用展示打印试卷的宽度
     isPrintWrap() {
-      return this.width === '21cm'
+      return this.width === 790
     },
   },
 
@@ -117,7 +117,7 @@ export default {
 .paper-readonly-body {
 
   &__print-wrap {
-    width: 21cm + 40px;
+    width: 790px + 40px;
   }
 
   & > article {

@@ -40,7 +40,7 @@ export default {
     // 试题宽度，默认以A4纸比例
     width: {
       type: [String, Number],
-      default: '21cm',
+      default: 790,
     },
   },
 }

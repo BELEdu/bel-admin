@@ -27,7 +27,7 @@
   * @author zml
   * @version 2017-10-09
   * @param {Object} data - 试题详情
-  * @param {Number, String} width - 试题宽度，默认宽度21cm
+  * @param {Number, String} width - 试题宽度，默认宽度790px
   */
 
 import Question from './Question'
@@ -46,7 +46,7 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: '21cm',
+      default: 790,
     },
   },
 

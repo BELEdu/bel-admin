@@ -36,7 +36,7 @@ export default {
     // 试题宽度
     width: {
       type: [Number, String],
-      default: '21cm',
+      default: 790,
     },
   },
 
