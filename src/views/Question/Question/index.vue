@@ -436,7 +436,7 @@ export default {
 @import '~vars';
 .question-question {
   &__content {
-    max-height: 36px;
+    max-height: 50px;
     overflow: hidden;
   }
 }
