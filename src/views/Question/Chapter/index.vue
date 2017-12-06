@@ -419,7 +419,9 @@ export default {
 .question-chapter {
   &__point {
     list-style-type: disc;
+    margin: 0;
     margin-left: 15px;
+    padding: 0;
   }
 }
 
