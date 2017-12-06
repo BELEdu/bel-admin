@@ -13,6 +13,7 @@ import AppMapCascader from './AppMapCascader'
 import AppEcharts from './AppEcharts'
 import AppEditor from './AppEditor'
 import AppTableForm from './AppTableForm'
+import AppUpload from './AppUpload'
 
 const rbdog = {
   AppButtonRadio,
@@ -30,6 +31,7 @@ const rbdog = {
   AppEcharts,
   AppEditor,
   AppTableForm,
+  AppUpload,
 }
 
 const install = (Vue) => {
