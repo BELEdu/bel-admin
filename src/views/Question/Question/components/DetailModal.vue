@@ -3,7 +3,7 @@
     <!-- 试题详情弹窗 -->
     <Modal
       :title="`试题详情（${questionDetail.number}）`"
-      width="600"
+      width="850"
       :value="value"
       @input="value => $emit('input', value)"
       :maskClosable="true"
@@ -118,16 +118,16 @@ export default {
 
       columns: {
         info: [
-          { title: '学科', key: 'grade_range_subject_name', align: 'center', width: 80 },
+          { title: '学科', key: 'grade_range_subject_name', align: 'center', width: 100 },
           { title: '题型', key: 'question_type_name', align: 'center', width: 100 },
           { title: '类型', key: 'paper_type_name', align: 'center', width: 100 },
-          { title: '难度', key: 'question_difficulty_name', align: 'center', width: 60 },
-          { title: '时间', key: 'year_name', align: 'center', width: 60 },
+          { title: '难度', key: 'question_difficulty_name', align: 'center', width: 80 },
+          { title: '时间', key: 'year_name', align: 'center', width: 80 },
           { title: '知识点', key: 'knowledge_str', align: 'center' },
         ],
         logs: [
           { title: '操作者', key: 'realname', align: 'center' },
-          { title: '操作类型', key: 'question_log_type_name', align: 'center', width: 80 },
+          { title: '操作类型', key: 'question_log_type_name', align: 'center' },
           { title: '操作时间', key: 'created_at', align: 'center' },
           { title: '备注', key: 'remark', align: 'center' },
         ],
