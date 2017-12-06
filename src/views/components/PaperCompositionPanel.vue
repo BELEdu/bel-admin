@@ -57,7 +57,7 @@ export default {
 
 .paper-composition-panel {
   position: fixed;
-  left: 1420px;
+  left: 1378px;
   bottom: 95px;
   border: @border-base;
   border-radius: @border-radius;
