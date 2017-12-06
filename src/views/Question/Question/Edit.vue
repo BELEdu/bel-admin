@@ -48,16 +48,12 @@
             </Form-item>
           </Col>
           <Col span="12">
-            <Form-item label="难度" required>
-              <Slider
+            <Form-item label="难度" prop="question_difficulty" required>
+              <AppButtonRadio
                 v-model="form.question_difficulty"
-                :tip-format="tipFormat"
-                :step="1"
-                :min="1"
-                :max="5"
-                show-tip = "always"
-                show-stops
-              ></Slider>
+                :data="difficulty"
+                size="small"
+              ></AppButtonRadio>
             </Form-item>
           </Col>
         </Row>
@@ -104,7 +100,7 @@
         </Row>
 
         <Form-item label="题目" prop="content">
-          <app-editor v-if="!isLoading" type="paper" v-model="form.content"></app-editor>
+          <app-editor v-if="(!isLoading && questionResetOk)" type="paper" v-model="form.content"></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
@@ -179,9 +175,9 @@
         <!-- 填空题 -->
         <div class="question-edit__answer"  v-if="questionTemplateFormat === 3">
           <Form-item label="答案" required>
-            <p class="question-edit__answer__tips">
+            <div class="question-edit__answer__tips">
               请在下方点击 <span class="color-primary">增加填空项</span> 来插入填空
-            </p>
+            </div>
           </Form-item>
           <Form-item
             v-for="(item,index) in form.question_answers"
@@ -226,7 +222,7 @@
         </Form-item>
 
         <Form-item label="解析">
-          <app-editor v-if="!isLoading" v-model="form.analysis"></app-editor>
+          <app-editor v-if="(!isLoading && questionResetOk)" v-model="form.analysis"></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -269,6 +265,21 @@ const defaultAnswer = {
   is_correct: 1, // 是否是正确选项
 }
 
+const defaultForm = {
+  grade_range_subject_id: null, // 年级学科id
+  from_name: '', // 试题来源
+  question_status: null, // 提交状态 1：存为草稿 2：提交审核
+  question_type_id: null, // 题型id
+  question_difficulty: null, // 题目难度
+  paper_type: null, // 试卷类型
+  year: null, // 时间
+  knowledge_ids: [], // 关联知识点
+  user_label_ids: [], // 收藏标签
+  content: '', // 题目内容
+  analysis: '', // 题目解析
+  question_answers: [{ ...defaultAnswer }], // 答案
+}
+
 export default {
   name: 'question-question-edit',
 
@@ -276,20 +287,7 @@ export default {
 
   data() {
     return {
-      form: {
-        grade_range_subject_id: null, // 年级学科id
-        from_name: '', // 试题来源
-        question_status: null, // 提交状态 1：存为草稿 2：提交审核
-        question_type_id: null, // 题型id
-        question_difficulty: 1, // 题目难度
-        paper_type: null, // 试卷类型
-        year: null, // 时间
-        knowledge_ids: [], // 关联知识点
-        user_label_ids: [], // 收藏标签
-        content: '', // 题目内容
-        analysis: '', // 题目解析
-        question_answers: [{ ...defaultAnswer }], // 答案
-      },
+      form: { ...defaultForm },
 
       rules: {
         question_type_id: [
@@ -297,6 +295,9 @@ export default {
         ],
         paper_type: [
           this.$rules.required('类型', 'number', 'change'),
+        ],
+        question_difficulty: [
+          this.$rules.required('难度', 'number', 'change'),
         ],
         year: [
           this.$rules.required('时间', 'number', 'change'),
@@ -326,6 +327,8 @@ export default {
       afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
 
       loadOk: false,
+
+      questionResetOk: true, // 继续添加题目重置标志
     }
   },
 
@@ -406,7 +409,7 @@ export default {
     addChoice() {
       const length = this.form.question_answers.length
       this.form.question_answers.push(
-        { ...defaultAnswer, option: this.alphabetize(length) },
+        { ...defaultAnswer, option: this.alphabetize(length), is_correct: 0 },
       )
     },
 
@@ -562,7 +565,17 @@ export default {
       if (this.afterAdded === 'back') {
         this.goBack(true)
       } else {
-        location.reload()
+        // 继续添加的时候清空表单信息，只保存学科和收藏标签
+        this.questionResetOk = false
+        const { grade_range_subject_id, user_label_ids } = this.form
+        this.form = {
+          ...defaultForm,
+          grade_range_subject_id,
+          user_label_ids,
+        }
+        // this.questionResetOk = true
+        this.$Message.success('已重置表单，请继续添加试题')
+        this.$emit('scrollToTop')
       }
     },
 
