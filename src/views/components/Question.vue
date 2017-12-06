@@ -1,11 +1,5 @@
 <template>
-  <div class="app-question" :style="{width:`${width}px`}">
-
-    <!-- 索引 -->
-    <!-- <span class="left" v-if="index">{{index}}.&nbsp;&nbsp;</span> -->
-
-    <!-- 分数 -->
-    <!-- <span class="left" v-if="score || score === 0 ">（{{score}}分）&nbsp;&nbsp;</span> -->
+  <div class="app-question" :style="{width:formatQuestionWidth}">
 
     <!-- 题目 -->
     <article
@@ -15,14 +9,15 @@
     </article>
 
     <!-- 选择题选项区域 -->
-    <ul
+    <div
       v-if="isChoice"
-      class="app-question__choice clearfix"
+      class="app-question__choice"
+      :style="{paddingTop: `10px`}"
     >
-      <li
+      <div
         v-for="(item,index) in choiceItems"
         :key="index"
-        :style="{width: `${choiceItemWidth}%`}"
+        :style="{width: `${choiceItemWidth}%`, display: `inline-block`}"
       >
 
         <!-- 正确答案 -->
@@ -45,8 +40,8 @@
         <!-- 选项文本 -->
         <section v-html="item.content"></section>
 
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <!-- 学员答案展示区域 -->
     <div
@@ -129,31 +124,49 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: 500,
+      default: '21cm',
     },
     index: {
-      type: Number,
-    },
-    score: {
-      type: Number,
+      type: [Number, String],
     },
   },
 
   computed: {
+    // 题目长度格式化
+    formatQuestionWidth() {
+      const type = typeof (this.width)
+      if (type === 'string') {
+        return this.width
+      }
+      return `${this.width}px`
+    },
+
     // 题目格式化
     formatQuestionContent() {
-      // 先将题目用行内块状元素包裹
-      let inlineContent = `<div style="display:inline-block;vertical-align: top;">${this.data.content}</div>`
+      // 空隔字符数
+      let count = 0
+
+      // 题目索引
+      let inlineHead = ''
+
       // 如果有分数拼上分数
-      if (this.score || this.score === 0) {
-        inlineContent = `<span>（${this.score}分）&nbsp;&nbsp;</span>${inlineContent}`
-      }
+      // const score = this.data.score
+      // if (score || score === 0) {
+      //   count += 5
+      //   inlineHead = `<span>(${this.data.score}分)</span>&nbsp;${inlineHead}`
+      // }
+
       // 如果有索引拼上索引
       if (this.index) {
-        inlineContent = `<span>${this.index}.&nbsp;&nbsp;</span>${inlineContent}`
+        count += 3
+        inlineHead = `<span>${this.index}.</span>&nbsp;${inlineHead}`
       }
-      // 返回拼接后的html
-      return inlineContent
+
+      // 返回拼接后的html, 先将题目用行内块状元素包裹
+      if (count > 0) {
+        return `${inlineHead}<span style="display:inline-block;vertical-align: top; width:calc(100% - ${count}em)">${this.data.content}</span>`
+      }
+      return this.data.content
     },
 
     // 是否为选择题题型
@@ -195,7 +208,7 @@ export default {
     choiceItems() {
       return this.data.question_answers
         .map(({ option, content, id, is_correct }) => ({
-          content: `<span>${option}. </span><div style="display:inline-block;vertical-align: top;">${content}</div>`,
+          content: `<span>${option}. </span><span style="display:inline-block;vertical-align: top;">${content}</span>`,
           id,
           is_correct,
         }))
@@ -289,24 +302,9 @@ export default {
   font-family: Times New Roman;
   background-color: inherit;
 
-  &::before {
-    display: block;
-    content: " ";
-    clear: both;
-    height: 1px;
-  }
-
-  &__choice {
-    margin-top: 10px;
-
-
-    &>li {
-      float: left;
-
-      & section{
-        display: inline;
-      }
-    }
+  // 这个p标签的强制处理还有待考量
+  p {
+    margin: 0;
   }
 
   img {
@@ -317,8 +315,6 @@ export default {
     &>img {
       margin-top: 10px;
       max-width: 100%;
-      // border:1px solid @success-color;
-      // border-radius: 4px;
     }
   }
 
