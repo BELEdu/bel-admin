@@ -6,7 +6,7 @@
       title="添加测试"
       @on-cancel="closeModal"
       :mask-closable="false"
-      width="950"
+      width="870"
     >
       <!-- 头部信息展示 -->
       <Steps
