@@ -150,14 +150,14 @@
  * @version 2017-09-14
  */
 
-import { list } from '@/mixins'
+import { list, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
 import DetailModal from './components/DetailModal'
 
 export default {
   name: 'question-question',
 
-  mixins: [list],
+  mixins: [list, lastRecord],
 
   components: {
     DetailModal,
@@ -364,7 +364,7 @@ export default {
         return p
           .then(() => {
             // 获取年级学科列表第一项的id
-            const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+            const firstGradeRangeSubjectId = this.getLastRecord('subject_id', this.grade_range_subject_id[0].id)
 
             // 重置关键字搜索
             this.queryReset(firstGradeRangeSubjectId)
@@ -415,6 +415,8 @@ export default {
         'equal[question_type_id]': null,
         'equal[grade_range_subject_id]': subjectId,
       }
+      // 设置默认行为数据
+      this.setLastRecord('subject_id', subjectId)
     },
 
     // 接口错误处理

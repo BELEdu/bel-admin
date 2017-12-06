@@ -78,7 +78,7 @@
  * @author huojinzhao
  */
 
-import { list, tableCommon } from '@/mixins'
+import { list, tableCommon, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
 import {
   ConditionRadio,
@@ -88,7 +88,7 @@ import {
 export default {
   name: 'question-paper',
 
-  mixins: [list, tableCommon],
+  mixins: [list, tableCommon, lastRecord],
 
   components: {
     ConditionRadio,
@@ -186,11 +186,15 @@ export default {
   methods: {
     /* --- initialization --- */
 
-    getPrecondition(subjectId) {
+    getPrecondition(id) {
+      // id为空时获取默认行为数据
+      const subjectId = id || this.getLastRecord('subject_id')
+      // 设置默认行为数据
+      this.setLastRecord('subject_id', subjectId)
+
       /* eslint-disable prefer-template */
       const url = '/paper/index_before'
         + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
-      /* eslint-enable */
 
       this.$http.get(url)
         .then(({

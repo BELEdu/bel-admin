@@ -32,6 +32,7 @@ const store = new Vuex.Store({
         'roles',
         'permissions',
         'dicts',
+        'lastRecord',
       ],
     }),
   ],
@@ -55,6 +56,9 @@ const store = new Vuex.Store({
     permissions: [], // 用户权限列表（含菜单）
     dicts: {}, // 字典数据
     loading: false,
+    lastRecord: { // 上次记录
+      subject_id: null, // 用户当前选择科目
+    },
   },
 
   getters: {
@@ -124,6 +128,13 @@ const store = new Vuex.Store({
     // 隐藏加载动画
     [GLOBAL.LOADING.HIDE](state) {
       state.loading = false
+    },
+
+    [GLOBAL.LASTRECORD](state, data = {}) {
+      state.lastRecord = {
+        ...state.lastRecord,
+        ...data,
+      }
     },
   },
 
