@@ -2,8 +2,8 @@
   <div class="smartexam__upload">
 
     <!-- 图片展示 -->
-    <ul :key="dataList.length">
-      <li
+    <div :key="dataList.length">
+      <div
         v-for="(image,index) in dataList"
         :key="image.url"
         class="smartexam__upload__item"
@@ -53,8 +53,8 @@
           :alt="image.image_name"
         >
 
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <!-- 上传控件 -->
     <Upload
