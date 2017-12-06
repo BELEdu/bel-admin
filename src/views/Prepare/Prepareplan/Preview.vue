@@ -117,5 +117,9 @@ export default {
   min-height: 800px;
   background-color: rgb(221, 221, 221);
   border-radius: 10px;
+
+  table, td {
+    width: auto !important;
+  }
 }
 </style>
