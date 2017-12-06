@@ -61,7 +61,7 @@
               v-if="editorFirstRender"
               ref="myEditor"
               :height="600"
-              :value="form.content"
+              v-model="form.content"
               @init="() => this.editorLoadOk = true"
             ></app-editor>
 
