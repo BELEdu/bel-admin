@@ -3,61 +3,36 @@
     v-if="paper"
     class="question-paper-detail"
   >
-    <header>
-      <h2>{{paper.display_name}}</h2>
-      <span>年份: {{paper.year}}</span>
-      <span>| 年级: {{paper.grade_name}}</span>
-      <span>| 类型: {{paper.paper_type_name}}</span>
-      <span>| 区域: {{paper.area_name}}</span>
-      <span>| 题数: {{paper.question_count}}</span>
-      <span>| 总分: {{paper.total_score}}分</span>
-      <span>| 考试时长: {{paper.exam_time}}分钟</span>
-    </header>
-    <article>
-      <div
-        v-for="(type, index) in paper.question_types"
-        class="section"
-      >
-        <h2>
-          {{index + 1}}、{{type.display_name}}
-          （
-          共{{type.question_count}}小题，
-          总计{{type.total_score}}分
-          ）
-        </h2>
-        <ul class="topic">
-          <li
-            v-for="(item, index) in type.questions"
-            class="topic-item"
-          >
-            <question
-              :index="index + 1"
-              :data="item"
-              :width="850"
-            ></question>
-            <div class="topic-item__control">
-              <Button
-                @click="activateAnalysis(item)"
-                size="small"
-              >
-                查看解析
-              </Button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </article>
-    <footer>
-      <Button
-        type="primary"
-        @click="goBack"
-      >返回</Button>
-    </footer>
+    <app-editor-title>
+      <div class="question-paper-detail__action">
+        <!-- 返回 -->
+        <Button
+          type="ghost"
+          @click="goBack"
+        >返回</Button>
 
-    <QuestionAnalysisDialog
-      :visible.sync="analysisModal.active"
-      :data="analysis"
+        <!-- 打印试卷 -->
+        <Button
+          type="warning"
+          icon="archive"
+          @click="openPrintModal"
+        >打印试卷</Button>
+      </div>
+    </app-editor-title>
+
+    <div ref="paperDom">
+      <!-- 试卷展示组件（打印区域） -->
+      <paper-readonly
+        :data="paper"
+      />
+    </div>
+
+     <!-- 编辑器打印试卷组件 -->
+    <paper-print-modal
+      :visible.sync="printModal.active"
+      :data="printModal.content"
     />
+
   </section>
 </template>
 
@@ -70,7 +45,7 @@
 
 import { GLOBAL } from '@/store/mutationTypes'
 import { goBack } from '@/mixins'
-import { Question, QuestionAnalysisDialog } from '@/views/components'
+import { PaperReadonly, PaperPrintModal } from '@/views/components'
 
 export default {
   name: 'question-paper-detail',
@@ -78,24 +53,28 @@ export default {
   mixins: [goBack],
 
   components: {
-    Question,
-    QuestionAnalysisDialog,
+    PaperReadonly,
+    PaperPrintModal,
   },
 
   data: () => ({
     paper: null,
 
-    analysisModal: {
+    printModal: {
       active: false,
+      content: '',
     },
 
-    analysis: {},
   }),
 
   methods: {
-    activateAnalysis(data) {
-      this.analysisModal.active = true
-      this.analysis = data
+    // 打开编辑器打印弹窗，并获取试卷 Dom 的 innerHTML 传入编辑器
+    openPrintModal() {
+      this.$nextTick(() => {
+        const contentHtml = this.$refs.paperDom.innerHTML
+        this.printModal.content = contentHtml
+        this.printModal.active = true
+      })
     },
   },
 
@@ -113,44 +92,14 @@ export default {
 
 <style lang="less">
 @import "~vars";
-@import './mixins/paper.less';
 
 .question-paper-detail {
-  width: calc(@layout-width - 90px);
 
-  & > header {
-    margin-bottom: 20px;
-
-    & > h2 {
-      margin-bottom: 5px;
-    }
-
-    & > span {
-      font-size: 14px;
-    }
-  }
-
-  & > article {
-
-    & .section {
-      .section()
-    }
-
-    & .topic {
-      .topic()
-    }
-
-    & h3 {
-      font-size: 14px;
-    }
-  }
-
-  & > footer {
+  &__action {
     margin-top: 15px;
-    text-align: center;
 
-    & button {
-      width: 100px;
+    .ivu-btn {
+      min-width: 100px;
     }
   }
 }
