@@ -28,8 +28,8 @@ export default {
     },
 
     width: {
-      type: Number,
-      default: 850,
+      type: [Number, String],
+      default: '21cm',
     },
   },
 
@@ -61,11 +61,13 @@ export default {
     class="paper-composition-question"
   >
     <!-- 题目内容 -->
-    <Question
-      class="paper-composition-question__content"
-      :data="data"
-      :width="width"
-    />
+    <div class="paper-composition-question__content">
+      <Question
+        :data="data"
+        :width="width"
+      />
+    </div>
+
     <!-- 题目控件 -->
     <div class="paper-composition-question__toolbar">
       <template v-if="config.select">
