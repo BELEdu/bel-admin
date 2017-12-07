@@ -84,7 +84,7 @@
                     <Input
                       v-model="ppt.display_name"
                       :readonly="isShow"
-                      placeholder="请输入课件标题"
+                      placeholder="请输入PPT课件标题"
                     ></Input>
                   </Form-item>
                 </Col>
@@ -94,6 +94,7 @@
                   <Button
                     type="warning"
                     icon="search"
+                    :loading="previewLoading"
                     long
                     @click="beforePreview(ppt.url)"
                   >预览</Button>
@@ -115,13 +116,6 @@
             <!-- 上传组件和Alert组件 -->
             <Row>
               <Col :span="16" :offset="4">
-
-                <!-- ppt压缩包上传组件 -->
-                <zip-upload
-                  v-if="!isShow"
-                  @on-success="add"
-                ></zip-upload>
-
                 <!-- 缺省提示 -->
                 <Alert
                   class="prepareplan-edit-modal__alert"
@@ -133,6 +127,13 @@
                     尚未添加PPT课件
                   </template>
                 </Alert>
+
+                <!-- ppt压缩包上传组件 -->
+                <zip-upload
+                  v-if="!isShow"
+                  @on-success="add"
+                ></zip-upload>
+
               </Col>
             </Row>
 
@@ -183,6 +184,9 @@
         <p
           class="left color-error prepareplan-edit-modal__tips"
         >
+          <span v-if="!canAdd && step === 2">
+            每个PPT的课件标题均必填
+          </span>
           <span v-if="isEmptyQuestion && step === 3 ">
             课堂练习题目不能为空
           </span>
@@ -391,6 +395,7 @@ export default {
 
     // 预览之前先检查后台是否上传成功
     beforePreview(pptUrl) {
+      this.previewLoading = true
       this.$http.post('/scheme/preview', {
         url: pptUrl,
       })
@@ -399,6 +404,9 @@ export default {
         })
         .catch(({ message }) => {
           this.$Message.warning(message)
+        })
+        .then(() => {
+          this.previewLoading = false
         })
     },
 
