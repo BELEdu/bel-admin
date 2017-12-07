@@ -59,9 +59,12 @@
       // 获取当前教师未完成课时数
       getTip(id) {
         const cId = id || this.userId
-        if (cId) {
-          this.$store.dispatch(STUDENT.SCHEDULE.GET_TIP, `${cId}`)
-        }
+        return cId && this.$store.dispatch(STUDENT.SCHEDULE.GET_TIP, `${cId}`)
+          .catch(({ message }) => {
+            this.$Notice.error({
+              title: message,
+            })
+          })
       },
     },
 

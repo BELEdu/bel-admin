@@ -190,10 +190,12 @@
           ] })
         const cId = to.params.id || this.userId
 
-        if (cId) {
-          return this.$store.dispatch(STUDENT.SCHEDULE.WEEKLY_LIST, `${cId}${query}`)
-        }
-        return false
+        return cId && this.$store.dispatch(STUDENT.SCHEDULE.WEEKLY_LIST, `${cId}${query}`)
+          .catch(({ message }) => {
+            this.$Notice.error({
+              title: message,
+            })
+          })
       },
 
       // 当前上课状态
