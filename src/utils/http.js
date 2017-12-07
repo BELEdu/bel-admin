@@ -22,6 +22,7 @@ class Http {
       delete: Http.delete,
       OK: Http.OK,
       FAIL: Http.FAIL,
+      TOKEN: Http.TOKEN,
       ERROR: Http.ERROR,
     }
   }
@@ -38,8 +39,8 @@ class Http {
       store.commit(GLOBAL.TOKEN.UPDATE, token)
     }
 
-    // 状态400且token为空值，强制用户登出（token失效时）
-    if (status === Http.FAIL && token === '') {
+    // 状态401且token为空值，强制用户登出（token失效时）
+    if (status === Http.TOKEN && token === '') {
       store.commit(GLOBAL.LOGOUT)
       router.push('/auth/login')
     }
@@ -149,6 +150,7 @@ Http.VERSION = '/v1'
 // 响应状态
 Http.OK = 200
 Http.FAIL = 400
+Http.TOKEN = 401
 Http.ERROR = 422
 
 export default Http
