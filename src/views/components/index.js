@@ -87,3 +87,7 @@ export {
 export {
   default as TreeSide,
 } from './TreeSide'
+
+export {
+  default as LabelModal,
+} from './LabelModal'

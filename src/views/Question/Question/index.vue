@@ -140,6 +140,15 @@
       </div>
     </app-warn-modal>
 
+    <!-- 收藏标签管理模态框 -->
+    <label-modal
+      :visible.sync="labelModal.active"
+      :id="labelModal.id"
+      :number="labelModal.number"
+      v-model="labelModal.labelIds"
+      @updateData="fetchData"
+    ></label-modal>
+
   </div>
 </template>
 
@@ -150,8 +159,10 @@
  * @version 2017-09-14
  */
 
+import { mapState } from 'vuex'
 import { list, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
+import { LabelModal } from '@/views/components'
 import DetailModal from './components/DetailModal'
 
 export default {
@@ -161,6 +172,7 @@ export default {
 
   components: {
     DetailModal,
+    LabelModal,
   },
 
   data() {
@@ -254,6 +266,12 @@ export default {
                 row.question_status === 1 || row.question_status === 3 || row.question_status === 5,
               click: row => this.$router.push(`/question/question/${row.grade_range_subject_id}/${row.id}`),
             },
+            // {
+            //   text: '收藏',
+            //   type: 'success',
+            //   isShow: ({ row }) => row.question_status === 4,
+            //   click: row => this.openLabelModal(row.id, row.user_label_ids, row.number),
+            // },
             {
               text: '下线',
               isShow: ({ row }) => row.question_status === 4,
@@ -277,14 +295,32 @@ export default {
         delete: false,
         outline: false,
       },
+
+      // 收藏标签弹窗
+      labelModal: {
+        active: false,
+        id: null,
+        number: null,
+        labelIds: [],
+      },
     }
   },
 
   computed: {
+    ...mapState({
+      labelList: state => state.label.list,
+    }),
     // 当前年级学科对应的教材版本
     currentQuestionTypes() {
       return this.question_type_id[this.query['equal[grade_range_subject_id]']]
     },
+    // 我的标签的id数组
+    // labelListIds() {
+    //   if (this.labelList.length > 0) {
+    //     return this.labelList.map(label => label.id)
+    //   }
+    //   return []
+    // },
   },
 
   methods: {
@@ -351,6 +387,15 @@ export default {
           this.modal.outline = false
           this.$Message.error(message)
         })
+    },
+
+    // 打开收藏标签弹窗
+    openLabelModal(question_id, label_ids, question_number) {
+      const modal = this.labelModal
+      modal.id = question_id
+      modal.number = question_number
+      modal.labelIds = label_ids
+      modal.active = true
     },
 
     // 获取列表数据的公共方法getData
