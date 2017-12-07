@@ -481,7 +481,7 @@ export default {
     // 关闭之前的再一次确认
     beforeCloseModal() {
       // 新增和编辑的文案不同
-      const text = this.isCreate ? '取消后不会添加教案<br>当前录入的数据将不会保存，确定取消？' : '取消后教案将不做任何更改，确定取消？'
+      const text = this.isCreate ? '取消后不会添加教案<br>当前录入的数据将不会保存，确定取消？' : '取消后教案将不保存任何更改，确定取消？'
       if (!this.isShow) {
         this.$Modal.confirm({
           title: '取消确认',

@@ -30,7 +30,7 @@
             <span class="color-primary">点击</span>
             或将PPT生成的压缩包
             <span class="color-primary">拖拽</span>
-            到这里上传，注意文件结构
+            到这里上传，请注意文件结构！
           </p>
           <p>
             文件格式：<span class="color-error">{{formatText}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
