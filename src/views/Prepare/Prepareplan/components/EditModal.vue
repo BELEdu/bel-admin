@@ -114,7 +114,7 @@
                   type="dashed"
                   long
                   v-if="!isShow"
-                  :disabled="!canAdd && !isMatchUrl"
+                  :disabled="!canAdd"
                   @click="add"
                 >添加</Button>
                 <!-- 缺省提示 -->
@@ -178,9 +178,6 @@
         <p
           class="left color-error prepareplan-edit-modal__tips"
         >
-          <span v-if="!isMatchUrl && step === 2 ">
-            请输入PPT发布程序上的链接，例：https://saas-ppt.aikaola.com/data/2
-          </span>
 
           <span v-if="isEmptyQuestion && step === 3 ">
             课堂练习题目不能为空
@@ -204,8 +201,8 @@
           v-if="step < stepLength"
           type="primary"
           size="large"
-          :disabled="!isMatchUrl && step === 2"
           :loading="formLoading"
+          :disabled="!canAdd && step === 2"
           @click="beforeNextStep"
         >下一步</Button>
 
@@ -312,12 +309,12 @@ export default {
     },
 
     // 校验用户输入的是否是网址，返回是否匹配,true匹配，false不匹配
-    isMatchUrl() {
-      const pptArray = this.form.attachments
-      const reg = /^https:\/\/saas-ppt\.aikaola\.com\/.*$/
-      const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
-      return !hasNoMatch
-    },
+    // isMatchUrl() {
+    //   const pptArray = this.form.attachments
+    //   const reg = /^https:\/\/saas-ppt\.aikaola\.com\/.*$/
+    //   const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
+    //   return !hasNoMatch
+    // },
 
     // 判断是否无课堂练习
     isEmptyQuestion() {
@@ -472,7 +469,7 @@ export default {
           this.nextStep()
         }
       } else if (this.step === 2) {
-        // 当他在编辑教案这一步骤
+        // 当他在添加ppt这一步骤
         if (this.canAdd) {
           this.submit()
         } else {
