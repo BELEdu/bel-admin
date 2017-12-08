@@ -715,7 +715,7 @@ export default {
   &__sidebar{
     margin-left: 366px;
     overflow: hidden;
-    width: 690px;
+    width: 830px;
   }
 
   &__form {

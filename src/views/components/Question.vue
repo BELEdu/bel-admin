@@ -38,7 +38,10 @@
         ></Icon>
 
         <!-- 选项文本 -->
-        <section v-html="item.content"></section>
+        <section
+          :style="{display: `inline-block`}"
+          v-html="item.content"
+        ></section>
 
       </div>
     </div>
