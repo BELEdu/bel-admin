@@ -52,12 +52,14 @@ export default {
     labelContent() {
       const label_ids = this.data.user_label_ids
       let text = ''
-      this.labelList
-        .filter(label => label_ids.includes(label.id))
-        .map(label => label.display_name)
-        .forEach((label_name, index) => {
-          text = `${text}<li>${index + 1}. ${label_name}</li>`
-        })
+      if (label_ids) {
+        this.labelList
+          .filter(label => label_ids.includes(label.id))
+          .map(label => label.display_name)
+          .forEach((label_name, index) => {
+            text = `${text}<li>${index + 1}. ${label_name}</li>`
+          })
+      }
       return text === '' ? '<li style="text-align:center;">暂无收藏任何标签</li>' : text
     },
   },
@@ -114,7 +116,7 @@ export default {
           加入{{config.carrier}}
         </Button>
 
-        <Tooltip trigger="hover" transfer="true">
+        <Tooltip trigger="hover" :transfer="true">
           <ul
             slot="content"
             v-html="labelContent"
