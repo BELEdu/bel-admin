@@ -124,6 +124,7 @@ export default {
         question_id: this.id,
       })
         .then(() => {
+          this.$Message.success('操作成功')
           this.needUpdateData = true
           this.$emit('input', currentLabelIds)
         })

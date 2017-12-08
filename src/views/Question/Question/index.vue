@@ -227,11 +227,29 @@ export default {
         {
           title: '创建时间',
           key: 'created_at',
-          align: 'center' },
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '收藏标签',
+          key: 'user_label_ids',
+          render: (h, params) => {
+            const { user_label_ids } = params.row
+            return h('div',
+              {
+                class: 'question-question__labels',
+                domProps: {
+                  innerHTML: this.formatLabels(user_label_ids),
+                },
+              },
+            )
+          },
+        },
         {
           title: '状态',
           key: 'question_status_name',
           align: 'center',
+          width: 80,
         },
         {
           title: '操作',
@@ -266,12 +284,12 @@ export default {
                 row.question_status === 1 || row.question_status === 3 || row.question_status === 5,
               click: row => this.$router.push(`/question/question/${row.grade_range_subject_id}/${row.id}`),
             },
-            // {
-            //   text: '收藏',
-            //   type: 'success',
-            //   isShow: ({ row }) => row.question_status === 4,
-            //   click: row => this.openLabelModal(row.id, row.user_label_ids, row.number),
-            // },
+            {
+              text: '管理收藏',
+              type: 'success',
+              isShow: ({ row }) => row.question_status === 4,
+              click: row => this.openLabelModal(row.id, row.user_label_ids, row.number),
+            },
             {
               text: '下线',
               isShow: ({ row }) => row.question_status === 4,
@@ -324,6 +342,18 @@ export default {
   },
 
   methods: {
+    // 收藏标签格式化
+    formatLabels(label_ids) {
+      let text = ''
+      this.labelList
+        .filter(label => label_ids.includes(label.id))
+        .map(label => label.display_name)
+        .forEach((label_name, index) => {
+          text = `${text}<p>${index + 1}. ${label_name}</p>`
+        })
+      return text === '' ? '无' : text
+    },
+
     // 添加试题
     addQuestion() {
       this.$router.push(`/question/question/${this.query['equal[grade_range_subject_id]']}`)
@@ -482,9 +512,20 @@ export default {
 <style lang="less">
 @import '~vars';
 .question-question {
+
   &__content {
     max-height: 50px;
     overflow: hidden;
+  }
+
+  &__labels {
+    p {
+      margin: 0;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
   }
 }
 </style>
