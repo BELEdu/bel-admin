@@ -265,7 +265,7 @@ export default {
     // 上传错误
     handleError(message) {
       this.$Notice.warning({
-        title: '服务器上传错误',
+        title: '上传错误',
         desc: `${message}`,
       })
     },

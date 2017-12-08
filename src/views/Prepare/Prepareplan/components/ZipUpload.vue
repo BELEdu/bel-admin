@@ -110,7 +110,7 @@ export default {
     uploadError() {
       this.$Notice.warning({
         title: '上传失败',
-        desc: '服务器上传发生错误或文件错误，请重新上传',
+        desc: '上传发生错误或文件错误，请尝试重新上传',
       })
     },
 
