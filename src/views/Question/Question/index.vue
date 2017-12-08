@@ -344,7 +344,7 @@ export default {
         .forEach((label_name, index) => {
           text = `${text}<p>${index + 1}. ${label_name}</p>`
         })
-      return text === '' ? '<p style="text-align:center;">无</p>' : text
+      return text
     },
 
     // 添加试题
