@@ -146,7 +146,7 @@
       :id="labelModal.id"
       :number="labelModal.number"
       v-model="labelModal.labelIds"
-      @updateData="fetchData"
+      @updateData="updateLabelData"
     ></label-modal>
 
   </div>
@@ -419,6 +419,11 @@ export default {
       modal.number = question_number
       modal.labelIds = label_ids
       modal.active = true
+    },
+
+    // 更新收藏标签数据
+    updateLabelData() {
+      this.fetchData()
     },
 
     // 获取列表数据的公共方法getData
