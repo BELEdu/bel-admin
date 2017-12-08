@@ -332,13 +332,6 @@ export default {
     currentQuestionTypes() {
       return this.question_type_id[this.query['equal[grade_range_subject_id]']]
     },
-    // 我的标签的id数组
-    // labelListIds() {
-    //   if (this.labelList.length > 0) {
-    //     return this.labelList.map(label => label.id)
-    //   }
-    //   return []
-    // },
   },
 
   methods: {
@@ -351,7 +344,7 @@ export default {
         .forEach((label_name, index) => {
           text = `${text}<p>${index + 1}. ${label_name}</p>`
         })
-      return text === '' ? '无' : text
+      return text === '' ? '<p style="text-align:center;">无</p>' : text
     },
 
     // 添加试题

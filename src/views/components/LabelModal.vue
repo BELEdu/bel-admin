@@ -72,6 +72,8 @@ export default {
       ],
 
       needUpdateData: false, // 是否需要更新
+
+      currentLabelIds: [], // 修改后的标签数组
     }
   },
 
@@ -91,9 +93,10 @@ export default {
       // 如果关闭弹窗的之前有成功操作过接口，则重新请求列表数据
       if (!val) {
         if (this.needUpdateData) {
-          this.$emit('updateData')
+          this.$emit('updateData', this.id, this.currentLabelIds)
         }
       } else {
+        this.currentLabelIds = []
         this.needUpdateData = false
       }
     },
@@ -115,7 +118,7 @@ export default {
       // 根据操作取不同接口
       const api = isAdd ? '/user_label_add_question' : '/user_label_remove_question'
       // 根据操作来改变label_id数组
-      const currentLabelIds = isAdd ? [...this.value, label_id] :
+      this.currentLabelIds = isAdd ? [...this.value, label_id] :
         this.value.filter(item => item !== label_id)
 
       // 请求接口
@@ -126,7 +129,7 @@ export default {
         .then(() => {
           this.$Message.success('操作成功')
           this.needUpdateData = true
-          this.$emit('input', currentLabelIds)
+          this.$emit('input', this.currentLabelIds)
         })
         .catch(({ message }) => {
           this.$Message.error(message)
