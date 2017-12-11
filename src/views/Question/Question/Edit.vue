@@ -477,6 +477,7 @@ export default {
       this.form.question_type_id = null
       this.form.paper_type = null
       this.form.knowledge_ids.length = 0
+      this.form.draw_area = ''
       this.tureOrFalseData = 1
     },
 
