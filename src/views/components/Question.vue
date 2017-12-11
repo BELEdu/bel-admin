@@ -211,7 +211,8 @@ export default {
     choiceItems() {
       return this.data.question_answers
         .map(({ option, content, id, is_correct }) => ({
-          content: `<span>${option}. </span><span style="display:inline-block;vertical-align: top;">${content}</span>`,
+          content: `<div style="display:inline-block;vertical-align: top;">${option}. </div>
+                    <div style="display:inline-block;vertical-align: top;">${content}</div>`,
           id,
           is_correct,
         }))
