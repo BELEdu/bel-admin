@@ -47,14 +47,13 @@
     <Modal
       v-model="modal"
       width="360"
-      :maskClosable="true"
       :loading="loading"
       @on-ok="submit(3)"
       @on-cancel="closeRejectModal"
     >
-      <p slot="header" class="text-center color-warning">
-          <Icon type="information-circled"></Icon>
-          <span>驳回确认</span>
+      <p slot="header" class="text-center color-warning question-detail__header">
+        <Icon type="information-circled"></Icon>
+        <span>驳回确认</span>
       </p>
 
       <Form :model="form" ref="from" :label-width="40">
@@ -170,8 +169,10 @@ export default {
           this.$emit('closeDetailModal')
         })
         .catch(({ message }) => {
-          this.loading = false
           this.$Message.error(message)
+        })
+        .then(() => {
+          this.loading = false
         })
     },
   },
@@ -192,6 +193,10 @@ export default {
 
   &__log {
     margin: 10px 0;
+  }
+
+  &__header {
+    margin:0;
   }
 
   &__content {
