@@ -233,6 +233,7 @@ export default {
         {
           title: '收藏标签',
           key: 'user_label_ids',
+          align: 'center',
           render: (h, params) => {
             const { user_label_ids } = params.row
             return h('div',
@@ -338,12 +339,14 @@ export default {
     // 收藏标签格式化
     formatLabels(label_ids) {
       let text = ''
-      this.labelList
-        .filter(label => label_ids.includes(label.id))
-        .map(label => label.display_name)
-        .forEach((label_name, index) => {
-          text = `${text}<p>${index + 1}. ${label_name}</p>`
-        })
+      if (label_ids.length > 0) {
+        this.labelList
+          .filter(label => label_ids.includes(label.id))
+          .map(label => label.display_name)
+          .forEach((label_name, index) => {
+            text = `${text}<p>${index + 1}. ${label_name}</p>`
+          })
+      }
       return text
     },
 
@@ -518,6 +521,7 @@ export default {
 
   &__labels {
     p {
+      text-align: left;
       margin: 0;
       display:block;
       white-space:nowrap;

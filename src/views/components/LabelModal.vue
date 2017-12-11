@@ -56,13 +56,13 @@ export default {
           width: 120,
           render: createButton([
             {
-              text: '添加收藏',
+              text: '加入收藏',
               type: 'success',
               isShow: ({ row }) => !(this.isAdded(row.id)),
               click: row => this.collectToggle(row.id, true),
             },
             {
-              text: '移除收藏',
+              text: '移出收藏',
               type: 'warning',
               isShow: ({ row }) => this.isAdded(row.id),
               click: row => this.collectToggle(row.id, false),
