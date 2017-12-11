@@ -4,7 +4,7 @@
     :width="width"
     title="打印试卷"
     :mask-closable="false"
-    @input="toggleModal"
+    :closable="false"
     class="print-modal"
   >
     <!-- 加载loading -->
@@ -19,6 +19,14 @@
       :value="formatData"
       @init="() => this.loadOk = true"
     ></app-editor>
+
+    <div slot="footer">
+      <Button
+        type="primary"
+        size="large"
+        @click="closeModal"
+      >取消</Button>
+    </div>
 
   </Modal>
 </template>
@@ -104,8 +112,17 @@ export default {
   },
 
   methods: {
-    toggleModal(value) {
-      this.$emit('update:visible', value)
+    closeModal() {
+      const text = '取消后将不保存任何试卷排版，确定取消？'
+      this.$Modal.confirm({
+        title: '取消确认',
+        content: `<div style="font-size:14px;text-align:center;fontt-weight:bold;">${text}</div>`,
+        cancelText: '返回',
+        okText: '确认',
+        onOk: () => {
+          this.$emit('update:visible', false)
+        },
+      })
     },
   },
 
