@@ -162,12 +162,12 @@ export default {
       // 如果有索引拼上索引
       if (this.index) {
         count += 3
-        inlineHead = `<span>${this.index}.</span>&nbsp;${inlineHead}`
+        inlineHead = `<div style="display:inline-block;vertical-align: top;">${this.index}.&nbsp;</div>${inlineHead}`
       }
 
       // 返回拼接后的html, 先将题目用行内块状元素包裹
       if (count > 0) {
-        return `${inlineHead}<span style="display:inline-block;vertical-align: top; width:calc(100% - ${count}em)">${this.data.content}</span>`
+        return `${inlineHead}<div style="display:inline-block;vertical-align: top; width:calc(100% - ${count}em)">${this.data.content}</div>`
       }
       return this.data.content
     },
