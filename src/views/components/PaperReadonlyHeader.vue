@@ -83,7 +83,7 @@ export default {
         {
           name: '题数',
           value: this.data.question_count || this.paperTotalCount,
-          unit: '分',
+          unit: '题',
         },
         {
           name: '总分',
