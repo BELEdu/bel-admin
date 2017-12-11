@@ -188,7 +188,7 @@ export default {
 
     getPrecondition(id) {
       // id为空时获取默认行为数据
-      const subjectId = id || this.getLastRecord('subject_id')
+      const subjectId = +id || this.getLastRecord('subject_id')
       // 设置默认行为数据
       this.setLastRecord('subject_id', subjectId)
 
