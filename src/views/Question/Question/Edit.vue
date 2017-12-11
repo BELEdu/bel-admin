@@ -92,15 +92,43 @@
           </Col>
           <Col span="12">
             <Form-item label="收藏标签">
-              <Select placeholder="请选择..." multiple v-model="form.user_label_ids">
-                <Option v-for="item in user_label_list" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
+              <Select
+                placeholder="请选择..."
+                v-model="form.user_label_ids"
+                multiple
+              >
+                <Option
+                  v-for="item in user_label_list"
+                  :value="item.id"
+                  :key="item.id"
+                >{{ item.display_name }}</Option>
               </Select>
             </Form-item>
           </Col>
         </Row>
 
+        <!-- 题目 -->
         <Form-item label="题目" prop="content">
-          <app-editor v-if="(!isLoading && questionResetOk)" type="paper" v-model="form.content"></app-editor>
+          <app-editor
+            v-if="(!isLoading && questionResetOk)"
+            type="paper"
+            v-model="form.content"
+          ></app-editor>
+        </Form-item>
+
+        <!-- 图表题 - 画图区域-->
+        <Form-item
+          label="画图区域"
+          v-if="questionTemplateFormat === 5"
+          prop="draw_area"
+          :rules="[$rules.required('画图区域')]"
+          required
+        >
+          <app-editor
+            v-if="!isLoading"
+            v-model="form.draw_area"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
@@ -130,9 +158,10 @@
               </Col>
               <Col span="22">
                 <app-editor
-                  :height="80"
                   v-if="!isLoading"
                   v-model="item.content"
+                  type="paper"
+                  :height="130"
                 ></app-editor>
               </Col>
             </Row>
@@ -187,9 +216,10 @@
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
               <Col span="20">
                 <app-editor
-                  :height="80"
                   v-if="!isLoading"
                   v-model="item.content"
+                  type="paper"
+                  :height="130"
                 ></app-editor>
               </Col>
               <Col span="2" class="question-edit__answer__btn">
@@ -214,15 +244,23 @@
         <!-- 解答题 -->
         <Form-item
           label="答案"
-          v-if="questionTemplateFormat === 4"
+          v-if="questionTemplateFormat === 4 || questionTemplateFormat === 5"
           prop="question_answers.0.content"
           :rules="[$rules.required('答案')]"
         >
-          <app-editor v-if="!isLoading" v-model="form.question_answers[0].content"></app-editor>
+          <app-editor
+            v-if="!isLoading"
+            v-model="form.question_answers[0].content"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
         <Form-item label="解析">
-          <app-editor v-if="(!isLoading && questionResetOk)" v-model="form.analysis"></app-editor>
+          <app-editor
+            v-if="(!isLoading && questionResetOk)"
+            v-model="form.analysis"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -278,6 +316,7 @@ const defaultForm = {
   content: '', // 题目内容
   analysis: '', // 题目解析
   question_answers: [{ ...defaultAnswer }], // 答案
+  draw_area: '', // 图表题画图区域
 }
 
 export default {
