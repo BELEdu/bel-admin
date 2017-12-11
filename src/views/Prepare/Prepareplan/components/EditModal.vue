@@ -5,11 +5,10 @@
       @input="value => $emit('input', value)"
       :title="title"
       :mask-closable="false"
+      :closable="false"
       @on-cancel="beforeCloseModal"
       width="850"
     >
-      <!-- 用空字符替换close图标 -->
-      <span slot="close"></span>
 
       <!-- 头部信息展示 -->
       <div class="prepareplan-edit-modal__header">
