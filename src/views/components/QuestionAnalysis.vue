@@ -75,6 +75,8 @@ export default {
             .join('； ')
         case 4:
           return question_answers[0].content
+        case 5:
+          return question_answers[0].content
         default:
           return ''
       }
