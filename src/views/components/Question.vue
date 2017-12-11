@@ -1,5 +1,8 @@
 <template>
-  <div class="app-question" :style="{width:formatQuestionWidth}">
+  <div
+    class="app-question"
+    :style="{width:formatQuestionWidth}"
+  >
 
     <!-- 题目 -->
     <article
@@ -7,6 +10,13 @@
       v-html="formatQuestionContent"
     >
     </article>
+
+    <!-- 图表题画图区域 -->
+    <article
+      v-if="isDraw"
+      :style="{overflow:'hidden'}"
+      v-html="data.draw_area"
+    ></article>
 
     <!-- 选择题选项区域 -->
     <div
@@ -192,6 +202,11 @@ export default {
       return this.data.question_template === 4
     },
 
+    // 是否为图表题题型
+    isDraw() {
+      return this.data.question_template === 5
+    },
+
     // 答案共有几项
     answerLength() {
       return this.data.question_answers.length
@@ -313,6 +328,7 @@ export default {
 
   img {
     vertical-align: middle;
+    max-width: 100%;
   }
 
   &__student-answer {
