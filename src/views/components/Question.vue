@@ -90,7 +90,7 @@
 
       <!-- 填空题 & 解答题 -->
       <img
-        v-if="isFill || isEssay"
+        v-if="isFill || isEssay || isDraw"
         :src="data.student_answer[0].answer_content"
         alt="学员答案图片"
       >
