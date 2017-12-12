@@ -110,7 +110,8 @@
         <!-- 题目 -->
         <Form-item label="题目" prop="content">
           <app-editor
-            v-if="(!isLoading && questionResetOk)"
+            ref="myContent"
+            v-if="!isLoading"
             type="paper"
             v-model="form.content"
           ></app-editor>
@@ -255,9 +256,11 @@
           ></app-editor>
         </Form-item>
 
+        <!-- 通用解析 -->
         <Form-item label="解析">
           <app-editor
-            v-if="(!isLoading && questionResetOk)"
+            ref="myAnalysis"
+            v-if="!isLoading"
             v-model="form.analysis"
             type="paper"
           ></app-editor>
@@ -365,9 +368,7 @@ export default {
 
       afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
 
-      loadOk: false,
-
-      questionResetOk: true, // 继续添加题目重置标志
+      loadOk: false, // 第一次取数据完毕
     }
   },
 
@@ -605,18 +606,25 @@ export default {
       if (this.afterAdded === 'back') {
         this.goBack(true)
       } else {
-        // 继续添加的时候清空表单信息，只保存学科和收藏标签
-        this.questionResetOk = false
-        const { grade_range_subject_id, user_label_ids } = this.form
-        this.form = {
-          ...defaultForm,
-          grade_range_subject_id,
-          user_label_ids,
-        }
-        // this.questionResetOk = true
-        this.$Message.success('已重置表单，请继续添加试题')
-        this.$emit('scrollToTop')
+        this.successReset()
       }
+    },
+
+    successReset() {
+      // 继续添加的时候清空表单信息，只保存学科和收藏标签
+      const { grade_range_subject_id, user_label_ids } = this.form
+      this.form = {
+        ...defaultForm,
+        grade_range_subject_id,
+        user_label_ids,
+      }
+      // 重置答案
+      this.$refs.myContent.editor.setData('')
+      // 重置解析
+      this.$refs.myAnalysis.editor.setData('')
+
+      this.$Message.success('已重置表单，请继续添加试题')
+      this.$emit('scrollToTop')
     },
 
     // 接口错误处理
