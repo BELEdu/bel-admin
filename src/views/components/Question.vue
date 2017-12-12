@@ -13,7 +13,7 @@
 
     <!-- 图表题画图区域 -->
     <article
-      v-if="isDraw"
+      v-if="isDraw && !hasStudentAnswer"
       :style="{overflow:'hidden'}"
       v-html="data.draw_area"
     ></article>
