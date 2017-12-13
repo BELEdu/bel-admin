@@ -3,7 +3,7 @@
  * @Author: chenliangshan
  * @Date: 2017-12-05 13:22:03
  * @Last Modified by: chenliangshan
- * @Last Modified time: 2017-12-05 20:19:58
+ * @Last Modified time: 2017-12-13 17:47:40
  */
 
 // 试题配置
@@ -14,7 +14,7 @@ const paper = {
       items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'base64image', 'SpecialChar', 'Table', 'Wiris'],
     },
   ],
-  allowedContent: 'p b i; u sup sub table img[!src,alt];',
+  allowedContent: 'p b i; u sup sub table img[!src,alt,data-mathml,style];',
 }
 
 // 其他配置
@@ -29,8 +29,12 @@ const lesson = {
       items: ['Undo', 'Redo'],
     },
     {
+      name: 'editing',
+      items: ['Find', 'Replace', '-', 'SelectAll'],
+    },
+    {
       name: 'basicstyles',
-      items: ['Bold', 'Italic', 'Underline', 'Strike'],
+      items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'],
     },
     {
       name: 'colors',
@@ -46,15 +50,15 @@ const lesson = {
     },
     {
       name: 'paragraph',
-      items: ['Outdent', 'Indent'],
+      items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent'],
     },
     {
       name: 'insert',
-      items: ['base64image', 'Table'],
+      items: ['base64image', 'Table', 'HorizontalRule'],
     },
     {
       name: 'base',
-      items: ['Subscript', 'Superscript', 'SpecialChar', 'Wiris'],
+      items: ['SpecialChar', 'Wiris'],
     },
   ],
 }
