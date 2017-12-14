@@ -32,7 +32,6 @@
 
         <!-- 正确答案 -->
         <Icon
-          class=""
           v-if="hasStudentAnswer && item.is_correct === 1"
           size="16"
           type="checkmark"
@@ -45,7 +44,7 @@
           size="16"
           type="android-star"
           class="color-warning"
-        ></Icon>
+        />
 
         <!-- 选项文本 -->
         <section
