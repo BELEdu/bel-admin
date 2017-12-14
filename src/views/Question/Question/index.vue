@@ -140,6 +140,15 @@
       </div>
     </app-warn-modal>
 
+    <!-- 收藏标签管理模态框 -->
+    <label-modal
+      :visible.sync="labelModal.active"
+      :id="labelModal.id"
+      :number="labelModal.number"
+      v-model="labelModal.labelIds"
+      @updateData="updateLabelData"
+    ></label-modal>
+
   </div>
 </template>
 
@@ -150,17 +159,20 @@
  * @version 2017-09-14
  */
 
-import { list } from '@/mixins'
+import { mapState } from 'vuex'
+import { list, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
+import { LabelModal } from '@/views/components'
 import DetailModal from './components/DetailModal'
 
 export default {
   name: 'question-question',
 
-  mixins: [list],
+  mixins: [list, lastRecord],
 
   components: {
     DetailModal,
+    LabelModal,
   },
 
   data() {
@@ -215,11 +227,30 @@ export default {
         {
           title: '创建时间',
           key: 'created_at',
-          align: 'center' },
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '收藏标签',
+          key: 'user_label_ids',
+          align: 'center',
+          render: (h, params) => {
+            const { user_label_ids } = params.row
+            return h('div',
+              {
+                class: 'question-question__labels',
+                domProps: {
+                  innerHTML: this.formatLabels(user_label_ids),
+                },
+              },
+            )
+          },
+        },
         {
           title: '状态',
           key: 'question_status_name',
           align: 'center',
+          width: 80,
         },
         {
           title: '操作',
@@ -255,6 +286,12 @@ export default {
               click: row => this.$router.push(`/question/question/${row.grade_range_subject_id}/${row.id}`),
             },
             {
+              text: '管理收藏',
+              type: 'success',
+              isShow: ({ row }) => row.question_status === 4,
+              click: row => this.openLabelModal(row.id, row.user_label_ids, row.number),
+            },
+            {
               text: '下线',
               isShow: ({ row }) => row.question_status === 4,
               click: row => this.openOutlineModal(row.id, row.number),
@@ -277,10 +314,21 @@ export default {
         delete: false,
         outline: false,
       },
+
+      // 收藏标签弹窗
+      labelModal: {
+        active: false,
+        id: null,
+        number: null,
+        labelIds: [],
+      },
     }
   },
 
   computed: {
+    ...mapState({
+      labelList: state => state.label.list,
+    }),
     // 当前年级学科对应的教材版本
     currentQuestionTypes() {
       return this.question_type_id[this.query['equal[grade_range_subject_id]']]
@@ -288,6 +336,20 @@ export default {
   },
 
   methods: {
+    // 收藏标签格式化
+    formatLabels(label_ids) {
+      let text = ''
+      if (label_ids.length > 0) {
+        this.labelList
+          .filter(label => label_ids.includes(label.id))
+          .map(label => label.display_name)
+          .forEach((label_name, index) => {
+            text = `${text}<p>${index + 1}. ${label_name}</p>`
+          })
+      }
+      return text
+    },
+
     // 添加试题
     addQuestion() {
       this.$router.push(`/question/question/${this.query['equal[grade_range_subject_id]']}`)
@@ -353,6 +415,20 @@ export default {
         })
     },
 
+    // 打开收藏标签弹窗
+    openLabelModal(question_id, label_ids, question_number) {
+      const modal = this.labelModal
+      modal.id = question_id
+      modal.number = question_number
+      modal.labelIds = label_ids
+      modal.active = true
+    },
+
+    // 更新收藏标签数据
+    updateLabelData() {
+      this.fetchData()
+    },
+
     // 获取列表数据的公共方法getData
     getData(qs) {
       // 如果this.grade_range_subject_id长度为0，说明为第一次进入页面，这时应请求before接口的数据
@@ -364,7 +440,7 @@ export default {
         return p
           .then(() => {
             // 获取年级学科列表第一项的id
-            const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+            const firstGradeRangeSubjectId = this.getLastRecord('subject_id', this.grade_range_subject_id[0].id)
 
             // 重置关键字搜索
             this.queryReset(firstGradeRangeSubjectId)
@@ -415,6 +491,8 @@ export default {
         'equal[question_type_id]': null,
         'equal[grade_range_subject_id]': subjectId,
       }
+      // 设置默认行为数据
+      this.setLastRecord('subject_id', subjectId)
     },
 
     // 接口错误处理
@@ -435,9 +513,21 @@ export default {
 <style lang="less">
 @import '~vars';
 .question-question {
+
   &__content {
-    max-height: 36px;
+    max-height: 50px;
     overflow: hidden;
+  }
+
+  &__labels {
+    p {
+      text-align: left;
+      margin: 0;
+      display:block;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
   }
 }
 </style>

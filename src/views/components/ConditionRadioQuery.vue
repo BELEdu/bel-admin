@@ -29,7 +29,7 @@ export default {
     },
 
     default: {
-      type: Number,
+      type: [String, Number],
       required: true,
     },
 

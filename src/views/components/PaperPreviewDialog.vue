@@ -61,7 +61,7 @@ export default {
     :value="visible"
     @on-cancel="v_closeDialog"
     title="试卷预览"
-    :styles="{ top: '50px', width: '950px' }"
+    :styles="{ top: '50px', width: '890px' }"
   >
     <PaperPreview
       ref="paperPreview"

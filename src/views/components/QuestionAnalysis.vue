@@ -1,22 +1,20 @@
 <template>
   <div class="app-question-analysis" :style="{width:`${width}px`}">
 
-    <h3>【 题目 】</h3>
-    <!-- 试题题目渲染组件 -->
+    <h3>题目</h3>
     <question
       :data="data"
       :width="width"
     ></question>
 
-    <h3>【 答案 】</h3>
+    <h3>答案</h3>
     <article
-      class="app-question-analysis__answer clearfix"
+      class="app-question-analysis__answer"
       v-html="questionAnswer"
     ></article>
 
-    <h3>【 解析 】</h3>
+    <h3>解析</h3>
     <article
-      class="clearfix"
       v-html="data.analysis"
     ></article>
 
@@ -29,7 +27,7 @@
   * @author zml
   * @version 2017-10-09
   * @param {Object} data - 试题详情
-  * @param {Number, String} width - 试题宽度，默认宽度500像素
+  * @param {Number, String} width - 试题宽度，默认宽度790px
   */
 
 import Question from './Question'
@@ -48,7 +46,7 @@ export default {
     },
     width: {
       type: [Number, String],
-      default: 500,
+      default: 790,
     },
   },
 
@@ -77,6 +75,8 @@ export default {
             .join('； ')
         case 4:
           return question_answers[0].content
+        case 5:
+          return question_answers[0].content
         default:
           return ''
       }
@@ -101,14 +101,13 @@ export default {
     height: 1px;
   }
 
-   &>h3 {
+  &>h3 {
+    color: @primary-color;
     margin: 10px 0;
-  }
 
-  &__answer {
-    // p {
-    //     display: inline;
-    // }
+    &:first-child {
+      margin: 0 0 10px 0;
+    }
   }
 
   // 使富文本区域中的图片居中

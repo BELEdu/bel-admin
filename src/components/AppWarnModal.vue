@@ -1,17 +1,45 @@
 <template>
-  <Modal :value="value" :width="width" @on-cancle="cancle" @input="cancle">
-    <p slot="header" class="color-warning text-center">
+  <Modal
+    :value="value"
+    :width="width"
+    @on-cancle="cancle"
+    @input="cancle"
+    class="app-warn-modal"
+  >
+    <!-- 头部标题 -->
+    <p
+      slot="header"
+      class="color-warning text-center app-warn-modal__header"
+    >
       <Icon type="information-circled"></Icon>
       <span>{{ title }}</span>
     </p>
+
     <slot v-if="prevent" name="prevent"></slot>
+
     <slot v-else></slot>
+
     <div slot="footer">
       <!--无法删除-->
-      <Button v-if="prevent" type="primary" size="large" long @click="cancle">确认</Button>
+      <Button
+        v-if="prevent"
+        type="primary"
+        size="large"
+        long
+        @click="cancle"
+      >确认</Button>
+
       <!--确认删除-->
-      <Button v-else type="warning" size="large" long :loading="loading" @click="ok">{{ action }}</Button>
+      <Button
+        v-else
+        type="warning"
+        size="large"
+        long
+        :loading="loading"
+        @click="ok"
+      >{{ action }}</Button>
     </div>
+
   </Modal>
 </template>
 
@@ -71,3 +99,12 @@ export default {
   },
 }
 </script>
+
+<style lang="less">
+@import '~vars';
+.app-warn-modal {
+  &__header {
+    margin: 0;
+  }
+}
+</style>

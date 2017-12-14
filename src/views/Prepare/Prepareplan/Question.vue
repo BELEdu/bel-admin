@@ -301,7 +301,7 @@ export default {
 </script>
 
 <style lang="less">
-@layout-width:    1160px;
+@layout-width:    1116px;
 @layout-padding:  10px;
 
 .question-paper-composition {

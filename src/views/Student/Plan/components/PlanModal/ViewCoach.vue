@@ -17,7 +17,7 @@
         <Icon v-else type="ios-circle-outline" slot="dot"></Icon>
         <div :class="{over: list.course_status >= 2}">
           <p class="content">{{list.name}}</p>
-          <p class="time">{{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}</p>
+          <p class="time">教师：{{ list.teacher_name}} 时间： {{ list.course_date }}  {{ list.course_start }}-{{ list.course_end }}</p>
         </div>
       </TimelineItem>
     </Timeline>
@@ -99,6 +99,11 @@
 
   .view-coach {
     padding: 0 10px;
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
 
     &__header {
       text-align: right;

@@ -8,6 +8,7 @@
           v-model="query['equal[grade_range_subject_id]']"
           placeholder="年段学科"
           style="width: 150px;"
+          @on-change="val => this.setLastRecord('subject_id', val)"
         >
           <Option
             v-for="item in subjects"
@@ -228,13 +229,13 @@
 
 import Http from '@/utils/http'
 import { createButton } from '@/utils'
-import list from '@/mixins/list'
+import { list, lastRecord } from '@/mixins'
 import { TreeEditor } from '@/views/components'
 
 export default {
   name: 'QuestionKnowledge',
 
-  mixins: [list],
+  mixins: [list, lastRecord],
 
   components: {
     TreeEditor,
@@ -247,8 +248,8 @@ export default {
       likeKey: 'display_name',
 
       query: {
-        'equal[grade_range_subject_id]': 0,
-        'equal[knowledge_importance]': '',
+        'equal[grade_range_subject_id]': null,
+        'equal[knowledge_importance]': null,
       },
 
       likeKeys: [],
@@ -390,11 +391,11 @@ export default {
       this.likeValue = ''
 
       this.query = {
-        'equal[grade_range_subject_id]': this.subjects[0].id,
+        'equal[grade_range_subject_id]': this.getLastRecord('subject_id', this.subjects[0].id),
         'equal[knowledge_importance]': '',
       }
 
-      const queryUri = `equal[grade_range_subject_id]=${this.subjects[0].id}`
+      const queryUri = `equal[grade_range_subject_id]=${this.query['equal[grade_range_subject_id]']}`
       return `/question/knowledge?${queryUri}`
     },
 

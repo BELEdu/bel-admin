@@ -84,6 +84,7 @@ import {
   PaperPreviewDialog,
   TreeCondition,
 } from '@/views/components'
+import { lastRecord } from '@/mixins'
 
 const paperFactory = () => ({
   grade_range_subject_id: null,
@@ -101,6 +102,8 @@ const paperFactory = () => ({
 
 export default {
   name: 'PrepareQuestion',
+
+  mixins: [lastRecord],
 
   components: {
     ConditionRadioQuery,
@@ -148,6 +151,7 @@ export default {
   computed: {
     subjectID() {
       const id = this.$route.query['equal[grade_range_subject_id]']
+        || this.getLastRecord('subject_id')
         || (this.subjects ? this.subjects.data[0].value : '')
 
       return parseInt(id, 10)
@@ -223,6 +227,8 @@ export default {
           chapter_tree,
           user_label_list,
         }) => {
+          // 设置默认行为数据
+          this.setLastRecord('subject_id', current_grade_range_subject_id)
           this.subjects = {
             data: grade_range_subject_id,
             default: current_grade_range_subject_id,
@@ -343,7 +349,7 @@ export default {
     },
 
     m_resetSearchField() {
-      const subject = `equal[grade_range_subject_id]=${this.subjects.data[0].value}`
+      const subject = `equal[grade_range_subject_id]=${this.getLastRecord('subject_id') || this.subjects.data[0].value}`
 
       const materials = this.teachMaterials
       const teach = materials
@@ -463,7 +469,7 @@ export default {
 </script>
 
 <style lang="less">
-@layout-width:    1160px;
+@layout-width:    1116px;
 @layout-padding:  10px;
 
 .question-paper-composition {

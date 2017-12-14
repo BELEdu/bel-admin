@@ -2,8 +2,8 @@
   <div class="smartexam__upload">
 
     <!-- 图片展示 -->
-    <ul :key="dataList.length">
-      <li
+    <div :key="dataList.length">
+      <div
         v-for="(image,index) in dataList"
         :key="image.url"
         class="smartexam__upload__item"
@@ -53,8 +53,8 @@
           :alt="image.image_name"
         >
 
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <!-- 上传控件 -->
     <Upload
@@ -102,6 +102,7 @@
 
 <script>
 export default {
+  name: 'paper-upload',
 
   props: {
     dataList: {
@@ -175,7 +176,7 @@ export default {
     uploadError() {
       this.$Notice.warning({
         title: '上传失败',
-        desc: '服务器上传发生错误',
+        desc: '上传发生错误或文件错误，请尝试重新上传',
       })
     },
 
@@ -191,7 +192,7 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: '超出文件大小限制',
-        desc: `文件 ${file.name} 太大，不能超过${this.sizeName}M。`,
+        desc: `文件 ${file.name} 太大，不能超过${this.maxSizeText}。`,
       })
     },
 
@@ -234,7 +235,7 @@ export default {
     padding: 40px 0;
 
     &__text {
-      margin-top: 15px;
+      margin: 15px 0 0 0;
     }
   }
 

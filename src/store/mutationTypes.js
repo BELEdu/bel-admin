@@ -28,6 +28,8 @@ export const GLOBAL = {
   LOGIN: 'GLOBAL.LOGIN',
   SWITCH: 'GLOBAL.SWITCH',
   LOGOUT: 'GLOBAL.LOGOUT',
+
+  LASTRECORD: 'GLOBAL.LASTRECORD',
 }
 
 export const SYSTEM = {

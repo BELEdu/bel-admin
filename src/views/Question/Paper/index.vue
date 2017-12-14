@@ -78,7 +78,7 @@
  * @author huojinzhao
  */
 
-import { list, tableCommon } from '@/mixins'
+import { list, tableCommon, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
 import {
   ConditionRadio,
@@ -88,7 +88,7 @@ import {
 export default {
   name: 'question-paper',
 
-  mixins: [list, tableCommon],
+  mixins: [list, tableCommon, lastRecord],
 
   components: {
     ConditionRadio,
@@ -186,11 +186,13 @@ export default {
   methods: {
     /* --- initialization --- */
 
-    getPrecondition(subjectId) {
+    getPrecondition(id) {
+      // id为空时获取默认行为数据
+      const subjectId = +id || this.getLastRecord('subject_id')
+
       /* eslint-disable prefer-template */
       const url = '/paper/index_before'
         + (subjectId ? `?grade_range_subject_id=${subjectId}` : '')
-      /* eslint-enable */
 
       this.$http.get(url)
         .then(({
@@ -204,6 +206,8 @@ export default {
           province,
           year,
         }) => {
+          // 设置默认行为数据
+          this.setLastRecord('subject_id', current_grade_range_subject_id)
           this.subjects = {
             default: current_grade_range_subject_id,
             data: grade_range_subject_id,
@@ -249,6 +253,25 @@ export default {
   created() {
     const subjectId = this.$route.query['equal[grade_range_subject_id]']
     this.getPrecondition(subjectId)
+  },
+
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      /* eslint no-param-reassign: ["error", { "props": false }] */
+      if (vm.getLastRecord('subject_id')) {
+        vm.$route.query['equal[grade_range_subject_id]'] = vm.getLastRecord('subject_id')
+      }
+    })
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    if (to.fullPath === '/question/paper' && this.getLastRecord('subject_id')) {
+      // TODO 暂时用重复请求来处理参数问题
+      this.$nextTick(() => {
+        this.$router.push(`/question/paper?equal[grade_range_subject_id]=${this.getLastRecord('subject_id')}`)
+      })
+    }
+    next()
   },
 }
 </script>

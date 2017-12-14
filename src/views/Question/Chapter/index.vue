@@ -132,7 +132,7 @@
  */
 
 // import Http from '@/utils/http'
-import { list } from '@/mixins'
+import { list, lastRecord } from '@/mixins'
 import { createButton } from '@/utils'
 import { TreeEditor } from '@/views/components'
 import EditModal from './components/EditModal'
@@ -152,7 +152,7 @@ const defaultKnowledge = {
 export default {
   name: 'question-chapter',
 
-  mixins: [list],
+  mixins: [list, lastRecord],
 
   components: {
     EditModal,
@@ -342,7 +342,7 @@ export default {
         return p
           .then(() => {
             // 获取年级学科列表第一项的id
-            const firstGradeRangeSubjectId = this.grade_range_subject_id[0].id
+            const firstGradeRangeSubjectId = this.getLastRecord('subject_id', this.grade_range_subject_id[0].id)
             // 获取对应该年级学科的教材版本的第一项的id
             const firstTeachMaterialId = this.teaching_version[firstGradeRangeSubjectId][0].value
 
@@ -385,6 +385,9 @@ export default {
         'equal[teach_material]': firstTeachMaterialId,
         'equal[grade_range_subject_id]': subjectId,
       }
+
+      // 设置默认行为数据
+      this.setLastRecord('subject_id', subjectId)
     },
 
     // 请求章节列表接口
@@ -419,7 +422,9 @@ export default {
 .question-chapter {
   &__point {
     list-style-type: disc;
+    margin: 0;
     margin-left: 15px;
+    padding: 0;
   }
 }
 

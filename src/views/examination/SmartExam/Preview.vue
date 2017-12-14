@@ -4,19 +4,23 @@
   class="smartexam-preview"
   >
     <app-editor-title>
-      <!-- <Button type="success" icon="search">下载预览</Button> -->
-      <div class="right">
+      <div class="smartexam-preview__action">
         <Button
-          type="primary"
-          icon="archive"
-          @click="download"
-        >Word直接下载</Button>
+          type="ghost"
+          @click="goBack"
+        >返回</Button>
+
+        <Button
+          type="warning"
+          icon="paper-airplane"
+          @click="openPrintModal"
+        >打印试卷</Button>
 
         <Button
           type="warning"
           icon="archive"
-          @click="openPrintModal"
-        >编辑器打印</Button>
+          @click="download"
+        >下载Word</Button>
       </div>
     </app-editor-title>
 
@@ -50,7 +54,6 @@
       >
         <!-- 试卷展示组件（打印区域） -->
         <paper-readonly
-          :width="650"
           :data="data"
         />
       </div>
@@ -75,10 +78,13 @@
 
 import { mapState } from 'vuex'
 import { GLOBAL, EXAMINATION } from '@/store/mutationTypes'
+import { goBack } from '@/mixins'
 import { PaperReadonly, PaperPrintModal } from '@/views/components'
 
 export default {
   name: 'app-examination-smartexam-preview',
+
+  mixins: [goBack],
 
   components: {
     PaperReadonly,
@@ -173,6 +179,14 @@ export default {
 .smartexam-preview {
   &__btns {
     width: 100%;
+  }
+
+  &__action {
+    margin-top: 15px;
+
+    .ivu-btn {
+      min-width: 100px;
+    }
   }
 
   &__aside {

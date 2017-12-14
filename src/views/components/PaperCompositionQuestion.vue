@@ -5,6 +5,7 @@
  * @author  huojinzhao
  */
 
+import { mapState } from 'vuex'
 import Question from './Question'
 
 export default {
@@ -28,8 +29,8 @@ export default {
     },
 
     width: {
-      type: Number,
-      default: 850,
+      type: [Number, String],
+      default: 790,
     },
   },
 
@@ -39,6 +40,29 @@ export default {
       carrier: '试卷',
     },
   }),
+
+
+  computed: {
+    // 标签列表
+    ...mapState({
+      labelList: state => state.label.list,
+    }),
+
+    // hover标签管理按钮展示信息
+    labelContent() {
+      const label_ids = this.data.user_label_ids
+      let text = ''
+      if (label_ids) {
+        this.labelList
+          .filter(label => label_ids.includes(label.id))
+          .map(label => label.display_name)
+          .forEach((label_name, index) => {
+            text = `${text}<li>${index + 1}. ${label_name}</li>`
+          })
+      }
+      return text === '' ? '<li style="text-align:center;">暂无收藏任何标签</li>' : text
+    },
+  },
 
   methods: {
     v_removeQuestion() {
@@ -52,6 +76,10 @@ export default {
     v_onAnalyse() {
       this.$emit('on-analyse', this.data)
     },
+
+    v_openLabelModal() {
+      this.$emit('on-open', this.data)
+    },
   },
 }
 </script>
@@ -61,11 +89,13 @@ export default {
     class="paper-composition-question"
   >
     <!-- 题目内容 -->
-    <Question
-      class="paper-composition-question__content"
-      :data="data"
-      :width="width"
-    />
+    <div class="paper-composition-question__content">
+      <Question
+        :data="data"
+        :width="width"
+      />
+    </div>
+
     <!-- 题目控件 -->
     <div class="paper-composition-question__toolbar">
       <template v-if="config.select">
@@ -76,6 +106,7 @@ export default {
         >
           移出{{config.carrier}}
         </Button>
+
         <Button
           v-else
           size="small"
@@ -84,6 +115,23 @@ export default {
           >
           加入{{config.carrier}}
         </Button>
+
+        <Tooltip trigger="hover" :transfer="true">
+          <ul
+            slot="content"
+            v-html="labelContent"
+            class="paper-composition-question__poptip"
+          ></ul>
+
+          <Button
+            size="small"
+            type="primary"
+            @click="v_openLabelModal"
+            >
+            管理收藏
+          </Button>
+        </Tooltip>
+
       </template>
       <Button
         size="small"
@@ -132,6 +180,11 @@ export default {
 
   & button {
     margin-right: @layout-gutter;
+  }
+
+  &__poptip {
+    margin: 0;
+    padding: 0;
   }
 }
 </style>

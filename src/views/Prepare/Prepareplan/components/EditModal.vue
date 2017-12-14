@@ -5,7 +5,8 @@
       @input="value => $emit('input', value)"
       :title="title"
       :mask-closable="false"
-      @on-cancel="closeModal"
+      :closable="false"
+      @on-cancel="beforeCloseModal"
       width="850"
     >
 
@@ -17,7 +18,7 @@
           class="steps-fix"
           size="small"
         >
-          <Step title="编辑教案"></Step>
+          <Step title="编辑解析"></Step>
           <Step title="PPT"></Step>
           <Step title="课堂练习"></Step>
           <Step title="提交" v-if="!isShow"></Step>
@@ -61,62 +62,59 @@
               v-if="editorFirstRender"
               ref="myEditor"
               :height="600"
-              :value="form.content"
+              v-model="form.content"
               @init="() => this.editorLoadOk = true"
             ></app-editor>
 
           </Form-item>
 
-          <!-- PPT网址 -->
+          <!-- PPT上传步骤 -->
           <div v-show="step === 2">
+
+            <!-- ppt列表 -->
             <Form-item
               v-for="(ppt,index) in form.attachments"
               :key="index"
             >
               <Row>
-                <Col :span="2" :offset="1" class="text-center">标题</Col>
-                <Col :span="7">
-                  <!-- PPT标题 -->
+                <!-- PPT标题 -->
+                <Col :span="10" :offset="4">
                   <Form-item>
                     <Input
                       v-model="ppt.display_name"
                       :readonly="isShow"
-                      placeholder="请输入课件标题"
+                      placeholder="请输入PPT课件标题"
                     ></Input>
                   </Form-item>
                 </Col>
-                <Col :span="2" class="text-center">网址</Col>
-                <Col :span="8">
-                  <!-- PPT网址 -->
-                  <Form-item>
-                    <Input
-                      v-model="ppt.url"
-                      :readonly="isShow"
-                      placeholder="请输入PPT发布程序上的链接"
-                    ></Input>
-                  </Form-item>
-                </Col>
-                <Col :span="1" :offset="1">
+
+                <!-- 预览ppt -->
+                <Col :span="2" :offset="1">
                   <Button
-                    v-if="!isShow"
+                    type="warning"
+                    icon="search"
+                    :loading="previewLoading"
+                    long
+                    @click="beforePreview(ppt.url)"
+                  >预览</Button>
+                </Col>
+
+                <!-- 删除ppt -->
+                <Col :span="2" :offset="1">
+                  <Button
                     type="error"
+                    icon="close"
+                    long
+                    :disabled="isShow"
                     @click="remove(index)"
                   >删除</Button>
                 </Col>
               </Row>
             </Form-item>
 
-            <!-- 添加按钮 -->
+            <!-- 上传组件和Alert组件 -->
             <Row>
-              <Col :span="17" :offset="3">
-                <Button
-                  class="prepareplan-edit-modal__add"
-                  type="dashed"
-                  long
-                  v-if="!isShow"
-                  :disabled="!canAdd && !isMatchUrl"
-                  @click="add"
-                >添加</Button>
+              <Col :span="16" :offset="4">
                 <!-- 缺省提示 -->
                 <Alert
                   class="prepareplan-edit-modal__alert"
@@ -128,6 +126,13 @@
                     尚未添加PPT课件
                   </template>
                 </Alert>
+
+                <!-- ppt压缩包上传组件 -->
+                <zip-upload
+                  v-if="!isShow"
+                  @on-success="add"
+                ></zip-upload>
+
               </Col>
             </Row>
 
@@ -178,10 +183,9 @@
         <p
           class="left color-error prepareplan-edit-modal__tips"
         >
-          <span v-if="!isMatchUrl && step === 2 ">
-            请输入PPT发布程序上的链接，例：https://saas-ppt.aikaola.com/data/2
+          <span v-if="!canAdd && step === 2">
+            每个PPT的课件标题均必填
           </span>
-
           <span v-if="isEmptyQuestion && step === 3 ">
             课堂练习题目不能为空
           </span>
@@ -190,7 +194,7 @@
         <Button
           type="ghost"
           size="large"
-          @click="closeModal"
+          @click="beforeCloseModal"
         >取消</Button>
 
         <Button
@@ -204,8 +208,8 @@
           v-if="step < stepLength"
           type="primary"
           size="large"
-          :disabled="!isMatchUrl && step === 2"
           :loading="formLoading"
+          :disabled="!canAdd && step === 2"
           @click="beforeNextStep"
         >下一步</Button>
 
@@ -234,12 +238,7 @@
 import { form } from '@/mixins'
 import { Question } from '@/views/components'
 import QuestionList from './QuestionList'
-
-// 默认ppt数组项
-const defaultPpt = {
-  display_name: '',
-  url: '',
-}
+import ZipUpload from './ZipUpload'
 
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
@@ -249,6 +248,7 @@ export default {
   components: {
     Question,
     QuestionList,
+    ZipUpload,
   },
 
   props: {
@@ -280,11 +280,10 @@ export default {
       step: 1, // 当前步骤
       stepLength: 3, // 步骤总数
 
-      questionLoading: false,
+      questionLoading: false, // 智能推题loading
+      previewLoading: false, // 是否可预览loading
 
-      localQuestion: null,
-
-      newWin: null,
+      newWin: null, // 用于打开手动选题标签的对象
 
       editorFirstRender: false, // 是否第一次加载（用于加载编辑器静态文件）
       editorLoadOk: false, // 编辑器是否加载完毕
@@ -312,12 +311,12 @@ export default {
     },
 
     // 校验用户输入的是否是网址，返回是否匹配,true匹配，false不匹配
-    isMatchUrl() {
-      const pptArray = this.form.attachments
-      const reg = /^https:\/\/saas-ppt\.aikaola\.com\/.*$/
-      const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
-      return !hasNoMatch
-    },
+    // isMatchUrl() {
+    //   const pptArray = this.form.attachments
+    //   const reg = /^https:\/\/saas-ppt\.aikaola\.com\/.*$/
+    //   const hasNoMatch = pptArray.map(({ url }) => url).some(url => !(reg.test(url)))
+    //   return !hasNoMatch
+    // },
 
     // 判断是否无课堂练习
     isEmptyQuestion() {
@@ -354,7 +353,6 @@ export default {
       const url = `/prepare/myprepareplan/question?equal[grade_range_subject_id]=${this.form.grade_range_subject_id}`
       // 打开一个新标签
       this.newWin = window.open(url, String(Date.now()), '', false)
-
       // 监听localStorage的变化
       window.addEventListener('storage', this.dealQuestionsStore)
     },
@@ -367,10 +365,10 @@ export default {
         .reduce((acc, type) => [...acc, ...type.questions], [])
 
       if (questionsJson) {
+        // 关闭该标签
         this.newWin.close()
-        // console.log(questionsJson)
 
-        // 添加到课堂练习中
+        // 添加到课堂练习试题列表中
         this.form.questions = [
           ...this.form.questions,
           ...questionsJson,
@@ -387,8 +385,34 @@ export default {
     },
 
     // 添加ppt
-    add() {
-      this.form.attachments.push({ ...defaultPpt })
+    add(response) {
+      this.form.attachments.push({
+        url: response.url,
+        display_name: response.name,
+      })
+    },
+
+    // 预览之前先检查后台是否上传成功
+    beforePreview(pptUrl) {
+      this.previewLoading = true
+      this.$http.post('/scheme/preview', {
+        url: pptUrl,
+      })
+        .then(() => {
+          this.preview(pptUrl)
+        })
+        .catch(({ message }) => {
+          this.$Message.warning(message)
+        })
+        .then(() => {
+          this.previewLoading = false
+        })
+    },
+
+    // 打开新标签预览ppt
+    preview(pptUrl) {
+      // 这里要拦截一下
+      window.open(pptUrl)
     },
 
     // 提交表单（选题或者最终提交）
@@ -453,6 +477,25 @@ export default {
         })
     },
 
+    // 关闭之前的再一次确认
+    beforeCloseModal() {
+      // 新增和编辑的文案不同
+      const text = this.isCreate ? '取消后不会添加教案<br>当前录入的数据将不会保存，确定取消？' : '取消后教案将不保存任何更改，确定取消？'
+      if (!this.isShow) {
+        this.$Modal.confirm({
+          title: '取消确认',
+          content: `<div style="font-size:14px;text-align:center;fontt-weight:bold;">${text}</div>`,
+          cancelText: '返回',
+          okText: '确认',
+          onOk: () => {
+            this.closeModal()
+          },
+        })
+      } else {
+        this.closeModal()
+      }
+    },
+
     // 关闭弹窗
     closeModal() {
       this.$emit('closeEditModal')
@@ -472,7 +515,7 @@ export default {
           this.nextStep()
         }
       } else if (this.step === 2) {
-        // 当他在编辑教案这一步骤
+        // 当他在添加ppt这一步骤
         if (this.canAdd) {
           this.submit()
         } else {
@@ -511,11 +554,6 @@ export default {
   &__preview {
     margin-bottom: 15px;
     text-align: right;
-  }
-
-  &__add {
-    border-color: @primary-color;
-    color: @primary-color;
   }
 
   &__alert {

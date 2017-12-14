@@ -29,6 +29,12 @@ export default {
       type: Number,
       required: true,
     },
+
+    // 试题宽度
+    width: {
+      type: [Number, String],
+      default: 790,
+    },
   },
 
   created() {
@@ -86,7 +92,7 @@ export default {
     <Question
       :index="qIndex + 1"
       :data="data"
-      :width="850"
+      :width="width"
     />
     <!-- 操作条 -->
     <div class="paper-preview-question__recbar">

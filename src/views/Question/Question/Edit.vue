@@ -48,16 +48,12 @@
             </Form-item>
           </Col>
           <Col span="12">
-            <Form-item label="难度" required>
-              <Slider
+            <Form-item label="难度" prop="question_difficulty" required>
+              <AppButtonRadio
                 v-model="form.question_difficulty"
-                :tip-format="tipFormat"
-                :step="1"
-                :min="1"
-                :max="5"
-                show-tip = "always"
-                show-stops
-              ></Slider>
+                :data="difficulty"
+                size="small"
+              ></AppButtonRadio>
             </Form-item>
           </Col>
         </Row>
@@ -96,15 +92,44 @@
           </Col>
           <Col span="12">
             <Form-item label="收藏标签">
-              <Select placeholder="请选择..." multiple v-model="form.user_label_ids">
-                <Option v-for="item in user_label_list" :value="item.id" :key="item.id">{{ item.display_name }}</Option>
+              <Select
+                placeholder="请选择..."
+                v-model="form.user_label_ids"
+                multiple
+              >
+                <Option
+                  v-for="item in user_label_list"
+                  :value="item.id"
+                  :key="item.id"
+                >{{ item.display_name }}</Option>
               </Select>
             </Form-item>
           </Col>
         </Row>
 
+        <!-- 题目 -->
         <Form-item label="题目" prop="content">
-          <app-editor v-if="!isLoading" type="paper" v-model="form.content"></app-editor>
+          <app-editor
+            ref="myContent"
+            v-if="!isLoading"
+            type="paper"
+            v-model="form.content"
+          ></app-editor>
+        </Form-item>
+
+        <!-- 图表题 - 画图区域-->
+        <Form-item
+          label="画图区域"
+          v-if="questionTemplateFormat === 5"
+          prop="draw_area"
+          :rules="[$rules.required('画图区域')]"
+          required
+        >
+          <app-editor
+            v-if="!isLoading"
+            v-model="form.draw_area"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
         <!-- 选择题 -->
@@ -134,9 +159,10 @@
               </Col>
               <Col span="22">
                 <app-editor
-                  :height="80"
                   v-if="!isLoading"
                   v-model="item.content"
+                  type="paper"
+                  :height="130"
                 ></app-editor>
               </Col>
             </Row>
@@ -179,9 +205,9 @@
         <!-- 填空题 -->
         <div class="question-edit__answer"  v-if="questionTemplateFormat === 3">
           <Form-item label="答案" required>
-            <p class="question-edit__answer__tips">
+            <div class="question-edit__answer__tips">
               请在下方点击 <span class="color-primary">增加填空项</span> 来插入填空
-            </p>
+            </div>
           </Form-item>
           <Form-item
             v-for="(item,index) in form.question_answers"
@@ -191,9 +217,10 @@
               <Col span="2">填空题 <span class="color-primary">{{index+1}}</span></Col>
               <Col span="20">
                 <app-editor
-                  :height="80"
                   v-if="!isLoading"
                   v-model="item.content"
+                  type="paper"
+                  :height="130"
                 ></app-editor>
               </Col>
               <Col span="2" class="question-edit__answer__btn">
@@ -218,15 +245,25 @@
         <!-- 解答题 -->
         <Form-item
           label="答案"
-          v-if="questionTemplateFormat === 4"
+          v-if="questionTemplateFormat === 4 || questionTemplateFormat === 5"
           prop="question_answers.0.content"
           :rules="[$rules.required('答案')]"
         >
-          <app-editor v-if="!isLoading" v-model="form.question_answers[0].content"></app-editor>
+          <app-editor
+            v-if="!isLoading"
+            v-model="form.question_answers[0].content"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
+        <!-- 通用解析 -->
         <Form-item label="解析">
-          <app-editor v-if="!isLoading" v-model="form.analysis"></app-editor>
+          <app-editor
+            ref="myAnalysis"
+            v-if="!isLoading"
+            v-model="form.analysis"
+            type="paper"
+          ></app-editor>
         </Form-item>
 
         <Form-item v-if="!isUpdate" label="添加后">
@@ -269,6 +306,22 @@ const defaultAnswer = {
   is_correct: 1, // 是否是正确选项
 }
 
+const defaultForm = {
+  grade_range_subject_id: null, // 年级学科id
+  from_name: '', // 试题来源
+  question_status: null, // 提交状态 1：存为草稿 2：提交审核
+  question_type_id: null, // 题型id
+  question_difficulty: null, // 题目难度
+  paper_type: null, // 试卷类型
+  year: null, // 时间
+  knowledge_ids: [], // 关联知识点
+  user_label_ids: [], // 收藏标签
+  content: '', // 题目内容
+  analysis: '', // 题目解析
+  question_answers: [{ ...defaultAnswer }], // 答案
+  draw_area: '', // 图表题画图区域
+}
+
 export default {
   name: 'question-question-edit',
 
@@ -276,20 +329,7 @@ export default {
 
   data() {
     return {
-      form: {
-        grade_range_subject_id: null, // 年级学科id
-        from_name: '', // 试题来源
-        question_status: null, // 提交状态 1：存为草稿 2：提交审核
-        question_type_id: null, // 题型id
-        question_difficulty: 1, // 题目难度
-        paper_type: null, // 试卷类型
-        year: null, // 时间
-        knowledge_ids: [], // 关联知识点
-        user_label_ids: [], // 收藏标签
-        content: '', // 题目内容
-        analysis: '', // 题目解析
-        question_answers: [{ ...defaultAnswer }], // 答案
-      },
+      form: { ...defaultForm },
 
       rules: {
         question_type_id: [
@@ -297,6 +337,9 @@ export default {
         ],
         paper_type: [
           this.$rules.required('类型', 'number', 'change'),
+        ],
+        question_difficulty: [
+          this.$rules.required('难度', 'number', 'change'),
         ],
         year: [
           this.$rules.required('时间', 'number', 'change'),
@@ -325,7 +368,7 @@ export default {
 
       afterAdded: 'back', // 添加后进行的操作 continue-继续 back-返回
 
-      loadOk: false,
+      loadOk: false, // 第一次取数据完毕
     }
   },
 
@@ -406,7 +449,7 @@ export default {
     addChoice() {
       const length = this.form.question_answers.length
       this.form.question_answers.push(
-        { ...defaultAnswer, option: this.alphabetize(length) },
+        { ...defaultAnswer, option: this.alphabetize(length), is_correct: 0 },
       )
     },
 
@@ -435,6 +478,7 @@ export default {
       this.form.question_type_id = null
       this.form.paper_type = null
       this.form.knowledge_ids.length = 0
+      this.form.draw_area = ''
       this.tureOrFalseData = 1
     },
 
@@ -562,8 +606,25 @@ export default {
       if (this.afterAdded === 'back') {
         this.goBack(true)
       } else {
-        location.reload()
+        this.successReset()
       }
+    },
+
+    successReset() {
+      // 继续添加的时候清空表单信息，只保存学科和收藏标签
+      const { grade_range_subject_id, user_label_ids } = this.form
+      this.form = {
+        ...defaultForm,
+        grade_range_subject_id,
+        user_label_ids,
+      }
+      // 重置答案
+      this.$refs.myContent.editor.setData('')
+      // 重置解析
+      this.$refs.myAnalysis.editor.setData('')
+
+      this.$Message.success('已重置表单，请继续添加试题')
+      this.$emit('scrollToTop')
     },
 
     // 接口错误处理

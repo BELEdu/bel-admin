@@ -131,10 +131,11 @@ export default {
 
         this.convertHtmlToSvg(this.html)
           .then((svg) => {
+            this.$el.appendChild(svg);
+
             const htmlCanvas = this.createCanvas(this.height, 0, false);
             const htmlCtx = htmlCanvas.getContext('2d');
             htmlCtx.drawImage(svg, this.htmlPaddingH, this.htmlPaddingV);
-            this.$el.appendChild(htmlCanvas);
             drafts.push(htmlCanvas);
 
             // 把所有画布存在全局，保存草稿时调用
@@ -223,7 +224,7 @@ export default {
      */
     convertHtmlToSvg(html) {
       const doc = document.implementation.createHTMLDocument('');
-      doc.write(html);
+      doc.write(html.replace(/(data-latex="[^"]+")|(<img[^>]+border: 5px solid red[^>]+>)/g, ''));
 
       const xml = (new XMLSerializer())
         .serializeToString(doc)
@@ -281,5 +282,11 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.app-canvas img {
+  width: 100%;
+  height: 100%;
+  padding: 20px 53px;
 }
 </style>

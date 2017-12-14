@@ -2,7 +2,9 @@
   <header class="paper-preview-header">
 
     <!-- 试卷标题 -->
-    <h2>{{data.paper_name || data.display_name || '暂无试卷标题'}}</h2>
+    <h2 :style="{margin: '0 0 16px 0',fontSize: '20px'}">
+      {{data.paper_name || data.display_name || '暂无试卷标题'}}
+    </h2>
 
     <!-- 试卷头部信息 -->
     <div class="paper-preview-header__info">
@@ -20,7 +22,7 @@
 
         <!-- 分隔符 -->
         <span v-if="index !== formatPaperInfoArray.length-1">
-          &nbsp;&nbsp;<b>|</b>&nbsp;&nbsp;
+          &nbsp;<b>|</b>&nbsp;
         </span>
       </span>
     </div>
@@ -81,7 +83,7 @@ export default {
         {
           name: '题数',
           value: this.data.question_count || this.paperTotalCount,
-          unit: '分',
+          unit: '题',
         },
         {
           name: '总分',

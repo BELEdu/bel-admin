@@ -11,6 +11,7 @@
 import PaperCompositionPanel from './PaperCompositionPanel'
 import PaperCompositionQuestion from './PaperCompositionQuestion'
 import QuestionAnalysisDialog from './QuestionAnalysisDialog'
+import LabelModal from './LabelModal'
 
 export default {
   name: 'PaperComposition',
@@ -19,6 +20,7 @@ export default {
     PaperCompositionPanel,
     PaperCompositionQuestion,
     QuestionAnalysisDialog,
+    LabelModal,
   },
 
   inheritAttrs: false,
@@ -66,6 +68,14 @@ export default {
     analysisDialog: {
       active: false,
       data: {},
+    },
+
+    // 收藏标签弹窗数据
+    labelModal: {
+      active: false,
+      id: null,
+      number: null,
+      labelIds: [],
     },
   }),
 
@@ -137,6 +147,21 @@ export default {
       this.buffer.data
         .forEach(topic => this.vm_removeQuestion(topic))
     },
+
+    // 打开管理收藏标签弹窗
+    vm_onOpenLabelModal(question) {
+      const { id, number, user_label_ids } = question
+      const modal = this.labelModal
+      modal.id = id
+      modal.number = number
+      modal.labelIds = user_label_ids
+      modal.active = true
+    },
+
+    // 视图上修改收藏标签数据
+    vm_fetchQuestionData(id, labelIds) {
+      this.buffer.data.find(question => question.id === id).user_label_ids = labelIds
+    },
   },
 }
 </script>
@@ -189,6 +214,7 @@ export default {
         @on-insert="vm_insertQuestion"
         @on-remove="vm_removeQuestion"
         @on-analyse="vm_onAnalysis"
+        @on-open="vm_onOpenLabelModal"
       />
     </template>
 
@@ -203,6 +229,16 @@ export default {
       v-update:config="panelConfig"
       @on-preview="$emit('on-preview')"
     />
+
+    <!-- 收藏标签管理模态框 -->
+    <label-modal
+      :visible.sync="labelModal.active"
+      :id="labelModal.id"
+      :number="labelModal.number"
+      v-model="labelModal.labelIds"
+      @updateData="vm_fetchQuestionData"
+    ></label-modal>
+
   </div>
 </template>
 

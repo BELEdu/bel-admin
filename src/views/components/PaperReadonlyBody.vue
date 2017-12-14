@@ -11,20 +11,17 @@
       >
         <h2>
           {{index + 1}}、{{type.display_name}}
-          （
-          共{{type.question_count}}小题，
-          总计{{type.total_score}}分
-          ）
+          （共{{type.question_count}}小题，
+          总计{{type.total_score}}分）
         </h2>
-        <ul class="topic">
-          <li
+        <div class="topic">
+          <div
             v-for="(item, index) in type.questions"
             class="topic-item"
           >
             <question
               :index="index + 1"
               :data="item"
-              :score="item.score"
               :width="width"
             ></question>
 
@@ -37,8 +34,8 @@
               </Button>
             </div>
 
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </article>
 
@@ -80,7 +77,7 @@ export default {
     // 试题宽度，默认以A4纸比例
     width: {
       type: [String, Number],
-      default: 650,
+      default: 790,
     },
   },
 
@@ -99,7 +96,7 @@ export default {
   computed: {
     // 是否使用展示打印试卷的宽度
     isPrintWrap() {
-      return +this.width === 650
+      return this.width === 790
     },
   },
 
@@ -120,7 +117,7 @@ export default {
 .paper-readonly-body {
 
   &__print-wrap {
-    width: 650px + 40px;
+    width: 790px + 40px;
   }
 
   & > article {
@@ -131,10 +128,6 @@ export default {
 
     & .topic {
       .topic()
-    }
-
-    & h3 {
-      font-size: 14px;
     }
   }
 }

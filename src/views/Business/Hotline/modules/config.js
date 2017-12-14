@@ -17,7 +17,7 @@ export function editInit() {
     invited_teacher_id: null,
     market_staff_name: '',
     visited_at: null,
-    return_visited_at: null,
+    return_visited_at: '',
   }
 }
 

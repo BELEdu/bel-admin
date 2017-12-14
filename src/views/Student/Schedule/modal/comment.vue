@@ -192,6 +192,11 @@
       top: 0;
     }
 
+    &__name, &__commit {
+      margin: 0;
+      padding: 0;
+    }
+
     &__name {
       text-align: right;
       max-height: 608px;

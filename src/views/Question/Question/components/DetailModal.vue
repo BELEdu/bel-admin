@@ -3,7 +3,7 @@
     <!-- 试题详情弹窗 -->
     <Modal
       :title="`试题详情（${questionDetail.number}）`"
-      width="600"
+      width="850"
       :value="value"
       @input="value => $emit('input', value)"
       :maskClosable="true"
@@ -47,14 +47,13 @@
     <Modal
       v-model="modal"
       width="360"
-      :maskClosable="true"
       :loading="loading"
       @on-ok="submit(3)"
       @on-cancel="closeRejectModal"
     >
-      <p slot="header" class="text-center color-warning">
-          <Icon type="information-circled"></Icon>
-          <span>驳回确认</span>
+      <p slot="header" class="text-center color-warning question-detail__header">
+        <Icon type="information-circled"></Icon>
+        <span>驳回确认</span>
       </p>
 
       <Form :model="form" ref="from" :label-width="40">
@@ -118,16 +117,16 @@ export default {
 
       columns: {
         info: [
-          { title: '学科', key: 'grade_range_subject_name', align: 'center', width: 80 },
+          { title: '学科', key: 'grade_range_subject_name', align: 'center', width: 100 },
           { title: '题型', key: 'question_type_name', align: 'center', width: 100 },
           { title: '类型', key: 'paper_type_name', align: 'center', width: 100 },
-          { title: '难度', key: 'question_difficulty_name', align: 'center', width: 60 },
-          { title: '时间', key: 'year_name', align: 'center', width: 60 },
+          { title: '难度', key: 'question_difficulty_name', align: 'center', width: 80 },
+          { title: '时间', key: 'year_name', align: 'center', width: 80 },
           { title: '知识点', key: 'knowledge_str', align: 'center' },
         ],
         logs: [
           { title: '操作者', key: 'realname', align: 'center' },
-          { title: '操作类型', key: 'question_log_type_name', align: 'center', width: 80 },
+          { title: '操作类型', key: 'question_log_type_name', align: 'center' },
           { title: '操作时间', key: 'created_at', align: 'center' },
           { title: '备注', key: 'remark', align: 'center' },
         ],
@@ -170,8 +169,10 @@ export default {
           this.$emit('closeDetailModal')
         })
         .catch(({ message }) => {
-          this.loading = false
           this.$Message.error(message)
+        })
+        .then(() => {
+          this.loading = false
         })
     },
   },
@@ -194,11 +195,15 @@ export default {
     margin: 10px 0;
   }
 
+  &__header {
+    margin:0;
+  }
+
   &__content {
     background-color: @bg-color;
     border: 1px solid @border-color-split ;
     border-top: 0px;
-    padding: 0 10px 10px 10px;
+    padding: 10px;
 
     &>div {
       margin: auto;

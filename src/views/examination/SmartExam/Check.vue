@@ -715,7 +715,7 @@ export default {
   &__sidebar{
     margin-left: 366px;
     overflow: hidden;
-    width: 690px;
+    width: 830px;
   }
 
   &__form {
@@ -750,6 +750,10 @@ export default {
     }
     p {
       margin-bottom: 10px;
+    }
+    ul,li {
+      margin:0;
+      padding: 0;
     }
   }
 
