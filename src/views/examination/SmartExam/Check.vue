@@ -751,6 +751,10 @@ export default {
     p {
       margin-bottom: 10px;
     }
+    ul,li {
+      margin:0;
+      padding: 0;
+    }
   }
 
   &__save {
