@@ -7,23 +7,6 @@ import defaultConfig from './config'
 
 window.CKEDITOR_BASEPATH = '/assets/1.0.0/lib/ckeditor/'
 
-// MathJax配置
-window.MathJax = {
-  jax: ['input/MathML', 'output/SVG'],
-  extensions: ['mml2jax.js'],
-  showMathMenu: false,
-  showProcessingMessages: false,
-  messageStyle: 'none',
-  SVG: {
-    font: 'STIX-Web',
-    useGlobalCache: false,
-    matchFontHeight: false,
-  },
-  MathML: {
-    extensions: ['content-mathml.js'],
-  },
-}
-
 export default {
   props: {
     value: {
@@ -101,7 +84,6 @@ export default {
 
       // 设置编辑器的初始内容
       this.editor.setData(this.value)
-
       // 监听编辑器的内容变化，并派发input事件使得调用此组件的地方可以直接使用v-model绑定值
       this.editor.on('change', (event) => {
         this.$emit('input', event.editor.getData())
@@ -125,7 +107,8 @@ export default {
       Promise.all([
         this.loadScript('/assets/1.0.0/lib/ckeditor/ckeditor.js'),
         this.loadScript('/assets/1.0.0/lib/wiris/editor.js'),
-        this.loadScript('/assets/1.0.0/lib/MathJax/MathJax.js'),
+        this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
+        this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
       ])
         .then(() => {
           // 指定wiris编辑器的资源请求地址（图标、字体等等）
