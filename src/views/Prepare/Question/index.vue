@@ -444,7 +444,8 @@ export default {
     },
 
     v_complete() {
-      this.$router.push(this.$route.meta.backRoute)
+      const query = `equal[grade_range_subject_id]=${this.subjectID}`
+      this.$router.push(`${this.$route.meta.backRoute}?${query}`)
     },
 
     /* --- Business --- */
