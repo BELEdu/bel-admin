@@ -93,6 +93,7 @@ import {
   ConditionRadio,
   ConditionRadioQuery,
 } from '@/views/components'
+import isEqual from 'lodash/isEqual'
 
 export default {
   name: 'PreparePaper',
@@ -186,6 +187,7 @@ export default {
       const url = subjectId
         ? `${host}?grade_range_subject_id=${subjectId}` : host
 
+      this.query['equal[grade_range_subject_id]'] = subjectId
       this.$http.get(url)
         .then(({
           // 条件搜索
@@ -253,7 +255,10 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    if (to.fullPath === '/prepare/papercenter' && this.getLastRecord('subject_id')) {
+    const query = to.query
+    if (to.fullPath === '/prepare/papercenter' &&
+     !isEqual(query['equal[grade_range_subject_id]'], this.getLastRecord('subject_id')) &&
+      this.getLastRecord('subject_id')) {
       // TODO 暂时用重复请求来处理参数问题
       this.$nextTick(() => {
         this.$router.push(`/prepare/papercenter?equal[grade_range_subject_id]=${this.getLastRecord('subject_id')}`)
