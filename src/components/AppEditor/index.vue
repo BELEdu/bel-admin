@@ -53,13 +53,16 @@ export default {
     init() {
       const CKEDITOR = window.CKEDITOR
 
-      // 上面两行代码是全局性设置，这里需要在初始化编辑器时单独把config传入，以便每个实例实现不同的尺寸
+      CKEDITOR.plugins.addExternal('base64', '/assets/1.0.0/vue/ckeditor/plugins/base64/plugin.js')
+      CKEDITOR.plugins.addExternal('wiris', '/assets/1.0.0/vue/ckeditor/plugins/wiris/plugin.js')
+
+      // 上面是全局性设置，这里需要在初始化编辑器时单独把config传入，以便每个实例实现不同的尺寸
       const config = {
         // 默认字体大小
         fontSize_defaultLabel: '14px',
         width: `${this.width}px`,
         height: `${this.height}px`,
-        extraPlugins: 'wiris,base64pasteanddrag,base64image',
+        extraPlugins: 'wiris,base64,base64image',
         ...defaultConfig[this.type],
         ...this.config,
       }
