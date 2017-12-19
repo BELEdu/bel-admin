@@ -50,6 +50,9 @@
  * 备课管理 - 教案 - 换题
  *
  * @author huojinzhao
+ *
+ * @desc questionTypesSupply    接数据
+ * @desc questionTypesFeedback  给数据
  */
 
 import { GLOBAL } from '@/store/mutationTypes'
@@ -128,6 +131,31 @@ export default {
   methods: {
     initCreation() {
       this.m_fetchData()
+        .then(() => this.initPaper())
+        .catch(() => {
+          this.$Notice.error({
+            title: '无法访问数据，请稍后再试',
+            duration: 0,
+          })
+        })
+    },
+
+    initPaper() {
+      const temp = localStorage.getItem('questionTypesSupply')
+      const data = JSON.parse(temp)
+      this.paper.question_types = this.sectionsUpdation(data)
+    },
+
+    sectionsUpdation(sections) {
+      return this.paper.question_types
+        .map((type) => {
+          const target = type.question_type_id
+
+          const section = sections
+            .find(({ question_type_id }) => question_type_id === target)
+
+          return section || type
+        })
     },
 
     getBeforeUrl(subjectID) {
@@ -294,7 +322,7 @@ export default {
 
       const questions = JSON.stringify(data)
 
-      localStorage.setItem('prepareplanQuestions', questions)
+      localStorage.setItem('questionTypesFeedback', questions)
     },
   },
 }
