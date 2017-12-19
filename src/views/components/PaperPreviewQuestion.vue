@@ -46,7 +46,6 @@ export default {
 
     // 设置 score 字段，重置 id 字段为 question_id
     m_initQuestion() {
-      this.$set(this.data, 'question_id', this.data.id)
       this.$set(this.data, 'score', this.data.score || 0)
       // eslint-disable-next-line
       this.data.normal_duration
