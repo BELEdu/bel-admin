@@ -120,9 +120,21 @@ export default {
         if (
           type.question_type_id === question.question_type_id
         ) {
-          type.questions.push(question)
+          const temp = this.initPaperQuestion(question, type.questionDefaultScore)
+          type.questions.push(temp)
         }
       })
+    },
+
+    // 加入试卷的时候为试题做初始化
+    initPaperQuestion(question, defaultScore) {
+      const addition = {
+        score: defaultScore || 0,
+        normal_duration: 0,
+        excellent_duration: 0,
+      }
+
+      return { ...question, ...addition }
     },
 
     vm_removeQuestion(question) {

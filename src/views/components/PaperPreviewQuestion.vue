@@ -21,8 +21,11 @@ export default {
       required: true,
     },
 
-    // 试题在列表中索引
+    // index in section.questions
     qIndex: Number,
+
+    // index in paper's questions
+    pIndex: Number,
 
     // 试题长度
     qLength: {
@@ -37,24 +40,7 @@ export default {
     },
   },
 
-  created() {
-    this.m_initQuestion()
-  },
-
   methods: {
-    /* --- Initialization --- */
-
-    // 设置 score 字段，重置 id 字段为 question_id
-    m_initQuestion() {
-      this.$set(this.data, 'score', this.data.score || 0)
-      // eslint-disable-next-line
-      this.data.normal_duration
-        || this.$set(this.data, 'normal_duration', 0)
-      // eslint-disable-next-line
-      this.data.excellent_duration
-        || this.$set(this.data, 'excellent_duration', 0)
-    },
-
     /* --- Business --- */
 
     v_changeScore(score) {
@@ -89,7 +75,7 @@ export default {
   <div class="paper-preview-question">
      <!-- 题目内容 -->
     <Question
-      :index="qIndex"
+      :index="pIndex"
       :data="data"
       :width="width"
     />

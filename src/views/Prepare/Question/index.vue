@@ -277,6 +277,8 @@ export default {
           display_name: type.display_name,
           best_score: 0,
           questions: [],
+          // 后端给的字段是score，有歧义，描述不准确
+          questionDefaultScore: type.score,
         }))
     },
 
