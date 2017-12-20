@@ -177,8 +177,22 @@ export default {
   methods: {
     /* --- Initialization --- */
 
-    seleteNode(nodes) {
-      this.selectedNode = nodes[0]
+    seleteNode([node]) {
+      if (node) {
+        this.m_toggleUnleafExpand(node)
+      } else {
+        this.m_toggleUnleafExpand(this.selectedNode)
+      }
+
+      this.selectedNode = node
+    },
+
+    m_toggleUnleafExpand(node) {
+      if (!node.children) return false
+
+      this.$set(node, 'expand', !node.expand)
+
+      return true
     },
 
     tree2way(children, parent = this.rootNode) {
