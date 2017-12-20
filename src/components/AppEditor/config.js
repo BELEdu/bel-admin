@@ -3,7 +3,7 @@
  * @Author: chenliangshan
  * @Date: 2017-12-05 13:22:03
  * @Last Modified by: chenliangshan
- * @Last Modified time: 2017-12-13 17:47:40
+ * @Last Modified time: 2017-12-20 11:11:09
  */
 
 // 试题配置
@@ -14,7 +14,7 @@ const paper = {
       items: ['Undo', 'Redo', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'showborders', 'Superscript', 'base64image', 'SpecialChar', 'Table', 'Wiris'],
     },
   ],
-  allowedContent: 'p b i; u sup sub table img[!src,alt,data-mathml,style];',
+  allowedContent: 'p b i u sup sub table; img[!src,alt,data-mathml]{vertical-align};',
 }
 
 // 其他配置

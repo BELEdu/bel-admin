@@ -6,7 +6,22 @@
 import defaultConfig from './config'
 
 window.CKEDITOR_BASEPATH = '/assets/1.0.0/lib/ckeditor/'
-
+// MathJax配置
+window.MathJax = {
+  jax: ['input/MathML', 'output/SVG'],
+  extensions: ['mml2jax.js'],
+  showMathMenu: false,
+  showProcessingMessages: false,
+  messageStyle: 'none',
+  SVG: {
+    font: 'STIX-Web',
+    useGlobalCache: false,
+    matchFontHeight: false,
+  },
+  MathML: {
+    extensions: ['content-mathml.js'],
+  },
+}
 export default {
   props: {
     value: {
@@ -53,6 +68,7 @@ export default {
     init() {
       const CKEDITOR = window.CKEDITOR
 
+      CKEDITOR.plugins.addExternal('base64image', '/assets/1.0.0/vue/ckeditor/plugins/base64image/plugin.js')
       CKEDITOR.plugins.addExternal('base64', '/assets/1.0.0/vue/ckeditor/plugins/base64/plugin.js')
       CKEDITOR.plugins.addExternal('wiris', '/assets/1.0.0/vue/ckeditor/plugins/wiris/plugin.js')
 
@@ -91,6 +107,19 @@ export default {
       this.editor.on('change', (event) => {
         this.$emit('input', event.editor.getData())
       })
+      // 监听双击公式打开公式编辑及更新
+      this.editor.on('doubleclick', (event) => {
+        const dataMathml = event.data.element.getAttribute('data-mathml')
+        if (event.data.element && !event.data.element.isReadOnly() && event.data.element.getName() === 'img' && dataMathml) {
+          // eslint-disable-next-line
+          event.data.dialog = 'wiris'
+          this.editor.getSelection().selectElement(event.data.element)
+          // 打开公式编辑器
+          this.editor.execCommand('abbr')
+          return false
+        }
+        return true
+      })
 
       // 派发编辑器的实例本身，以应对更灵活的使用情况
       this.$emit('init', this.editor)
@@ -110,8 +139,7 @@ export default {
       Promise.all([
         this.loadScript('/assets/1.0.0/lib/ckeditor/ckeditor.js'),
         this.loadScript('/assets/1.0.0/lib/wiris/editor.js'),
-        this.loadScript('/assets/1.0.0/lib/fmath/fonts/fmathFormulaFonts.js'),
-        this.loadScript('/assets/1.0.0/lib/fmath/fmathFormulaC.js'),
+        this.loadScript('/assets/1.0.0/lib/MathJax/MathJax.js'),
       ])
         .then(() => {
           // 指定wiris编辑器的资源请求地址（图标、字体等等）
