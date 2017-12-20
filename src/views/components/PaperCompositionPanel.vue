@@ -62,7 +62,7 @@ export default {
   border: @border-base;
   border-radius: @border-radius;
   padding: 10px 17px;
-  background-color: transparent;
+  background-color: #fff;
 
   &>li {
     margin-bottom: 4px;
@@ -71,6 +71,13 @@ export default {
     &>button {
       margin-top: 10px;
     }
+  }
+}
+
+@media (max-width: 1500px) {
+  .paper-composition-panel {
+    left: auto;
+    right: 10px;
   }
 }
 </style>
