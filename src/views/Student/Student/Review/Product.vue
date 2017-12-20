@@ -78,6 +78,13 @@
       @closeExpendModal="modal.expend = false"
     ></expend-modal>
 
+    <adjust-modal
+      v-model="modal.adjust"
+      :id="stock_id"
+      @closeAdjustModal="modal.adjust = false"
+      @update="fetchData"
+    ></adjust-modal>
+
   </div>
 </template>
 
@@ -88,6 +95,7 @@ import { STUDENT } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import { createButton } from '@/utils'
 import ExpendModal from '../components/ExpendModal'
+import AdjustModal from '../components/AdjustModal'
 
 export default {
   name: 'app-student-student-product',
@@ -96,6 +104,7 @@ export default {
 
   components: {
     ExpendModal,
+    AdjustModal,
   },
 
   data() {
@@ -131,16 +140,20 @@ export default {
         {
           title: '操作',
           align: 'center',
-          width: 100,
+          width: 160,
           render: createButton([
-            { text: '课时消耗', type: 'primary', click: row => this.openExpendModal(row.id, row.product_name) },
+            { text: '课时记录', type: 'primary', click: row => this.openExpendModal(row.id, row.product_name) },
+            { text: '课时消耗', type: 'warning', click: row => this.openAdjustModal(row.id, row.product_name) },
           ]),
         },
       ],
 
       modal: { // 模态框状态
         expend: false,
+        adjust: false,
       },
+
+      stock_id: null, // 来自签约产品列表的id
 
       data: [], // 消耗日志数据（弹窗用）
       name: '', // 产品名称（弹窗用）
@@ -168,9 +181,15 @@ export default {
         })
     },
 
-    openExpendModal(id, name) { // 打开消耗日志弹窗
-      this.$http.get(`/student/stock_mark/${id}`)
-      // this.$http.get('/student/stock_mark/5')
+    // 打开调整课时弹窗
+    openAdjustModal(stock_id) {
+      this.modal.adjust = true
+      this.stock_id = stock_id
+    },
+
+    // 打开课时记录弹窗
+    openExpendModal(stock_id, name) {
+      this.$http.get(`/student/stock_mark/${stock_id}`)
         .then((res) => {
           this.data = res
           this.name = name
