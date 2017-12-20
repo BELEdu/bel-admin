@@ -51,6 +51,14 @@ export default {
           : acc
         ), 0)
     },
+
+    sectionQuestionIndexStart() {
+      return this.data.question_types
+        .reduce((acc, type, index) => (type.questions.length
+          ? acc.concat(acc[index] + type.questions.length)
+          : acc.concat(acc[index])
+        ), [1])
+    },
   },
 
   methods: {
@@ -98,6 +106,7 @@ export default {
       v-if="section.questions.length"
       :key="section.question_type_id"
       :data="section"
+      :q-start="sectionQuestionIndexStart[sIndex]"
       :s-index="sIndex"
       :v-index="v_figureViewIndex(sIndex)"
     />

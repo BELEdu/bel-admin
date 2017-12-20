@@ -33,6 +33,12 @@ export default {
       required: true,
     },
 
+    // 每个题型中第一道题的索引
+    qStart: {
+      type: Number,
+      required: true,
+    },
+
     // 试题宽度
     width: {
       type: [Number, String],
@@ -103,7 +109,7 @@ export default {
       v-model="question.score"
       :width="width"
       :data="question"
-      :q-index="qIndex"
+      :q-index="qStart + qIndex"
       :q-length="data.questions.length"
       @on-delete="vm_deleteQuestion"
       @on-sort="vm_sortQuestion"

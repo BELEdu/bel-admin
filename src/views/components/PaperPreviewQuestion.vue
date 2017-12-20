@@ -89,7 +89,7 @@ export default {
   <div class="paper-preview-question">
      <!-- 题目内容 -->
     <Question
-      :index="qIndex + 1"
+      :index="qIndex"
       :data="data"
       :width="width"
     />
