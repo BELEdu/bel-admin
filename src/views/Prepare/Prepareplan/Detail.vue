@@ -119,7 +119,7 @@ export default {
 
       columns: [
         { title: '班级名称', key: 'classes_name', align: 'center' },
-        { title: '课序', key: 'sort_value', align: 'center' },
+        { title: '课序', key: 'sort_value', align: 'center', width: 80 },
         {
           title: '上课内容',
           key: 'chapter_name',
@@ -130,12 +130,13 @@ export default {
             },
           }),
         },
-        { title: '课堂题量', key: 'practice_immediately', align: 'center' },
-        { title: '状态', key: 'course_status_name', align: 'center' },
+        { title: '上课时间', key: 'schedule_date', align: 'center' },
+        { title: '课堂题量', key: 'practice_immediately', align: 'center', width: 80 },
+        { title: '状态', key: 'course_status_name', align: 'center', width: 100 },
         {
           title: '操作',
           align: 'center',
-          width: 180,
+          width: 150,
           render: createButton([
             { text: '添加', type: 'warning', isShow: ({ row }) => row.scheme_operation.create, click: row => this.openEditModal('create', row.id) },
             { text: '编辑', type: 'success', isShow: ({ row }) => row.scheme_operation.edit, click: row => this.openEditModal('edit', row.id) },
