@@ -19,8 +19,12 @@ export default {
   },
 
   mutations: {
-    // 测试列表
+    // 测试列表(所有测试)
     [EXAMINATION.SMARTEXAM.INIT](state, list) {
+      state.list = list
+    },
+    // 我的测试列表
+    [EXAMINATION.SMARTEXAM.MY](state, list) {
       state.list = list
     },
     // 删除班级
@@ -35,11 +39,18 @@ export default {
   },
 
   actions: {
-    // 测试列表接口
+    // 测试列表接口(所有测试)
     [EXAMINATION.SMARTEXAM.INIT]({ commit }, query = '') {
       return Http.get(`/test${query}`)
         .then((res) => {
           commit(EXAMINATION.SMARTEXAM.INIT, res)
+        })
+    },
+    // 测试列表接口(所有测试)
+    [EXAMINATION.SMARTEXAM.MY]({ commit }, query = '') {
+      return Http.get(`/test/my${query}`)
+        .then((res) => {
+          commit(EXAMINATION.SMARTEXAM.MY, res)
         })
     },
     // 删除测试接口

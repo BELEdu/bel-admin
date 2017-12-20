@@ -83,7 +83,7 @@
       justify="space-between"
     >
       <Col>
-        <h2><Icon type="android-menu"/> 智能测试</h2>
+        <h2><Icon type="android-menu"/> {{isMySmartExam?"我的测试":"智能测试"}}</h2>
       </Col>
       <Col>
         <Button type="primary" @click="openAddModal()" >添加测试</Button>
@@ -270,6 +270,10 @@ export default {
       test_status: state => state.dicts.test_status,
       answer_type: state => state.dicts.answer_type,
     }),
+
+    isMySmartExam() { // 当前路由是否是 “我的测试”
+      return this.$route.path === '/examination/mysmartexam'
+    },
   },
 
   methods: {
@@ -315,8 +319,11 @@ export default {
         })
     },
 
-    // 获取测试数据
+    // 获取测试数据，根据是否在 “我的测试” 列表，请求不同接口
     getData(qs) {
+      if (this.isMySmartExam) {
+        return this.$store.dispatch(EXAMINATION.SMARTEXAM.MY, qs)
+      }
       return this.$store.dispatch(EXAMINATION.SMARTEXAM.INIT, qs)
     },
   },

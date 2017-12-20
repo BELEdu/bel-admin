@@ -15,6 +15,11 @@ const EXAMINATION_SMARTEXAM = {
   name: '智能测试',
   link: '/examination/smartexam',
 }
+const EXAMINATION_MYSMARTEXAM = {
+  routeName: 'ExaminationMySmartExam',
+  name: '我的测试',
+  link: '/examination/mysmartexam',
+}
 const EXAMINATION_SMARTEXAM_QUESTION = {
   routeName: 'ExaminationSmartExamQuestion',
   name: '手动换题',
@@ -40,7 +45,7 @@ const EXAMINATION_WRONGQUESTION = {
 export default [
   /* 智能测试 */
 
-  // 测试列表
+  // 测试列表（全部测试）
   {
     path: EXAMINATION_SMARTEXAM.link,
     name: EXAMINATION_SMARTEXAM.routeName,
@@ -49,6 +54,19 @@ export default [
       breadcrumb: [
         EXAMINATION,
         EXAMINATION_SMARTEXAM,
+      ],
+    },
+  },
+
+  // 我的测试列表
+  {
+    path: EXAMINATION_MYSMARTEXAM.link,
+    name: EXAMINATION_MYSMARTEXAM.routeName,
+    component: views.ExaminationSmartExam,
+    meta: {
+      breadcrumb: [
+        EXAMINATION,
+        EXAMINATION_MYSMARTEXAM,
       ],
     },
   },
