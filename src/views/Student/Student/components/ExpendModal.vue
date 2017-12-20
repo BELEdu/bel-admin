@@ -1,6 +1,6 @@
 <template>
   <Modal
-    title="课时消耗详情"
+    title="课时记录"
     width="600"
     :value="value"
     @input="value => $emit('input', value)"
@@ -28,7 +28,7 @@
 
 <script>
 /**
- * 消耗日志弹窗
+ * 课时记录弹窗
  * @author zml
  * @version 2017-10-11
  */
