@@ -23,6 +23,8 @@ export default {
     tree: [],
 
     leaves: [],
+
+    preSelectedNode: null,
   }),
 
   watch: {
@@ -69,16 +71,25 @@ export default {
     /* --- business --- */
 
     v_selectLeaf([node]) {
-      if (node && node.children) return
+      if (node && node.children) {
+        this.m_toggleUnleafExpand(node)
+      } else {
+        const value = node ? node.id : ''
 
-      const value = node ? node.id : ''
-
-      this.$emit('input', value)
-      this.$emit('click', value)
+        this.$emit('input', value)
+        this.$emit('click', value)
+      }
     },
 
     findLeaf(leafId) {
       return this.leaves.find(leaf => leaf.id === leafId)
+    },
+
+    m_toggleUnleafExpand(node) {
+      this.$set(node, 'expand', !node.expand)
+      this.$set(node, 'selected', false)
+
+      return true
     },
 
     m_selectLeaf(leafId) {
