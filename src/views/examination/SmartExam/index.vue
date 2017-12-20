@@ -170,6 +170,7 @@ export default {
       likeKeys: [
         { label: '测试对象', value: 'test_object_name' },
         { label: '测试编号', value: 'id' },
+        { label: '创建人', value: 'user_name' },
       ],
       likeKey: 'test_object_name',
       query: {
@@ -186,7 +187,9 @@ export default {
         { title: '测试类型', key: 'test_type_name', align: 'center', width: 100 },
         { title: '答题方式', key: 'answer_type_name', align: 'center', width: 80 },
         { title: '考试时长', key: 'duration', align: 'center', width: 100, sortable: 'custom' },
+        { title: '创建人', key: 'user_name', align: 'center', width: 100 },
         { title: '测试时间', key: 'test_at', align: 'center' },
+
         { title: '状态', key: 'test_status_name', align: 'center', width: 80 },
         {
           title: '操作',
