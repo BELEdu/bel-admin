@@ -84,15 +84,15 @@ export default {
       <span>答题时长</span>
       <InputNumber
         size="small"
-        v-model="data.normal_duration"
-        :min="0"
-        @on-change="(val) => vm_fixDuration('excellent_duration', val)"
-      ></InputNumber>
-      <InputNumber
-        size="small"
         v-model="data.excellent_duration"
         :min="0"
         @on-change="(val) => vm_fixDuration('normal_duration', val)"
+      ></InputNumber>
+      <InputNumber
+        size="small"
+        v-model="data.normal_duration"
+        :min="0"
+        @on-change="(val) => vm_fixDuration('excellent_duration', val)"
       ></InputNumber>
       <span>分值</span>
       <InputNumber
