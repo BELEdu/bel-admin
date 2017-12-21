@@ -318,7 +318,7 @@ const defaultForm = {
   user_label_ids: [], // 收藏标签
   content: '', // 题目内容
   analysis: '', // 题目解析
-  question_answers: [{ ...defaultAnswer }], // 答案
+  question_answers: [], // 答案
   draw_area: '', // 图表题画图区域
 }
 
@@ -618,6 +618,8 @@ export default {
         grade_range_subject_id,
         user_label_ids,
       }
+      // 重置题型
+      this.current_question_template = null
       // 重置答案
       this.$refs.myContent.editor.setData('')
       // 重置解析
@@ -705,6 +707,7 @@ export default {
     }
 
     &__tips {
+      margin: 0;
       padding: 10px 0;
       line-height: 1;
       font-size: 14px;
