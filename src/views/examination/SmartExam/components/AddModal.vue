@@ -370,9 +370,18 @@ export default {
   methods: {
     // 前往手动选题页面
     changeQuestions() {
-      localStorage.removeItem('prepareplanQuestions')
+      // 重置传递的试题的字段
+      localStorage.removeItem('questionTypesSupply')
+
+      // 将当前学生的试卷转成字符串传递过去
+      const currentStudentPaperStr = JSON.stringify(this.currentStudentPaper)
+      localStorage.setItem('questionTypesSupply', currentStudentPaperStr)
+
+      // 重置返回的试题的字段
+      localStorage.removeItem('questionTypesFeedback')
+
+      // 定义一个window对象，打开一个新标签（试题列表）
       const url = `/examination/smartexam/question?equal[grade_range_subject_id]=${this.currentSubjectType}`
-      // 打开一个新标签
       this.newWin = window.open(url, String(Date.now()), '', false)
 
       // 监听localStorage的变化
@@ -381,13 +390,15 @@ export default {
 
     // 监听回调函数
     dealQuestionsStore() {
-      const questionTypesStr = localStorage.getItem('prepareplanQuestions')
+      const questionTypesStr = localStorage.getItem('questionTypesFeedback')
       const questionTypesJson = JSON.parse(questionTypesStr)
 
+      // 如果监听到loaclstorage存在questionTypesFeedback项的话
       if (questionTypesJson) {
+        // 关闭该标签
         this.newWin.close()
 
-        // 合并同类题型
+        // 完全替换该试卷
         this.mergeQuestionTypes(questionTypesJson)
 
         // 回调成功后关闭这个监听
@@ -395,20 +406,9 @@ export default {
       }
     },
 
-    // 合并同类题型
+    // 完全替换该试卷
     mergeQuestionTypes(questionTypesJson) {
-      this.currentStudentPaper = this.currentStudentPaper.map((currentType) => {
-        const type = questionTypesJson
-          .find(newType => currentType.question_type_id === newType.question_type_id)
-
-        return type ? {
-          ...currentType,
-          questions: [
-            ...currentType.questions,
-            ...type.questions,
-          ],
-        } : currentType
-      })
+      this.currentStudentPaper = questionTypesJson
     },
 
     // 处理题型模板中的index
