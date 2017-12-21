@@ -382,12 +382,13 @@ export default {
           this.list.data = this.list.data
             .filter(item => item.id !== this.questionId)
           this.$Message.warning('删除成功')
-          this.loading.delete = false
-          this.modal.delete = false
         })
         .catch(({ message }) => {
-          this.modal.delete = false
           this.$Message.error(message)
+        })
+        .then(() => {
+          this.loading.delete = false
+          this.modal.delete = false
         })
     },
 
