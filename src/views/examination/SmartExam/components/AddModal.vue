@@ -190,6 +190,7 @@
               :key="sindex"
               :data="section"
               :s-index="sindex+1"
+              :q-start="sectionQuestionIndexStart(student.question_types)[sindex]"
               :v-index="v_figureViewIndex(sindex, student.question_types)"
             ></paper-preview-section>
           </div>
@@ -368,6 +369,15 @@ export default {
   },
 
   methods: {
+    // 每个题型区域的初始索引
+    sectionQuestionIndexStart(question_types) {
+      return question_types
+        .reduce((acc, type, index) => (type.questions.length
+          ? acc.concat(acc[index] + type.questions.length)
+          : acc.concat(acc[index])
+        ), [1])
+    },
+
     // 前往手动选题页面
     changeQuestions() {
       // 重置传递的试题的字段
