@@ -6,21 +6,21 @@
     <!-- 试卷展示区域 -->
     <article>
       <div
-        v-for="(type, index) in data.question_types"
+        v-for="(type, t_index) in data.question_types"
         class="section"
       >
         <h2>
-          {{index + 1}}、{{type.display_name}}
+          {{t_index + 1}}、{{type.display_name}}
           （共{{type.question_count}}小题，
           总计{{type.total_score}}分）
         </h2>
         <div class="topic">
           <div
-            v-for="(item, index) in type.questions"
+            v-for="(item, q_index) in type.questions"
             class="topic-item"
           >
             <question
-              :index="index + 1"
+              :index="sectionQuestionIndexStart[t_index]+q_index"
               :data="item"
               :width="width"
             ></question>
@@ -97,6 +97,15 @@ export default {
     // 是否使用展示打印试卷的宽度
     isPrintWrap() {
       return this.width === 790
+    },
+
+    // 每个题型的开头index的值
+    sectionQuestionIndexStart() {
+      return this.data.question_types
+        .reduce((acc, type, index) => (type.questions.length
+          ? acc.concat(acc[index] + type.questions.length)
+          : acc.concat(acc[index])
+        ), [1])
     },
   },
 
