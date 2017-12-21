@@ -736,6 +736,9 @@ export default {
 
       .ivu-tag {
         border:0;
+        padding: 0;
+        width: 23px;
+        text-align: center;
       }
     }
 
