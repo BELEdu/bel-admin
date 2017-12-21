@@ -154,7 +154,7 @@ export default {
           const section = sections
             .find(({ question_type_id }) => question_type_id === target)
 
-          return section || type
+          return { ...type, ...section } || type
         })
     },
 

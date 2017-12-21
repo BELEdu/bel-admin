@@ -322,6 +322,44 @@ export default {
     isEmptyQuestion() {
       return this.form.questions.length === 0
     },
+
+    // 基础的questionTypes结构
+    questionTypesArray() {
+      const types = []
+
+      this.form.questions.forEach((question) => {
+        // 先获取当前types数组中的每项id，组成新数组用于下面的判断
+        const type_ids = types.map(({ question_type_id }) => question_type_id)
+
+        // 如果不重复，就push进去
+        if (!(type_ids.includes(question.question_type_id))) {
+          types.push({
+            question_type_id: question.question_type_id,
+            questions: [],
+          })
+        }
+      })
+
+      // 返回一个基础的questionTypes结构
+      return types
+    },
+
+    // 将当前的习题转换成试卷的结构
+    questionToPaper() {
+      const questionTypesArray = this.questionTypesArray
+      const questions = this.form.questions
+
+      questions.forEach((question) => {
+        questionTypesArray.forEach((types) => {
+          if (types.question_type_id === question.question_type_id) {
+            types.questions.push(question)
+          }
+        })
+      })
+
+      return questionTypesArray
+    },
+
   },
 
   watch: {
@@ -349,34 +387,59 @@ export default {
 
     // 前往手动选题页面
     changeQuestions() {
-      localStorage.removeItem('prepareplanQuestions')
-      const url = `/prepare/myprepareplan/question?equal[grade_range_subject_id]=${this.form.grade_range_subject_id}`
+      // 重置传递的试题的字段
+      localStorage.removeItem('questionTypesSupply')
+
+      // 将当前学生的试卷转成字符串传递过去
+      const currentStudentPaperStr = JSON.stringify(this.questionToPaper)
+      localStorage.setItem('questionTypesSupply', currentStudentPaperStr)
+
+      // 重置返回的试题的字段
+      localStorage.removeItem('questionTypesFeedback')
+
       // 打开一个新标签
+      const url = `/prepare/myprepareplan/question?equal[grade_range_subject_id]=${this.form.grade_range_subject_id}`
       this.newWin = window.open(url, String(Date.now()), '', false)
+
       // 监听localStorage的变化
       window.addEventListener('storage', this.dealQuestionsStore)
     },
 
     // 监听回调函数
     dealQuestionsStore() {
-      const questionsStr = localStorage.getItem('prepareplanQuestions')
+      const questionTypesStr = localStorage.getItem('questionTypesFeedback')
       // 将题型中的题目过滤成一个数组
-      const questionsJson = JSON.parse(questionsStr)
-        .reduce((acc, type) => [...acc, ...type.questions], [])
+      const questionTypesJson = JSON.parse(questionTypesStr)
 
-      if (questionsJson) {
+      // 如果监听到loaclstorage存在questionTypesFeedback项的话
+      if (questionTypesJson) {
         // 关闭该标签
         this.newWin.close()
 
         // 添加到课堂练习试题列表中
-        this.form.questions = [
-          ...this.form.questions,
-          ...questionsJson,
-        ]
+        this.mergeQuestionTypes(questionTypesJson)
 
         // 回调成功后关闭这个监听
         window.removeEventListener('storage', this.dealQuestionsStore)
       }
+    },
+
+    // 将试卷转换为题目添加到试题列表中
+    mergeQuestionTypes(questionTypesJson) {
+      // 先map出旧的题目id组成的数组
+      const oldQuestionsIds = this.form.questions.map(({ id }) => id)
+
+      /**
+       * 将试卷结构拆分成题目组成的数组
+       * 编辑新数组，如果旧的题目里有该题，就不插入该题；如果没有，则插入该题
+       */
+      questionTypesJson
+        .reduce((acc, type) => [...acc, ...type.questions], [])
+        .forEach((question) => {
+          if (!(oldQuestionsIds.includes(question.id))) {
+            this.form.questions.push(question)
+          }
+        })
     },
 
     // 移除ppt
@@ -461,10 +524,15 @@ export default {
         id: this.form.id,
       })
         .then((res) => {
-          this.form.questions = [
-            ...this.form.questions,
-            ...res,
-          ]
+          // 推的题目人工去重
+          const currentQuestionsIds = this.form.questions.map(({ id }) => id)
+          res.forEach((question) => {
+            if (!(currentQuestionsIds.includes(question.id))) {
+              this.form.questions.push(question)
+            } else {
+              // console.log(question.id)
+            }
+          })
 
           this.formLoading = false
           if (this.step === 2) {
@@ -528,11 +596,13 @@ export default {
 
     // 下一步
     nextStep() {
+      this.formErrors = {}
       this.step = this.step + 1
     },
 
     // 上一步
     lastStep() {
+      this.formErrors = {}
       this.step = this.step - 1
     },
   },
