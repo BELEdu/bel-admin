@@ -76,7 +76,6 @@
                 <div
                   v-for="(question_type,tindex) in form.question_types"
                   :key="tindex"
-
                 >
                   <!-- 题型名称 & 题型得分 -->
                   <p class="smartexam-check__form__title">
@@ -95,7 +94,7 @@
                       <Form-item>
                         <!-- 题目下标 -->
                         <Tag :color="indexColorFormat(question.answer_right_wrong)">
-                          {{qindex+1}}
+                          {{sectionQuestionIndexStart[tindex]+qindex}}
                         </Tag>
                         <!-- 题目批改 -->
                         <RadioGroup
@@ -422,6 +421,15 @@ export default {
         ...val,
         sort: key,
       }))
+    },
+
+    // 每个题型的开头index的值
+    sectionQuestionIndexStart() {
+      return this.form.question_types
+        .reduce((acc, type, index) => (type.questions.length
+          ? acc.concat(acc[index] + type.questions.length)
+          : acc.concat(acc[index])
+        ), [1])
     },
 
     submitData() {
