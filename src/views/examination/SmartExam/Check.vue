@@ -534,6 +534,8 @@ export default {
           return true
         case 4:
           return true
+        case 5:
+          return true
         default:
           return false
       }
