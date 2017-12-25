@@ -314,9 +314,14 @@ export default {
         }
         return this.selectedNode.children.push(...children)
       }
+
+
       // 同级插入
+      const index = parent.children
+        .findIndex(item => item.id === this.selectedNode.id)
+
       return this.parentNode.children
-        .splice(children[0].sort - 1, 0, ...children)
+        .splice(index + 1, 0, ...children)
     },
 
     /* --- Deletion --- */
