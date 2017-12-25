@@ -92,7 +92,7 @@ export default {
         },
         {
           name: '时长',
-          value: this.data.exam_time,
+          value: this.data.exam_time || this.data.total_time,
           unit: '分钟',
         },
       ]
