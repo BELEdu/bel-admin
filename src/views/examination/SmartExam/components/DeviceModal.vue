@@ -26,6 +26,7 @@
             v-model="form.start_test[index].equipment_id"
             placeholder="请输入或选择设备编号"
             filterable
+            transfer
             remote
             :remote-method="remoteMethodDevice"
             :loading="loading.device"

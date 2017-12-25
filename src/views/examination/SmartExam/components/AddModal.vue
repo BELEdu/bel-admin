@@ -56,6 +56,7 @@
               placeholder="请输入关键字检索测试对象..."
               v-model="form.model_id"
               filterable
+              transfer
               remote
               :remote-method="remoteMethodClasses"
               :loading="loading.classes"
@@ -72,6 +73,7 @@
             <Select
               placeholder="请选择课序..."
               v-model="form.course_id"
+              transfer
             >
               <Option
                 v-for="item in courseInfo"
