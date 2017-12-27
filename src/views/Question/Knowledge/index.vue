@@ -277,7 +277,7 @@ export default {
           title: '上级',
           key: 'parent_name',
           align: 'center',
-          sortable: 'custom',
+          // sortable: 'custom',
         },
         {
           title: '排序',
