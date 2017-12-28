@@ -93,6 +93,11 @@
     font-size: 14px;
     position: relative;
 
+    ul, li {
+      margin: 0;
+      padding: 0;
+    }
+
     &:before {
       content: ' ';
       display: block;
