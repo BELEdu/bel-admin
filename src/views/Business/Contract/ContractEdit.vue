@@ -459,7 +459,6 @@ export default {
           this.$Message.error({
             content: '学员编号不存在',
             closable: true,
-            duration: 0,
           })
           throw new Error('学员编号不存在')
         })
