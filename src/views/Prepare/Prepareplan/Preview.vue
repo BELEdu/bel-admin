@@ -1,36 +1,27 @@
 <template>
-  <div
-    class="no-reset prepareplan-preview"
-    :style="{
-      'background-image': `url(${assetsPreviewBackground})`,
-      'background-repeat': 'repeat-y',
-    }"
-  >
-    <div
-      class="prepareplan-preview-content"
-
-    >
+  <div class="no-reset prepareplan-preview">
+    <div class="lesson panel">
       <div
-        class="prepareplan-preview-dom"
+        class="lesson-dom -zoom"
         ref="lessonDom"
+        v-html="content"
       ></div>
       <PreviewCanvas
-        v-if="renderCanvas"
-        :width="canvasWidth"
-        :height="canvasHeight"
+        v-if="height"
+        :width="1480"
+        :height="height"
         :html="content"
-        :font-size="28"
+        :zoom="true"
       />
     </div>
   </div>
 </template>
 
 <script>
-import assetsPreviewBackground from '@/assets/preview-background.jpg'
 import PreviewCanvas from './components/PreviewCanvas'
 
 export default {
-  name: 'PrepareplanPreview',
+  name: 'Preview',
 
   components: {
     PreviewCanvas,
@@ -38,88 +29,73 @@ export default {
 
   data() {
     return {
-      assetsPreviewBackground,
-      content: '',
-      renderCanvas: false,
-      canvasWidth: 0,
-      canvasHeight: 0,
+      content: localStorage.getItem('previewPreparePlan'),
+      height: null,
     }
   },
 
-  methods: {
-    renderLesson(content, remove) {
-      this.renderCanvas = false
-
-      const { lessonDom } = this.$refs
-
-      lessonDom.innerHTML = content
-
-      this.$nextTick(() => {
-        this.canvasWidth = lessonDom.clientWidth
-        // 画布的高度计算不完全可靠，总是多给50个像素以防止内容渲染不全
-        this.canvasHeight = Math.max(lessonDom.clientHeight + 100, 800)
-
-        this.renderCanvas = true
-
-        if (remove) {
-          lessonDom.remove()
-        }
-      })
-    },
-  },
-
-  created() {
-    this.content = localStorage.getItem('previewPreparePlan')
-  },
-
   mounted() {
-    this.renderLesson(this.content, true)
+    setTimeout(() => {
+      this.height = this.$refs.lessonDom.clientHeight
+    }, 500)
   },
 }
 </script>
 
-<style lang="less">
-
+<style>
 .prepareplan-preview {
-  width: 100%;
-  padding: 90px 0;
+  background-image: url("../../../assets/preview-background.jpg");
+  background-attachment: fixed;
+  overflow: hidden;
 }
 
-.prepareplan-preview-dom {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100%;
-  padding: 20px 60px;
-  font-family: sans-serif;
-  line-height: 1.7;
+.panel {
+  border-radius: 10px;
+  background-color: #ddd;
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.lesson {
+  position: relative;
+  width: 1480px;
+  margin: 100px auto 40px;
+  overflow: hidden;
+}
+
+/* 教案样式 */
+.lesson-dom {
   visibility: hidden;
-  font-size: calc(28 / 16 * 1rem);
+  min-height: 800px;
+  padding: 20px 60px;
+  font-size: 16px;
 }
 
-.prepareplan-preview-dom * {
-  font-family: inherit !important;
+.lesson-dom p {
+  line-height: 24px;
+}
+
+.lesson-dom * {
+  font-family: sans-serif !important;
   font-size: inherit !important;
 }
 
-
-.prepareplan-preview-dom img {
-  mix-blend-mode: multiply;
+.lesson-dom img {
   vertical-align: middle;
-  zoom: calc(28 / 16);
 }
 
-.prepareplan-preview-content {
-  margin: 0 auto;
-  position: relative;
-  width: 1480px;
-  min-height: 800px;
-  background-color: rgb(221, 221, 221);
-  border-radius: 10px;
+.lesson-dom table, td {
+  width: auto !important;
+}
 
-  table, td {
-    width: auto !important;
-  }
+.lesson-dom.-zoom {
+  font-size: 28px;
+}
+
+.lesson-dom.-zoom p {
+  line-height: 32px;
+}
+
+.lesson-dom.-zoom img {
+  zoom: 1.75;
 }
 </style>
