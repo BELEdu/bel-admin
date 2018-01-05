@@ -550,6 +550,7 @@ export default {
           })
       }
 
+      this.formLoading = false
       if (this.step === 2) {
         this.nextStep()
       }
