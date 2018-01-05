@@ -287,6 +287,8 @@ export default {
 
       editorFirstRender: false, // 是否第一次加载（用于加载编辑器静态文件）
       editorLoadOk: false, // 编辑器是否加载完毕
+
+      hasQuestions: false, // 是否已经智能推送过题目
     }
   },
 
@@ -518,31 +520,40 @@ export default {
 
     // 智能推题
     getQuestionInfo() {
-      this.questionLoading = true
+      // 如果已经推过，避免重复推送（卢）
+      if (!this.hasQuestions) {
+        this.questionLoading = true
 
-      return this.$http.post('/scheme/intelligence', {
-        id: this.form.id,
-      })
-        .then((res) => {
+        return this.$http.post('/scheme/intelligence', {
+          id: this.form.id,
+        })
+          .then((res) => {
           // 推的题目人工去重
-          const currentQuestionsIds = this.form.questions.map(({ id }) => id)
-          res.forEach((question) => {
-            if (!(currentQuestionsIds.includes(question.id))) {
-              this.form.questions.push(question)
-            } else {
+            const currentQuestionsIds = this.form.questions.map(({ id }) => id)
+            res.forEach((question) => {
+              if (!(currentQuestionsIds.includes(question.id))) {
+                this.form.questions.push(question)
+              } else {
               // console.log(question.id)
+              }
+            })
+
+            this.formLoading = false
+            if (this.step === 2) {
+              this.nextStep()
             }
           })
+          .catch(this.errorHandler)
+          .then(() => {
+            this.questionLoading = false
+            this.hasQuestions = true
+          })
+      }
 
-          this.formLoading = false
-          if (this.step === 2) {
-            this.nextStep()
-          }
-        })
-        .catch(this.errorHandler)
-        .then(() => {
-          this.questionLoading = false
-        })
+      if (this.step === 2) {
+        this.nextStep()
+      }
+      return Promise.resolve()
     },
 
     // 关闭之前的再一次确认
