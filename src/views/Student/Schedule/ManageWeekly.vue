@@ -72,6 +72,7 @@
                     </div>
                     <!--课表详细内容-->
                     <div slot="content">
+                      <p><span class="text-right">班级名称：</span>{{`${list.classes_name}【第${list.sort_value}节课】`}}</p>
                       <p><span class="text-right">上课时间：</span>{{list.schedule_range}}</p>
                       <div v-if="list.chapter_name"><span class="text-right" style="display: inline-block;min-width: 5em">内容：</span><p style="padding-left: 5em;" v-html="list.chapter_name"></p></div>
                       <p><span class="text-right">计划课时：</span>{{list.course_num}}</p>
@@ -105,10 +106,16 @@
         </Col>
       </Row>
       <div class="manage-weekly__remark">
-        <span class="end">已评价</span>
-        <span class="confirm">待确认</span>
-        <span class="notend">待上课</span>
-        <span class="finish">已上课</span>
+        <span
+          v-for="list in scheduleStatus"
+          :class="{
+            confirm: list.value === 0,
+            notend: list.value === 1,
+            finish: list.value === 2,
+            end: list.value === 3,
+          }"
+          :key="list.value"
+        >{{list.display_name}}</span>
       </div>
     </div>
 
