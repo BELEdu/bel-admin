@@ -147,7 +147,7 @@
 
     computed: {
       ...mapState({
-        scheduleStatus: state => state.dicts.schedule_status,
+        scheduleStatus: state => state.dicts.course_status,
         currentTip: state => state.student.schedule.tip,
         dailyList: state => state.student.schedule.dailyList,
         courseTip: state => state.student.schedule.tip.ready_courses,
