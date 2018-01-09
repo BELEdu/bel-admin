@@ -90,17 +90,36 @@ export default {
           value: this.data.total_score || this.paperTotalScore,
           unit: '分',
         },
-        {
-          name: '时长',
-          value: this.data.exam_time || this.data.total_time,
-          unit: '分钟',
-        },
       ]
     },
 
     // 过滤出可用的试卷信息
     formatPaperInfoArray() {
-      return this.paperInfo.filter(info => (info.value !== null && info.value !== undefined))
+      const infoArray = this.paperInfo
+
+      // 读取时长信息
+      const durationInfo = this.data.exam_time || this.data.total_time
+
+      // 如果有时长并且时长为0的时候，将文字替换为无限制
+      if (durationInfo === 0) {
+        infoArray.push(
+          {
+            name: '时长',
+            value: '无限制',
+          },
+        )
+      } else {
+        infoArray.push(
+          {
+            name: '时长',
+            value: durationInfo,
+            unit: '分钟',
+          },
+        )
+      }
+
+      // 过滤出可用的试卷信息字段
+      return infoArray.filter(info => (info.value !== null && info.value !== undefined))
     },
   },
 }
