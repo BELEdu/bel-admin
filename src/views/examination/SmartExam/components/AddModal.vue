@@ -22,7 +22,6 @@
       <!-- 表单 -->
       <Form
         ref="form"
-        v-if="value"
         :model="form"
         :rules="rules"
         :label-width="80"
@@ -84,7 +83,6 @@
           </Form-item>
 
           <Form-item
-            v-show="!isPractice"
             label="考试时长"
             required
           >
@@ -93,18 +91,30 @@
               :min="0"
               v-model="form.duration"
             ></InputNumber>
-            &nbsp;&nbsp;分钟
+            &nbsp;&nbsp;分钟<span class="color-primary">（0 代表不限制考试时长）</span>
           </Form-item>
 
           <Form-item label="答题方式" required>
-            <RadioGroup v-model="form.answer_type" type="button">
+            <RadioGroup
+              v-model="form.answer_type"
+              type="button"
+              @on-change="resetDuration"
+            >
               <Radio :label="1" :disabled="isPractice">线上答题</Radio>
               <Radio :label="2" :disabled="isPractice">线下答题</Radio>
             </RadioGroup>
           </Form-item>
 
-          <Form-item label="试卷来源" required>
-            <RadioGroup v-model="form.paper_source" type="button">
+          <Form-item
+            label="试卷来源"
+            required
+            @on-change="resetDuration"
+          >
+            <RadioGroup
+              v-if="value"
+              v-model="form.paper_source"
+              type="button"
+            >
               <Radio :label="1" :disabled="isPractice">智能组卷</Radio>
               <Radio :label="2" :disabled="isPractice">选择试卷</Radio>
             </RadioGroup>
@@ -120,10 +130,12 @@
               placeholder="请输入关键字检索试卷..."
               v-model="form.paper_id"
               filterable
+              transfer
               remote
               :remote-method="remoteMethodPaper"
               clearable
               :loading="loading.paper"
+              @on-change="setDuraction"
             >
               <Option
                 v-for="item in paperData"
@@ -245,6 +257,7 @@
  */
 import { form } from '@/mixins'
 import { PaperPreviewSection } from '@/views/components'
+
 
 export default {
   name: 'app-examination-smartexam-add-modal',
@@ -368,9 +381,36 @@ export default {
         this.form.course_sort = this.courseInfo.find(item => item.id === val).sort_value
       }
     },
+
+    value() {
+      this.form = {
+        model_type: 'classes', // 不知道干嘛的，固定写这个
+        test_type: 1, // 测试类型 1：日常测试 4：课后练习
+        model_id: null, // 测试对象（班级）
+        course_sort: null, // 课序
+        course_id: null, // 该课序的id
+        duration: 0, // 考试时长
+        answer_type: 1, // 答题方式 1：线上 2：线下
+        paper_source: 1, // 试卷来源 1：智能组卷 2：选择试卷
+        paper_id: null, // 选择试卷
+        question_info: [], // 试题信息
+        param: [], // 题型题量
+      }
+    },
   },
 
   methods: {
+    // 切换答题方式和试卷来源的时候重置考试时长
+    resetDuration() {
+      this.form.duration = 0
+    },
+
+    // 选择试卷时，自动填充答题时长
+    setDuraction(id) {
+      this.form.duration = this.paperData
+        .find(paper => paper.id === id).exam_time
+    },
+
     // 每个题型区域的初始索引
     sectionQuestionIndexStart(question_types) {
       return question_types
@@ -531,12 +571,14 @@ export default {
 
     // 关闭模态框
     closeModal() {
-      this.$emit('closeAddModal')
       this.handleReset()
+      // debugger
+      this.$emit('closeAddModal')
     },
 
     // 下一步
     nextStep() {
+      this.formErrors = {}
       if (this.step === 1) {
         this.beforeSubmit()
       } else {
@@ -546,6 +588,7 @@ export default {
 
     // 上一步
     lastStep() {
+      this.formErrors = {}
       this.step = this.step - 1
     },
 
@@ -557,6 +600,7 @@ export default {
           this.form.question_info = res.question_info
           // 筛选出第一项的学生的id
           this.currentStudent = this.form.question_info[0].student_id
+          // 下一步
           this.step = this.step + 1
         })
         .catch(this.errorHandler)
