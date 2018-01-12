@@ -86,7 +86,7 @@ export default {
 <template>
   <div class="paper-preview-section">
     <div class="paper-preview-section__recbar">
-      <span>学霸题型得分率</span>
+      <span>学霸题型得分</span>
       <InputNumber
         v-model="data.best_score"
         size="small"
