@@ -326,6 +326,11 @@
             this.dialog.currentItem.equipment = res
             this.dialog.view = true
           })
+          .catch(({ message }) => {
+            this.$Notice.error({
+              title: message,
+            })
+          })
       },
 
       // 取消跟关闭操作
