@@ -79,6 +79,11 @@ export const BUSINESS = {
     UPDATE: 'BUSINESS.EDIT.UPDATE',
     DELETE: 'BUSINESS.EDIT.DELETE',
   },
+
+  // 预约记录模块
+  RESERVATION: {
+    INIT: 'BUSINESS.RESERVATION.INIT',
+  },
 }
 
 // 学员课程

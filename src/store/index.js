@@ -18,6 +18,7 @@ import examination from './examination'
 import prepare from './prepare'
 import utils from './utils'
 import setting from './setting'
+import business from './business'
 import { GLOBAL } from './mutationTypes'
 
 Vue.use(Vuex)
@@ -47,6 +48,7 @@ const store = new Vuex.Store({
     prepare,
     utils,
     setting,
+    business,
   },
 
   state: {
