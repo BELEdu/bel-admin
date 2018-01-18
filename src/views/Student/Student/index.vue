@@ -152,7 +152,6 @@ export default {
 
   data() {
     return {
-      testDate: [],
       likeKeys: [
         { label: '学员姓名', value: 'display_name' },
         { label: '学员编号', value: 'number' },
