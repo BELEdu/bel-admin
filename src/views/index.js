@@ -54,6 +54,9 @@ export { default as ProductEdit } from './Business/Product/ProductEdit'
 // 优惠活动
 export { default as Promotion } from './Business/Promotion'
 
+// 预约记录
+export { default as BusinessReservation } from './Business/Reservation'
+
 /* 统计管理 */
 
 // 签约统计

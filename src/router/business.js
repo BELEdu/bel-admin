@@ -7,10 +7,14 @@
 
 import * as views from '@/views'
 
-const BUSINESS_HOTLINE = {
-  name: '热线登记',
-  link: '/business/hotline',
+const BUSINESS = {
+  name: '业务管理',
 }
+
+// const BUSINESS_HOTLINE = {
+//   name: '热线登记',
+//   link: '/business/hotline',
+// }
 
 const BUSINESS_COMMUNICATION = {
   name: '沟通记录',
@@ -32,48 +36,54 @@ const BUSINESS_PROMOTION = {
   link: '/business/promotion',
 }
 
-export default [
-  /* 热线登记 */
+const BUSINESS_RESERVATION = {
+  routeName: 'BusinessReservation',
+  name: '预约记录',
+  link: '/business/reservation',
+}
 
-  // 列表页
-  {
-    path: '/business/hotline',
-    name: 'BussinessHotline',
-    component: views.Hotline,
-    meta: {
-      uri: '/hotline',
-      breadcrumb: [
-        { name: '业务管理' },
-        { name: '热线登记' },
-      ],
-    },
-  },
-  // 新建热线
-  {
-    path: '/business/hotline/edit',
-    name: 'BussinessHotlineCreate',
-    component: views.HotlineEdit,
-    meta: {
-      breadcrumb: [
-        { name: '业务管理' },
-        BUSINESS_HOTLINE,
-        { name: '新建热线' },
-      ],
-    },
-  },
-  // 更新热线
-  {
-    path: '/business/hotline/edit/:id',
-    name: 'BussinessHotlineUpdate',
-    component: views.HotlineEdit,
-    meta: {
-      breadcrumb: [
-        { name: '业务管理' },
-        BUSINESS_HOTLINE,
-        { name: '编辑热线' },
-      ],
-    },
-  },
+export default [
+  // /* 热线登记 */
+
+  // // 列表页
+  // {
+  //   path: '/business/hotline',
+  //   name: 'BussinessHotline',
+  //   component: views.Hotline,
+  //   meta: {
+  //     uri: '/hotline',
+  //     breadcrumb: [
+  //       { name: '业务管理' },
+  //       { name: '热线登记' },
+  //     ],
+  //   },
+  // },
+  // // 新建热线
+  // {
+  //   path: '/business/hotline/edit',
+  //   name: 'BussinessHotlineCreate',
+  //   component: views.HotlineEdit,
+  //   meta: {
+  //     breadcrumb: [
+  //       { name: '业务管理' },
+  //       BUSINESS_HOTLINE,
+  //       { name: '新建热线' },
+  //     ],
+  //   },
+  // },
+  // // 更新热线
+  // {
+  //   path: '/business/hotline/edit/:id',
+  //   name: 'BussinessHotlineUpdate',
+  //   component: views.HotlineEdit,
+  //   meta: {
+  //     breadcrumb: [
+  //       { name: '业务管理' },
+  //       BUSINESS_HOTLINE,
+  //       { name: '编辑热线' },
+  //     ],
+  //   },
+  // },
 
   /* 沟通记录 */
 
@@ -301,6 +311,22 @@ export default [
       breadcrumb: [
         { name: '业务管理' },
         BUSINESS_PROMOTION,
+      ],
+    },
+  },
+
+  /* 预约记录 */
+
+  // 列表页
+  {
+    path: BUSINESS_RESERVATION.link,
+    name: BUSINESS_RESERVATION.routeName,
+    component: views.BusinessReservation,
+    meta: {
+      uri: '/business/reservation',
+      breadcrumb: [
+        BUSINESS,
+        BUSINESS_RESERVATION,
       ],
     },
   },
