@@ -12,6 +12,13 @@ const STUDENT = {
   name: '学员课程',
 }
 
+/* 家长管理 */
+const STUDENT_WECHATUSER = {
+  routeName: 'StudentWechatuser',
+  name: '家长管理',
+  link: '/student/wechatuser',
+}
+
 /* 学员管理 */
 const STUDENT_STUDENT = {
   routeName: 'StudentStudent',
@@ -78,6 +85,18 @@ const STUDENT_MY_SCHEDULE_MANAGE_WEEKLY = { routeName: 'StudentMyScheduleManageW
 const STUDENT_MY_SCHEDULE_MANAGE_DAILY = { routeName: 'StudentMyScheduleManageDaily', name: '日课表', link: '/student/myschedule/manage/daily' }
 
 export default [
+  // 家长管理
+  {
+    path: STUDENT_WECHATUSER.link,
+    name: STUDENT_WECHATUSER.routeName,
+    component: views.StudentWechatuser,
+    meta: {
+      breadcrumb: [
+        STUDENT,
+        STUDENT_WECHATUSER,
+      ],
+    },
+  },
 
   /* 学员管理 */
 

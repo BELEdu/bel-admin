@@ -93,6 +93,9 @@ export { default as SystemProcessEdit } from './System/Process/Edit'
 
 /* 学员课程 */
 
+// 家长管理
+export { default as StudentWechatuser } from './Student/WechatUser'
+
 // 学员管理
 export { default as StudentStudent } from './Student/Student'
 export { default as StudentStudentEdit } from './Student/Student/Edit'
