@@ -65,6 +65,7 @@
           v-model="subject.datetime"
           format="yyyy-MM-dd HH:mm"
           type="datetime"
+          :options="datetimeOptions"
           placeholder="请选择预约时间"
         ></app-date-picker>
       </Form-item>
@@ -118,6 +119,12 @@ export default {
         ],
       },
 
+      // 当天之前的日期不可选择
+      datetimeOptions: {
+        disabledDate(date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        },
+      },
     }
   },
 
@@ -150,6 +157,7 @@ export default {
   },
 
   methods: {
+
     // 监听弹窗的显示/隐藏
     toggleModal(val) {
       this.$emit('update:visible', val)
