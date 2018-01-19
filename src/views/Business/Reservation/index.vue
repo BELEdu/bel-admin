@@ -23,10 +23,21 @@
         </Input>
       </Form-item>
 
+      <!-- 预约时间 -->
+      <Form-item>
+        <app-date-picker
+          v-model="query['between[date]']"
+          format="yyyy-MM-dd"
+          type="datetimerange"
+          placeholder="请选择预约时间"
+        ></app-date-picker>
+      </Form-item>
+
       <!-- 预约年段 -->
       <Form-item>
         <Select
           v-model="query[`equal[grade]`]"
+          clearable
           placeholder="选择预约年级"
           style="width:9em;"
         >
@@ -44,6 +55,7 @@
       <Form-item>
         <Select
           v-model="query[`equal[subject]`]"
+          clearable
           placeholder="选择预约学科"
           style="width:9em;"
         >
@@ -61,6 +73,7 @@
       <Form-item>
         <Select
           v-model="query[`equal[reservation_type]`]"
+          clearable
           placeholder="选择预约类型"
           style="width:9em;"
         >
@@ -78,6 +91,7 @@
       <Form-item>
         <Select
           v-model="query[`equal[reservation_state]`]"
+          clearable
           placeholder="选择预约状态"
           style="width:9em;"
         >
@@ -120,6 +134,14 @@
       @on-page-size-change="pageSizeChange"
     ></app-pager>
 
+    <!-- 反馈弹窗 -->
+    <EditModal
+      :visible.sync="editModal.visible"
+      :data="editModal.data"
+      :operation-data="reservationOperation"
+       @update="fetchData"
+    ></EditModal>
+
   </div>
 </template>
 
@@ -132,7 +154,7 @@
 
 import { mapState } from 'vuex'
 import { list } from '@/mixins'
-import { GLOBAL, BUSINESS } from '@/store/mutationTypes'
+import { BUSINESS } from '@/store/mutationTypes'
 import { createButton } from '@/utils'
 import EditModal from './components/EditModal'
 
@@ -154,17 +176,7 @@ export default {
         'equal[subject]': null,
         'equal[reservation_type]': null,
         'equal[reservation_state]': null,
-      },
-
-      reservationType: [], // 预约类型
-      reservationState: [], // 预约状态
-      reservationOperation: [], // 反馈类型（编辑弹窗用）
-
-      grades: [], // 年级
-      subjects: [], // 学科
-
-      modal: { // 弹窗控制
-        edit: false,
+        'between[date]': [],
       },
 
       columns: [
@@ -218,7 +230,7 @@ export default {
               {
                 domProps: {
                   innerHTML: operation_content
-                    .map(content => `<p>${content}</p>`)
+                    .map(content => `<div>${content}</div>`)
                     .join(''),
                 },
               },
@@ -234,11 +246,24 @@ export default {
             {
               text: '反馈',
               type: 'primary',
-              click: row => this.openEditModal(row.id),
+              click: row => this.openEditModal(row),
             },
           ]),
         },
       ],
+
+      reservationType: [], // 预约类型
+      reservationState: [], // 预约状态
+      reservationOperation: [], // 反馈类型（编辑弹窗用）
+
+      grades: [], // 年级
+      subjects: [], // 学科
+
+      editModal: {
+        visible: false, // 弹窗控制
+        data: {},
+      },
+
     }
   },
 
@@ -274,14 +299,14 @@ export default {
     },
 
     // 打开编辑弹窗
-    openEditModal() {
-      this.modal.edit = true
+    openEditModal(row) {
+      this.editModal.data = { ...row }
+      this.editModal.visible = true
     },
   },
 
   created() {
     this.getBeforeData()
-    this.$store.commit(GLOBAL.LOADING.HIDE)
   },
 
 }
