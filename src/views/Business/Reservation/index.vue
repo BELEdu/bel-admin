@@ -28,7 +28,7 @@
         <app-date-picker
           v-model="query['between[date]']"
           format="yyyy-MM-dd"
-          type="datetimerange"
+          type="daterange"
           placeholder="请选择预约时间"
         ></app-date-picker>
       </Form-item>
