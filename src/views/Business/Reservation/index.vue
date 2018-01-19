@@ -184,16 +184,19 @@ export default {
           title: '学员姓名',
           key: 'student_name',
           align: 'center',
+          width: 120,
         },
         {
           title: '手机号码',
           key: 'phone',
           align: 'center',
+          width: 150,
         },
         {
           title: '预约年级',
           key: 'grade_name',
           align: 'center',
+          width: 120,
         },
         {
           title: '预约学科',
@@ -209,16 +212,19 @@ export default {
           title: '预约类型',
           key: 'reservation_type_name',
           align: 'center',
+          width: 100,
         },
         {
           title: '预约时间',
           key: 'date',
           align: 'center',
+          width: 130,
         },
         {
-          title: '反馈',
+          title: '预约状态',
           key: 'reservation_state_name',
           align: 'center',
+          width: 100,
         },
         {
           title: '反馈内容',
@@ -241,7 +247,7 @@ export default {
           title: '操作',
           key: 10,
           align: 'center',
-          width: 180,
+          width: 100,
           render: createButton([
             {
               text: '反馈',
