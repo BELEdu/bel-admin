@@ -8,7 +8,7 @@
     mask-closable
   >
     <div class="text-center">
-      <span class="color-error">正在上传该PPT到云服务器...<br>上传成功后才可预览，请耐心等待！</span>
+      <span class="color-error">正在上传文件中 ...<br>上传成功后才可预览，请耐心等待！</span>
     </div>
     <p>
       <span>上传文件：</span>
