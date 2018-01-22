@@ -170,9 +170,10 @@ export default {
           width: 60,
           align: 'center',
         },
-        { title: '学员姓名', key: 'display_name', align: 'center' },
-        { title: '学员编号', key: 'number', align: 'center', width: 180, sortable: 'custom' },
-        { title: '首签日期', key: 'original_contractor_at', align: 'center', width: 180, sortable: 'custom' },
+        { title: '学员姓名', key: 'display_name', align: 'center', width: 90 },
+        { title: '学员编号', key: 'number', align: 'center', width: 120, sortable: 'custom' },
+        { title: '识别码', key: 'identify_code', align: 'center', width: 120 },
+        { title: '首签日期', key: 'original_contractor_at', align: 'center', sortable: 'custom' },
         { title: '在读学校', key: 'current_school_name', align: 'center' },
         { title: '当前年级', key: 'current_grade_name', align: 'center' },
         { title: '归属学管师', key: 'study_teacher_name', align: 'center' },
@@ -181,6 +182,7 @@ export default {
           key: 'course_total',
           align: 'center',
           sortable: 'custom',
+          width: 80,
           render: (h, params) => {
             const { course } = params.row
             const total = course ? course.total : null
@@ -201,12 +203,12 @@ export default {
             }, remain)
           },
         },
-        { title: '状态', key: 'student_current_status_name', align: 'center' },
+        { title: '状态', key: 'student_current_status_name', align: 'center', width: 80 },
         {
           title: '操作',
           key: 13,
           align: 'center',
-          width: 200,
+          width: 160,
           render: createButton([
             {
               text: '删除',
