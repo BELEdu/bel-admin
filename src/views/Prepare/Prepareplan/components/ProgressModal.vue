@@ -1,15 +1,19 @@
 <template>
   <Modal
     :value="visible"
+    :closable="false"
     @input="toggleModal"
     title="预览进度"
     :width="320"
     mask-closable
   >
-    <div>
+    <div class="text-center">
+      <span class="color-error">正在上传该PPT到云服务器...<br>上传成功后才可预览，请耐心等待！</span>
+    </div>
+    <p>
       <span>上传文件：</span>
       <span class="color-primary">{{name}}</span>
-    </div>
+    </p>
     <p>
       <span>上传进度：</span>
       <span class="color-primary">{{`${percent}%`}}</span>
@@ -27,10 +31,10 @@
     ></Progress>
 
     <div slot="footer">
-      <Button
+      <!-- <Button
         type="ghost"
         @click="closeModal"
-      >返回</Button>
+      >返回</Button> -->
     </div>
   </Modal>
 </template>

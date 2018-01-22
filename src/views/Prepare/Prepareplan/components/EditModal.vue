@@ -247,6 +247,14 @@ import QuestionList from './QuestionList'
 import ZipUpload from './ZipUpload'
 import ProgressModal from './ProgressModal'
 
+const defaultPpt = {
+  url: '', // 当前ppt的url地址
+  name: '', // 当前ppt的ppt标题
+  data: {}, // 预览相关数据
+  visible: false, // 展示状态
+  timeout: null,
+}
+
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
 
@@ -297,12 +305,7 @@ export default {
 
       hasQuestions: false, // 是否已经智能推送过题目
 
-      ppt: {
-        url: '', // 当前ppt的url地址
-        name: '', // 当前ppt的ppt标题
-        data: {}, // 预览相关数据
-        visible: false, // 展示状态
-      },
+      ppt: defaultPpt,
     }
   },
 
@@ -473,6 +476,7 @@ export default {
 
     // 预览之前先检查后台是否上传成功
     beforePreview(url, name) {
+      this.ppt = defaultPpt
       // 缓存当前的ppt链接
       this.ppt.url = url
       this.ppt.name = name
@@ -495,8 +499,9 @@ export default {
           } else if (data.fail) {
             this.$Message.error('文件错误，请尝试重新上传')
           } else {
+            // 如果是第一次点击预览按钮，则出现弹窗
             this.ppt.visible = true
-            setTimeout(() => {
+            this.ppt.timeout = setTimeout(() => {
               this.pptCheck()
             }, 1500)
           }
