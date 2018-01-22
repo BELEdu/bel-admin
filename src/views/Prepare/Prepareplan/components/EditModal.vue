@@ -93,9 +93,8 @@
                   <Button
                     type="warning"
                     icon="search"
-                    :loading="previewLoading"
                     long
-                    @click="beforePreview(ppt.url)"
+                    @click="beforePreview(ppt.url,ppt.display_name)"
                   >预览</Button>
                 </Col>
 
@@ -225,6 +224,13 @@
       </div>
     </Modal>
 
+    <!-- ppt上传进度弹窗 -->
+    <ProgressModal
+      :visible.sync="ppt.visible"
+      :data="ppt.data"
+      :name="ppt.name"
+    ></ProgressModal>
+
   </div>
 </template>
 
@@ -239,6 +245,7 @@ import { form } from '@/mixins'
 import { Question } from '@/views/components'
 import QuestionList from './QuestionList'
 import ZipUpload from './ZipUpload'
+import ProgressModal from './ProgressModal'
 
 export default {
   name: 'app-prepare-prepareplan-edit-modal',
@@ -249,6 +256,7 @@ export default {
     Question,
     QuestionList,
     ZipUpload,
+    ProgressModal,
   },
 
   props: {
@@ -281,7 +289,6 @@ export default {
       stepLength: 3, // 步骤总数
 
       questionLoading: false, // 智能推题loading
-      previewLoading: false, // 是否可预览loading
 
       newWin: null, // 用于打开手动选题标签的对象
 
@@ -289,6 +296,13 @@ export default {
       editorLoadOk: false, // 编辑器是否加载完毕
 
       hasQuestions: false, // 是否已经智能推送过题目
+
+      ppt: {
+        url: '', // 当前ppt的url地址
+        name: '', // 当前ppt的ppt标题
+        data: {}, // 预览相关数据
+        visible: true, // 展示状态
+      },
     }
   },
 
@@ -458,26 +472,44 @@ export default {
     },
 
     // 预览之前先检查后台是否上传成功
-    beforePreview(pptUrl) {
-      this.previewLoading = true
+    beforePreview(url, name) {
+      // 缓存当前的ppt链接
+      this.ppt.url = url
+      this.ppt.name = name
+      this.pptCheck()
+    },
+
+    // 确认ppt状态接口
+    pptCheck() {
       this.$http.post('/scheme/preview', {
-        url: pptUrl,
+        url: this.ppt.url,
       })
-        .then(() => {
-          this.preview(pptUrl)
+        .then((data) => {
+          const { done, total } = data
+          this.ppt.data = data
+
+          // 如果已传文件等于总文件的话，表示可以预览,否则延时预览
+          if (done === total) {
+            this.ppt.visible = false
+            this.pptPreview()
+          } else if (data.fail) {
+            this.$Message.error('文件错误，请尝试重新上传')
+          } else {
+            this.ppt.visible = true
+            setTimeout(() => {
+              this.pptCheck()
+            }, 1500)
+          }
         })
         .catch(({ message }) => {
           this.$Message.warning(message)
         })
-        .then(() => {
-          this.previewLoading = false
-        })
     },
 
     // 打开新标签预览ppt
-    preview(pptUrl) {
-      // 这里要拦截一下
-      window.open(pptUrl)
+    pptPreview() {
+      const win = window.open()
+      win.location = this.ppt.url
     },
 
     // 提交表单（选题或者最终提交）
