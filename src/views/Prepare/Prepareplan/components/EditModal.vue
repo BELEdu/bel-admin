@@ -301,7 +301,7 @@ export default {
         url: '', // 当前ppt的url地址
         name: '', // 当前ppt的ppt标题
         data: {}, // 预览相关数据
-        visible: true, // 展示状态
+        visible: false, // 展示状态
       },
     }
   },

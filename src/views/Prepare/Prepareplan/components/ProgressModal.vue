@@ -20,7 +20,7 @@
     </p>
     <!-- 进度条 -->
     <Progress
-      :percent="percent"
+      :percent="+percent"
       status="active"
       :stroke-width="15"
       hide-info
@@ -55,7 +55,10 @@ export default {
 
   computed: {
     percent() {
-      return ((this.data.done / this.data.total) * 100).toFixed(0) || 0
+      if (this.data.done && this.data.total) {
+        return ((this.data.done / this.data.total) * 100).toFixed(0)
+      }
+      return 0
     },
   },
 
