@@ -5,7 +5,7 @@
     @input="toggleModal"
     title="预览进度"
     :width="320"
-    mask-closable
+    :mask-closable="false"
   >
     <div class="text-center">
       <span class="color-error">正在上传文件中 ...<br>上传成功后才可预览，请耐心等待！</span>
@@ -24,6 +24,7 @@
     </p>
     <!-- 进度条 -->
     <Progress
+      v-if="visible"
       :percent="+percent"
       status="active"
       :stroke-width="15"
@@ -31,10 +32,10 @@
     ></Progress>
 
     <div slot="footer">
-      <!-- <Button
+      <Button
         type="ghost"
         @click="closeModal"
-      >返回</Button> -->
+      >返回</Button>
     </div>
   </Modal>
 </template>
@@ -74,6 +75,7 @@ export default {
 
     // 关闭弹窗
     closeModal() {
+      this.$emit('on-hide')
       this.$emit('update:visible', false)
     },
   },

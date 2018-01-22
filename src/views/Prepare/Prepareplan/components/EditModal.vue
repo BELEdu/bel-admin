@@ -229,6 +229,7 @@
       :visible.sync="ppt.visible"
       :data="ppt.data"
       :name="ppt.name"
+      @on-hide="ppt.hide = true"
     ></ProgressModal>
 
   </div>
@@ -253,6 +254,7 @@ const defaultPpt = {
   data: {}, // 预览相关数据
   visible: false, // 展示状态
   timeout: null,
+  hide: false,
 }
 
 export default {
@@ -476,10 +478,11 @@ export default {
 
     // 预览之前先检查后台是否上传成功
     beforePreview(url, name) {
-      this.ppt = defaultPpt
-      // 缓存当前的ppt链接
-      this.ppt.url = url
-      this.ppt.name = name
+      this.ppt = {
+        ...defaultPpt,
+        url,
+        name,
+      }
       this.pptCheck()
     },
 
@@ -497,10 +500,13 @@ export default {
             this.ppt.visible = false
             this.pptPreview()
           } else if (data.fail) {
+            this.ppt.visible = false
             this.$Message.error('文件错误，请尝试重新上传')
           } else {
             // 如果是第一次点击预览按钮，则出现弹窗
-            this.ppt.visible = true
+            if (!this.ppt.hide) {
+              this.ppt.visible = true
+            }
             this.ppt.timeout = setTimeout(() => {
               this.pptCheck()
             }, 1500)
