@@ -308,6 +308,8 @@ export default {
       hasQuestions: false, // 是否已经智能推送过题目
 
       ppt: defaultPpt,
+
+      pptWin: null,
     }
   },
 
@@ -486,8 +488,19 @@ export default {
       this.pptCheck()
     },
 
-    // 确认ppt状态接口
+    // 点击预览
     pptCheck() {
+      // 新建一个窗口对象
+      this.pptWin = window.open()
+      const self = this
+      // eslint-disable-next-line
+      this.pptWin.onload = new function() {
+        self.pptCheckPolling()
+      }
+    },
+
+    // ppt状态轮询
+    pptCheckPolling() {
       this.$http.post('/scheme/preview', {
         url: this.ppt.url,
       })
@@ -497,30 +510,28 @@ export default {
 
           // 如果已传文件等于总文件的话，表示可以预览,否则延时预览
           if (done === total) {
+            this.$Message.success('文件已上传成功，可以预览')
             this.ppt.visible = false
-            this.pptPreview()
+            this.pptWin.location.href = this.ppt.url
           } else if (data.fail) {
-            this.ppt.visible = false
             this.$Message.error('文件错误，请尝试重新上传')
+            this.ppt.visible = false
+            if (this.pptWin) this.pptWin.close()
           } else {
+            if (this.pptWin) this.pptWin.close()
             // 如果是第一次点击预览按钮，则出现弹窗
             if (!this.ppt.hide) {
               this.ppt.visible = true
             }
             this.ppt.timeout = setTimeout(() => {
-              this.pptCheck()
+              this.pptCheckPolling()
             }, 1500)
           }
         })
         .catch(({ message }) => {
+          this.pptWin.close()
           this.$Message.warning(message)
         })
-    },
-
-    // 打开新标签预览ppt
-    pptPreview() {
-      const win = window.open()
-      win.location = this.ppt.url
     },
 
     // 提交表单（选题或者最终提交）
