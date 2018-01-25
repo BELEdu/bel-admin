@@ -84,6 +84,7 @@ import PaperComposition from './PaperComposition'
 import PaperPreviewDialog from './PaperPreviewDialog'
 import TreeCondition from './TreeCondition'
 
+// 组卷试题初始化数据
 const paperFactory = () => ({
   grade_range_subject_id: null,
   campuses: [[]],
@@ -147,6 +148,7 @@ export default {
   }),
 
   computed: {
+    // 当前学科id
     subjectID() {
       const id = this.$route.query['equal[grade_range_subject_id]']
         || this.getLastRecord('subject_id')
@@ -155,6 +157,7 @@ export default {
       return parseInt(id, 10)
     },
 
+    // 当前教材id
     teachMaterialsID() {
       const id = this.$route.query['equal[teach_materials]']
         || (this.teachMaterials ? this.teachMaterials.data[0].value : '')
@@ -227,6 +230,7 @@ export default {
         }) => {
           // 设置默认行为数据
           this.setLastRecord('subject_id', current_grade_range_subject_id)
+
           this.subjects = {
             data: grade_range_subject_id,
             default: current_grade_range_subject_id,
@@ -251,6 +255,7 @@ export default {
             user_label_list,
           }
 
+          // 初始化侧边栏树结构
           this.m_initTreeEntries()
 
           // eslint-disable-next-line
@@ -259,25 +264,6 @@ export default {
             question_type_id.data,
           )
         })
-    },
-
-    // 生成试卷信息，变换学科，重置选题;
-    m_generatePaper(subjectID, types) {
-      this.paper = paperFactory()
-      // 科目生成
-      this.paper.grade_range_subject_id = subjectID
-      // 视图学科数据生成
-      this.paper.subjectName = this.filterSubjectName(subjectID)
-      // 题型生成
-      this.paper.question_types = types
-        .map(type => ({
-          question_type_id: type.id,
-          display_name: type.display_name,
-          best_score: 0,
-          questions: [],
-          // 后端给的字段是score，有歧义，描述不准确
-          questionDefaultScore: type.score,
-        }))
     },
 
     m_initTreeEntries() {
@@ -311,26 +297,43 @@ export default {
       }
     },
 
+    // 生成试卷信息，变换学科，重置选题;
+    m_generatePaper(subjectID, types) {
+      this.paper = paperFactory()
+      // 科目生成
+      this.paper.grade_range_subject_id = subjectID
+      // 视图学科数据生成
+      this.paper.subjectName = this.filterSubjectName(subjectID)
+      // 题型生成
+      this.paper.question_types = types
+        .map(type => ({
+          question_type_id: type.id,
+          display_name: type.display_name,
+          best_score: 0,
+          questions: [],
+          // 后端给的字段是score，有歧义，描述不准确
+          questionDefaultScore: type.score,
+        }))
+    },
+
     m_fetchData(route = this.$route) {
       this.$store.commit(GLOBAL.LOADING.SHOW)
 
       return this.getData(this.getQueryUrl(route.query))
-        .catch(() => {
-          this.$Notice.error({
-            title: '无法访问试题数据，请稍后再试',
-            duration: 0,
-          })
-        })
-        .then(() => {
-          this.$store.commit(GLOBAL.LOADING.HIDE)
-        })
+        .catch(() => this.$Notice.error({
+          title: '无法访问试题数据，请稍后再试',
+          duration: 0,
+        }))
+        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
     },
 
+    // 获取数据前置检测
     getData(query) {
       const asyncFlow = this.subjects && query
         ? Promise.resolve()
         : this.vm_fetchBefore()
 
+      // 重定向前置query
       return asyncFlow
         .then(() => (
           query
@@ -364,12 +367,14 @@ export default {
 
     /* Creation */
 
+    // 创建试卷操作的初始化
     initCreation() {
       this.m_fetchData()
     },
 
     /* Edition */
 
+    // 更新试卷操作的初始化
     initUpdation() {
       this.fetchUpdationInfo()
         .then(res => this.m_dealUpdationInfo(res))
@@ -381,6 +386,7 @@ export default {
         })
     },
 
+    // 先获取试卷数据
     fetchUpdationInfo() {
       return this.$http.get(this.$route.meta.submitUri)
     },
@@ -397,6 +403,7 @@ export default {
         })
     },
 
+    // 请求回来的试卷数据并入本地试卷数据
     paperUpdation(paper) {
       const question_types = this.sectionsUpdation(paper.question_types)
 
@@ -417,6 +424,7 @@ export default {
 
     /* --- Assitance --- */
 
+    // 生成试卷预览标题“学科”片段
     filterSubjectName(id) {
       const name = this.subjects.data
         .find(subject => subject.id === id)
