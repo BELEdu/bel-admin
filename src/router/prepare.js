@@ -6,6 +6,8 @@
 
 import * as views from '@/views'
 
+import { ThePaper } from '@/views/components'
+
 const PREPARE_PAPER = {
   name: '试卷中心',
   link: '/prepare/papercenter',
@@ -98,7 +100,7 @@ export default [
     path: '/prepare/papercenter/edit/:id',
     name: 'PreparePaperEdition',
     // 直接复用试题中心
-    component: views.PrepareQuestion,
+    component: ThePaper,
     meta: {
       action: 'patch',
       beforeUri: '/question_center/index_before',
@@ -140,7 +142,7 @@ export default [
   {
     path: '/prepare/question',
     name: 'PrepareQuestion',
-    component: views.PrepareQuestion,
+    component: ThePaper,
     meta: {
       action: 'post',
       beforeUri: '/question_center/index_before',
@@ -150,34 +152,6 @@ export default [
       breadcrumb: [
         { name: '备课管理' },
         { name: '试题中心' },
-      ],
-    },
-  },
-
-  // abolish 题库列表 试卷预览
-  {
-    path: '/prepare/question/paperpreview',
-    name: 'PrepareQuestionPaperpreview',
-    component: views.PreparePaperPreview,
-    meta: {
-      breadcrumb: [
-        { name: '备课管理' },
-        { name: '题库列表' },
-        { name: '试卷预览' },
-      ],
-    },
-  },
-
-  /* abolish 智能组卷 */
-
-  {
-    path: '/prepare/smartquestion',
-    name: 'PrepareSmartquestion',
-    component: views.Smartquestion,
-    meta: {
-      breadcrumb: [
-        { name: '备课管理' },
-        { name: '个性题库' },
       ],
     },
   },

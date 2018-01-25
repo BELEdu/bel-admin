@@ -73,6 +73,10 @@ export {
 } from './QuestionAnalysisDialog'
 
 export {
+  default as ThePaper,
+} from './ThePaper'
+
+export {
   default as TreeCondition,
 } from './TreeCondition'
 

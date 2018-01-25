@@ -146,14 +146,6 @@ export { default as PreparePrepareplanPreview } from './Prepare/Prepareplan/Prev
 export { default as PreparePaper } from './Prepare/Paper'
 export { default as PreparePaperSmartpaper } from './Prepare/Paper/Smartpaper'
 
-// abolish 智能组卷
-export { default as Smartquestion } from './Prepare/Smartquestion'
-
-// 试题中心
-export { default as PrepareQuestion } from './Prepare/Question'
-export { default as PreparePaperPreview } from './Prepare/Question/PaperPreview'
-
-
 /* 业务配置 */
 
 // 学校管理

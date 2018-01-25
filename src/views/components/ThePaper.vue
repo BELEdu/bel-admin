@@ -76,15 +76,13 @@
  * @author huojinzhao
  */
 
-import { GLOBAL } from '@/store/mutationTypes'
-import {
-  ConditionRadio,
-  ConditionRadioQuery,
-  PaperComposition,
-  PaperPreviewDialog,
-  TreeCondition,
-} from '@/views/components'
 import { lastRecord } from '@/mixins'
+import { GLOBAL } from '@/store/mutationTypes'
+import ConditionRadio from './ConditionRadio'
+import ConditionRadioQuery from './ConditionRadioQuery'
+import PaperComposition from './PaperComposition'
+import PaperPreviewDialog from './PaperPreviewDialog'
+import TreeCondition from './TreeCondition'
 
 const paperFactory = () => ({
   grade_range_subject_id: null,
@@ -101,7 +99,7 @@ const paperFactory = () => ({
 })
 
 export default {
-  name: 'PrepareQuestion',
+  name: 'ThePaper',
 
   mixins: [lastRecord],
 

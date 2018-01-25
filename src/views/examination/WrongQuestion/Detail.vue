@@ -1,6 +1,6 @@
 <template>
   <div class="examination-wrongquestion-detail">
-    <PrepareQuestion
+    <ThePaper
       ref="composition"
       :question-config="{
         select: false,
@@ -18,7 +18,7 @@
           <span>学员姓名：{{props.data.student_name}}</span>
           <span>学员编号：{{props.data.student_number}}</span>
         </h2>
-        </template>>
+        </template>
 
       <!-- 底部 进阶学习 -->
       <template
@@ -55,22 +55,22 @@
           </Button>
         </div>
       </template>
-    </PrepareQuestion>
+    </ThePaper>
   </div>
 </template>
 
 <script>
-import PrepareQuestion from '@/views/Prepare/Question'
 import {
   PaperCompositionQuestion,
+  ThePaper,
 } from '@/views/components'
 
 export default {
   name: 'ExaminationWrongQuestionDetail',
 
   components: {
-    PrepareQuestion,
     PaperCompositionQuestion,
+    ThePaper,
   },
 
   directives: {

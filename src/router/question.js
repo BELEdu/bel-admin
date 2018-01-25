@@ -6,6 +6,8 @@
 
 import * as views from '@/views'
 
+import { ThePaper } from '@/views/components'
+
 const QUESTION_KNOWLEDGE = {
   name: '知识点',
   link: '/question/knowledge',
@@ -182,7 +184,7 @@ export default [
   {
     path: QUESTION_PAPER_CREATION_COMPOSITION.link,
     name: 'QuestionPaperCompositionCreation',
-    component: views.PrepareQuestion,
+    component: ThePaper,
     meta: {
       action: 'post',
       beforeUri: '/question/for_paper_before',
@@ -201,7 +203,7 @@ export default [
   {
     path: QUESTION_PAPER_EDITION_COMPOSITION.link,
     name: 'QuestionPaperCompositionUpdation',
-    component: views.PrepareQuestion,
+    component: ThePaper,
     meta: {
       action: 'patch',
       beforeUri: '/question/for_paper_before',
