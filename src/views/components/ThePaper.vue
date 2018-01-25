@@ -99,6 +99,20 @@ const paperFactory = () => ({
   subjectName: '',
 })
 
+/*
+meta配置数据
+    // before数据接口
+    beforeUri: String,
+    // 取试题数据接口
+    fetchUri: String,
+    // 提交方法
+    action: String,
+    // 提交接口地址
+    submitUri: String,
+    // 提交完成后跳转地址
+    backRoute: String,
+*/
+
 export default {
   name: 'ThePaper',
 
