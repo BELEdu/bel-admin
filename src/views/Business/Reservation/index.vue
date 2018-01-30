@@ -139,7 +139,7 @@
       :visible.sync="editModal.visible"
       :data="editModal.data"
       :operation-data="reservationOperation"
-       @update="fetchData"
+      @update="fetchData"
     ></EditModal>
 
   </div>

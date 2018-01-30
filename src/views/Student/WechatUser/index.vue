@@ -57,14 +57,28 @@
       @on-change="goTo"
       @on-page-size-change="pageSizeChange"
     ></app-pager>
+
+    <!-- 解绑弹窗 -->
+    <UntieModal
+      :visible.sync="untie.visible"
+      :students="untie.students"
+      @update="fetchData"
+    ></UntieModal>
+
   </div>
 </template>
 
 <script>
   import { list } from '@/mixins'
+  import { createButton } from '@/utils'
+  import UntieModal from './components/UntieModal'
 
   export default {
     name: 'wechat-user',
+
+    components: {
+      UntieModal,
+    },
 
     mixins: [list],
 
@@ -78,8 +92,8 @@
         likeKey: 'name',
         columns: [
           { title: '微信昵称', key: 'nickname', align: 'center', width: 180 },
-          { title: '微信ID', key: 'number', align: 'center', sortable: 'custom' },
-          { title: '姓名', key: 'name', align: 'center', width: 180, sortable: 'custom' },
+          { title: '微信 openID', key: 'openid', align: 'center', sortable: 'custom' },
+          { title: '真实姓名', key: 'name', align: 'center', width: 180, sortable: 'custom' },
           { title: '手机号码', key: 'phone', align: 'center', width: 180 },
           {
             title: '学员姓名',
@@ -89,8 +103,27 @@
               return h('span', null, studentStr)
             },
           },
+          {
+            title: '操作',
+            key: 10086,
+            align: 'center',
+            width: 100,
+            render: createButton([
+              {
+                text: '解绑',
+                type: 'primary',
+                isShow: ({ row }) => row.students.length > 0,
+                click: row => this.openUntieModal(row.students) },
+            ]),
+          },
         ],
         wechatUser: {},
+
+        // 解绑弹窗参数
+        untie: {
+          visible: false,
+          students: [],
+        },
       }
     },
 
@@ -104,6 +137,12 @@
           .catch(({ message }) => {
             this.errorNotice(message)
           })
+      },
+
+      // 打开解绑弹窗
+      openUntieModal(students) {
+        this.untie.students = students
+        this.untie.visible = true
       },
     },
 
