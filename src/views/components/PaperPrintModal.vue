@@ -75,6 +75,8 @@ export default {
      * p、ul&li、img还有待考量
      */
     formatData() {
+      // 暂时先把学生答案注释掉，允许打印
+      // .app-question__student-answer{display:none;}
       return `
         <style>
         body{height: auto;margin: 0 auto;background: #fff url(${printBg}) repeat-y center top;}
@@ -82,7 +84,7 @@ export default {
         p{margin:0;}
         img {vertical-align: middle;}
         .topic-item__control{display:none;}
-        .app-question__student-answer{display:none;}
+        .app-question__student-answer img{margin-top: 10px;max-width: 100%;}
         @media print {
           body {background: none !important;}
           .cke_editable div.cke_pagebreak {
