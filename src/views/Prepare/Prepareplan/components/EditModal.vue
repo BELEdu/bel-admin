@@ -537,7 +537,6 @@ export default {
     // 提交表单（选题或者最终提交）
     submit() {
       this.formLoading = true
-
       if (this.step === 2) {
         // 如果是添加教案，则请求智能推题系统，否则直接读取接口中的数据
         if (this.isCreate) {
@@ -636,6 +635,7 @@ export default {
       this.$refs.form.resetFields()
       this.formErrors = {}
       this.formLoading = false
+      this.hasQuestions = false
       this.step = 1
     },
 

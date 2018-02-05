@@ -151,6 +151,7 @@ export default {
         form: { // 教案表单数据
           ...defaultPlanForm,
         },
+
         isCreate: false, // 是否是查看班级
         isEdit: false, // 是否是编辑班级
         isShow: false, // 是否是查看班级
@@ -200,12 +201,18 @@ export default {
   },
 
   methods: {
+    // 深拷贝
+    deepCopy(obj) {
+      return JSON.parse(JSON.stringify(obj))
+    },
+
     // 打开编辑教案弹窗
     openEditModal(type, id) {
       // 先重置
       this.editModal.isCreate = false
       this.editModal.isEdit = false
       this.editModal.isShow = false
+
 
       switch (type) {
         case 'create':
@@ -230,13 +237,17 @@ export default {
         .then((res) => {
           // 如果是新建教案，要拼接章节解析给content
           this.editModal.form = {
+            // 由于浅拷贝不能重置数组和对象，这里特殊处理一下
             ...defaultPlanForm,
+            attachments: [],
+            questions: [],
             content: this.editModal.isCreate ? res.course_chapter
               .map(item => item.analysis)
               .filter(item => item !== '')
               .join('') : '',
             ...res,
           }
+
           this.editModal.active = true
         })
         .catch(({ message }) => {
