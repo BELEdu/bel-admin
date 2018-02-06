@@ -49,7 +49,7 @@
         <!-- 图片 -->
         <img
           :key="image.image_url"
-          :src="image.image_url"
+          :src="formatImg(image.image_url)"
           :alt="image.image_name"
         >
 
@@ -165,6 +165,18 @@ export default {
   // },
 
   methods: {
+    /**
+     * @description 图片格式化
+     * 先判断是否是来源于七牛的图片地址
+     * 根据原图EXIF信息自动旋正
+     * 处理图片最大宽度
+     */
+    formatImg(url) {
+      const isQiniuSrc = url.includes('https://oa-statics.caihonggou.com/')
+      if (isQiniuSrc) return `${url}?imageMogr2/auto-orient&imageView2/2/w/800`
+      return url
+    },
+
     // 图片上传成功回调
     uploadSuccess(response) {
       this.$Message.success(this.successText)
