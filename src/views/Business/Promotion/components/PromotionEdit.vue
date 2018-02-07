@@ -153,14 +153,21 @@ export default {
   },
 
   props: {
-    target: {},
+    // 需要编辑活动的ID
+    target: Number,
+
+    // 弹窗可见开关
     visible: {
       type: Boolean,
       required: true,
     },
+
+    // 编辑信息
     edition: {
       type: Object,
     },
+
+    // 某些表单项在编辑状态不可改动
     readonly: {
       type: Boolean,
       required: true,
@@ -207,17 +214,39 @@ export default {
     }
   },
 
+  computed: {
+    promotionID() {
+      return this.target
+    },
+
+    submitURL() {
+      return this.promotionID
+        ? `/promotion/${this.promotionID}` : '/promotion'
+    },
+
+    submitMethod() {
+      return this.promotionID ? 'patch' : 'post'
+    },
+  },
+
   watch: {
     visible(value) {
       if (value) {
+        // 打卡时判断是否为编辑状态
         if (typeof this.target === 'number') {
-          this.dataDecode(this.edition)
+          this.mergeEditionData(this.edition)
         }
       } else {
+        // 组件实例只会实例化一次
+        // 所以关闭的时候表单需要初始化
         this.$refs.form.resetFields()
         this.fdata = initFdata()
       }
     },
+  },
+
+  created() {
+    this.fetchPreConfig()
   },
 
   methods: {
@@ -236,14 +265,16 @@ export default {
         : callback(new Error('有效期限不能为空'))
     },
 
-    dataEncode() {
-      const start_at = formatDate(this.fdata.period[0])
-      const end_at = formatDate(this.fdata.period[1])
-      const { period, ...rest } = this.fdata
-      return { ...rest, ...{ start_at, end_at } }
+    // 根据表单数据生成服务器需要的数据
+    dealFormData(data) {
+      const start_at = formatDate(data.period[0])
+      const end_at = formatDate(data.period[1])
+      const { period, ...rest } = data
+
+      return { ...rest, start_at, end_at }
     },
 
-    dataDecode(edition) {
+    mergeEditionData(edition) {
       const period = [edition.start_at, edition.end_at]
       this.fdata = { ...edition, period }
     },
@@ -253,7 +284,6 @@ export default {
     cancel() {
       this.confirmLoading = false
       this.$emit('update:visible', false)
-      // mixins中的数据
       this.formErrors = {}
     },
 
@@ -264,28 +294,23 @@ export default {
         if (valid) {
           this.confirmLoading = true
           this.submit()
-            .then(() => {
-              this.cancel()
-              this.$emit('success')
-            })
+            .then(this.submitSuccess)
             .catch(this.errorHandler)
         }
       })
     },
 
     submit() {
-      const url = this.target
-        ? `/promotion/${this.target}`
-        : '/promotion'
-      if (this.target) {
-        return this.$http.patch(url, this.dataEncode(this.fdata))
-      }
-      return this.$http.post(url, this.dataEncode(this.fdata))
+      return this.$http[this.submitMethod](
+        this.submitURL,
+        this.dealFormData(this.fdata),
+      )
     },
-  },
 
-  created() {
-    this.fetchPreConfig()
+    submitSuccess() {
+      this.cancel()
+      this.$emit('success')
+    },
   },
 }
 </script>
