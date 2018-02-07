@@ -19,7 +19,7 @@ d<template>
         <Select
           placeholder="请选择......"
           v-model="fdata.product_type"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="formItemDisable"
         >
           <Option
             v-for="item in preConfig.product_type"
@@ -37,7 +37,7 @@ d<template>
         <Select
           placeholder="请选择......"
           v-model="fdata.study_target"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="formItemDisable"
         >
           <Option
             v-for="item in preConfig.study_target"
@@ -53,7 +53,7 @@ d<template>
         <Select
           placeholder="请选择......"
           v-model="fdata.grade"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="formItemDisable"
         >
           <Option
             v-for="item in preConfig.grade"
@@ -70,7 +70,7 @@ d<template>
         <Select
           placeholder="请选择......"
           v-model="fdata.grade_range_subject_id"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="formItemDisable"
         >
           <Option
             v-for="item in preConfig.grade_range_subject_list"
@@ -87,7 +87,7 @@ d<template>
         <Select
           placeholder="请选择......"
           v-model="fdata.class_capacity"
-          :disabled="$route.params.id && fdata.is_used"
+          :disabled="formItemDisable"
         >
           <Option
             v-for="item in preConfig.class_capacity"
@@ -107,7 +107,7 @@ d<template>
             v-for="item in preConfig.sale_type"
             :label="item.value"
             :key="item.display_name"
-            :disabled="$route.params.id && fdata.is_used"
+            :disabled="formItemDisable"
           >
             <span>{{item.display_name}}</span>
           </Radio>
@@ -123,7 +123,7 @@ d<template>
           v-model="fdata.price"
           style="width: 250px;"
           :disabled="
-            ($route.params.id && fdata.is_used)
+            (formItemDisable)
             || priceDisabled
           "
         ></InputNumber>
@@ -226,10 +226,35 @@ export default {
     }
   },
 
+  computed: {
+    productID() {
+      return this.$route.params.id
+    },
+
+    submitMethod() {
+      return this.productID ? 'patch' : 'post'
+    },
+
+    submitUrl() {
+      return this.productID ? `/product/${this.productID}` : '/product'
+    },
+
+    formItemDisable() {
+      return this.productID && this.fdata.is_used
+    },
+  },
+
   watch: {
     'fdata.sale_type': 'changeSaleType',
 
     'fdata.product_type': 'changeProductType',
+  },
+
+  created() {
+    this.getPreConfig()
+
+    this.fetchUpdationInfo(this.productID)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
   methods: {
@@ -245,11 +270,12 @@ export default {
 
       return this.$http.get(`/product/${id}`)
         .then((res) => { this.fdata = res })
-        .catch(() => {})
+        .catch(() => this.$Notice.error({ desc: '请求数据错误' }))
     },
 
     /* --- Assistance --- */
 
+    // 根据产品选项生成产品名称
     autoName() {
       const name = this.getName(
         this.fdata.grade,
@@ -280,6 +306,7 @@ export default {
       return target ? target.display_name : ''
     },
 
+    // 根据运营类型调整“每课时单价”
     changeSaleType(nv) {
       // 赠品
       // eslint-disable-next-line
@@ -295,8 +322,8 @@ export default {
       this.priceDisabled = false
     },
 
+    // 晚辅导，product_type != 5 判断学习目标、学科、班级容量显示
     changeProductType(nv) {
-      // 晚辅导
       // eslint-disable-next-line
       nv === 5 && this.fitNightStudy()
     },
@@ -313,35 +340,23 @@ export default {
     submit() {
       this.loading = true
 
-      const id = this.$route.params.id
-
       const fdata = this.fdata
+      // 产品名称自动拼接
       fdata.display_name = this.autoName()
 
-      const method = id ? 'patch' : 'post'
-      const uri = id ? `/product/${id}` : '/product'
-
-      return this.$http[method](uri, fdata)
+      return this.$http[this.submitMethod](this.submitUrl, fdata)
     },
 
     handleSubmit(name) {
-      this.$refs[name]
-        .validate((valid) => {
-          if (valid) {
-            this.submit()
-              .then(() => this.goBack())
-              .catch(this.errorHandler)
-              .then(() => { this.loading = false })
-          }
-        })
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.submit()
+            .then(() => this.goBack())
+            .catch(this.errorHandler)
+            .then(() => { this.loading = false })
+        }
+      })
     },
-  },
-
-  created() {
-    this.getPreConfig()
-
-    this.fetchUpdationInfo(this.$route.params.id)
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>
