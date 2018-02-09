@@ -369,6 +369,20 @@ export default {
         school_list: this.campuses,
       })
     },
+
+    contractID() {
+      return this.$route.params.id
+    },
+
+    submitURL() {
+      return this.contractID
+        ? `/contract/edit/${this.contractID}`
+        : '/contract'
+    },
+
+    submitMethod() {
+      return this.contractID ? 'patch' : 'post'
+    },
   },
 
   created() {
@@ -378,18 +392,19 @@ export default {
     // 请求第三步需要的产品列表
     this.fetchProducts()
 
-    // 更新合同数据
-    const id = this.$route.params.id
-    if (id) {
-      this.fetchContractInfo(id)
-        .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
-    } else {
-      this.$store.commit(GLOBAL.LOADING.HIDE)
-    }
+    // 合同编辑初始化
+    this.initContract(this.contractID)
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 
   methods: {
     /* --- Initialization --- */
+
+    initContract(id) {
+      return id
+        ? this.fetchContractInfo(id)
+        : Promise.resolve()
+    },
 
     fetchContractInfo(id) {
       return this.$http.get(`/contract/edit/${id}`)
@@ -403,6 +418,7 @@ export default {
             // eslint-disable-next-line
             contract_promotion = [{ promotion_id: -1 }]
           }
+
           this.fdata = {
             ...this.fdata,
             ...rest,
@@ -418,6 +434,7 @@ export default {
 
     fetchProducts() {
       const url = '/contract_step3?sale_status=1&sale_type=2'
+
       this.$http.get(url)
         .then(({
           product_list,
@@ -433,6 +450,7 @@ export default {
     // 进入下一步
     step(value) {
       if (this.process > 3 || this.process < 0) return
+
       this.process = this.process + value
     },
 
@@ -443,9 +461,10 @@ export default {
     /* --- 第一步 --- */
 
     fetchStudentInfo() {
-      const contractId = this.$route.params.id
       // 更新合同数据 或者 已经取过学生数据
-      if (this.studentFetched || contractId) return Promise.resolve()
+      if (this.studentFetched || this.contractID) {
+        return Promise.resolve()
+      }
 
       const number = this.fdata.student_number.trim()
       const url = `/student/number/${number}`
@@ -498,16 +517,17 @@ export default {
     // 删除产品项，至少保留一个
     deleteProduct(index) {
       const list = this.fdata.contract_product
+
       if (list.length > 1) list.splice(index, 1)
+
       this.calcOriginPrice()
     },
 
     // 产品选项过滤
     filterProducts(product, id) {
-      // 选中不过滤
-      if (product.id === id) return true
-      // 非选中过滤
-      return this.fdata.contract_product
+      // 选中不过滤 || 非选中过滤
+      return product.id === id || this.fdata
+        .contract_product
         .every(item => item.product_id !== product.id)
     },
 
@@ -515,10 +535,12 @@ export default {
     calcProductMoney(product) {
       const target = this.productList
         .find(item => item.id === product.product_id)
+
       if (target) {
         const money = (target.price * product.number).toFixed(2)
         // eslint-disable-next-line
         product.money = parseFloat(money)
+
         this.calcOriginPrice()
       }
     },
@@ -528,6 +550,7 @@ export default {
       this.fdata.original_money = this
         .fdata.contract_product
         .reduce((acc, product) => acc + product.money, 0)
+
       this.initPromotion()
     },
 
@@ -535,6 +558,7 @@ export default {
 
     initPromotion() {
       this.fdata.contract_promotion = [promotionOrigin()]
+
       this.calcMoney()
     },
 
@@ -544,12 +568,14 @@ export default {
 
     deletePromotion(index) {
       this.fdata.contract_promotion.splice(index, 1)
+
       this.calcMoney()
     },
 
     selectPromotion(index, promotion) {
       // 添加优惠信息
       const list = this.fdata.contract_promotion
+
       list[index] = { ...list[index], ...promotion }
 
       // 重置优惠列表
@@ -580,11 +606,13 @@ export default {
 
     calcMinus(price, promotion) {
       const result = (price - promotion.minus_price).toFixed(2)
+
       return parseFloat(result)
     },
 
     calcDiscount(price, promotion) {
       const result = (price * (1 - (promotion.discount / 100))).toFixed(2)
+
       return parseFloat(result)
     },
 
@@ -593,10 +621,12 @@ export default {
       if (promotion.id === id) return true
 
       // 非选中过滤
-      const result = this.fdata.contract_promotion
+      const promotionList = this.fdata.contract_promotion
+
+      const result = promotionList
         .every(item => item.promotion_id !== promotion.id)
 
-      if (this.fdata.contract_promotion.length === 1) {
+      if (promotionList.length === 1) {
         return result && promotion.enjoy_price <= this.fdata.original_money
       }
 
@@ -614,16 +644,12 @@ export default {
 
     // 提交编辑好的表单数据
     submit() {
-      const id = this.$route.params.id
       // 开启按钮loadding
       this.confirmLoading = true
       // 若表单数据和服务器要求不符，根据需要进行二次处理
       const fdata = unit_encode(this.fdata)
-      // 判断新增还是修改
-      if (id) {
-        return this.$http.patch(`/contract/edit/${id}`, fdata)
-      }
-      return this.$http.post('/contract', fdata)
+
+      return this.$http[this.submitMethod](this.submitURL, fdata)
     },
   },
 }
