@@ -173,15 +173,40 @@ export default {
     }
   },
 
+  computed: {
+    contractID() {
+      return this.$route.params.id
+    },
+
+    submitURL() {
+      return this.contractID
+        ? `/contract/refund/edit/${this.contractID}`
+        : '/contract/refund'
+    },
+
+    submitMethod() {
+      return this.contractID ? 'patch' : 'post'
+    },
+  },
+
+  created() {
+    this.fetchContractInfo(this.contractID)
+      .then(res => this.fetchSucceed(res))
+      .catch(() => {})
+      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
+  },
+
   methods: {
     /* --- Initialization --- */
 
     // 新建&重新提交 退费合同 预数据
     fetchContractInfo(id) {
       if (this.$route.meta.action === 'create') {
-        this.fdata.belong_contract_id = id
+        this.fdata.belong_contract_id = parseInt(id, 10)
+
         return this.$http.get(`/contract/refund/create/${id}`)
       }
+
       return this.$http.get(`/contract/refund/edit/${id}`)
     },
 
@@ -191,6 +216,7 @@ export default {
       if (this.$route.meta.action === 'update') {
         this.isDealAuthority = false
       }
+
       this.fdata = { ...this.fdata, ...res }
     },
 
@@ -218,27 +244,10 @@ export default {
 
     // 提交编辑好的表单数据
     submit() {
-      // 开启按钮loadding
       this.confirmLoading = true
 
-      // 新增退费合同
-      if (this.$route.meta.action === 'create') {
-        return this.$http.post('/contract/refund', this.fdata)
-      }
-
-      // 更新退费合同
-      const id = this.$route.params.id
-      return this.$http.patch(`/contract/refund/edit/${id}`, this.fdata)
+      return this.$http[this.submitMethod](this.submitURL, this.fdata)
     },
-  },
-
-  created() {
-    const id = parseInt(this.$route.params.id, 10)
-
-    this.fetchContractInfo(id)
-      .then(res => this.fetchSucceed(res))
-      .catch(() => {})
-      .then(() => this.$store.commit(GLOBAL.LOADING.HIDE))
   },
 }
 </script>
