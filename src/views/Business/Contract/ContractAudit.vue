@@ -204,18 +204,23 @@ export default {
 
       return arr
     },
+
+    contractID() {
+      return this.$route.params.id
+    },
   },
 
   methods: {
     /* --- initialization --- */
 
     fetchAuditInfo() {
-      const id = this.$route.params.id
       const type = this.$route.meta.contractType
+
       if (type === 'contract') {
-        return this.$http.get(`/contract/audit/${id}`)
+        return this.$http.get(`/contract/audit/${this.contractID}`)
       }
-      return this.$http.get(`/contract/refund/audit/${id}`)
+
+      return this.$http.get(`/contract/refund/audit/${this.contractID}`)
     },
 
     /* --- business --- */
@@ -235,8 +240,9 @@ export default {
     },
 
     submit() {
-      const id = this.$route.params.id
-      Http.post(`/contract/approval/${id}`, this.fdata)
+      const url = `/contract/approval/${this.contractID}`
+
+      Http.post(url, this.fdata)
         .then(() => this.goBack())
     },
   },
