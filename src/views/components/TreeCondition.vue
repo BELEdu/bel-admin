@@ -1,19 +1,19 @@
 <script>
 /**
- * 边栏树形条件组件
+ * 公共组件 - 边栏树形条件组件
  *
  * @author  huojinzhao
+ * @desc 可点击label切换对应tree组件显示
  */
 
-// entries = [
-//   {
-//     {string}       label           - tag name
-//     {string}       key             - url query key
-//     {Array}        tree            - TreeSide data
-//     {Array|String} selectedLeafId  - 选中的叶子ID
-//   },
-//   .....
-// ]
+// interface Entry {
+//   label: string, // tag name
+//   key: string, // url query key
+//   tree: IviewTreeData, // iview Tree组件数据
+//   selectedLeafId: number|number[], // 选中的叶子节点
+// }
+
+// type Entries = Entry[]
 
 import TreeConditionStructure from './TreeConditionStructure'
 
@@ -32,7 +32,7 @@ export default {
   },
 
   data: () => ({
-    keyType: '',
+    labelKey: '',
   }),
 
   computed: {
@@ -52,18 +52,27 @@ export default {
 
     currentValue() {
       const value = this.$route.query[this.currentKey]
+
       return value ? parseInt(value, 10) : ''
     },
   },
 
+  // 初始化选中逻辑
   created() {
-    this.keyType = this.currentKey
+    // 初始化标签选中
+    this.labelKey = this.currentKey
+    // 初始化树节点展开
     this.currentEntry.selectedLeafId = this.currentValue
   },
 
   methods: {
     /* --- Initialization --- */
 
+    vm_selectLabel(key) {
+      this.labelKey = key
+    },
+
+    // 将选中entryKey=treeValue键值对推到query上，不同标签是互斥的
     v_singleSelect(key, id) {
       const { [this.currentKey]: filter, ...rest } = this.$route.query
 
@@ -77,22 +86,24 @@ export default {
 
 <template>
   <aside class="tree-side-search">
+    <!-- 标签切换条 -->
     <nav class="tree-side-search__nav clearfix">
       <span
         v-for="entry in entries"
         :class="{
-          active: entry.key === keyType
+          active: entry.key === labelKey
         }"
         :style="{
           width: `${(1 / entries.length) * 100}%`
         }"
-        @click="keyType = entry.key"
+        @click="vm_selectLabel(entry.key)"
       >{{entry.label}}</span>
     </nav>
+    <!-- 下方树形组件，点击标签切换 -->
     <div class="tree-side-search__main">
       <TreeConditionStructure
         v-for="entry in entries"
-        v-if="entry.key === keyType"
+        v-if="entry.key === labelKey"
         class="content__tree"
         v-model="entry.selectedLeafId"
         :key="entry.key"
