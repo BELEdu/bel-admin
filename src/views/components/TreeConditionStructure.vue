@@ -1,16 +1,24 @@
 <script>
+/**
+ * 公共组件 - iview树组件拓展
+ *
+ * @author  huojinzhao
+ * @desc 可点击label切换对应tree组件显示
+ */
+
 export default {
   name: 'TreeConditionStructure',
 
   props: {
     value: {},
 
+    // 树结构入口数据
     data: {
       type: Array,
       required: true,
     },
 
-    // 单选 | 多选
+    // 单选 | 多选，目前只支持单选
     type: {
       type: String,
       default: 'single',
@@ -18,10 +26,13 @@ export default {
   },
 
   data: () => ({
+    // 虚拟根树节点
     rootNode: { id: 0 },
 
+    // 由入口数据生成的双向树数据
     tree: [],
 
+    // 叶子节点
     leaves: [],
 
     preSelectedNode: null,
@@ -32,6 +43,7 @@ export default {
       if (to === '') this.m_revertLeaf(from)
     },
 
+    // 入口数据变化，重新生成双向树数据
     data(to, from) {
       if (to !== from) this.tree = this.tree2way(to)
     },
@@ -46,6 +58,7 @@ export default {
   methods: {
     /* --- Initialization --- */
 
+    // 做了两件事情：1、生成叶子节点数组；2、生成双向树数据结构
     tree2way(children, parent = this.rootNode) {
       return children.map((item) => {
         const child = { ...item }
@@ -95,11 +108,12 @@ export default {
     m_selectLeaf(leafId) {
       const target = this.findLeaf(leafId)
 
+      // 非叶子节点不做操作
       if (!target) return
+      // 初始化选中叶子时展开祖先节点
+      this.m_expandParent(target.parent)
 
       this.$set(target, 'selected', true)
-
-      this.m_expandParent(target.parent)
     },
 
     m_revertLeaf(leafId) {
