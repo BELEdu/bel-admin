@@ -145,7 +145,7 @@ Http.HOST = process.env.NODE_ENV === 'production' ?
   `https://${window.location.hostname.replace(/([^.]+)\./, '$1-api.')}` : ''
 
 // 接口版本号
-Http.VERSION = '/v1'
+Http.VERSION = '/api'
 
 // 响应状态
 Http.OK = 200

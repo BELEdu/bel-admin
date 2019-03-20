@@ -38,12 +38,12 @@
 
           <div class="login-box__form">
             <Form-item
-              label="用户名"
-              prop="username"
+              label="手机号"
+              prop="phone"
             >
               <Input
-                v-model="form.username"
-                placeholder="请输入用户名"
+                v-model="form.phone"
+                placeholder="请输入手机号"
               ></Input>
             </Form-item>
 
@@ -95,14 +95,14 @@ export default {
     return {
       // 表单数据
       form: {
-        username: '',
+        phone: '',
         password: '',
       },
 
       // 表单验证规则
       rules: {
-        username: [
-          this.$rules.required('用户名'),
+        phone: [
+          this.$rules.required('手机号'),
         ],
         password: [
           this.$rules.required('密码'),

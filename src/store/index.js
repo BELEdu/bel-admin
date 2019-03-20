@@ -151,10 +151,14 @@ const store = new Vuex.Store({
 
     // 登录
     [GLOBAL.LOGIN]({ commit }, data) {
-      return Http.post('/auth/login', data)
+      return Http.post('/oa/login', data)
         .then((res) => {
-          commit(GLOBAL.LOGIN, res)
-          return res
+          if (res && res.status === 'success' && res.data) {
+            commit(GLOBAL.LOGIN, res.data)
+            return res.data
+          }
+
+          return false
         })
     },
 

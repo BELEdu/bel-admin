@@ -32,7 +32,7 @@ module.exports = {
     assetsSubDirectory: 'assets/1.0.0/vue',
     assetsPublicPath: '/',
     proxyTable: {
-      '/v1': {
+      '/api': {
         target: 'http://api.bel.org.cn',
         changeOrigin: true
       },

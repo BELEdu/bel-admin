@@ -9,9 +9,9 @@
  * @version 2017-06-06
  */
 
-import io from 'socket.io-client'
+// import io from 'socket.io-client'
 import { mapState } from 'vuex'
-import { GLOBAL } from '@/store/mutationTypes'
+// import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
   name: 'main',
@@ -23,20 +23,20 @@ export default {
   methods: {
     // 连接socket.io
     connectToSocket() {
-      const socket = io.connect(`https://oa.caihonggou.com:9500?user_id=${this.user.id}`)
+      // const socket = io.connect(`https://oa.caihonggou.com:9500?user_id=${this.user.id}`)
 
-      // 初始化用户权限和消息数目
-      socket.on('init', (data) => {
-        // eslint-disable-next-line
-        console.log(data)
-      })
+      // // 初始化用户权限和消息数目
+      // socket.on('init', (data) => {
+      //   // eslint-disable-next-line
+      //   console.log(data)
+      // })
 
-      // 监听后台消息推送
-      socket.on('update', ({ menus }) => {
-        if (menus) {
-          this.$store.dispatch(GLOBAL.MENUS.UIPDATE, menus)
-        }
-      })
+      // // 监听后台消息推送
+      // socket.on('update', ({ menus }) => {
+      //   if (menus) {
+      //     this.$store.dispatch(GLOBAL.MENUS.UIPDATE, menus)
+      //   }
+      // })
     },
   },
 

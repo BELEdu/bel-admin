@@ -84,7 +84,7 @@ const router = new Router({
           component: views.NotFound,
           meta: {
             breadcrumb: [
-              { name: '找不到页面-爱考拉教育' },
+              { name: '找不到页面-BEL教育' },
             ],
           },
         },
