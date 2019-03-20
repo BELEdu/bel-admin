@@ -33,15 +33,15 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/v1': {
-        target: 'https://oa-api.caihonggou.com',
+        target: 'http://api.bel.org.cn',
         changeOrigin: true
       },
       '/images': {
-        target: 'https://oa-api.caihonggou.com',
+        target: 'http://api.bel.org.cn',
         changeOrigin: true
       },
       '/assets/1.0.0/lib/': {
-        target: 'https://oa.caihonggou.com',
+        target: 'http://api.bel.org.cn',
         changeOrigin: true
      },
     },

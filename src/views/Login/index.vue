@@ -26,7 +26,7 @@
         ref="form"
       >
         <!-- 标题 -->
-        <h1 class="login-box__body__title">欢迎登录爱考拉SAAS管理系统</h1>
+        <h1 class="login-box__body__title">欢迎登录教育管理系统</h1>
 
         <!-- 错误提示 -->
         <app-form-alert
