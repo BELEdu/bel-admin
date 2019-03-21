@@ -33,7 +33,7 @@ export default {
   actions: {
     // 用户标签列表接口
     [LABEL.INIT]({ commit }) {
-      return Http.get('/user_label')
+      return Http.get('/oa/user_label')
         .then((res) => {
           commit(LABEL.INIT, res)
         })

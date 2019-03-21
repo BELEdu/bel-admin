@@ -54,7 +54,7 @@ const router = new Router({
       component: views.Main,
       children: [
         {
-          path: '/index/tongjitu',
+          path: '/index/statistics',
           name: 'Index',
           component: views.Home,
           meta: {

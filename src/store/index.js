@@ -143,7 +143,7 @@ const store = new Vuex.Store({
     [GLOBAL.DICTS.INIT]({ state, commit }) {
       // 缓存了字典数据，只有当无数据时才重新做请求
       if (Object.keys(state.dicts).length === 0) {
-        return Http.get('/dict')
+        return Http.get('/oa/dict')
           .then(res => commit(GLOBAL.DICTS.INIT, res))
       }
       return Promise.resolve()
@@ -151,14 +151,14 @@ const store = new Vuex.Store({
 
     // 登录
     [GLOBAL.LOGIN]({ commit }, data) {
-      return Http.post('/oa/login', data)
+      return Http.post('/oa/auth/login', data)
         .then((res) => {
           if (res && res.status === 'success' && res.data) {
             commit(GLOBAL.LOGIN, res.data)
             return res.data
           }
 
-          return false
+          return {}
         })
     },
 
@@ -170,7 +170,7 @@ const store = new Vuex.Store({
 
     // 登出
     [GLOBAL.LOGOUT]({ commit }) {
-      return Http.get('/auth/logout')
+      return Http.get('/oa/auth/logout')
         .then(() => commit(GLOBAL.LOGOUT))
     },
   },

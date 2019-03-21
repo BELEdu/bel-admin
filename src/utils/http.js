@@ -31,7 +31,7 @@ class Http {
   static updateToken(res) {
     const { status, headers } = res
 
-    // 只有登陆和token时效时，相应头会带token字段
+    // 只有登陆和token时效时，响应头会带token字段
     const token = headers.get('token')
 
     // token有值，则更新token（登陆时）
