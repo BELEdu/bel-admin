@@ -14,7 +14,7 @@
           class="login-box__logo"
           :src="require('@/assets/logo-login.png')"
           alt="logo"
-        >
+        />
       </div>
 
       <!-- 右侧表单 -->

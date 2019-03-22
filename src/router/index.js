@@ -103,7 +103,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.breadcrumb) {
     document.title = to.meta.breadcrumb
       .reduce((title, item) => (
-        title ? `${item.name} - ${title} - 爱考拉教育` : item.name
+        title ? `${item.name} - ${title}` : item.name
       ), '')
   }
 

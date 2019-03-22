@@ -92,7 +92,7 @@
         v-if="isFill || isEssay || isDraw"
         :src="data.student_answer[0].answer_content"
         alt="学员答案图片"
-      >
+      />
 
     </div>
 

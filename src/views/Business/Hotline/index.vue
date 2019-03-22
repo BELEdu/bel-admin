@@ -129,7 +129,7 @@ export default {
     /* --- initialization --- */
 
     getPreconfig() {
-      this.$http.get('/hotline/index_before')
+      this.$http.get('/oa/hotline/index_before')
         .then(({ search_fields, ...rest }) => {
           this.likeKeys = [...search_fields]
           this.preConfig = { ...rest }

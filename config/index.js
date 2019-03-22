@@ -27,13 +27,13 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: process.env.PORT || 8080,
+    port: process.env.PORT || 8300,
     autoOpenBrowser: true,
     assetsSubDirectory: 'assets/1.0.0/vue',
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://api.bel.org.cn',
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true
       },
       '/images': {

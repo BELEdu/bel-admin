@@ -14,7 +14,7 @@ import { mapState } from 'vuex'
 // import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
-  name: 'main',
+  name: 'App',
 
   computed: {
     ...mapState(['token', 'user']),

@@ -59,7 +59,7 @@
           id="image"
           :src="preview"
           @load="crop"
-        >
+        />
       </div>
     </Modal>
 

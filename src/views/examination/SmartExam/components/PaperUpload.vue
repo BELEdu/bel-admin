@@ -51,7 +51,7 @@
           :key="image.image_url"
           :src="image.image_url"
           :alt="image.image_name"
-        >
+        />
 
       </div>
     </div>

@@ -6812,7 +6812,7 @@ vue-waterfall@^1.0.6:
   resolved "http://registry.npm.taobao.org/vue-waterfall/download/vue-waterfall-1.0.6.tgz#00324a8f97f449bf6f8cdebb4974b60cffac9eed"
   integrity sha1-ADJKj5f0Sb9vjN67SXS2DP+snu0=
 
-vue@^2.5.6:
+vue@^2.6.6:
   version "2.6.10"
   resolved "http://registry.npm.taobao.org/vue/download/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
   integrity sha1-pysaQqTYKnIepDjRtr9V5mGVxjc=
