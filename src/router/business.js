@@ -41,7 +41,7 @@ export default [
     name: 'BussinessHotline',
     component: views.Hotline,
     meta: {
-      uri: '/hotline',
+      uri: '/oa/business/hotline',
       breadcrumb: [
         { name: '业务管理' },
         { name: '热线登记' },

@@ -178,6 +178,8 @@ export default {
     },
 
     fetchData(to = this.$route) {
+      console.log(to)
+      console.log(this.getData)
       if (this.getData) {
         this.getData(this.parse(to.query), to)
           .catch(() => {

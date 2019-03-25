@@ -1,8 +1,8 @@
 <template>
   <footer class="app-footer">
     <div class="app-footer__content">
-      <a href="#">厦门彩虹狗科技有限公司</a>
-      <span>2016 - 2017 © All Rights Reserved.</span>
+      <a href="#">BEL EDU</a>
+      <span>COPYRIGHT © 2013-2019 </span>
     </div>
   </footer>
 </template>

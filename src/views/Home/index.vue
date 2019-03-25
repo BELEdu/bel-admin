@@ -117,8 +117,8 @@
 <script>
 /**
  * 首页
- * @author  chenliangshan
- * @version 2017/07/21
+ * @author  big
+ * @version 2019.3.25
  */
 
 import HomeModule from './Components/HomeModule'
@@ -129,11 +129,11 @@ export default {
   data() {
     return {
       homeData: {
-        name: '思明校区',
+        name: '示例校区',
         campus_list: [
-          { value: 1, display_name: '思明校区' },
-          { value: 2, display_name: '思明校区2' },
-          { value: 3, display_name: '思明校区3' },
+          { value: 1, display_name: '示例校区' },
+          { value: 2, display_name: '示例校区2' },
+          { value: 3, display_name: '示例校区3' },
         ],
         module: [
           { name: 'contract', title: '本月签约' },

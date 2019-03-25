@@ -80,6 +80,13 @@ class Http {
     })
       .then(Http.updateToken)
       .then(Http.errorHandler)
+      .then((res) => {
+        if (res && res.data) {
+          return res.data
+        }
+
+        return {}
+      })
   }
 
   /**

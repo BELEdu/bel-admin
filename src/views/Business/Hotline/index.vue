@@ -98,9 +98,10 @@
 
 <script>
 /**
- * 业务管理 - 热线登记
+ * bussiness - hotline
  *
- * @author huojinzhao
+ * @author big
+ * @date 2019.3.25
  */
 
 import { list, tableCommon } from '@/mixins'
@@ -129,10 +130,12 @@ export default {
     /* --- initialization --- */
 
     getPreconfig() {
-      this.$http.get('/oa/hotline/index_before')
-        .then(({ search_fields, ...rest }) => {
-          this.likeKeys = [...search_fields]
-          this.preConfig = { ...rest }
+      this.$http.get('/oa/business/hotline')
+        .then(({ search_fields, ...data }) => {
+          console.log(search_fields)
+          console.log(data)
+          // this.likeKeys = [...search_fields]
+          // this.preConfig = { ...rest }
         })
     },
 

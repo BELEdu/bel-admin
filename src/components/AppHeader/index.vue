@@ -1,7 +1,6 @@
 <template>
   <header class="app-header">
-    <img class="app-logo" :src="require('@/assets/logo-header.png')" alt="爱考拉教育">
-    <!-- <h1 class="app-title">爱考拉教育</h1> -->
+    <h1 class="app-title">BEL</h1>
     <div class="app-user">
       <span class="app-user__notif">
         <Icon type="android-notifications-none"></Icon>

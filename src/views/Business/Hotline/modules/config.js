@@ -57,7 +57,7 @@ export function colConfig(that) {
     },
     {
       title: '手机号码',
-      key: 'mobile',
+      key: 'phone',
       width: 120,
       align: 'center',
     },
