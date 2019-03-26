@@ -148,8 +148,7 @@ class Http {
 }
 
 // 上线时需拼合为完整的接口地址
-Http.HOST = process.env.NODE_ENV === 'production' ?
-  `https://${window.location.hostname.replace(/([^.]+)\./, '$1-api.')}` : ''
+Http.HOST = process.env.NODE_ENV === 'production' ? 'http://api.bel.org.cn' : ''
 
 // 接口版本号
 Http.VERSION = '/api'
